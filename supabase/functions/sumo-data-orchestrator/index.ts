@@ -1,21 +1,6 @@
 // Import the Supabase JS client
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-// Define function URLs - update these with your actual Supabase function URLs
-const LIST_RIKISHIS_URL = "https://sadwlipiuzqjnwcwqccc.supabase.co/functions/v1/import-sumoapi";
-const GET_RIKISHI_URL = "https://sadwlipiuzqjnwcwqccc.supabase.co/functions/v1/get-rikishi-function";
-
-// Get the subdomain from a URL
-function getSubdomain(url: string): string {
-  try {
-    const hostname = new URL(url).hostname;
-    return hostname.split('.')[0];
-  } catch (err) {
-    console.error("Error parsing URL:", err);
-    return "sadwlipiuzqjnwcwqccc"; // Fallback to the hardcoded value
-  }
-}
-
 // Main orchestration function
 async function orchestrateImport(req: Request) {
   const url = new URL(req.url);
@@ -25,9 +10,13 @@ async function orchestrateImport(req: Request) {
   const includeRanks = url.searchParams.get('ranks') === 'true';
   const includeShikonas = url.searchParams.get('shikonas') === 'true';
   
+  // Add a parameter to limit the number of rikishis to process
+  const maxRikishis = url.searchParams.get('maxRikishis') ? parseInt(url.searchParams.get('maxRikishis')!) : 1000;
+  
   console.log("Starting Sumo data import orchestration");
   console.log(`Batch size: ${batchSize}`);
   console.log(`Concurrent requests: ${concurrentRequests}`);
+  console.log(`Maximum rikishis to process: ${maxRikishis}`);
   console.log(`Include measurements: ${includeMeasurements ? 'YES' : 'NO'}`);
   console.log(`Include ranks: ${includeRanks ? 'YES' : 'NO'}`);
   console.log(`Include shikonas: ${includeShikonas ? 'YES' : 'NO'}`);
@@ -36,39 +25,39 @@ async function orchestrateImport(req: Request) {
   const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';
   const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
   
-  // Extract the subdomain for the x-deno-subhost header
-  const subdomain = getSubdomain(supabaseUrl);
-  console.log(`Using subdomain for x-deno-subhost: ${subdomain}`);
-  
   // Create a supabase client for direct DB operations
   const supabaseClient = createClient(supabaseUrl, supabaseKey);
   
-  // Step 1: Import all rikishis (basic data only)
-  let listApiUrl = `${LIST_RIKISHIS_URL}?limit=${batchSize}`;
-  let allRikishisProcessed = false;
+  // Step 1: Import rikishis (basic data only) up to the maximum limit
   let totalRikishisProcessed = 0;
   
-  console.log("Step 1: Importing all rikishis (basic data)");
-  
-  // Use a direct call for testing - this approach bypasses the functions service
-  console.log("Using direct database access to bypass edge function for step 1");
+  console.log("Step 1: Importing rikishis (basic data)");
   
   try {
-    // Instead of calling the edge function, let's directly fetch data from the API
-    // and process it using the Supabase client
-    
+    // Directly fetch data from the API and process it using the Supabase client
     const API_BASE_URL = "https://www.sumo-api.com/api/rikishis";
-    const limit = 100; // Fetch 100 records at a time
+    const limit = Math.min(100, maxRikishis); // Fetch at most 100 records at a time, but respect maxRikishis
     let skip = 0;
     let total = 0;
     let isComplete = false;
     
     while (!isComplete) {
-      console.log(`Fetching data from API with skip=${skip}, limit=${limit}`);
+      // Don't fetch more than maxRikishis in total
+      if (totalRikishisProcessed >= maxRikishis) {
+        console.log(`Reached maximum rikishi limit (${maxRikishis})`);
+        isComplete = true;
+        break;
+      }
+      
+      // Calculate how many more rikishis we can fetch in this batch
+      const remainingRikishis = maxRikishis - totalRikishisProcessed;
+      const batchLimit = Math.min(limit, remainingRikishis);
+      
+      console.log(`Fetching data from API with skip=${skip}, limit=${batchLimit}`);
       
       // Construct query parameters
       const queryParams = new URLSearchParams({
-        limit: limit.toString(),
+        limit: batchLimit.toString(),
         skip: skip.toString()
       });
       
@@ -91,10 +80,10 @@ async function orchestrateImport(req: Request) {
       total = data.total || 0;
       
       // Process the rikishis in batches of 50
-      const batchSize = 50;
-      for (let i = 0; i < data.records.length; i += batchSize) {
-        const batchRikishis = data.records.slice(i, i + batchSize);
-        console.log(`Processing batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(data.records.length / batchSize)}`);
+      const processBatchSize = 50;
+      for (let i = 0; i < data.records.length; i += processBatchSize) {
+        const batchRikishis = data.records.slice(i, i + processBatchSize);
+        console.log(`Processing batch ${Math.floor(i / processBatchSize) + 1}/${Math.ceil(data.records.length / processBatchSize)}`);
         
         // Transform the data
         interface Rikishi {
@@ -142,30 +131,36 @@ async function orchestrateImport(req: Request) {
         }
         
         totalRikishisProcessed += transformedRikishis.length;
+        
+        // Check if we've reached the maximum
+        if (totalRikishisProcessed >= maxRikishis) {
+          break;
+        }
       }
       
       // Update skip for the next batch
       skip += data.records.length;
       
-      // Check if we've processed all records
-      isComplete = skip >= total;
+      // Check if we've processed all records or reached our maximum
+      isComplete = skip >= total || totalRikishisProcessed >= maxRikishis;
       
-      console.log(`Processed ${totalRikishisProcessed}/${total} rikishis (${((skip / total) * 100).toFixed(2)}%)`);
+      console.log(`Processed ${totalRikishisProcessed}/${Math.min(total, maxRikishis)} rikishis (${((totalRikishisProcessed / Math.min(total, maxRikishis)) * 100).toFixed(2)}%)`);
     }
     
-    console.log("All rikishis processed successfully");
+    console.log(`Completed Step 1: Imported ${totalRikishisProcessed} rikishi records`);
   } catch (error) {
     console.error("Error processing rikishis directly:", error);
     throw error;
   }
   
-  // Step 2: Get list of all rikishis from the database
-  console.log("Step 2: Getting all rikishi IDs from database");
+  // Step 2: Get list of rikishis from the database (limited to what we've imported)
+  console.log("Step 2: Getting rikishi IDs from database");
   
   const { data: rikishiIds, error: rikishiIdsError } = await supabaseClient
     .from('rikishis')
     .select('id')
-    .order('id', { ascending: true });
+    .order('id', { ascending: true })
+    .limit(maxRikishis);
   
   if (rikishiIdsError) {
     throw new Error(`Failed to fetch rikishi IDs: ${rikishiIdsError.message}`);
@@ -174,7 +169,7 @@ async function orchestrateImport(req: Request) {
   console.log(`Found ${rikishiIds.length} rikishis in database to process`);
   
   // Step 3: Process each rikishi's detailed data directly
-  console.log("Step 3: Processing rikishi details directly (bypassing edge function)");
+  console.log("Step 3: Processing rikishi details");
   
   let completedRikishis = 0;
   const API_RIKISHI_URL = "https://www.sumo-api.com/api/rikishis";
@@ -342,9 +337,10 @@ async function orchestrateImport(req: Request) {
         records_processed: completedRikishis,
         success: true,
         notes: JSON.stringify({
-          total_rikishis: rikishiIds.length,
-          successful_rikishis: completedRikishis,
-          failed_rikishis: rikishiIds.length - completedRikishis,
+          max_rikishis: maxRikishis,
+          processed_rikishis: totalRikishisProcessed,
+          successful_detail_imports: completedRikishis,
+          failed_detail_imports: rikishiIds.length - completedRikishis,
           included_measurements: includeMeasurements,
           included_ranks: includeRanks,
           included_shikonas: includeShikonas
@@ -356,9 +352,10 @@ async function orchestrateImport(req: Request) {
   
   return new Response(JSON.stringify({
     message: "Data import orchestration complete",
-    total_rikishis: rikishiIds.length,
-    successful_rikishis: completedRikishis,
-    failed_rikishis: rikishiIds.length - completedRikishis,
+    max_rikishis: maxRikishis,
+    processed_rikishis: totalRikishisProcessed,
+    successful_detail_imports: completedRikishis,
+    failed_detail_imports: rikishiIds.length - completedRikishis,
     timestamp: new Date().toISOString()
   }), {
     headers: { 'Content-Type': 'application/json' },
