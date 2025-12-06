@@ -1,4 +1,8 @@
-const API_URL = "https://sumo.or.jp/EnHonbashoBanzuke/indexAjax/1/1/";
+const API_URLS = {
+  en: "https://sumo.or.jp/EnHonbashoBanzuke/indexAjax/1/1/",
+  jp: "https://sumo.or.jp/ResultBanzuke/tableAjax/1/1/",
+};
+const DEFAULT_LANG = "en";
 
 /**
  * HTTP Cloud Function that proxies the official banzuke endpoint.
@@ -19,7 +23,8 @@ exports.fetchBanzuke = async (req, res) => {
       return;
     }
 
-    const upstream = await fetch(API_URL, {
+    const upstreamUrl = resolveApiUrl(req.query.lang);
+    const upstream = await fetch(upstreamUrl, {
       headers: { "X-Requested-With": "XMLHttpRequest" },
     });
 
@@ -33,7 +38,7 @@ exports.fetchBanzuke = async (req, res) => {
     res.set("Access-Control-Allow-Origin", "*");
     res.status(200).json({
       fetchedAt: new Date().toISOString(),
-      source: API_URL,
+      source: upstreamUrl,
       payload,
     });
   } catch (error) {
@@ -41,3 +46,8 @@ exports.fetchBanzuke = async (req, res) => {
     res.status(502).json({ error: error.message });
   }
 };
+
+function resolveApiUrl(lang) {
+  const normalized = String(lang || DEFAULT_LANG).toLowerCase();
+  return API_URLS[normalized] || API_URLS[DEFAULT_LANG];
+}

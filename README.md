@@ -49,17 +49,23 @@ That writes `public/latest-banzuke.json` with a timestamp.
   Storage with "Static website" enabled.
 * **Any CDN or bucket** – the assets are self-contained; there is no build step.
 
-### Pointing the UI to a custom endpoint
+### Language toggle & custom endpoints
 
-If you deploy the Cloud Function (or any other proxy) you can point the UI at it without
-changing the source code. Either define a global before `main.js` loads:
+The UI supports an English ⇄ 日本語 toggle. The Japanese endpoint on sumo.or.jp does not
+send permissive CORS headers, so the static app retries via a public proxy for local/dev
+use. For production, deploy the Cloud Function (or any trusted proxy) and point the UI at
+it so both languages can be fetched securely. You can override the endpoint by defining a
+global before `main.js` loads:
 
 ```html
-<script>window.BANZUKE_API_URL = \"https://your-cloud-function-url\";</script>
-<script type=\"module\" src=\"./main.js\"></script>
+<script>
+  window.BANZUKE_API_URL = "https://your-cloud-function-url";
+</script>
+<script type="module" src="./main.js"></script>
 ```
 
-or append `?api=https://your-cloud-function-url` to the page URL.
+or by appending `?api=https://your-cloud-function-url` to the page URL. The proxy should
+accept `?lang=en|jp` (the provided Cloud Function already does this).
 
 ## Cloud automation
 
