@@ -4,6 +4,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Grand Sumo Banzuke</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=M+PLUS+1p&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -11,38 +17,14 @@
       <div>
         <p class="badge">Live data from the Japan Sumo Association</p>
         <h1>Grand Sumo Banzuke Browser</h1>
-        <p>
-          View the current <strong>makuuchi division</strong> rankings directly from
-          the official banzuke endpoint. Search by shikona, heya, or prefecture, or
-          filter by rank to zero in on the rikishi you care about.
-        </p>
       </div>
     </header>
 
-    <section class="controls" aria-label="Filters">
-      <label>
-        <span>Search</span>
-        <input
-          id="search-input"
-          type="search"
-          placeholder="Try \"Hoshoryu\", \"Isegahama\", ..."
-          autocomplete="off"
-        />
-      </label>
-
-      <label>
-        <span>Rank / Title</span>
-        <select id="rank-filter">
-          <option value="all" selected>All ranks</option>
-        </select>
-      </label>
-
-      <label>
-        <span>Prefecture / Origin</span>
-        <select id="pref-filter">
-          <option value="all" selected>All origins</option>
-        </select>
-      </label>
+    <section class="language-toggle" aria-label="Language selection">
+      <button type="button" class="lang-button lang-button--active" data-language="en">
+        English
+      </button>
+      <button type="button" class="lang-button" data-language="jp">日本語</button>
     </section>
 
     <section class="summary" aria-live="polite">
