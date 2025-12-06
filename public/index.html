@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Grand Sumo Banzuke</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div>
+        <p class="badge">Live data from the Japan Sumo Association</p>
+        <h1>Grand Sumo Banzuke Browser</h1>
+        <p>
+          View the current <strong>makuuchi division</strong> rankings directly from
+          the official banzuke endpoint. Search by shikona, heya, or prefecture, or
+          filter by rank to zero in on the rikishi you care about.
+        </p>
+      </div>
+    </header>
+
+    <section class="controls" aria-label="Filters">
+      <label>
+        <span>Search</span>
+        <input
+          id="search-input"
+          type="search"
+          placeholder="Try \"Hoshoryu\", \"Isegahama\", ..."
+          autocomplete="off"
+        />
+      </label>
+
+      <label>
+        <span>Rank / Title</span>
+        <select id="rank-filter">
+          <option value="all" selected>All ranks</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Prefecture / Origin</span>
+        <select id="pref-filter">
+          <option value="all" selected>All origins</option>
+        </select>
+      </label>
+    </section>
+
+    <section class="summary" aria-live="polite">
+      <div>
+        <p class="summary__label">Basho</p>
+        <p id="basho-name" class="summary__value">—</p>
+      </div>
+      <div>
+        <p class="summary__label">Dates</p>
+        <p id="basho-dates" class="summary__value">—</p>
+      </div>
+      <div>
+        <p class="summary__label">Announced</p>
+        <p id="banzuke-announcement" class="summary__value">—</p>
+      </div>
+      <div>
+        <p class="summary__label">Last updated</p>
+        <p id="last-updated" class="summary__value">Waiting for data…</p>
+      </div>
+    </section>
+
+    <main>
+      <div id="status" role="status" class="status">Loading the banzuke…</div>
+      <div id="banzuke-results" class="banzuke-grid" hidden></div>
+    </main>
+
+    <footer>
+      <p>
+        Data source:
+        <a href="https://sumo.or.jp/" target="_blank" rel="noreferrer">Japan Sumo Association</a>.
+        Built with vanilla HTML/CSS/JS so it can be hosted anywhere (GitHub Pages,
+        Cloud Storage, Netlify, ...).
+      </p>
+    </footer>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

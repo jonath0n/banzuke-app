@@ -1,0 +1,12 @@
+{
+  "name": "banzuke-app",
+  "version": "0.1.0",
+  "description": "Static viewer for the makuuchi banzuke with optional cloud automation.",
+  "scripts": {
+    "fetch-remote": "node scripts/fetch-banzuke.mjs"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT"
+}
