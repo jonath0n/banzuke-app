@@ -2,6 +2,7 @@
   color-scheme: light dark;
   --bg: #f8f8f8;
   --card-bg: #ffffff;
+  --surface: #fefefe;
   --text: #1a1a1a;
   --muted: #666666;
   --accent: #b0303f;
@@ -20,8 +21,10 @@
 }
 
 body.lang-jp {
-  font-family: "M PLUS 1p", "Hiragino Sans", "Hiragino Kaku Gothic ProN",
-    "Yu Gothic", "YuGothic", "Meiryo", "Noto Sans JP", sans-serif;
+  font-family: "FranSans Solid", "Inter", "Segoe UI", system-ui, -apple-system,
+    BlinkMacSystemFont, "M PLUS 1p", "Hiragino Sans",
+    "Hiragino Kaku Gothic ProN", "Yu Gothic", "YuGothic", "Meiryo",
+    "Noto Sans JP", sans-serif;
 }
 
 * {
@@ -47,9 +50,37 @@ main {
   :root {
     --bg: #121212;
     --card-bg: #1e1e1e;
+    --surface: #242424;
     --text: #f0f0f0;
     --muted: #999999;
     --border: #333333;
     --accent: #f88496;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  body {
+    background: #ffffff;
+    color: #000000;
+    max-width: none;
+    margin: 0;
+    padding: 0.5rem;
+  }
+
+  .print-hide {
+    display: none !important;
+  }
+
+  .status {
+    color: #000000;
   }
 }

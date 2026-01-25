@@ -296,6 +296,10 @@ export function useBanzuke(): UseBanzukeResult {
 function updateLanguageContext(language: Language) {
   if (typeof document === 'undefined') return
 
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/8f13d096-f5b3-4a25-b1f7-9fa94764e743',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H2',location:'useBanzuke.ts:updateLanguageContext:before',message:'Update language context start',data:{language,bodyClassList:Array.from(document.body.classList),htmlLang:document.documentElement.lang},timestamp:Date.now()})}).catch(()=>{});
+  // #endregion
+
   if (language === 'jp') {
     document.documentElement.lang = 'ja'
     document.body.classList.add('lang-jp')
@@ -303,4 +307,8 @@ function updateLanguageContext(language: Language) {
     document.documentElement.lang = 'en'
     document.body.classList.remove('lang-jp')
   }
+
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/8f13d096-f5b3-4a25-b1f7-9fa94764e743',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H2',location:'useBanzuke.ts:updateLanguageContext:after',message:'Update language context end',data:{language,bodyClassList:Array.from(document.body.classList),htmlLang:document.documentElement.lang},timestamp:Date.now()})}).catch(()=>{});
+  // #endregion
 }

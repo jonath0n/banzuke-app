@@ -12,9 +12,15 @@ function App() {
     <ErrorBoundary>
       <Hero data={data} language={language} onLanguageChange={setLanguage} />
       <main>
-        {loading && (
-          <div role="status" className={styles.status}>
-            Loading the banzuke…
+        {loading && !data && (
+          <div className={styles.skeleton} role="status" aria-live="polite">
+            {Array.from({ length: 8 }).map((_, index) => (
+              <div className={styles.skeletonRow} key={`skeleton-${index}`}>
+                <div className={styles.skeletonCell} />
+                <div className={styles.skeletonLabel} />
+                <div className={styles.skeletonCell} />
+              </div>
+            ))}
           </div>
         )}
         {error && !data && (

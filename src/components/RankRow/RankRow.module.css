@@ -3,6 +3,7 @@
   border-radius: var(--radius);
   padding: 0.5rem 0.75rem;
   transition: background 150ms ease, box-shadow 150ms ease;
+  animation: riseIn 200ms ease;
 }
 
 .row:hover {
@@ -31,6 +32,17 @@
   align-items: center;
   justify-content: center;
   justify-self: center;
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 

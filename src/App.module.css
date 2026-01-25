@@ -29,3 +29,51 @@
   color: var(--muted);
   border-top: 1px solid var(--border);
 }
+
+.skeleton {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.skeletonRow {
+  display: grid;
+  grid-template-columns: 1fr 60px 1fr;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: var(--radius);
+  background: var(--card-bg);
+}
+
+.skeletonCell,
+.skeletonLabel {
+  height: 20px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.04),
+    rgba(0, 0, 0, 0.08),
+    rgba(0, 0, 0, 0.04)
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
+}
+
+.skeletonLabel {
+  height: 24px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@media (max-width: 600px) {
+  .skeletonRow {
+    grid-template-columns: 1fr;
+  }
+}
