@@ -8,8 +8,9 @@ import {
 } from '../utils/formatting'
 import { isValidBanzukeSnapshot } from '../utils/validation'
 
-const DATA_URL = '/latest-banzuke.json'
-const SAMPLE_URL = '/sample-data.json'
+// Use Vite's BASE_URL to handle deployment base paths (e.g., /banzuke-app/)
+const DATA_URL = `${import.meta.env.BASE_URL}latest-banzuke.json`
+const SAMPLE_URL = `${import.meta.env.BASE_URL}sample-data.json`
 const LANGUAGE_STORAGE_KEY = 'banzuke-language'
 const MAX_RETRIES = 3
 const RETRY_DELAY_MS = 1000
