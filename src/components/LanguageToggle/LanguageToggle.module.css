@@ -1,0 +1,83 @@
+@keyframes toggleFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.toggle {
+  display: inline-flex;
+  position: relative;
+  background: var(--border);
+  border-radius: 999px;
+  padding: 3px;
+  gap: 0;
+  animation: toggleFadeIn 400ms var(--ease-out-expo) 500ms backwards;
+}
+
+.option {
+  position: relative;
+  z-index: 1;
+  padding: 0.3rem 0.6rem;
+  font-family: "FranSans Solid", "Inter", system-ui, sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 200ms ease;
+  min-width: 36px;
+}
+
+.option:hover {
+  color: var(--text);
+}
+
+.option.active {
+  color: #fff;
+}
+
+.option:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.slider {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: calc(50% - 3px);
+  height: calc(100% - 6px);
+  background: var(--accent);
+  border-radius: 999px;
+  transition: transform 250ms var(--ease-spring);
+  box-shadow: 0 2px 8px rgba(176, 48, 63, 0.25);
+}
+
+@media (prefers-color-scheme: dark) {
+  .toggle {
+    background: var(--border);
+  }
+  
+  .slider {
+    box-shadow: 0 2px 10px rgba(248, 132, 150, 0.3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toggle {
+    animation: none;
+  }
+  
+  .slider {
+    transition: none;
+  }
+}

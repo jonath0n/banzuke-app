@@ -1,24 +1,40 @@
-import type { Rikishi, RankGroup, RankLevel, Language, BanzukeSnapshot } from '../types/banzuke'
+import type { Rikishi, RankGroup, RankLevel } from '../types/banzuke'
 import { getRankLevelFromCode, getRankLabel } from '../constants/ranks'
 
-export const DEFAULT_LANGUAGE: Language = 'en'
-
 /**
- * Formats a date string for display, handling invalid dates gracefully.
+ * Formats a date string in ISO-style format (YYYY/MM/DD).
  */
 export function formatDate(value: string | undefined): string {
   if (!value) return ''
   const date = new Date(value)
-  return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString()
+  if (Number.isNaN(date.getTime())) return value
+  
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}/${month}/${day}`
 }
 
 /**
- * Formats a datetime string for display, with fallback for invalid dates.
+ * Formats a datetime string for display with simple time (e.g., "2025/12/22, 6am").
  */
 export function formatDateTime(value: string | undefined): string {
   if (!value) return '—'
   const date = new Date(value)
-  return Number.isNaN(date.getTime()) ? value : date.toLocaleString()
+  if (Number.isNaN(date.getTime())) return value
+  
+  const dateStr = formatDate(value)
+  const hours = date.getHours()
+  const minutes = date.getMinutes()
+  
+  // Format time as simple "6am" or "2:30pm"
+  const period = hours >= 12 ? 'pm' : 'am'
+  const hour12 = hours % 12 || 12
+  const timeStr = minutes === 0 
+    ? `${hour12}${period}`
+    : `${hour12}:${String(minutes).padStart(2, '0')}${period}`
+  
+  return `${dateStr}, ${timeStr}`
 }
 
 /**
@@ -42,10 +58,6 @@ export function formatRankLabel(group: RankGroup): string {
 export function getRankLevel(row: Rikishi): RankLevel {
   const rankCode = Number(row.rank)
   return getRankLevelFromCode(rankCode)
-}
-
-export function normalizeLanguage(value: string | null | undefined): Language {
-  return value === 'jp' ? 'jp' : 'en'
 }
 
 export function buildPhotoUrl(filename: string): string {
@@ -84,42 +96,4 @@ export function groupRowsByRank(rows: Rikishi[]): RankGroup[] {
   })
 
   return groups
-}
-
-export function pickPayloadForLanguage(
-  snapshot: BanzukeSnapshot,
-  language: Language
-) {
-  if (!snapshot || typeof snapshot !== 'object') return null
-  if (snapshot.payloads && snapshot.payloads[language]) {
-    return snapshot.payloads[language]
-  }
-  if (snapshot.payloads && snapshot.payloads[DEFAULT_LANGUAGE]) {
-    return snapshot.payloads[DEFAULT_LANGUAGE]
-  }
-  if (snapshot.payload) {
-    return snapshot.payload
-  }
-  return null
-}
-
-export function describeSnapshot(
-  snapshot: BanzukeSnapshot,
-  language: Language
-): string {
-  const parts = ['Static snapshot']
-  if (snapshot?.fetchedAt) {
-    try {
-      const date = new Date(snapshot.fetchedAt)
-      parts.push(
-        Number.isNaN(date.getTime()) ? snapshot.fetchedAt : date.toLocaleString()
-      )
-    } catch {
-      parts.push(snapshot.fetchedAt)
-    }
-  }
-  if (snapshot?.sources?.[language]) {
-    parts.push(snapshot.sources[language])
-  }
-  return parts.join(' • ')
 }

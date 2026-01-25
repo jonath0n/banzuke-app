@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react'
 import type { BanzukePayload, Language } from '../../types/banzuke'
 import { formatDate, formatDateTime } from '../../utils/formatting'
+import { useLanguage } from '../../contexts/LanguageContext'
+import { LanguageToggle } from '../LanguageToggle/LanguageToggle'
 import styles from './Hero.module.css'
 
 interface HeroProps {

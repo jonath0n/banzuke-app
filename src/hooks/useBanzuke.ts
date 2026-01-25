@@ -1,17 +1,10 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
-import type { BanzukePayload, BanzukeSnapshot, Language } from '../types/banzuke'
-import {
-  normalizeLanguage,
-  pickPayloadForLanguage,
-  describeSnapshot,
-  DEFAULT_LANGUAGE,
-} from '../utils/formatting'
+import { useState, useEffect } from 'react'
+import type { BanzukePayload, BanzukeSnapshot, Rikishi } from '../types/banzuke'
 import { isValidBanzukeSnapshot } from '../utils/validation'
 
 // Use Vite's BASE_URL to handle deployment base paths (e.g., /banzuke-app/)
 const DATA_URL = `${import.meta.env.BASE_URL}latest-banzuke.json`
 const SAMPLE_URL = `${import.meta.env.BASE_URL}sample-data.json`
-const LANGUAGE_STORAGE_KEY = 'banzuke-language'
 const MAX_RETRIES = 3
 const RETRY_DELAY_MS = 1000
 
@@ -20,45 +13,6 @@ interface UseBanzukeResult {
   loading: boolean
   error: string | null
   sourceLabel: string
-  language: Language
-  setLanguage: (lang: Language) => void
-}
-
-/**
- * Retrieves the initial language preference from localStorage, URL params, or default.
- */
-function getInitialLanguage(): Language {
-  if (typeof window === 'undefined') return DEFAULT_LANGUAGE
-  
-  // Check URL params first (allows sharing links with language)
-  const searchParams = new URLSearchParams(window.location.search)
-  const langParam = searchParams.get('lang')
-  if (langParam) {
-    return normalizeLanguage(langParam)
-  }
-  
-  // Then check localStorage
-  try {
-    const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY)
-    if (stored) {
-      return normalizeLanguage(stored)
-    }
-  } catch {
-    // localStorage may be unavailable (private browsing, etc.)
-  }
-  
-  return DEFAULT_LANGUAGE
-}
-
-/**
- * Persists language preference to localStorage.
- */
-function saveLanguagePreference(language: Language): void {
-  try {
-    localStorage.setItem(LANGUAGE_STORAGE_KEY, language)
-  } catch {
-    // Silently fail if localStorage is unavailable
-  }
 }
 
 /** Error types for more specific error handling */
@@ -161,46 +115,73 @@ async function fetchWithRetry(
   throw lastError || new BanzukeError('Fetch failed after retries', 'network')
 }
 
+/**
+ * Merges English and Japanese payloads into a single payload with bilingual data.
+ * Each rikishi gets both shikona_en and shikona_jp fields.
+ */
+function mergePayloads(snapshot: BanzukeSnapshot): BanzukePayload | null {
+  const enPayload = snapshot.payloads?.['en']
+  const jpPayload = snapshot.payloads?.['jp']
+  
+  // Use English as base, fall back to Japanese, then legacy payload
+  const basePayload = enPayload || jpPayload || snapshot.payload
+  if (!basePayload) return null
+
+  // If we only have one language, return as-is
+  if (!enPayload || !jpPayload) {
+    return basePayload
+  }
+
+  // Create a lookup of JP rikishi by ID for fast merging
+  const jpLookup = new Map<string | number, Rikishi>()
+  jpPayload.BanzukeTable.forEach((r) => {
+    jpLookup.set(r.rikishi_id, r)
+  })
+
+  // Merge: add both language names to each rikishi
+  const mergedTable: Rikishi[] = enPayload.BanzukeTable.map((enRikishi) => {
+    const jpRikishi = jpLookup.get(enRikishi.rikishi_id)
+    return {
+      ...enRikishi,
+      shikona_en: enRikishi.shikona,
+      shikona_jp: jpRikishi?.shikona || enRikishi.shikona,
+      banzuke_name_en: enRikishi.banzuke_name,
+      banzuke_name_jp: jpRikishi?.banzuke_name || enRikishi.banzuke_name,
+    }
+  })
+
+  return {
+    ...enPayload,
+    BanzukeTable: mergedTable,
+  }
+}
+
+function describeSnapshot(snapshot: BanzukeSnapshot): string {
+  const parts = ['Static snapshot']
+  if (snapshot?.fetchedAt) {
+    try {
+      const date = new Date(snapshot.fetchedAt)
+      parts.push(
+        Number.isNaN(date.getTime()) ? snapshot.fetchedAt : date.toLocaleString()
+      )
+    } catch {
+      parts.push(snapshot.fetchedAt)
+    }
+  }
+  return parts.join(' • ')
+}
+
 export function useBanzuke(): UseBanzukeResult {
   const [data, setData] = useState<BanzukePayload | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [sourceLabel, setSourceLabel] = useState('')
-  const [language, setLanguageState] = useState<Language>(getInitialLanguage)
 
-  const cachedSnapshot = useRef<BanzukeSnapshot | null>(null)
-
-  const setLanguage = useCallback((lang: Language) => {
-    const normalized = normalizeLanguage(lang)
-    setLanguageState(normalized)
-    saveLanguagePreference(normalized)
-    updateLanguageContext(normalized)
-  }, [])
-
-  // Handle language context updates
-  useEffect(() => {
-    updateLanguageContext(language)
-  }, [language])
-
-  // Handle data fetching and language-based payload selection
   useEffect(() => {
     let cancelled = false
     const controller = new AbortController()
 
     async function loadBanzuke() {
-      // If we have cached data, use it without showing loading state
-      const snapshot = cachedSnapshot.current
-      if (snapshot) {
-        const payload = pickPayloadForLanguage(snapshot, language)
-        if (payload) {
-          setData(payload)
-          setSourceLabel(describeSnapshot(snapshot, language))
-          setError(null)
-          return
-        }
-      }
-
-      // No cached data, need to fetch
       setLoading(true)
       setError(null)
 
@@ -225,20 +206,17 @@ export function useBanzuke(): UseBanzukeResult {
           )
         }
 
-        // Cache the validated snapshot
-        cachedSnapshot.current = fetchedSnapshot
-
-        const payload = pickPayloadForLanguage(fetchedSnapshot, language)
+        const payload = mergePayloads(fetchedSnapshot)
         if (!payload) {
           throw new BanzukeError(
-            `No data available for language "${language}"`,
+            'No data available in snapshot',
             'validation'
           )
         }
 
         if (!cancelled) {
           setData(payload)
-          setSourceLabel(describeSnapshot(fetchedSnapshot, language))
+          setSourceLabel(describeSnapshot(fetchedSnapshot))
           setLoading(false)
         }
       } catch (err) {
@@ -288,13 +266,7 @@ export function useBanzuke(): UseBanzukeResult {
       cancelled = true
       controller.abort()
     }
-  }, [language])
-
-  return { data, loading, error, sourceLabel, language, setLanguage }
-}
-
-function updateLanguageContext(language: Language) {
-  if (typeof document === 'undefined') return
+  }, [])
 
   // #region agent log
   fetch('http://127.0.0.1:7242/ingest/8f13d096-f5b3-4a25-b1f7-9fa94764e743',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H2',location:'useBanzuke.ts:updateLanguageContext:before',message:'Update language context start',data:{language,bodyClassList:Array.from(document.body.classList),htmlLang:document.documentElement.lang},timestamp:Date.now()})}).catch(()=>{});

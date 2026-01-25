@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Rikishi, RankLevel } from '../../types/banzuke'
+import { useLanguage } from '../../contexts/LanguageContext'
 import { buildPhotoUrl } from '../../utils/formatting'
 import styles from './SideCell.module.css'
 
@@ -10,10 +11,26 @@ interface SideCellProps {
   rikishi: Rikishi | null
   side: 'east' | 'west'
   rankLevel: RankLevel
+  /** Row index for staggered animations */
+  rowIndex?: number
 }
 
-export function SideCell({ rikishi, side, rankLevel }: SideCellProps) {
+/** Gets the display name for a rikishi based on current language */
+function getDisplayName(rikishi: Rikishi | null, language: 'en' | 'jp'): string {
+  if (!rikishi) return '—'
+  if (language === 'jp' && rikishi.shikona_jp) {
+    return rikishi.shikona_jp
+  }
+  if (language === 'en' && rikishi.shikona_en) {
+    return rikishi.shikona_en
+  }
+  return rikishi.shikona || '—'
+}
+
+function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0 }: SideCellProps) {
+  const { language } = useLanguage()
   const [imageError, setImageError] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false)
   const isEast = side === 'east'
   const sideLabel = isEast ? 'E' : 'W'
   const nameRef = useRef<HTMLSpanElement | null>(null)
@@ -24,12 +41,17 @@ export function SideCell({ rikishi, side, rankLevel }: SideCellProps) {
     setImageError(true)
   }
 
+  const handleImageLoad = () => {
+    setImageLoaded(true)
+  }
+
   const badge = rikishi?.rank_new ? (
     <span className={styles.pill}>{rikishi.rank_new}</span>
   ) : null
 
-  const avatar =
-    rikishi?.photo && !imageError ? (
+  const hasPhoto = rikishi?.photo && !imageError
+  const avatar = hasPhoto ? (
+    <span className={`${styles['avatar-wrapper']} ${imageLoaded ? styles.loaded : ''}`}>
       <img
         src={buildPhotoUrl(rikishi.photo)}
         alt={`Portrait of ${rikishi.shikona || 'wrestler'} from ${rikishi.heya_name || 'unknown'} stable`}
@@ -37,8 +59,11 @@ export function SideCell({ rikishi, side, rankLevel }: SideCellProps) {
         width={AVATAR_SIZE}
         height={AVATAR_SIZE}
         onError={handleImageError}
+        onLoad={handleImageLoad}
+        className={imageLoaded ? styles.visible : ''}
       />
-    ) : null
+    </span>
+  ) : null
 
   const name = (
     <span className={styles.name} ref={nameRef}>
@@ -122,3 +147,8 @@ export function SideCell({ rikishi, side, rankLevel }: SideCellProps) {
     </div>
   )
 }
+
+// Memoize to prevent re-renders from parent (RankRow) changes.
+// SideCell uses language context internally, so it will still
+// re-render when language changes to update the displayed name.
+export const SideCell = memo(SideCellInner)

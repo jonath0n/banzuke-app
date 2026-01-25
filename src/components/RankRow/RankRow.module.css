@@ -1,3 +1,24 @@
+/* Define keyframes locally for CSS Modules compatibility */
+@keyframes rowFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes labelPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
 .row {
   background: var(--card-bg);
   border-radius: var(--radius);
@@ -7,7 +28,86 @@
 }
 
 .row:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-md), 0 0 0 1px rgba(176, 48, 63, 0.05);
+  transform: translateY(-2px);
+}
+
+.row:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Tier-specific styling */
+.row[data-rank-level="yokozuna"] {
+  background: linear-gradient(
+    135deg,
+    var(--card-bg) 0%,
+    var(--tier-yokozuna-bg) 100%
+  );
+}
+
+.row[data-rank-level="yokozuna"]::before {
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    var(--tier-yokozuna) 50%,
+    transparent 100%
+  );
+}
+
+.row[data-rank-level="yokozuna"]:hover {
+  box-shadow: var(--shadow-md), var(--shadow-glow-gold);
+}
+
+.row[data-rank-level="ozeki"] {
+  background: linear-gradient(
+    135deg,
+    var(--card-bg) 0%,
+    var(--tier-ozeki-bg) 100%
+  );
+}
+
+.row[data-rank-level="ozeki"]::before {
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    var(--tier-ozeki) 50%,
+    transparent 100%
+  );
+}
+
+.row[data-rank-level="sekiwake"] {
+  background: linear-gradient(
+    135deg,
+    var(--card-bg) 0%,
+    var(--tier-sekiwake-bg) 100%
+  );
+}
+
+.row[data-rank-level="sekiwake"]::before {
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    var(--tier-sekiwake) 50%,
+    transparent 100%
+  );
+}
+
+.row[data-rank-level="komusubi"] {
+  background: linear-gradient(
+    135deg,
+    var(--card-bg) 0%,
+    var(--tier-komusubi-bg) 100%
+  );
+}
+
+.row[data-rank-level="komusubi"]::before {
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    var(--tier-komusubi) 50%,
+    transparent 100%
+  );
 }
 
 .inner {
@@ -15,12 +115,15 @@
   grid-template-columns: 1fr 60px 1fr;
   align-items: center;
   gap: 0.75rem;
+  position: relative;
+  z-index: 1;
 }
 
 .label {
+  font-family: "FranSans Solid", "Inter", system-ui, sans-serif;
   font-weight: 600;
   color: #fff;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   text-align: center;
@@ -32,6 +135,38 @@
   align-items: center;
   justify-content: center;
   justify-self: center;
+  box-shadow: 0 2px 8px rgba(176, 48, 63, 0.2);
+  transition: transform 250ms var(--ease-spring), box-shadow 250ms ease;
+}
+
+/* Label lift and glow on row hover */
+.row:hover .label {
+  transform: scale(1.05) translateY(-1px);
+  box-shadow: 0 4px 12px rgba(176, 48, 63, 0.3);
+}
+
+/* Tier-specific label colors */
+.row[data-rank-level="yokozuna"] .label {
+  background: linear-gradient(135deg, var(--tier-yokozuna) 0%, #c9a227 100%);
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+}
+
+.row[data-rank-level="yokozuna"]:hover .label {
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.4);
+}
+
+.row[data-rank-level="ozeki"] .label {
+  background: linear-gradient(135deg, var(--tier-ozeki) 0%, #b08a40 100%);
+  box-shadow: 0 2px 8px rgba(201, 160, 85, 0.25);
+}
+
+.row[data-rank-level="ozeki"]:hover .label {
+  box-shadow: 0 4px 12px rgba(201, 160, 85, 0.4);
+}
+
+.row[data-rank-level="sekiwake"] .label {
+  background: linear-gradient(135deg, var(--tier-sekiwake) 0%, #b86b22 100%);
+  box-shadow: 0 2px 8px rgba(205, 127, 50, 0.25);
 }
 
 @keyframes riseIn {
@@ -56,5 +191,35 @@
   .label {
     order: -1;
     justify-self: center;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .row:hover::before {
+    opacity: 0.3;
+  }
+  
+  .row[data-rank-level="yokozuna"] .label {
+    background: linear-gradient(135deg, var(--tier-yokozuna) 0%, #d4af37 100%);
+  }
+  
+  .row[data-rank-level="ozeki"] .label {
+    background: linear-gradient(135deg, var(--tier-ozeki) 0%, #c9a050 100%);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .row {
+    animation: fadeIn 200ms ease forwards;
+    transition: box-shadow 150ms ease;
+  }
+  
+  .row:hover {
+    transform: none;
+  }
+  
+  .row:hover .label {
+    transform: none;
   }
 }

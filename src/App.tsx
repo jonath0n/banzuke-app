@@ -1,6 +1,7 @@
 import { useBanzuke } from './hooks/useBanzuke'
+import { LanguageProvider } from './contexts/LanguageContext'
 import { Hero } from './components/Hero/Hero'
-import { BanzukeGrid } from './components/BanzukeGrid/BanzukeGrid'
+import { BanzukeGrid, BanzukeGridSkeleton } from './components/BanzukeGrid/BanzukeGrid'
 import { Footer } from './components/Footer/Footer'
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary'
 import styles from './App.module.css'
