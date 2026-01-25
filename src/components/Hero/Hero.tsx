@@ -1,5 +1,7 @@
 import type { BanzukePayload } from '../../types/banzuke'
 import { formatDate, formatDateTime } from '../../utils/formatting'
+import { useLanguage } from '../../contexts/LanguageContext'
+import { LanguageToggle } from '../LanguageToggle/LanguageToggle'
 import styles from './Hero.module.css'
 
 interface HeroProps {
@@ -7,6 +9,7 @@ interface HeroProps {
 }
 
 export function Hero({ data }: HeroProps) {
+  const { language, setLanguage } = useLanguage()
   const info = data?.BashoInfo
   const start = formatDate(info?.start_date)
   const end = formatDate(info?.end_date)
@@ -17,10 +20,10 @@ export function Hero({ data }: HeroProps) {
 
   return (
     <header className={styles.hero}>
-      <div className={styles.meta}>
-        <p className={styles.badge}>Live from the Japan Sumo Association</p>
+      <div className={styles.titleRow}>
+        <h1>Grand Sumo Banzuke</h1>
+        <LanguageToggle language={language} onLanguageChange={setLanguage} />
       </div>
-      <h1>Grand Sumo Banzuke</h1>
       <dl className={styles.summary} aria-live="polite">
         <div>
           <dt>Basho</dt>

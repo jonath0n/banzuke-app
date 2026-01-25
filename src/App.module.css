@@ -26,21 +26,6 @@
   animation: fadeSlideIn 400ms var(--ease-out-expo);
 }
 
-.source-label {
-  text-align: center;
-  padding: 1rem;
-  margin-top: 1.5rem;
-  font-size: 0.75rem;
-  color: var(--muted);
-  border-top: 1px solid var(--border);
-  animation: fadeIn 500ms var(--ease-out-expo) 400ms backwards;
-  transition: color 150ms ease;
-}
-
-.source-label:hover {
-  color: var(--text);
-}
-
 @media (prefers-color-scheme: dark) {
   .error {
     background: rgba(220, 38, 38, 0.12);

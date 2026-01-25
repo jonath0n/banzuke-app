@@ -1,5 +1,6 @@
-import { useState, ReactNode } from 'react'
+import { useState, memo, ReactNode } from 'react'
 import type { Rikishi, RankLevel } from '../../types/banzuke'
+import { useLanguage } from '../../contexts/LanguageContext'
 import { buildPhotoUrl } from '../../utils/formatting'
 import styles from './SideCell.module.css'
 
@@ -10,13 +11,31 @@ interface SideCellProps {
   rikishi: Rikishi | null
   side: 'east' | 'west'
   rankLevel: RankLevel
+  /** Row index for staggered animations */
+  rowIndex?: number
 }
 
-export function SideCell({ rikishi, side, rankLevel }: SideCellProps) {
+/** Gets the display name for a rikishi based on current language */
+function getDisplayName(rikishi: Rikishi | null, language: 'en' | 'jp'): string {
+  if (!rikishi) return '—'
+  if (language === 'jp' && rikishi.shikona_jp) {
+    return rikishi.shikona_jp
+  }
+  if (language === 'en' && rikishi.shikona_en) {
+    return rikishi.shikona_en
+  }
+  return rikishi.shikona || '—'
+}
+
+function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0 }: SideCellProps) {
+  const { language } = useLanguage()
   const [imageError, setImageError] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
   const isEast = side === 'east'
   const sideLabel = isEast ? 'E' : 'W'
+  
+  // Stagger delay for language switch animation (20ms per row, max 400ms)
+  const staggerDelay = Math.min(rowIndex * 20, 400)
 
   const handleImageError = () => {
     setImageError(true)
@@ -46,7 +65,17 @@ export function SideCell({ rikishi, side, rankLevel }: SideCellProps) {
     </span>
   ) : null
 
-  const name = <span className={styles.name}>{rikishi?.shikona || '—'}</span>
+  const displayName = getDisplayName(rikishi, language)
+  const directionClass = language === 'jp' ? styles['name-rtl'] : styles['name-ltr']
+  const name = (
+    <span 
+      key={language} 
+      className={`${styles.name} ${directionClass}`}
+      style={{ animationDelay: `${staggerDelay}ms` }}
+    >
+      {displayName}
+    </span>
+  )
 
   const sideLabelElement = (
     <span className={styles['side-label']}>{sideLabel}</span>
@@ -68,3 +97,8 @@ export function SideCell({ rikishi, side, rankLevel }: SideCellProps) {
     </div>
   )
 }
+
+// Memoize to prevent re-renders from parent (RankRow) changes.
+// SideCell uses language context internally, so it will still
+// re-render when language changes to update the displayed name.
+export const SideCell = memo(SideCellInner)

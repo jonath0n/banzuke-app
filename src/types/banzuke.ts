@@ -39,6 +39,14 @@ export interface Rikishi {
   heya_name: string
   /** Wrestler's ring name (四股名) */
   shikona: string
+  /** English ring name (for bilingual display) */
+  shikona_en?: string
+  /** Japanese ring name (for bilingual display) */
+  shikona_jp?: string
+  /** English rank name (for bilingual display) */
+  banzuke_name_en?: string
+  /** Japanese rank name (for bilingual display) */
+  banzuke_name_jp?: string
 }
 
 /**

@@ -1,6 +1,7 @@
 :root {
   color-scheme: light dark;
-  --bg: #f8f8f8;
+  --bg: #fdf8f9;
+  --blossom-mist: rgba(255, 180, 200, 0.09);
   --card-bg: #ffffff;
   --text: #1a1a1a;
   --muted: #666666;
@@ -9,10 +10,22 @@
   --border: #e0e0e0;
   --radius: 0.5rem;
   
+  /* Tier-specific colors - warm gradient from gold to red */
+  --tier-yokozuna: #d4af37;
+  --tier-yokozuna-bg: rgba(212, 175, 55, 0.08);
+  --tier-ozeki: #c9a055;
+  --tier-ozeki-bg: rgba(201, 160, 85, 0.06);
+  --tier-sekiwake: #cd7f32;
+  --tier-sekiwake-bg: rgba(205, 127, 50, 0.05);
+  --tier-komusubi: #be5a3a;
+  --tier-komusubi-bg: rgba(190, 90, 58, 0.05);
+  
   /* Shadow system */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.06);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
+  --shadow-glow: 0 0 20px rgba(176, 48, 63, 0.15);
+  --shadow-glow-gold: 0 0 20px rgba(212, 175, 55, 0.2);
   
   /* Aliases for ErrorBoundary compatibility */
   --surface: var(--card-bg);
@@ -21,9 +34,12 @@
   /* Animation timing */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
   
   font-family: "FranSans Solid", "Inter", "Segoe UI", system-ui, -apple-system,
-    BlinkMacSystemFont, sans-serif;
+    BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+    "Yu Gothic", "Noto Sans JP", sans-serif;
 }
 
 @font-face {
@@ -32,11 +48,6 @@
   font-weight: 400;
   font-style: normal;
   font-display: swap;
-}
-
-body.lang-jp {
-  font-family: "M PLUS 1p", "Hiragino Sans", "Hiragino Kaku Gothic ProN",
-    "Yu Gothic", "YuGothic", "Meiryo", "Noto Sans JP", sans-serif;
 }
 
 * {
@@ -58,6 +69,32 @@ body {
   padding: 1rem 1.5rem 2rem;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Breathing background effect */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 140% 100% at 25% 5%, var(--blossom-mist) 0%, transparent 50%),
+    radial-gradient(ellipse 120% 80% at 85% 95%, var(--blossom-mist) 0%, transparent 45%);
+  animation: breathe 12s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes breathe {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1) translate(0, 0);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05) translate(2%, 1%);
+  }
 }
 
 main {
@@ -134,20 +171,135 @@ main {
   }
 }
 
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes gentlePulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 0.95;
+  }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: var(--shadow-sm);
+  }
+  50% {
+    box-shadow: var(--shadow-glow);
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes drawLine {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes floatUp {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #121212;
+    --bg: #131214;
     --card-bg: #1e1e1e;
     --text: #f0f0f0;
     --muted: #999999;
     --border: #333333;
     --accent: #f88496;
     --accent-hover: #ffa5b4;
+    --blossom-mist: rgba(255, 150, 175, 0.07);
+    
+    /* Dark mode tier colors - warm gradient from gold to red */
+    --tier-yokozuna: #e8c547;
+    --tier-yokozuna-bg: rgba(232, 197, 71, 0.1);
+    --tier-ozeki: #dbb668;
+    --tier-ozeki-bg: rgba(219, 182, 104, 0.08);
+    --tier-sekiwake: #daa06d;
+    --tier-sekiwake-bg: rgba(218, 160, 109, 0.08);
+    --tier-komusubi: #d4785a;
+    --tier-komusubi-bg: rgba(212, 120, 90, 0.08);
     
     /* Dark mode shadows with subtle color tint */
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.3);
     --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
     --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4), 0 4px 8px rgba(0, 0, 0, 0.3);
+    --shadow-glow: 0 0 20px rgba(248, 132, 150, 0.2);
+    --shadow-glow-gold: 0 0 25px rgba(232, 197, 71, 0.25);
   }
 }
 
