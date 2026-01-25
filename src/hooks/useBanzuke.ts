@@ -61,6 +61,43 @@ function saveLanguagePreference(language: Language): void {
   }
 }
 
+/** Error types for more specific error handling */
+type FetchErrorType = 'network' | 'http' | 'parse' | 'validation' | 'unknown'
+
+class BanzukeError extends Error {
+  type: FetchErrorType
+
+  constructor(message: string, type: FetchErrorType) {
+    super(message)
+    this.name = 'BanzukeError'
+    this.type = type
+  }
+}
+
+/**
+ * Converts an error to a user-friendly message with context.
+ */
+function getErrorMessage(err: unknown): string {
+  if (err instanceof BanzukeError) {
+    switch (err.type) {
+      case 'network':
+        return 'Network error: Unable to connect. Check your internet connection.'
+      case 'http':
+        return `Server error: ${err.message}`
+      case 'parse':
+        return 'Data error: The server returned invalid data format.'
+      case 'validation':
+        return 'Data error: The banzuke data structure is invalid or corrupted.'
+      default:
+        return err.message
+    }
+  }
+  if (err instanceof Error) {
+    return err.message
+  }
+  return 'An unexpected error occurred.'
+}
+
 /**
  * Fetches data with retry logic for transient failures.
  */
@@ -69,8 +106,8 @@ async function fetchWithRetry(
   options?: RequestInit,
   retries = MAX_RETRIES
 ): Promise<Response> {
-  let lastError: Error | null = null
-  
+  let lastError: BanzukeError | null = null
+
   for (let attempt = 0; attempt < retries; attempt++) {
     try {
       const response = await fetch(url, options)
@@ -79,20 +116,38 @@ async function fetchWithRetry(
       }
       // Don't retry 4xx errors (client errors)
       if (response.status >= 400 && response.status < 500) {
-        throw new Error(`Request failed with ${response.status}`)
+        throw new BanzukeError(
+          `HTTP ${response.status}: ${response.statusText || 'Client error'}`,
+          'http'
+        )
       }
-      lastError = new Error(`Request failed with ${response.status}`)
+      lastError = new BanzukeError(
+        `HTTP ${response.status}: ${response.statusText || 'Server error'}`,
+        'http'
+      )
     } catch (err) {
-      lastError = err instanceof Error ? err : new Error(String(err))
+      if (err instanceof BanzukeError) {
+        lastError = err
+      } else if (err instanceof TypeError && err.message.includes('fetch')) {
+        // Network errors (offline, CORS, etc.)
+        lastError = new BanzukeError('Failed to connect to server', 'network')
+      } else {
+        lastError = new BanzukeError(
+          err instanceof Error ? err.message : String(err),
+          'unknown'
+        )
+      }
     }
-    
+
     // Wait before retrying (exponential backoff)
     if (attempt < retries - 1) {
-      await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS * (attempt + 1)))
+      await new Promise((resolve) =>
+        setTimeout(resolve, RETRY_DELAY_MS * (attempt + 1))
+      )
     }
   }
-  
-  throw lastError || new Error('Fetch failed after retries')
+
+  throw lastError || new BanzukeError('Fetch failed after retries', 'network')
 }
 
 export function useBanzuke(): UseBanzukeResult {
@@ -111,60 +166,99 @@ export function useBanzuke(): UseBanzukeResult {
     updateLanguageContext(normalized)
   }, [])
 
+  // Handle language context updates
+  useEffect(() => {
+    updateLanguageContext(language)
+  }, [language])
+
+  // Handle data fetching and language-based payload selection
   useEffect(() => {
     let cancelled = false
 
     async function loadBanzuke() {
+      // If we have cached data, use it without showing loading state
+      const snapshot = cachedSnapshot.current
+      if (snapshot) {
+        const payload = pickPayloadForLanguage(snapshot, language)
+        if (payload) {
+          setData(payload)
+          setSourceLabel(describeSnapshot(snapshot, language))
+          setError(null)
+          return
+        }
+      }
+
+      // No cached data, need to fetch
       setLoading(true)
       setError(null)
 
       try {
-        if (!cachedSnapshot.current) {
-          const response = await fetchWithRetry(DATA_URL, { cache: 'no-store' })
-          const snapshot = await response.json()
-          
-          // Validate the response structure
-          if (!isValidBanzukeSnapshot(snapshot)) {
-            throw new Error('Invalid banzuke data structure received')
-          }
-          
-          cachedSnapshot.current = snapshot
+        const response = await fetchWithRetry(DATA_URL, { cache: 'no-store' })
+
+        let fetchedSnapshot: unknown
+        try {
+          fetchedSnapshot = await response.json()
+        } catch {
+          throw new BanzukeError('Invalid JSON response from server', 'parse')
         }
 
-        const payload = pickPayloadForLanguage(cachedSnapshot.current!, language)
+        // Validate the response structure
+        if (!isValidBanzukeSnapshot(fetchedSnapshot)) {
+          throw new BanzukeError(
+            'Banzuke data structure is invalid or corrupted',
+            'validation'
+          )
+        }
+
+        // Cache the validated snapshot
+        cachedSnapshot.current = fetchedSnapshot
+
+        const payload = pickPayloadForLanguage(fetchedSnapshot, language)
         if (!payload) {
-          throw new Error(`No payload available for language "${language}"`)
+          throw new BanzukeError(
+            `No data available for language "${language}"`,
+            'validation'
+          )
         }
 
         if (!cancelled) {
           setData(payload)
-          setSourceLabel(describeSnapshot(cachedSnapshot.current!, language))
+          setSourceLabel(describeSnapshot(fetchedSnapshot, language))
           setLoading(false)
         }
       } catch (err) {
-        console.warn('Static snapshot load failed', err)
+        const errorMessage = getErrorMessage(err)
+        console.warn('Static snapshot load failed:', errorMessage, err)
 
         try {
           const fallbackResponse = await fetchWithRetry(SAMPLE_URL)
-          const fallbackPayload = await fallbackResponse.json()
+
+          let fallbackPayload: unknown
+          try {
+            fallbackPayload = await fallbackResponse.json()
+          } catch {
+            throw new BanzukeError('Invalid sample data format', 'parse')
+          }
 
           if (!cancelled) {
-            setData(fallbackPayload)
+            setData(fallbackPayload as BanzukePayload)
             setSourceLabel('Sample data')
-            setError('Static snapshot unavailable. Showing bundled sample data.')
+            setError('Live data unavailable. Showing bundled sample data.')
             setLoading(false)
           }
         } catch (fallbackErr) {
-          console.error('Unable to load bundled sample data', fallbackErr)
+          const fallbackMessage = getErrorMessage(fallbackErr)
+          console.error('Unable to load bundled sample data:', fallbackMessage)
           if (!cancelled) {
-            setError('Could not load the banzuke. Please refresh to try again.')
+            setError(
+              'Could not load the banzuke. Please check your connection and refresh to try again.'
+            )
             setLoading(false)
           }
         }
       }
     }
 
-    updateLanguageContext(language)
     loadBanzuke()
 
     return () => {

@@ -43,38 +43,6 @@ main {
   min-height: 200px;
 }
 
-.status {
-  text-align: center;
-  padding: 3rem 1rem;
-  color: var(--muted);
-}
-
-.status.error {
-  color: #dc2626;
-  background: rgba(220, 38, 38, 0.1);
-  border-radius: var(--radius);
-  margin: 1rem 0;
-  padding: 1rem;
-}
-
-.status.warning {
-  color: #d97706;
-  background: rgba(217, 119, 6, 0.1);
-  border-radius: var(--radius);
-  margin: 1rem 0;
-  padding: 0.75rem 1rem;
-  font-size: 0.875rem;
-}
-
-.source-label {
-  text-align: center;
-  padding: 1rem;
-  margin-top: 1.5rem;
-  font-size: 0.75rem;
-  color: var(--muted);
-  border-top: 1px solid var(--border);
-}
-
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #121212;
