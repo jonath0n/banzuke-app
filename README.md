@@ -23,14 +23,15 @@ src/
   utils/
     formatting.ts              # Date, rank, and URL helpers
 public/
-  latest-banzuke.json          # Static data snapshot
+  latest-banzuke.json          # Static data snapshot (auto-updated)
   sample-data.json             # Fallback for offline use
   assets/
     FranSans-Solid.otf         # Custom font
-cloud-function/
-  index.js                     # Google Cloud Function for auto-refresh
 scripts/
-  fetch-banzuke.mjs            # Local data refresh script
+  fetch-banzuke.mjs            # Fetches latest data from sumo.or.jp
+.github/
+  workflows/
+    refresh-banzuke.yml        # Daily auto-refresh via GitHub Actions
 ```
 
 ## Getting started
@@ -51,32 +52,36 @@ Then visit http://localhost:5173
 npm run build
 ```
 
-This outputs to `dist/`. Deploy this folder to any static host (GitHub Pages, Netlify, Vercel, Cloud Storage, etc.).
+This outputs to `dist/`. Deploy this folder to any static host (GitHub Pages, Netlify, Vercel, etc.).
 
-## Refreshing banzuke data
+## Data refresh
 
-The UI reads from `public/latest-banzuke.json`. To update it locally:
+### Automatic (GitHub Actions)
+
+The banzuke data is automatically refreshed daily at 6:00 AM JST via GitHub Actions. The workflow:
+
+1. Fetches both English and Japanese data from sumo.or.jp
+2. Commits the updated `public/latest-banzuke.json` if changed
+3. Your static host will pick up the changes on next deploy
+
+You can also trigger a manual refresh from the GitHub Actions tab.
+
+### Manual (local)
+
+To refresh the data locally:
 
 ```sh
 npm run fetch-remote
 ```
 
-## Cloud automation
-
-Deploy the Cloud Function in `cloud-function/` to automatically refresh the data on a schedule. See the deployment instructions in that directory.
-
-### Environment variables for Cloud Function
-
-- `GITHUB_TOKEN` – GitHub token with `repo:contents` scope
-- `GITHUB_REPO` – `owner/repo` format
-- `GITHUB_BRANCH` – Branch to update (defaults to `main`)
-- `GITHUB_DATA_PATH` – Path to JSON file (defaults to `public/latest-banzuke.json`)
+This fetches both EN and JP banzuke and saves to `public/latest-banzuke.json`.
 
 ## Tech stack
 
 - **React 18** with TypeScript
 - **Vite** for development and builds
 - **CSS Modules** for scoped component styles
+- **GitHub Actions** for automated data refresh
 - No runtime dependencies beyond React
 
 ## Legacy files
