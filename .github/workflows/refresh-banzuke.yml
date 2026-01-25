@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
     
     steps:
       - uses: actions/checkout@v4
@@ -22,14 +23,15 @@ jobs:
       - name: Fetch banzuke data
         run: node scripts/fetch-banzuke.mjs
       
-      - name: Commit and push if changed
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add public/latest-banzuke.json
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "chore: refresh banzuke data"
-            git push
-          fi
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: refresh banzuke data"
+          title: "chore: refresh banzuke data"
+          body: |
+            Automated banzuke data refresh.
+            
+            This PR was created automatically by the refresh-banzuke workflow.
+          branch: refresh-banzuke-data
+          delete-branch: true
