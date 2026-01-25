@@ -6,11 +6,11 @@ import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary'
 import styles from './App.module.css'
 
 function App() {
-  const { data, loading, error, sourceLabel } = useBanzuke()
+  const { data, loading, error, sourceLabel, language, setLanguage } = useBanzuke()
 
   return (
     <ErrorBoundary>
-      <Hero data={data} />
+      <Hero data={data} language={language} onLanguageChange={setLanguage} />
       <main>
         {loading && (
           <div role="status" className={styles.status}>

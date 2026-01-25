@@ -1,4 +1,4 @@
-import { useState, ReactNode } from 'react'
+import { useState } from 'react'
 import type { Rikishi, RankLevel } from '../../types/banzuke'
 import { buildPhotoUrl } from '../../utils/formatting'
 import styles from './SideCell.module.css'
@@ -43,19 +43,51 @@ export function SideCell({ rikishi, side, rankLevel }: SideCellProps) {
     <span className={styles['side-label']}>{sideLabel}</span>
   )
 
+  const ariaLabel = rikishi
+    ? `${sideLabel} side ${rikishi.shikona || 'wrestler'}${
+        rikishi.heya_name ? ` from ${rikishi.heya_name} stable` : ''
+      }`
+    : `${sideLabel} side vacant`
+
   // East: name then avatar; West: avatar then name
-  const infoContent: ReactNode[] = isEast ? [name, avatar] : [avatar, name]
-
-  const info = <span className={styles.info}>{infoContent}</span>
-
-  // East: badge, label, info; West: info, label, badge (mirrored layout)
-  const content: ReactNode[] = isEast
-    ? [badge, sideLabelElement, info]
-    : [info, sideLabelElement, badge]
+  const info = (
+    <span className={styles.info}>
+      {isEast ? (
+        <>
+          {name}
+          {avatar}
+        </>
+      ) : (
+        <>
+          {avatar}
+          {name}
+        </>
+      )}
+    </span>
+  )
 
   return (
-    <div className={styles.cell} data-side={side} data-rank-level={rankLevel}>
-      {content}
+    <div
+      className={styles.cell}
+      data-side={side}
+      data-rank-level={rankLevel}
+      aria-label={ariaLabel}
+      role="group"
+      tabIndex={rikishi ? 0 : -1}
+    >
+      {isEast ? (
+        <>
+          {badge}
+          {sideLabelElement}
+          {info}
+        </>
+      ) : (
+        <>
+          {info}
+          {sideLabelElement}
+          {badge}
+        </>
+      )}
     </div>
   )
 }
