@@ -1,6 +1,10 @@
+import { useState } from 'react'
 import type { Rikishi, RankLevel } from '../../types/banzuke'
 import { buildPhotoUrl } from '../../utils/formatting'
 import styles from './SideCell.module.css'
+
+/** Size of wrestler avatar images in pixels */
+const AVATAR_SIZE = 44
 
 interface SideCellProps {
   rikishi: Rikishi | null
@@ -9,7 +13,12 @@ interface SideCellProps {
 }
 
 export function SideCell({ rikishi, side, rankLevel }: SideCellProps) {
+  const [imageError, setImageError] = useState(false)
   const sideLabel = side === 'west' ? 'W' : 'E'
+
+  const handleImageError = () => {
+    setImageError(true)
+  }
 
   const renderBadge = () => {
     if (!rikishi?.rank_new) return null
@@ -17,14 +26,15 @@ export function SideCell({ rikishi, side, rankLevel }: SideCellProps) {
   }
 
   const renderAvatar = () => {
-    if (!rikishi?.photo) return null
+    if (!rikishi?.photo || imageError) return null
     return (
       <img
         src={buildPhotoUrl(rikishi.photo)}
-        alt={`${rikishi.shikona || 'Rikishi'} portrait`}
+        alt={`Portrait of ${rikishi.shikona || 'wrestler'} from ${rikishi.heya_name || 'unknown'} stable`}
         loading="lazy"
-        width={48}
-        height={48}
+        width={AVATAR_SIZE}
+        height={AVATAR_SIZE}
+        onError={handleImageError}
       />
     )
   }
