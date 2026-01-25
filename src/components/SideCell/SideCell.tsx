@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { memo, useState } from 'react'
 import type { Rikishi, RankLevel } from '../../types/banzuke'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { buildPhotoUrl } from '../../utils/formatting'
@@ -33,9 +33,9 @@ function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0 }: SideCellProps
   const [imageLoaded, setImageLoaded] = useState(false)
   const isEast = side === 'east'
   const sideLabel = isEast ? 'E' : 'W'
-  const nameRef = useRef<HTMLSpanElement | null>(null)
-  const sideLabelRef = useRef<HTMLSpanElement | null>(null)
-  const hasLoggedRef = useRef(false)
+  
+  // Stagger delay for language switch animation (20ms per row, max 400ms)
+  const staggerDelay = Math.min(rowIndex * 20, 400)
 
   const handleImageError = () => {
     setImageError(true)
@@ -65,85 +65,34 @@ function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0 }: SideCellProps
     </span>
   ) : null
 
+  const displayName = getDisplayName(rikishi, language)
+  const directionClass = language === 'jp' ? styles['name-rtl'] : styles['name-ltr']
   const name = (
-    <span className={styles.name} ref={nameRef}>
-      {rikishi?.shikona || '—'}
+    <span 
+      key={language} 
+      className={`${styles.name} ${directionClass}`}
+      style={{ animationDelay: `${staggerDelay}ms` }}
+    >
+      {displayName}
     </span>
   )
 
   const sideLabelElement = (
-    <span className={styles['side-label']} ref={sideLabelRef}>
-      {sideLabel}
-    </span>
+    <span className={styles['side-label']}>{sideLabel}</span>
   )
-
-  const ariaLabel = rikishi
-    ? `${sideLabel} side ${rikishi.shikona || 'wrestler'}${
-        rikishi.heya_name ? ` from ${rikishi.heya_name} stable` : ''
-      }`
-    : `${sideLabel} side vacant`
 
   // East: name then avatar; West: avatar then name
-  const info = (
-    <span className={styles.info}>
-      {isEast ? (
-        <>
-          {name}
-          {avatar}
-        </>
-      ) : (
-        <>
-          {avatar}
-          {name}
-        </>
-      )}
-    </span>
-  )
+  const infoContent = isEast ? [name, avatar] : [avatar, name]
+  const info = <span className={styles.info}>{infoContent}</span>
 
-  useEffect(() => {
-    if (typeof window === 'undefined' || hasLoggedRef.current) return
-
-    const nameFont = nameRef.current
-      ? window.getComputedStyle(nameRef.current).fontFamily
-      : null
-    const sideFont = sideLabelRef.current
-      ? window.getComputedStyle(sideLabelRef.current).fontFamily
-      : null
-
-    if (!nameFont && !sideFont) return
-    hasLoggedRef.current = true
-
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/8f13d096-f5b3-4a25-b1f7-9fa94764e743',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H5',location:'SideCell.tsx:useEffect:nameFont',message:'Computed font-family for rikishi name',data:{side,name:rikishi?.shikona || null,fontFamily:nameFont},timestamp:Date.now()})}).catch(()=>{});
-    // #endregion
-
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/8f13d096-f5b3-4a25-b1f7-9fa94764e743',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H5',location:'SideCell.tsx:useEffect:sideLabelFont',message:'Computed font-family for side label',data:{side,label:sideLabel,fontFamily:sideFont},timestamp:Date.now()})}).catch(()=>{});
-    // #endregion
-  }, [rikishi, side, sideLabel])
+  // East: badge, label, info; West: info, label, badge (mirrored layout)
+  const content = isEast
+    ? [badge, sideLabelElement, info]
+    : [info, sideLabelElement, badge]
 
   return (
-    <div
-      className={styles.cell}
-      data-side={side}
-      data-rank-level={rankLevel}
-      aria-label={ariaLabel}
-      role="group"
-      tabIndex={rikishi ? 0 : -1}
-    >
-      {isEast ? (
-        <>
-          {badge}
-          {sideLabelElement}
-          {info}
-        </>
-      ) : (
-        <>
-          {info}
-          {sideLabelElement}
-          {badge}
-        </>
-      )}
+    <div className={styles.cell} data-side={side} data-rank-level={rankLevel}>
+      {content}
     </div>
   )
 }

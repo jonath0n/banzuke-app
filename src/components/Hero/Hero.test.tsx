@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { BanzukePayload } from '../../types/banzuke'
+import { LanguageProvider } from '../../contexts/LanguageContext'
 import { Hero } from './Hero'
 
 const payload: BanzukePayload = {
@@ -38,7 +39,11 @@ const payload: BanzukePayload = {
 
 describe('Hero', () => {
   it('renders the title and basho info', () => {
-    render(<Hero data={payload} language="en" onLanguageChange={() => undefined} />)
+    render(
+      <LanguageProvider>
+        <Hero data={payload} />
+      </LanguageProvider>
+    )
 
     expect(screen.getByText('Grand Sumo Banzuke')).toBeInTheDocument()
     expect(screen.getByText('Hatsu (Makuuchi)')).toBeInTheDocument()

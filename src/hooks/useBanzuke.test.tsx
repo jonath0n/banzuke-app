@@ -75,7 +75,7 @@ describe('useBanzuke', () => {
   it('loads the snapshot and sets data', async () => {
     const payload = createPayload('Hatsu')
     const snapshot = createSnapshot(payload)
-    const response = { ok: true, json: vi.fn().mockResolvedValue(snapshot) } as Response
+    const response = { ok: true, json: vi.fn().mockResolvedValue(snapshot) } as unknown as Response
     const fetchSpy = vi.fn().mockResolvedValue(response)
     vi.stubGlobal('fetch', fetchSpy)
 
@@ -92,12 +92,12 @@ describe('useBanzuke', () => {
     const invalidSnapshotResponse = {
       ok: true,
       json: vi.fn().mockResolvedValue({ bad: true }),
-    } as Response
+    } as unknown as Response
     const samplePayload = createPayload('Sample Basho')
     const sampleResponse = {
       ok: true,
       json: vi.fn().mockResolvedValue(samplePayload),
-    } as Response
+    } as unknown as Response
     const fetchSpy = vi
       .fn()
       .mockResolvedValueOnce(invalidSnapshotResponse)
