@@ -1,4 +1,4 @@
-.errorContainer {
+.error-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -35,7 +35,7 @@
   font-size: 0.875rem;
 }
 
-.errorText {
+.error-text {
   margin-top: 0.5rem;
   padding: 0.75rem;
   background: var(--bg);
@@ -46,7 +46,7 @@
   word-break: break-word;
 }
 
-.retryButton {
+.retry-button {
   padding: 0.5rem 1.5rem;
   font-size: 0.875rem;
   font-weight: 500;
@@ -58,11 +58,11 @@
   transition: background 0.2s;
 }
 
-.retryButton:hover {
+.retry-button:hover {
   background: var(--accent-hover, #1d4ed8);
 }
 
-.retryButton:focus-visible {
+.retry-button:focus-visible {
   outline: 2px solid var(--accent, #2563eb);
   outline-offset: 2px;
 }

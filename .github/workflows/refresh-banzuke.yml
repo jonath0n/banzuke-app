@@ -12,26 +12,95 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      
+
       - name: Fetch banzuke data
-        run: node scripts/fetch-banzuke.mjs
-      
+        id: fetch
+        run: |
+          set -e
+          echo "Fetching banzuke data..."
+          if node scripts/fetch-banzuke.mjs; then
+            echo "fetch_success=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "fetch_success=false" >> "$GITHUB_OUTPUT"
+            echo "::error::Failed to fetch banzuke data"
+            exit 1
+          fi
+
+      - name: Validate fetched data
+        if: steps.fetch.outputs.fetch_success == 'true'
+        id: validate
+        run: |
+          set -e
+          DATA_FILE="public/latest-banzuke.json"
+          
+          # Check if file exists
+          if [ ! -f "$DATA_FILE" ]; then
+            echo "::error::Data file not found: $DATA_FILE"
+            echo "valid=false" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+          
+          # Check if file is valid JSON and has expected structure
+          if ! node -e "
+            const fs = require('fs');
+            const data = JSON.parse(fs.readFileSync('$DATA_FILE', 'utf8'));
+            if (!data.payloads || !data.fetchedAt) {
+              console.error('Invalid data structure: missing payloads or fetchedAt');
+              process.exit(1);
+            }
+            console.log('Data validation passed');
+            console.log('Fetched at:', data.fetchedAt);
+            console.log('Available payloads:', Object.keys(data.payloads).join(', '));
+          "; then
+            echo "::error::Data validation failed"
+            echo "valid=false" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+          
+          echo "valid=true" >> "$GITHUB_OUTPUT"
+
+      - name: Check for changes
+        if: steps.validate.outputs.valid == 'true'
+        id: changes
+        run: |
+          if git diff --quiet public/latest-banzuke.json; then
+            echo "No changes detected in banzuke data"
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Changes detected in banzuke data"
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Create Pull Request
+        if: steps.changes.outputs.has_changes == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore: refresh banzuke data"
-          title: "chore: refresh banzuke data"
+          commit-message: 'chore: refresh banzuke data'
+          title: 'chore: refresh banzuke data'
           body: |
             Automated banzuke data refresh.
-            
+
             This PR was created automatically by the refresh-banzuke workflow.
+
+            **Validation:** Data structure validated successfully.
           branch: refresh-banzuke-data
           delete-branch: true
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Workflow Summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Step | Status |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|------|--------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Fetch | ${{ steps.fetch.outputs.fetch_success || 'failed' }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Validation | ${{ steps.validate.outputs.valid || 'skipped' }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Changes | ${{ steps.changes.outputs.has_changes || 'skipped' }} |" >> "$GITHUB_STEP_SUMMARY"

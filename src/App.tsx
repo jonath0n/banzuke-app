@@ -3,6 +3,7 @@ import { Hero } from './components/Hero/Hero'
 import { BanzukeGrid } from './components/BanzukeGrid/BanzukeGrid'
 import { Footer } from './components/Footer/Footer'
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary'
+import styles from './App.module.css'
 
 function App() {
   const { data, loading, error, sourceLabel } = useBanzuke()
@@ -12,17 +13,17 @@ function App() {
       <Hero data={data} />
       <main>
         {loading && (
-          <div role="status" className="status">
+          <div role="status" className={styles.status}>
             Loading the banzuke…
           </div>
         )}
         {error && !data && (
-          <div role="alert" className="status error">
+          <div role="alert" className={`${styles.status} ${styles.error}`}>
             {error}
           </div>
         )}
         {error && data && (
-          <div role="status" className="status warning">
+          <div role="status" className={`${styles.status} ${styles.warning}`}>
             {error}
           </div>
         )}
@@ -32,7 +33,7 @@ function App() {
           </ErrorBoundary>
         )}
         {sourceLabel && (
-          <div className="source-label" aria-label="Data source information">
+          <div className={styles['source-label']} aria-label="Data source information">
             {sourceLabel}
           </div>
         )}
