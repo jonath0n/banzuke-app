@@ -1,116 +1,84 @@
 # banzuke-app
 
-Simple, dependency-free front-end that consumes the official Japan Sumo Association
-banzuke endpoint and renders the current makuuchi division. The goal is to keep it
-portable so it can live on GitHub Pages, Cloud Storage, Netlify, or any other static host.
+React + TypeScript viewer for the official Japan Sumo Association banzuke endpoint.
+Renders the current makuuchi division with a modern, responsive UI.
 
 ## Project structure
 
 ```
+src/
+  main.tsx                     # React entry point
+  App.tsx                      # Main app component
+  index.css                    # Global styles & CSS variables
+  components/
+    Hero/                      # Header with basho info
+    BanzukeGrid/               # Container for rank rows
+    RankRow/                   # Single rank row (East | Label | West)
+    SideCell/                  # Wrestler cell with photo & name
+    Footer/                    # Attribution
+  hooks/
+    useBanzuke.ts              # Data fetching hook
+  types/
+    banzuke.ts                 # TypeScript interfaces
+  utils/
+    formatting.ts              # Date, rank, and URL helpers
 public/
-  index.html        # UI markup + filter controls
-  main.js           # Fetches live JSON and renders cards
-  styles.css        # Minimal styling (works in light & dark mode)
-  sample-data.json  # Bundled fallback so the page works offline
-scripts/
-  fetch-banzuke.mjs # Node script that snapshots the API for caching
+  latest-banzuke.json          # Static data snapshot
+  sample-data.json             # Fallback for offline use
+  assets/
+    FranSans-Solid.otf         # Custom font
 cloud-function/
-  index.js          # Google Cloud Function handler (HTTP trigger)
-  package.json
+  index.js                     # Google Cloud Function for auto-refresh
+scripts/
+  fetch-banzuke.mjs            # Local data refresh script
 ```
 
-## Local development
-
-Because everything is just static assets, you can preview it with any web server:
+## Getting started
 
 ```sh
-# simplest option using Python
-cd public
-python3 -m http.server 4173
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
 ```
 
-Then visit <http://localhost:4173>. The page tries to fetch the live API; if that fails
-(e.g., during offline work) it falls back to `sample-data.json`.
+Then visit http://localhost:5173
 
-### Refreshing the cached JSON
-
-If you need a local snapshot of the live API (for tests, diffing, or bundling), run:
+## Building for production
 
 ```sh
-node scripts/fetch-banzuke.mjs
+npm run build
 ```
 
-That writes `public/latest-banzuke.json` with a timestamp.
+This outputs to `dist/`. Deploy this folder to any static host (GitHub Pages, Netlify, Vercel, Cloud Storage, etc.).
 
-## Hosting options
+## Refreshing banzuke data
 
-* **GitHub Pages** – push `public/` to your repo and enable Pages (Source → `main` → `/public`).
-* **Static site hosts** – drag the `public` folder into Netlify/Vercel or upload to Cloud
-  Storage with "Static website" enabled.
-* **Any CDN or bucket** – the assets are self-contained; there is no build step.
+The UI reads from `public/latest-banzuke.json`. To update it locally:
 
-### Language toggle & custom endpoints
-
-The UI supports an English ⇄ 日本語 toggle. The Japanese endpoint on sumo.or.jp does not
-send permissive CORS headers, so the static app retries via a public proxy for local/dev
-use. For production, deploy the Cloud Function (or any trusted proxy) and point the UI at
-it so both languages can be fetched securely. You can override the endpoint by defining a
-global before `main.js` loads:
-
-```html
-<script>
-  window.BANZUKE_API_URL = "https://your-cloud-function-url";
-</script>
-<script type="module" src="./main.js"></script>
+```sh
+npm run fetch-remote
 ```
-
-or by appending `?api=https://your-cloud-function-url` to the page URL. The proxy should
-accept `?lang=en|jp` (the provided Cloud Function already does this).
 
 ## Cloud automation
 
-If you want the data refresh to run on a schedule without relying on a laptop, deploy the
-HTTP Cloud Function in `cloud-function/` and combine it with Cloud Scheduler.
+Deploy the Cloud Function in `cloud-function/` to automatically refresh the data on a schedule. See the deployment instructions in that directory.
 
-### Deploying the Cloud Function
+### Environment variables for Cloud Function
 
-```sh
-cd cloud-function
-# deploy to Google Cloud Functions (2nd gen) with Node 20 runtime
- gcloud functions deploy fetchBanzuke \
-  --gen2 \
-  --runtime=nodejs20 \
-  --region=us-central1 \
-  --entry-point=fetchBanzuke \
-  --trigger-http \
-  --allow-unauthenticated
-```
+- `GITHUB_TOKEN` – GitHub token with `repo:contents` scope
+- `GITHUB_REPO` – `owner/repo` format
+- `GITHUB_BRANCH` – Branch to update (defaults to `main`)
+- `GITHUB_DATA_PATH` – Path to JSON file (defaults to `public/latest-banzuke.json`)
 
-The function simply proxies the official API, adds cache headers, and returns the JSON.
-You can now point the front-end at your function URL if you want to avoid direct calls to
-sumo.or.jp, or use the endpoint as a trusted source for other apps.
+## Tech stack
 
-### Scheduling refreshes
+- **React 18** with TypeScript
+- **Vite** for development and builds
+- **CSS Modules** for scoped component styles
+- No runtime dependencies beyond React
 
-To hit the function on a cadence (and optionally write the payload to Cloud Storage or a DB):
+## Legacy files
 
-```sh
-# this example pings the function every day at 06:00 JST
- gcloud scheduler jobs create http banzuke-refresh \
-  --schedule="0 6 * * *" \
-  --time-zone="Asia/Tokyo" \
-  --uri="https://YOUR_FUNCTION_URL" \
-  --http-method=GET
-```
-
-If you want to persist each snapshot, extend `cloud-function/index.js` to write to
-Cloud Storage or Firestore; the scaffolding is there so you can add that logic without
-rewriting the UI.
-
-## Next steps
-
-* Style refinements – tweak `public/styles.css` to better match your branding.
-* Additional divisions – the same API exposes juryo, makushita, etc. Add dropdowns or tabs
-  to let users explore other ranks.
-* GitHub Actions – run `node scripts/fetch-banzuke.mjs` on a schedule, commit the new JSON,
-  and push so GitHub Pages always serves the freshest data.
+The `public/` folder contains old vanilla JS files (`index.html`, `main.js`, `styles.css`) from a previous version. These are not used by the React app and can be removed.
