@@ -14,9 +14,7 @@ export function Hero({ data }: HeroProps) {
   const start = formatDate(info?.start_date)
   const end = formatDate(info?.end_date)
   const bashoName = data?.basho_name || '—'
-  const division = data?.Kakuzuke
-    ? ` (${data.Kakuzuke.replace(/&nbsp;/g, ' ')})`
-    : ''
+  const division = data?.Kakuzuke ? ` (${data.Kakuzuke.replace(/&nbsp;/g, ' ')})` : ''
 
   return (
     <header className={styles.hero}>

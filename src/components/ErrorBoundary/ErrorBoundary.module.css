@@ -67,7 +67,7 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: 
+  transition:
     background 200ms ease,
     transform 200ms var(--ease-out-expo),
     box-shadow 200ms var(--ease-out-expo);

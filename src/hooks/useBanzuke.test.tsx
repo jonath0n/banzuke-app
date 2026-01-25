@@ -109,9 +109,7 @@ describe('useBanzuke', () => {
     await waitFor(() => expect(result.current.loading).toBe(false))
 
     expect(result.current.data?.basho_name).toBe('Sample Basho')
-    expect(result.current.error).toBe(
-      'Live data unavailable. Showing bundled sample data.'
-    )
+    expect(result.current.error).toBe('Live data unavailable. Showing bundled sample data.')
     expect(warnSpy).toHaveBeenCalled()
   })
 

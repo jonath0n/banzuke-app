@@ -28,8 +28,8 @@ export function LanguageToggle({ language, onLanguageChange }: LanguageTogglePro
       >
         日本
       </button>
-      <span 
-        className={styles.slider} 
+      <span
+        className={styles.slider}
         style={{ transform: isEnglish ? 'translateX(0)' : 'translateX(100%)' }}
         aria-hidden="true"
       />

@@ -8,7 +8,7 @@ export function formatDate(value: string | undefined): string {
   if (!value) return ''
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return value
-  
+
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, '0')
   const day = String(date.getDate()).padStart(2, '0')
@@ -22,18 +22,17 @@ export function formatDateTime(value: string | undefined): string {
   if (!value) return '—'
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return value
-  
+
   const dateStr = formatDate(value)
   const hours = date.getHours()
   const minutes = date.getMinutes()
-  
+
   // Format time as simple "6am" or "2:30pm"
   const period = hours >= 12 ? 'pm' : 'am'
   const hour12 = hours % 12 || 12
-  const timeStr = minutes === 0 
-    ? `${hour12}${period}`
-    : `${hour12}:${String(minutes).padStart(2, '0')}${period}`
-  
+  const timeStr =
+    minutes === 0 ? `${hour12}${period}` : `${hour12}:${String(minutes).padStart(2, '0')}${period}`
+
   return `${dateStr}, ${timeStr}`
 }
 
@@ -43,12 +42,11 @@ export function formatDateTime(value: string | undefined): string {
 export function formatRankLabel(group: RankGroup): string {
   const sample = group.east || group.west
   if (!sample) return group.name || ''
-  
+
   const rankCode = Number(sample.rank)
-  const number = sample.number != null && sample.number !== ''
-    ? String(sample.number)
-    : sample.numberKanji || ''
-  
+  const number =
+    sample.number != null && sample.number !== '' ? String(sample.number) : sample.numberKanji || ''
+
   return getRankLabel(rankCode, number) || group.name || ''
 }
 

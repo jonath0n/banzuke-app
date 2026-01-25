@@ -18,10 +18,7 @@ function SkeletonRow({ index }: { index: number }) {
   const westNameClass = nameClasses[(index + 1) % 3]
 
   return (
-    <div
-      className={styles['skeleton-row']}
-      style={{ '--row-index': index } as React.CSSProperties}
-    >
+    <div className={styles['skeleton-row']} style={{ '--row-index': index } as React.CSSProperties}>
       <div className={styles['skeleton-inner']}>
         <div className={styles['skeleton-cell']} data-side="east">
           <div className={`${styles['skeleton-name']} ${styles[eastNameClass]}`} />
@@ -50,9 +47,7 @@ export function BanzukeGridSkeleton() {
 
 export function BanzukeGrid({ rows }: BanzukeGridProps) {
   // Filter out empty entries and sort by rank
-  const cleanRows = rows.filter(
-    (entry) => entry && entry.shikona && entry.shikona.trim()
-  )
+  const cleanRows = rows.filter((entry) => entry && entry.shikona && entry.shikona.trim())
   cleanRows.sort((a, b) => Number(a.sort) - Number(b.sort))
 
   const grouped = groupRowsByRank(cleanRows)

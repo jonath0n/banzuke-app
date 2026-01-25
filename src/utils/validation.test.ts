@@ -115,11 +115,7 @@ describe('validation helpers', () => {
   })
 
   it('filters invalid or empty rikishi entries', () => {
-    const rows = [
-      baseRikishi,
-      { shikona: '', ew: 1 },
-      { shikona: '\u2014', ew: 1 },
-    ]
+    const rows = [baseRikishi, { shikona: '', ew: 1 }, { shikona: '\u2014', ew: 1 }]
 
     expect(filterValidRikishi(rows)).toHaveLength(1)
   })

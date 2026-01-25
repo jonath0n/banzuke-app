@@ -28,8 +28,6 @@ describe('SideCell', () => {
     render(<SideCell rikishi={rikishi} side="east" rankLevel="yokozuna" />)
 
     expect(screen.getByText('Test')).toBeInTheDocument()
-    expect(
-      screen.getByAltText('Portrait of Test from Test stable')
-    ).toBeInTheDocument()
+    expect(screen.getByAltText('Portrait of Test from Test stable')).toBeInTheDocument()
   })
 })

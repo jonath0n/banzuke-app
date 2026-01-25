@@ -82,12 +82,7 @@
   left: -100%;
   width: 50%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.05),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
   animation: shimmer 2s ease-in-out infinite;
   animation-delay: calc(var(--row-index, 0) * 100ms);
 }
@@ -105,11 +100,11 @@
   gap: 0.5rem;
 }
 
-.skeleton-cell[data-side="east"] {
+.skeleton-cell[data-side='east'] {
   justify-content: flex-end;
 }
 
-.skeleton-cell[data-side="west"] {
+.skeleton-cell[data-side='west'] {
   justify-content: flex-start;
 }
 
@@ -200,12 +195,7 @@
 
 @media (prefers-color-scheme: dark) {
   .skeleton-row::after {
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.02),
-      transparent
-    );
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.02), transparent);
   }
 }
 
@@ -214,7 +204,7 @@
   .skeleton-row {
     animation: fadeIn 200ms ease forwards;
   }
-  
+
   .skeleton-row::after,
   .skeleton-avatar,
   .skeleton-name,

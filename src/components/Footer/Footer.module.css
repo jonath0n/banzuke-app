@@ -14,7 +14,9 @@
   margin-top: 2.5rem;
   padding-top: 1.25rem;
   border-top: 1px solid var(--border);
-  font-family: "M PLUS 1p", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  font-family:
+    'M PLUS 1p', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', system-ui,
+    sans-serif;
   font-size: 0.75rem;
   color: var(--muted);
   display: flex;
@@ -131,7 +133,7 @@
   .footer a::after {
     background: linear-gradient(90deg, var(--accent), var(--accent-hover));
   }
-  
+
   .disclaimer {
     border-color: var(--border);
   }
@@ -146,7 +148,7 @@
     animation: none;
     opacity: 1;
   }
-  
+
   .footer a::after {
     transition: none;
   }

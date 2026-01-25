@@ -10,7 +10,7 @@
   --accent-hover: #8a252f;
   --border: #e0e0e0;
   --radius: 0.5rem;
-  
+
   /* Tier-specific colors - warm gradient from gold to red */
   --tier-yokozuna: #d4af37;
   --tier-yokozuna-bg: rgba(212, 175, 55, 0.08);
@@ -20,42 +20,62 @@
   --tier-sekiwake-bg: rgba(205, 127, 50, 0.05);
   --tier-komusubi: #be5a3a;
   --tier-komusubi-bg: rgba(190, 90, 58, 0.05);
-  
+
   /* Shadow system */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.06);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
   --shadow-glow: 0 0 20px rgba(176, 48, 63, 0.15);
   --shadow-glow-gold: 0 0 20px rgba(212, 175, 55, 0.2);
-  
+
   /* Aliases for ErrorBoundary compatibility */
   --surface: var(--card-bg);
   --text-muted: var(--muted);
-  
+
   /* Animation timing */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  
-  font-family: "FranSans Solid", "Inter", "Segoe UI", system-ui, -apple-system,
-    BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN",
-    "Yu Gothic", "Noto Sans JP", sans-serif;
+
+  font-family:
+    'FranSans Solid',
+    'Inter',
+    'Segoe UI',
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Hiragino Sans',
+    'Hiragino Kaku Gothic ProN',
+    'Yu Gothic',
+    'Noto Sans JP',
+    sans-serif;
 }
 
 @font-face {
-  font-family: "FranSans Solid";
-  src: url("/assets/FranSans-Solid.otf") format("opentype");
+  font-family: 'FranSans Solid';
+  src: url('/assets/FranSans-Solid.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 body.lang-jp {
-  font-family: "FranSans Solid", "Inter", "Segoe UI", system-ui, -apple-system,
-    BlinkMacSystemFont, "M PLUS 1p", "Hiragino Sans",
-    "Hiragino Kaku Gothic ProN", "Yu Gothic", "YuGothic", "Meiryo",
-    "Noto Sans JP", sans-serif;
+  font-family:
+    'FranSans Solid',
+    'Inter',
+    'Segoe UI',
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'M PLUS 1p',
+    'Hiragino Sans',
+    'Hiragino Kaku Gothic ProN',
+    'Yu Gothic',
+    'YuGothic',
+    'Meiryo',
+    'Noto Sans JP',
+    sans-serif;
 }
 
 * {
@@ -95,7 +115,8 @@ body::before {
 }
 
 @keyframes breathe {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
     transform: scale(1) translate(0, 0);
   }
@@ -171,7 +192,8 @@ main {
 }
 
 @keyframes subtlePulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -230,7 +252,8 @@ main {
 }
 
 @keyframes gentlePulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     opacity: 1;
   }
@@ -241,7 +264,8 @@ main {
 }
 
 @keyframes glowPulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: var(--shadow-sm);
   }
   50% {
@@ -292,7 +316,7 @@ main {
     --accent: #f88496;
     --accent-hover: #ffa5b4;
     --blossom-mist: rgba(255, 150, 175, 0.07);
-    
+
     /* Dark mode tier colors - warm gradient from gold to red */
     --tier-yokozuna: #e8c547;
     --tier-yokozuna-bg: rgba(232, 197, 71, 0.1);
@@ -302,7 +326,7 @@ main {
     --tier-sekiwake-bg: rgba(218, 160, 109, 0.08);
     --tier-komusubi: #d4785a;
     --tier-komusubi-bg: rgba(212, 120, 90, 0.08);
-    
+
     /* Dark mode shadows with subtle color tint */
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.3);
     --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
