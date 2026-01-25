@@ -97,18 +97,13 @@ async function fetchWithRetry(
         // Network errors (offline, CORS, etc.)
         lastError = new BanzukeError('Failed to connect to server', 'network')
       } else {
-        lastError = new BanzukeError(
-          err instanceof Error ? err.message : String(err),
-          'unknown'
-        )
+        lastError = new BanzukeError(err instanceof Error ? err.message : String(err), 'unknown')
       }
     }
 
     // Wait before retrying (exponential backoff)
     if (attempt < retries - 1 && lastError?.type !== 'abort') {
-      await new Promise((resolve) =>
-        setTimeout(resolve, RETRY_DELAY_MS * (attempt + 1))
-      )
+      await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS * (attempt + 1)))
     }
   }
 
@@ -122,7 +117,7 @@ async function fetchWithRetry(
 function mergePayloads(snapshot: BanzukeSnapshot): BanzukePayload | null {
   const enPayload = snapshot.payloads?.['en']
   const jpPayload = snapshot.payloads?.['jp']
-  
+
   // Use English as base, fall back to Japanese, then legacy payload
   const basePayload = enPayload || jpPayload || snapshot.payload
   if (!basePayload) return null
@@ -161,9 +156,7 @@ function describeSnapshot(snapshot: BanzukeSnapshot): string {
   if (snapshot?.fetchedAt) {
     try {
       const date = new Date(snapshot.fetchedAt)
-      parts.push(
-        Number.isNaN(date.getTime()) ? snapshot.fetchedAt : date.toLocaleString()
-      )
+      parts.push(Number.isNaN(date.getTime()) ? snapshot.fetchedAt : date.toLocaleString())
     } catch {
       parts.push(snapshot.fetchedAt)
     }
@@ -200,18 +193,12 @@ export function useBanzuke(): UseBanzukeResult {
 
         // Validate the response structure
         if (!isValidBanzukeSnapshot(fetchedSnapshot)) {
-          throw new BanzukeError(
-            'Banzuke data structure is invalid or corrupted',
-            'validation'
-          )
+          throw new BanzukeError('Banzuke data structure is invalid or corrupted', 'validation')
         }
 
         const payload = mergePayloads(fetchedSnapshot)
         if (!payload) {
-          throw new BanzukeError(
-            'No data available in snapshot',
-            'validation'
-          )
+          throw new BanzukeError('No data available in snapshot', 'validation')
         }
 
         if (!cancelled) {

@@ -68,16 +68,10 @@ export class ErrorBoundary extends Component<Props, State> {
           {this.state.error && (
             <details className={styles.details}>
               <summary>Error details</summary>
-              <pre className={styles['error-text']}>
-                {this.state.error.message}
-              </pre>
+              <pre className={styles['error-text']}>{this.state.error.message}</pre>
             </details>
           )}
-          <button
-            className={styles['retry-button']}
-            onClick={this.handleRetry}
-            type="button"
-          >
+          <button className={styles['retry-button']} onClick={this.handleRetry} type="button">
             Try again
           </button>
         </div>

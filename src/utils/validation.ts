@@ -7,7 +7,7 @@ import type { BanzukePayload, BanzukeSnapshot, Rikishi } from '../types/banzuke'
 export function isValidRikishi(obj: unknown): obj is Rikishi {
   if (!obj || typeof obj !== 'object') return false
   const rikishi = obj as Record<string, unknown>
-  
+
   // Must have shikona (wrestler name) and ew (east/west indicator)
   return (
     typeof rikishi.shikona === 'string' &&
@@ -21,14 +21,14 @@ export function isValidRikishi(obj: unknown): obj is Rikishi {
 export function isValidBanzukePayload(obj: unknown): obj is BanzukePayload {
   if (!obj || typeof obj !== 'object') return false
   const payload = obj as Record<string, unknown>
-  
+
   // Must have BanzukeTable array
   if (!Array.isArray(payload.BanzukeTable)) return false
-  
+
   // Validate that at least some entries are valid rikishi
   // (empty arrays are technically valid but not useful)
   const validEntries = payload.BanzukeTable.filter(isValidRikishi)
-  
+
   return validEntries.length > 0
 }
 
@@ -38,19 +38,19 @@ export function isValidBanzukePayload(obj: unknown): obj is BanzukePayload {
 export function isValidBanzukeSnapshot(obj: unknown): obj is BanzukeSnapshot {
   if (!obj || typeof obj !== 'object') return false
   const snapshot = obj as Record<string, unknown>
-  
+
   // New format: has payloads object
   if (snapshot.payloads && typeof snapshot.payloads === 'object') {
     const payloads = snapshot.payloads as Record<string, unknown>
     // Check if at least one payload is valid
     return Object.values(payloads).some(isValidBanzukePayload)
   }
-  
+
   // Legacy format: has single payload
   if (snapshot.payload) {
     return isValidBanzukePayload(snapshot.payload)
   }
-  
+
   return false
 }
 

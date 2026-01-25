@@ -11,7 +11,8 @@
 }
 
 @keyframes labelPulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
@@ -23,12 +24,16 @@
   background: var(--card-bg);
   border-radius: var(--radius);
   padding: 0.5rem 0.75rem;
-  transition: background 150ms ease, box-shadow 150ms ease;
+  transition:
+    background 150ms ease,
+    box-shadow 150ms ease;
   animation: riseIn 200ms ease;
 }
 
 .row:hover {
-  box-shadow: var(--shadow-md), 0 0 0 1px rgba(176, 48, 63, 0.05);
+  box-shadow:
+    var(--shadow-md),
+    0 0 0 1px rgba(176, 48, 63, 0.05);
   transform: translateY(-2px);
 }
 
@@ -38,76 +43,40 @@
 }
 
 /* Tier-specific styling */
-.row[data-rank-level="yokozuna"] {
-  background: linear-gradient(
-    135deg,
-    var(--card-bg) 0%,
-    var(--tier-yokozuna-bg) 100%
-  );
+.row[data-rank-level='yokozuna'] {
+  background: linear-gradient(135deg, var(--card-bg) 0%, var(--tier-yokozuna-bg) 100%);
 }
 
-.row[data-rank-level="yokozuna"]::before {
-  background: linear-gradient(
-    135deg,
-    transparent 0%,
-    var(--tier-yokozuna) 50%,
-    transparent 100%
-  );
+.row[data-rank-level='yokozuna']::before {
+  background: linear-gradient(135deg, transparent 0%, var(--tier-yokozuna) 50%, transparent 100%);
 }
 
-.row[data-rank-level="yokozuna"]:hover {
+.row[data-rank-level='yokozuna']:hover {
   box-shadow: var(--shadow-md), var(--shadow-glow-gold);
 }
 
-.row[data-rank-level="ozeki"] {
-  background: linear-gradient(
-    135deg,
-    var(--card-bg) 0%,
-    var(--tier-ozeki-bg) 100%
-  );
+.row[data-rank-level='ozeki'] {
+  background: linear-gradient(135deg, var(--card-bg) 0%, var(--tier-ozeki-bg) 100%);
 }
 
-.row[data-rank-level="ozeki"]::before {
-  background: linear-gradient(
-    135deg,
-    transparent 0%,
-    var(--tier-ozeki) 50%,
-    transparent 100%
-  );
+.row[data-rank-level='ozeki']::before {
+  background: linear-gradient(135deg, transparent 0%, var(--tier-ozeki) 50%, transparent 100%);
 }
 
-.row[data-rank-level="sekiwake"] {
-  background: linear-gradient(
-    135deg,
-    var(--card-bg) 0%,
-    var(--tier-sekiwake-bg) 100%
-  );
+.row[data-rank-level='sekiwake'] {
+  background: linear-gradient(135deg, var(--card-bg) 0%, var(--tier-sekiwake-bg) 100%);
 }
 
-.row[data-rank-level="sekiwake"]::before {
-  background: linear-gradient(
-    135deg,
-    transparent 0%,
-    var(--tier-sekiwake) 50%,
-    transparent 100%
-  );
+.row[data-rank-level='sekiwake']::before {
+  background: linear-gradient(135deg, transparent 0%, var(--tier-sekiwake) 50%, transparent 100%);
 }
 
-.row[data-rank-level="komusubi"] {
-  background: linear-gradient(
-    135deg,
-    var(--card-bg) 0%,
-    var(--tier-komusubi-bg) 100%
-  );
+.row[data-rank-level='komusubi'] {
+  background: linear-gradient(135deg, var(--card-bg) 0%, var(--tier-komusubi-bg) 100%);
 }
 
-.row[data-rank-level="komusubi"]::before {
-  background: linear-gradient(
-    135deg,
-    transparent 0%,
-    var(--tier-komusubi) 50%,
-    transparent 100%
-  );
+.row[data-rank-level='komusubi']::before {
+  background: linear-gradient(135deg, transparent 0%, var(--tier-komusubi) 50%, transparent 100%);
 }
 
 .inner {
@@ -120,7 +89,7 @@
 }
 
 .label {
-  font-family: "FranSans Solid", "Inter", system-ui, sans-serif;
+  font-family: 'FranSans Solid', 'Inter', system-ui, sans-serif;
   font-weight: 600;
   color: #fff;
   font-size: 0.8rem;
@@ -136,7 +105,9 @@
   justify-content: center;
   justify-self: center;
   box-shadow: 0 2px 8px rgba(176, 48, 63, 0.2);
-  transition: transform 250ms var(--ease-spring), box-shadow 250ms ease;
+  transition:
+    transform 250ms var(--ease-spring),
+    box-shadow 250ms ease;
 }
 
 /* Label lift and glow on row hover */
@@ -146,25 +117,25 @@
 }
 
 /* Tier-specific label colors */
-.row[data-rank-level="yokozuna"] .label {
+.row[data-rank-level='yokozuna'] .label {
   background: linear-gradient(135deg, var(--tier-yokozuna) 0%, #c9a227 100%);
   box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
 }
 
-.row[data-rank-level="yokozuna"]:hover .label {
+.row[data-rank-level='yokozuna']:hover .label {
   box-shadow: 0 4px 16px rgba(212, 175, 55, 0.4);
 }
 
-.row[data-rank-level="ozeki"] .label {
+.row[data-rank-level='ozeki'] .label {
   background: linear-gradient(135deg, var(--tier-ozeki) 0%, #b08a40 100%);
   box-shadow: 0 2px 8px rgba(201, 160, 85, 0.25);
 }
 
-.row[data-rank-level="ozeki"]:hover .label {
+.row[data-rank-level='ozeki']:hover .label {
   box-shadow: 0 4px 12px rgba(201, 160, 85, 0.4);
 }
 
-.row[data-rank-level="sekiwake"] .label {
+.row[data-rank-level='sekiwake'] .label {
   background: linear-gradient(135deg, var(--tier-sekiwake) 0%, #b86b22 100%);
   box-shadow: 0 2px 8px rgba(205, 127, 50, 0.25);
 }
@@ -179,7 +150,6 @@
     transform: translateY(0);
   }
 }
-
 
 @media (max-width: 600px) {
   .inner {
@@ -198,12 +168,12 @@
   .row:hover::before {
     opacity: 0.3;
   }
-  
-  .row[data-rank-level="yokozuna"] .label {
+
+  .row[data-rank-level='yokozuna'] .label {
     background: linear-gradient(135deg, var(--tier-yokozuna) 0%, #d4af37 100%);
   }
-  
-  .row[data-rank-level="ozeki"] .label {
+
+  .row[data-rank-level='ozeki'] .label {
     background: linear-gradient(135deg, var(--tier-ozeki) 0%, #c9a050 100%);
   }
 }
@@ -214,11 +184,11 @@
     animation: fadeIn 200ms ease forwards;
     transition: box-shadow 150ms ease;
   }
-  
+
   .row:hover {
     transform: none;
   }
-  
+
   .row:hover .label {
     transform: none;
   }

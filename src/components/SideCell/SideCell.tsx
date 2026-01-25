@@ -33,7 +33,7 @@ function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0 }: SideCellProps
   const [imageLoaded, setImageLoaded] = useState(false)
   const isEast = side === 'east'
   const sideLabel = isEast ? 'E' : 'W'
-  
+
   // Stagger delay for language switch animation (20ms per row, max 400ms)
   const staggerDelay = Math.min(rowIndex * 20, 400)
 
@@ -45,9 +45,7 @@ function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0 }: SideCellProps
     setImageLoaded(true)
   }
 
-  const badge = rikishi?.rank_new ? (
-    <span className={styles.pill}>{rikishi.rank_new}</span>
-  ) : null
+  const badge = rikishi?.rank_new ? <span className={styles.pill}>{rikishi.rank_new}</span> : null
 
   const hasPhoto = rikishi?.photo && !imageError
   const avatar = hasPhoto ? (
@@ -68,8 +66,8 @@ function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0 }: SideCellProps
   const displayName = getDisplayName(rikishi, language)
   const directionClass = language === 'jp' ? styles['name-rtl'] : styles['name-ltr']
   const name = (
-    <span 
-      key={language} 
+    <span
+      key={language}
       className={`${styles.name} ${directionClass}`}
       style={{ animationDelay: `${staggerDelay}ms` }}
     >
@@ -77,18 +75,14 @@ function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0 }: SideCellProps
     </span>
   )
 
-  const sideLabelElement = (
-    <span className={styles['side-label']}>{sideLabel}</span>
-  )
+  const sideLabelElement = <span className={styles['side-label']}>{sideLabel}</span>
 
   // East: name then avatar; West: avatar then name
   const infoContent = isEast ? [name, avatar] : [avatar, name]
   const info = <span className={styles.info}>{infoContent}</span>
 
   // East: badge, label, info; West: info, label, badge (mirrored layout)
-  const content = isEast
-    ? [badge, sideLabelElement, info]
-    : [info, sideLabelElement, badge]
+  const content = isEast ? [badge, sideLabelElement, info] : [info, sideLabelElement, badge]
 
   return (
     <div className={styles.cell} data-side={side} data-rank-level={rankLevel}>

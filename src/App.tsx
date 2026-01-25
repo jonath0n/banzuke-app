@@ -14,33 +14,33 @@ function App() {
       <ErrorBoundary>
         <Hero data={data} />
         <main>
-        {loading && !data && (
-          <div className={styles.skeleton} role="status" aria-live="polite">
-            {Array.from({ length: 8 }).map((_, index) => (
-              <div className={styles.skeletonRow} key={`skeleton-${index}`}>
-                <div className={styles.skeletonCell} />
-                <div className={styles.skeletonLabel} />
-                <div className={styles.skeletonCell} />
-              </div>
-            ))}
-          </div>
-        )}
-        {error && !data && (
-          <div role="alert" className={`${styles.status} ${styles.error}`}>
-            {error}
-          </div>
-        )}
-        {error && data && (
-          <div role="status" className={`${styles.status} ${styles.warning}`}>
-            {error}
-          </div>
-        )}
-        {data && (
-          <ErrorBoundary>
-            <BanzukeGrid rows={data.BanzukeTable || []} />
-          </ErrorBoundary>
-        )}
-      </main>
+          {loading && !data && (
+            <div className={styles.skeleton} role="status" aria-live="polite">
+              {Array.from({ length: 8 }).map((_, index) => (
+                <div className={styles.skeletonRow} key={`skeleton-${index}`}>
+                  <div className={styles.skeletonCell} />
+                  <div className={styles.skeletonLabel} />
+                  <div className={styles.skeletonCell} />
+                </div>
+              ))}
+            </div>
+          )}
+          {error && !data && (
+            <div role="alert" className={`${styles.status} ${styles.error}`}>
+              {error}
+            </div>
+          )}
+          {error && data && (
+            <div role="status" className={`${styles.status} ${styles.warning}`}>
+              {error}
+            </div>
+          )}
+          {data && (
+            <ErrorBoundary>
+              <BanzukeGrid rows={data.BanzukeTable || []} />
+            </ErrorBoundary>
+          )}
+        </main>
         <Footer />
       </ErrorBoundary>
     </LanguageProvider>

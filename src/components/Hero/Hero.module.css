@@ -1,7 +1,11 @@
 /* Define keyframes locally for CSS Modules compatibility */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes fadeSlideIn {
@@ -27,14 +31,24 @@
 }
 
 @keyframes drawLine {
-  from { transform: scaleX(0); }
-  to { transform: scaleX(1); }
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
 }
 
 @keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 @keyframes slideInFromLeft {
@@ -67,8 +81,9 @@
   border-radius: 2px;
   opacity: 0;
   transform-origin: left;
-  animation: drawLine 600ms var(--ease-out-expo) 400ms forwards,
-             fadeIn 300ms ease 400ms forwards;
+  animation:
+    drawLine 600ms var(--ease-out-expo) 400ms forwards,
+    fadeIn 300ms ease 400ms forwards;
 }
 
 .titleRow {
@@ -82,21 +97,17 @@
 .hero h1 {
   margin: 0;
   font-size: clamp(1.75rem, 5vw, 2.25rem);
-  font-family: "FranSans Solid", "Inter", "Segoe UI", system-ui, sans-serif;
+  font-family: 'FranSans Solid', 'Inter', 'Segoe UI', system-ui, sans-serif;
   letter-spacing: -0.02em;
   line-height: 1.1;
-  background: linear-gradient(
-    135deg,
-    var(--text) 0%,
-    var(--text) 40%,
-    var(--accent) 100%
-  );
+  background: linear-gradient(135deg, var(--text) 0%, var(--text) 40%, var(--accent) 100%);
   background-size: 200% 200%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: fadeSlideIn 500ms var(--ease-out-expo) 100ms backwards,
-             gradientShift 8s ease infinite;
+  animation:
+    fadeSlideIn 500ms var(--ease-out-expo) 100ms backwards,
+    gradientShift 8s ease infinite;
   transition: transform 200ms var(--ease-out-expo);
 }
 
@@ -122,13 +133,21 @@
   border-radius: var(--radius);
   opacity: 0;
   animation: slideInFromLeft 400ms var(--ease-out-expo) forwards;
-  transition: background 150ms ease, transform 150ms var(--ease-out-expo);
+  transition:
+    background 150ms ease,
+    transform 150ms var(--ease-out-expo);
 }
 
 /* Stagger the summary items */
-.summary div:nth-child(1) { animation-delay: 200ms; }
-.summary div:nth-child(2) { animation-delay: 280ms; }
-.summary div:nth-child(3) { animation-delay: 360ms; }
+.summary div:nth-child(1) {
+  animation-delay: 200ms;
+}
+.summary div:nth-child(2) {
+  animation-delay: 280ms;
+}
+.summary div:nth-child(3) {
+  animation-delay: 360ms;
+}
 
 .summary div:hover {
   background: rgba(0, 0, 0, 0.02);
@@ -156,7 +175,9 @@
   border-radius: 50%;
   margin-right: 0.5rem;
   opacity: 0.5;
-  transition: opacity 200ms ease, transform 200ms var(--ease-spring);
+  transition:
+    opacity 200ms ease,
+    transform 200ms var(--ease-spring);
 }
 
 .summary div:hover dt::before {
@@ -193,16 +214,16 @@
     background: none;
     color: var(--text);
   }
-  
+
   .hero::before,
   .hero::after {
     animation: fadeIn 300ms ease forwards;
   }
-  
+
   .summary div {
     animation: fadeIn 300ms ease forwards;
   }
-  
+
   .summary div:hover {
     transform: none;
   }

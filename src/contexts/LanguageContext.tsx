@@ -17,14 +17,14 @@ function normalizeLanguage(value: string | null | undefined): Language {
 
 function getInitialLanguage(): Language {
   if (typeof window === 'undefined') return DEFAULT_LANGUAGE
-  
+
   // Check URL params first (allows sharing links with language)
   const searchParams = new URLSearchParams(window.location.search)
   const langParam = searchParams.get('lang')
   if (langParam) {
     return normalizeLanguage(langParam)
   }
-  
+
   // Then check localStorage
   try {
     const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY)
@@ -34,7 +34,7 @@ function getInitialLanguage(): Language {
   } catch {
     // localStorage may be unavailable (private browsing, etc.)
   }
-  
+
   return DEFAULT_LANGUAGE
 }
 
@@ -78,6 +78,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useLanguage(): LanguageContextValue {
   const context = useContext(LanguageContext)
   if (!context) {

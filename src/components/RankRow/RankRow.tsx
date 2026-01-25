@@ -15,8 +15,8 @@ export const RankRow = memo(function RankRow({ group, index = 0 }: RankRowProps)
   const rankLevel: RankLevel = sample ? getRankLevel(sample) : 'maegashira'
 
   return (
-    <div 
-      className={styles.row} 
+    <div
+      className={styles.row}
       data-rank-level={rankLevel}
       style={{ '--row-index': index } as React.CSSProperties}
     >
