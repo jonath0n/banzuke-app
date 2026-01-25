@@ -1,0 +1,84 @@
+.cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.cell[data-side="east"] {
+  justify-content: flex-end;
+  flex-direction: row;
+}
+
+.cell[data-side="west"] {
+  justify-content: flex-start;
+  flex-direction: row;
+}
+
+.sideLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.info img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.name {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1rem;
+}
+
+/* Rank-based name sizing - subtle differences */
+.cell[data-rank-level="yokozuna"] .name {
+  font-size: 1.25rem;
+}
+
+.cell[data-rank-level="ozeki"] .name {
+  font-size: 1.15rem;
+}
+
+.cell[data-rank-level="sekiwake"] .name,
+.cell[data-rank-level="komusubi"] .name {
+  font-size: 1.05rem;
+}
+
+.pill {
+  font-size: 0.65rem;
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  background: rgba(176, 48, 63, 0.1);
+  color: var(--accent);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .cell {
+    justify-content: center;
+  }
+
+  .cell[data-side="east"],
+  .cell[data-side="west"] {
+    flex-direction: row;
+    justify-content: center;
+  }
+}

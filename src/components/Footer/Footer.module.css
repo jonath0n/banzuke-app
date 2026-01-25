@@ -1,0 +1,41 @@
+.footer {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  font-size: 0.8rem;
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.footer a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+.attribution {
+  margin: 0;
+}
+
+.disclaimer {
+  margin: 0;
+  font-size: 0.7rem;
+  text-transform: none;
+  letter-spacing: normal;
+  opacity: 0.8;
+}
+
+.meta {
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
