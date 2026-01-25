@@ -31,6 +31,7 @@ scripts/
   fetch-banzuke.mjs            # Fetches latest data from sumo.or.jp
 .github/
   workflows/
+    deploy.yml                 # Build & deploy to GitHub Pages
     refresh-banzuke.yml        # Daily auto-refresh via GitHub Actions
 ```
 
@@ -76,14 +77,20 @@ npm run fetch-remote
 
 This fetches both EN and JP banzuke and saves to `public/latest-banzuke.json`.
 
+## Deployment
+
+The site auto-deploys to GitHub Pages on every push to `main`. The deploy workflow:
+
+1. Installs dependencies
+2. Builds the React app with Vite
+3. Deploys to GitHub Pages
+
+Live site: https://jonath0n.github.io/banzuke-app/
+
 ## Tech stack
 
 - **React 18** with TypeScript
 - **Vite** for development and builds
 - **CSS Modules** for scoped component styles
-- **GitHub Actions** for automated data refresh
-- No runtime dependencies beyond React
-
-## Legacy files
-
-The `public/` folder contains old vanilla JS files (`index.html`, `main.js`, `styles.css`) from a previous version. These are not used by the React app and can be removed.
+- **GitHub Actions** for automated data refresh and deployment
+- **GitHub Pages** for hosting
