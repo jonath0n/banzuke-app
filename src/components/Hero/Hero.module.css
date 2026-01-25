@@ -1,11 +1,28 @@
 .hero {
   padding: 1rem 0;
   margin-bottom: 0.5rem;
+  position: relative;
+  animation: fadeIn 500ms var(--ease-out-expo);
+}
+
+/* Subtle decorative accent line */
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -0.25rem;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  border-radius: 2px;
+  opacity: 0.6;
 }
 
 .hero h1 {
   margin: 0.5rem 0;
   font-size: clamp(1.5rem, 4vw, 2rem);
+  letter-spacing: -0.01em;
+  animation: fadeSlideIn 400ms var(--ease-out-expo) 100ms backwards;
 }
 
 .meta {
@@ -13,6 +30,7 @@
   align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
+  animation: fadeSlideIn 400ms var(--ease-out-expo) backwards;
 }
 
 .badge {
@@ -25,6 +43,12 @@
   font-weight: 500;
   letter-spacing: 0.02em;
   margin: 0;
+  transition: transform 200ms var(--ease-out-expo), background 150ms ease;
+}
+
+.badge:hover {
+  transform: translateY(-1px);
+  background: rgba(176, 48, 63, 0.15);
 }
 
 .summary {
@@ -39,7 +63,13 @@
   display: flex;
   gap: 0.4rem;
   align-items: baseline;
+  animation: fadeSlideIn 400ms var(--ease-out-expo) backwards;
 }
+
+/* Stagger the summary items */
+.summary div:nth-child(1) { animation-delay: 150ms; }
+.summary div:nth-child(2) { animation-delay: 200ms; }
+.summary div:nth-child(3) { animation-delay: 250ms; }
 
 .summary dt {
   font-size: 0.7rem;
@@ -47,10 +77,31 @@
   letter-spacing: 0.05em;
   color: var(--muted);
   margin: 0;
+  transition: color 150ms ease;
 }
 
 .summary dd {
   margin: 0;
   font-weight: 600;
   font-size: 0.9rem;
+  transition: color 150ms ease;
+}
+
+/* Subtle hover effect on summary items */
+.summary div:hover dt {
+  color: var(--text);
+}
+
+.summary div:hover dd {
+  color: var(--accent);
+}
+
+@media (prefers-color-scheme: dark) {
+  .badge {
+    background: rgba(248, 132, 150, 0.15);
+  }
+  
+  .badge:hover {
+    background: rgba(248, 132, 150, 0.25);
+  }
 }

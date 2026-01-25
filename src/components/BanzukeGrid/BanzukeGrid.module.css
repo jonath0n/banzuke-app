@@ -1,6 +1,137 @@
+/* Define keyframes locally for CSS Modules compatibility */
+@keyframes skeletonFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
 .grid {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
   margin-top: 1rem;
+}
+
+/* Loading skeleton styles */
+.skeleton-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 1rem;
+}
+
+.skeleton-row {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.75rem;
+  box-shadow: var(--shadow-sm);
+  opacity: 0;
+  animation: skeletonFadeIn 400ms var(--ease-out-expo) forwards;
+  animation-delay: calc(var(--row-index, 0) * 30ms);
+}
+
+.skeleton-inner {
+  display: grid;
+  grid-template-columns: 1fr 60px 1fr;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.skeleton-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.skeleton-cell[data-side="east"] {
+  justify-content: flex-end;
+}
+
+.skeleton-cell[data-side="west"] {
+  justify-content: flex-start;
+}
+
+.skeleton-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(
+    90deg,
+    var(--border) 0%,
+    var(--card-bg) 50%,
+    var(--border) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-name {
+  height: 1rem;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--border) 0%,
+    var(--card-bg) 50%,
+    var(--border) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.long {
+  width: 100px;
+}
+
+.medium {
+  width: 80px;
+}
+
+.short {
+  width: 60px;
+}
+
+.skeleton-label {
+  width: 48px;
+  height: 28px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    var(--border) 0%,
+    var(--card-bg) 50%,
+    var(--border) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  justify-self: center;
+}
+
+@media (max-width: 600px) {
+  .skeleton-inner {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .skeleton-label {
+    order: -1;
+    justify-self: center;
+  }
+
+  .skeleton-cell {
+    justify-content: center;
+  }
 }

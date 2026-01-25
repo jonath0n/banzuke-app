@@ -1,7 +1,7 @@
 .footer {
   margin-top: 2rem;
   padding-top: 1rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  border-top: 1px solid var(--border);
   font-size: 0.8rem;
   color: var(--muted);
   display: flex;
@@ -9,15 +9,43 @@
   gap: 0.5rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+  animation: fadeIn 500ms var(--ease-out-expo) 300ms backwards;
 }
 
 .footer a {
   color: var(--accent);
   text-decoration: none;
+  position: relative;
+  transition: color 150ms ease;
+}
+
+/* Animated underline effect */
+.footer a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 200ms var(--ease-out-expo);
+}
+
+.footer a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
 }
 
 .footer a:hover {
-  text-decoration: underline;
+  color: var(--accent-hover);
+}
+
+.footer a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 .attribution {

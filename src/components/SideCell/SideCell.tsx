@@ -14,6 +14,7 @@ interface SideCellProps {
 
 export function SideCell({ rikishi, side, rankLevel }: SideCellProps) {
   const [imageError, setImageError] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false)
   const isEast = side === 'east'
   const sideLabel = isEast ? 'E' : 'W'
 
@@ -21,12 +22,17 @@ export function SideCell({ rikishi, side, rankLevel }: SideCellProps) {
     setImageError(true)
   }
 
+  const handleImageLoad = () => {
+    setImageLoaded(true)
+  }
+
   const badge = rikishi?.rank_new ? (
     <span className={styles.pill}>{rikishi.rank_new}</span>
   ) : null
 
-  const avatar =
-    rikishi?.photo && !imageError ? (
+  const hasPhoto = rikishi?.photo && !imageError
+  const avatar = hasPhoto ? (
+    <span className={`${styles['avatar-wrapper']} ${imageLoaded ? styles.loaded : ''}`}>
       <img
         src={buildPhotoUrl(rikishi.photo)}
         alt={`Portrait of ${rikishi.shikona || 'wrestler'} from ${rikishi.heya_name || 'unknown'} stable`}
@@ -34,8 +40,11 @@ export function SideCell({ rikishi, side, rankLevel }: SideCellProps) {
         width={AVATAR_SIZE}
         height={AVATAR_SIZE}
         onError={handleImageError}
+        onLoad={handleImageLoad}
+        className={imageLoaded ? styles.visible : ''}
       />
-    ) : null
+    </span>
+  ) : null
 
   const name = <span className={styles.name}>{rikishi?.shikona || '—'}</span>
 

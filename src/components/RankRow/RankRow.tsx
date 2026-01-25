@@ -5,14 +5,20 @@ import styles from './RankRow.module.css'
 
 interface RankRowProps {
   group: RankGroup
+  /** Index for staggered entrance animation */
+  index?: number
 }
 
-export function RankRow({ group }: RankRowProps) {
+export function RankRow({ group, index = 0 }: RankRowProps) {
   const sample = group.east || group.west
   const rankLevel: RankLevel = sample ? getRankLevel(sample) : 'maegashira'
 
   return (
-    <div className={styles.row} data-rank-level={rankLevel}>
+    <div 
+      className={styles.row} 
+      data-rank-level={rankLevel}
+      style={{ '--row-index': index } as React.CSSProperties}
+    >
       <div className={styles.inner}>
         <SideCell rikishi={group.east} side="east" rankLevel={rankLevel} />
         <div className={styles.label}>{formatRankLabel(group) || '—'}</div>

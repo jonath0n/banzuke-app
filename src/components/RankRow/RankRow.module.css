@@ -1,12 +1,39 @@
+/* Define keyframes locally for CSS Modules compatibility */
+@keyframes rowFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .row {
   background: var(--card-bg);
   border-radius: var(--radius);
   padding: 0.5rem 0.75rem;
-  transition: background 150ms ease, box-shadow 150ms ease;
+  box-shadow: var(--shadow-sm);
+  transition: 
+    transform 200ms var(--ease-out-expo),
+    box-shadow 200ms var(--ease-out-expo),
+    background 150ms ease;
+  
+  /* Staggered entrance animation */
+  opacity: 0;
+  animation: rowFadeIn 400ms var(--ease-out-expo) forwards;
+  animation-delay: calc(var(--row-index, 0) * 30ms);
 }
 
 .row:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.row:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
 }
 
 .inner {
@@ -31,8 +58,13 @@
   align-items: center;
   justify-content: center;
   justify-self: center;
+  transition: transform 200ms var(--ease-out-expo);
 }
 
+/* Subtle label lift on row hover */
+.row:hover .label {
+  transform: scale(1.02);
+}
 
 @media (max-width: 600px) {
   .inner {
