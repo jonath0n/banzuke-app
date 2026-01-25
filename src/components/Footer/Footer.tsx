@@ -1,6 +1,13 @@
 import styles from './Footer.module.css'
 
+/** Returns the current year for copyright display */
+function getCurrentYear(): number {
+  return new Date().getFullYear()
+}
+
 export function Footer() {
+  const currentYear = getCurrentYear()
+  
   return (
     <footer className={styles.footer}>
       <p className={styles.attribution}>
@@ -23,8 +30,7 @@ export function Footer() {
         Sumo Association.
       </p>
       <p className={styles.meta}>
-        <span>© 2026 Jon Allen. All Rights Reserved.</span>
-        <span>Last updated January 2026</span>
+        <span>© {currentYear} Jon Allen. All Rights Reserved.</span>
       </p>
     </footer>
   )

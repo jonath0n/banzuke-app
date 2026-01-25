@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import type { BanzukePayload, BanzukeSnapshot, Language } from '../types/banzuke'
 import {
   normalizeLanguage,
@@ -6,9 +6,13 @@ import {
   describeSnapshot,
   DEFAULT_LANGUAGE,
 } from '../utils/formatting'
+import { isValidBanzukeSnapshot } from '../utils/validation'
 
 const DATA_URL = '/latest-banzuke.json'
 const SAMPLE_URL = '/sample-data.json'
+const LANGUAGE_STORAGE_KEY = 'banzuke-language'
+const MAX_RETRIES = 3
+const RETRY_DELAY_MS = 1000
 
 interface UseBanzukeResult {
   data: BanzukePayload | null
@@ -19,11 +23,75 @@ interface UseBanzukeResult {
   setLanguage: (lang: Language) => void
 }
 
+/**
+ * Retrieves the initial language preference from localStorage, URL params, or default.
+ */
 function getInitialLanguage(): Language {
   if (typeof window === 'undefined') return DEFAULT_LANGUAGE
+  
+  // Check URL params first (allows sharing links with language)
   const searchParams = new URLSearchParams(window.location.search)
   const langParam = searchParams.get('lang')
-  return normalizeLanguage(langParam)
+  if (langParam) {
+    return normalizeLanguage(langParam)
+  }
+  
+  // Then check localStorage
+  try {
+    const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY)
+    if (stored) {
+      return normalizeLanguage(stored)
+    }
+  } catch {
+    // localStorage may be unavailable (private browsing, etc.)
+  }
+  
+  return DEFAULT_LANGUAGE
+}
+
+/**
+ * Persists language preference to localStorage.
+ */
+function saveLanguagePreference(language: Language): void {
+  try {
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, language)
+  } catch {
+    // Silently fail if localStorage is unavailable
+  }
+}
+
+/**
+ * Fetches data with retry logic for transient failures.
+ */
+async function fetchWithRetry(
+  url: string,
+  options?: RequestInit,
+  retries = MAX_RETRIES
+): Promise<Response> {
+  let lastError: Error | null = null
+  
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      const response = await fetch(url, options)
+      if (response.ok) {
+        return response
+      }
+      // Don't retry 4xx errors (client errors)
+      if (response.status >= 400 && response.status < 500) {
+        throw new Error(`Request failed with ${response.status}`)
+      }
+      lastError = new Error(`Request failed with ${response.status}`)
+    } catch (err) {
+      lastError = err instanceof Error ? err : new Error(String(err))
+    }
+    
+    // Wait before retrying (exponential backoff)
+    if (attempt < retries - 1) {
+      await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS * (attempt + 1)))
+    }
+  }
+  
+  throw lastError || new Error('Fetch failed after retries')
 }
 
 export function useBanzuke(): UseBanzukeResult {
@@ -35,11 +103,12 @@ export function useBanzuke(): UseBanzukeResult {
 
   const cachedSnapshot = useRef<BanzukeSnapshot | null>(null)
 
-  const setLanguage = (lang: Language) => {
+  const setLanguage = useCallback((lang: Language) => {
     const normalized = normalizeLanguage(lang)
     setLanguageState(normalized)
+    saveLanguagePreference(normalized)
     updateLanguageContext(normalized)
-  }
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -50,11 +119,15 @@ export function useBanzuke(): UseBanzukeResult {
 
       try {
         if (!cachedSnapshot.current) {
-          const response = await fetch(DATA_URL, { cache: 'no-store' })
-          if (!response.ok) {
-            throw new Error(`Static JSON failed with ${response.status}`)
+          const response = await fetchWithRetry(DATA_URL, { cache: 'no-store' })
+          const snapshot = await response.json()
+          
+          // Validate the response structure
+          if (!isValidBanzukeSnapshot(snapshot)) {
+            throw new Error('Invalid banzuke data structure received')
           }
-          cachedSnapshot.current = await response.json()
+          
+          cachedSnapshot.current = snapshot
         }
 
         const payload = pickPayloadForLanguage(cachedSnapshot.current!, language)
@@ -71,10 +144,7 @@ export function useBanzuke(): UseBanzukeResult {
         console.warn('Static snapshot load failed', err)
 
         try {
-          const fallbackResponse = await fetch(SAMPLE_URL)
-          if (!fallbackResponse.ok) {
-            throw new Error(`Fallback fetch failed with ${fallbackResponse.status}`)
-          }
+          const fallbackResponse = await fetchWithRetry(SAMPLE_URL)
           const fallbackPayload = await fallbackResponse.json()
 
           if (!cancelled) {
