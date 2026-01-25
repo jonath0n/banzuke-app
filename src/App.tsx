@@ -6,15 +6,21 @@ import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary'
 import styles from './App.module.css'
 
 function App() {
-  const { data, loading, error, sourceLabel } = useBanzuke()
+  const { data, loading, error, sourceLabel, language, setLanguage } = useBanzuke()
 
   return (
     <ErrorBoundary>
-      <Hero data={data} />
+      <Hero data={data} language={language} onLanguageChange={setLanguage} />
       <main>
-        {loading && (
-          <div role="status" className={styles.status}>
-            Loading the banzuke…
+        {loading && !data && (
+          <div className={styles.skeleton} role="status" aria-live="polite">
+            {Array.from({ length: 8 }).map((_, index) => (
+              <div className={styles.skeletonRow} key={`skeleton-${index}`}>
+                <div className={styles.skeletonCell} />
+                <div className={styles.skeletonLabel} />
+                <div className={styles.skeletonCell} />
+              </div>
+            ))}
           </div>
         )}
         {error && !data && (

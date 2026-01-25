@@ -62,7 +62,7 @@ function saveLanguagePreference(language: Language): void {
 }
 
 /** Error types for more specific error handling */
-type FetchErrorType = 'network' | 'http' | 'parse' | 'validation' | 'unknown'
+type FetchErrorType = 'network' | 'http' | 'parse' | 'validation' | 'abort' | 'unknown'
 
 class BanzukeError extends Error {
   type: FetchErrorType
@@ -88,6 +88,8 @@ function getErrorMessage(err: unknown): string {
         return 'Data error: The server returned invalid data format.'
       case 'validation':
         return 'Data error: The banzuke data structure is invalid or corrupted.'
+      case 'abort':
+        return 'Request was cancelled.'
       default:
         return err.message
     }
@@ -110,6 +112,9 @@ async function fetchWithRetry(
 
   for (let attempt = 0; attempt < retries; attempt++) {
     try {
+      if (options?.signal?.aborted) {
+        throw new BanzukeError('Request aborted', 'abort')
+      }
       const response = await fetch(url, options)
       if (response.ok) {
         return response
@@ -126,7 +131,13 @@ async function fetchWithRetry(
         'http'
       )
     } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        throw new BanzukeError('Request aborted', 'abort')
+      }
       if (err instanceof BanzukeError) {
+        if (err.type === 'abort') {
+          throw err
+        }
         lastError = err
       } else if (err instanceof TypeError && err.message.includes('fetch')) {
         // Network errors (offline, CORS, etc.)
@@ -140,7 +151,7 @@ async function fetchWithRetry(
     }
 
     // Wait before retrying (exponential backoff)
-    if (attempt < retries - 1) {
+    if (attempt < retries - 1 && lastError?.type !== 'abort') {
       await new Promise((resolve) =>
         setTimeout(resolve, RETRY_DELAY_MS * (attempt + 1))
       )
@@ -174,6 +185,7 @@ export function useBanzuke(): UseBanzukeResult {
   // Handle data fetching and language-based payload selection
   useEffect(() => {
     let cancelled = false
+    const controller = new AbortController()
 
     async function loadBanzuke() {
       // If we have cached data, use it without showing loading state
@@ -193,7 +205,10 @@ export function useBanzuke(): UseBanzukeResult {
       setError(null)
 
       try {
-        const response = await fetchWithRetry(DATA_URL, { cache: 'no-store' })
+        const response = await fetchWithRetry(DATA_URL, {
+          cache: 'no-store',
+          signal: controller.signal,
+        })
 
         let fetchedSnapshot: unknown
         try {
@@ -227,11 +242,16 @@ export function useBanzuke(): UseBanzukeResult {
           setLoading(false)
         }
       } catch (err) {
+        if (err instanceof BanzukeError && err.type === 'abort') {
+          return
+        }
         const errorMessage = getErrorMessage(err)
         console.warn('Static snapshot load failed:', errorMessage, err)
 
         try {
-          const fallbackResponse = await fetchWithRetry(SAMPLE_URL)
+          const fallbackResponse = await fetchWithRetry(SAMPLE_URL, {
+            signal: controller.signal,
+          })
 
           let fallbackPayload: unknown
           try {
@@ -247,6 +267,9 @@ export function useBanzuke(): UseBanzukeResult {
             setLoading(false)
           }
         } catch (fallbackErr) {
+          if (fallbackErr instanceof BanzukeError && fallbackErr.type === 'abort') {
+            return
+          }
           const fallbackMessage = getErrorMessage(fallbackErr)
           console.error('Unable to load bundled sample data:', fallbackMessage)
           if (!cancelled) {
@@ -263,6 +286,7 @@ export function useBanzuke(): UseBanzukeResult {
 
     return () => {
       cancelled = true
+      controller.abort()
     }
   }, [language])
 
@@ -272,6 +296,10 @@ export function useBanzuke(): UseBanzukeResult {
 function updateLanguageContext(language: Language) {
   if (typeof document === 'undefined') return
 
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/8f13d096-f5b3-4a25-b1f7-9fa94764e743',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H2',location:'useBanzuke.ts:updateLanguageContext:before',message:'Update language context start',data:{language,bodyClassList:Array.from(document.body.classList),htmlLang:document.documentElement.lang},timestamp:Date.now()})}).catch(()=>{});
+  // #endregion
+
   if (language === 'jp') {
     document.documentElement.lang = 'ja'
     document.body.classList.add('lang-jp')
@@ -279,4 +307,8 @@ function updateLanguageContext(language: Language) {
     document.documentElement.lang = 'en'
     document.body.classList.remove('lang-jp')
   }
+
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/8f13d096-f5b3-4a25-b1f7-9fa94764e743',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H2',location:'useBanzuke.ts:updateLanguageContext:after',message:'Update language context end',data:{language,bodyClassList:Array.from(document.body.classList),htmlLang:document.documentElement.lang},timestamp:Date.now()})}).catch(()=>{});
+  // #endregion
 }

@@ -5,6 +5,12 @@
   min-width: 0;
 }
 
+.cell:focus-visible {
+  outline: 2px solid var(--accent, #b0303f);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
 .cell[data-side="east"] {
   justify-content: flex-end;
   flex-direction: row;
