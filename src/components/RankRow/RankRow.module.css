@@ -22,49 +22,9 @@
 .row {
   background: var(--card-bg);
   border-radius: var(--radius);
-  padding: 0.6rem 0.85rem;
-  box-shadow: var(--shadow-sm);
-  position: relative;
-  overflow: hidden;
-  transition: 
-    transform 250ms var(--ease-out-expo),
-    box-shadow 250ms var(--ease-out-expo),
-    background 200ms ease;
-  
-  /* Staggered entrance animation */
-  opacity: 0;
-  animation: rowFadeIn 450ms var(--ease-out-expo) forwards;
-  animation-delay: calc(var(--row-index, 0) * 35ms);
-}
-
-/* Subtle gradient border effect on hover */
-.row::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius);
-  padding: 1px;
-  background: linear-gradient(
-    135deg,
-    transparent 0%,
-    var(--accent) 50%,
-    transparent 100%
-  );
-  -webkit-mask: 
-    linear-gradient(#fff 0 0) content-box, 
-    linear-gradient(#fff 0 0);
-  mask: 
-    linear-gradient(#fff 0 0) content-box, 
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity 300ms ease;
-  pointer-events: none;
-}
-
-.row:hover::before {
-  opacity: 0.5;
+  padding: 0.5rem 0.75rem;
+  transition: background 150ms ease, box-shadow 150ms ease;
+  animation: riseIn 200ms ease;
 }
 
 .row:hover {
@@ -209,18 +169,17 @@
   box-shadow: 0 2px 8px rgba(205, 127, 50, 0.25);
 }
 
-.row[data-rank-level="sekiwake"]:hover .label {
-  box-shadow: 0 4px 12px rgba(205, 127, 50, 0.35);
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.row[data-rank-level="komusubi"] .label {
-  background: linear-gradient(135deg, var(--tier-komusubi) 0%, #a84a2a 100%);
-  box-shadow: 0 2px 8px rgba(190, 90, 58, 0.25);
-}
-
-.row[data-rank-level="komusubi"]:hover .label {
-  box-shadow: 0 4px 12px rgba(190, 90, 58, 0.35);
-}
 
 @media (max-width: 600px) {
   .inner {

@@ -59,7 +59,7 @@ export function BanzukeGrid({ rows }: BanzukeGridProps) {
 
   if (grouped.length === 0) {
     return (
-      <div role="status" className="status">
+      <div role="status" className={styles.status}>
         No rikishi available right now.
       </div>
     )

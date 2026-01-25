@@ -207,3 +207,35 @@
     transform: none;
   }
 }
+
+.languageToggle {
+  display: inline-flex;
+  gap: 0.25rem;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.15rem;
+}
+
+.languageButton {
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.languageButtonActive {
+  background: var(--accent, #b0303f);
+  color: #fff;
+}
+
+.languageButton:focus-visible {
+  outline: 2px solid var(--accent, #b0303f);
+  outline-offset: 2px;
+}
