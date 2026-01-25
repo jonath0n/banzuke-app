@@ -1,18 +1,19 @@
 import { useBanzuke } from './hooks/useBanzuke'
 import { LanguageProvider } from './contexts/LanguageContext'
 import { Hero } from './components/Hero/Hero'
-import { BanzukeGrid, BanzukeGridSkeleton } from './components/BanzukeGrid/BanzukeGrid'
+import { BanzukeGrid } from './components/BanzukeGrid/BanzukeGrid'
 import { Footer } from './components/Footer/Footer'
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary'
 import styles from './App.module.css'
 
 function App() {
-  const { data, loading, error, sourceLabel, language, setLanguage } = useBanzuke()
+  const { data, loading, error } = useBanzuke()
 
   return (
-    <ErrorBoundary>
-      <Hero data={data} language={language} onLanguageChange={setLanguage} />
-      <main>
+    <LanguageProvider>
+      <ErrorBoundary>
+        <Hero data={data} />
+        <main>
         {loading && !data && (
           <div className={styles.skeleton} role="status" aria-live="polite">
             {Array.from({ length: 8 }).map((_, index) => (
@@ -39,14 +40,10 @@ function App() {
             <BanzukeGrid rows={data.BanzukeTable || []} />
           </ErrorBoundary>
         )}
-        {sourceLabel && (
-          <div className={styles['source-label']} aria-label="Data source information">
-            {sourceLabel}
-          </div>
-        )}
       </main>
-      <Footer />
-    </ErrorBoundary>
+        <Footer />
+      </ErrorBoundary>
+    </LanguageProvider>
   )
 }
 

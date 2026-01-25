@@ -24,8 +24,9 @@ export function LanguageToggle({ language, onLanguageChange }: LanguageTogglePro
         className={`${styles.option} ${!isEnglish ? styles.active : ''}`}
         onClick={() => onLanguageChange('jp')}
         aria-pressed={!isEnglish}
+        lang="ja"
       >
-        JP
+        日本
       </button>
       <span 
         className={styles.slider} 
