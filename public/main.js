@@ -1,15 +1,10 @@
-const API_URLS = {
-  en: "https://sumo.or.jp/EnHonbashoBanzuke/indexAjax/1/1/",
-  jp: "https://sumo.or.jp/ResultBanzuke/tableAjax/1/1/",
-};
-// Free CORS proxy used when the Japanese endpoint blocks cross-origin requests.
-const CORS_PROXY = "https://cors.isomorphic-git.org/";
-const searchParams = new URLSearchParams(window.location.search);
-const urlParamOverride = searchParams.get("api");
-const langParam = searchParams.get("lang");
-const API_OVERRIDE = window.BANZUKE_API_URL || urlParamOverride;
+const DATA_URL = "./latest-banzuke.json";
+const SAMPLE_URL = "./sample-data.json";
 const DEFAULT_LANGUAGE = "en";
+const searchParams = new URLSearchParams(window.location.search);
+const langParam = searchParams.get("lang");
 let currentLanguage = normalizeLanguage(window.BANZUKE_LANG || langParam || DEFAULT_LANGUAGE);
+let cachedSnapshot = null;
 
 const elements = {
   status: document.getElementById("status"),
@@ -17,63 +12,48 @@ const elements = {
   bashoName: document.getElementById("basho-name"),
   bashoDates: document.getElementById("basho-dates"),
   banzukeAnnouncement: document.getElementById("banzuke-announcement"),
-  lastUpdated: document.getElementById("last-updated"),
-  languageButtons: Array.from(document.querySelectorAll("[data-language]")),
 };
 
-elements.languageButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    const targetLanguage = normalizeLanguage(button.dataset.language);
-    if (targetLanguage !== currentLanguage) {
-      loadBanzuke(targetLanguage);
-    }
-  });
-});
-
-async function loadBanzuke(language = currentLanguage, options = {}) {
-  const { useProxy = false } = options;
+async function loadBanzuke(language = currentLanguage) {
   currentLanguage = normalizeLanguage(language);
-  setActiveLanguage(currentLanguage);
+  setLanguageContext(currentLanguage);
   showLoading();
-  const apiUrl = getApiUrl(currentLanguage, { useProxy });
 
   try {
-    const liveResponse = await fetch(apiUrl, {
-      headers: { "X-Requested-With": "XMLHttpRequest" },
-    });
-
-    if (!liveResponse.ok) {
-      throw new Error(`Upstream error ${liveResponse.status}`);
-    }
-
-    const payload = await liveResponse.json();
-    applyPayload(payload, getSourceLabel("live", { useProxy }));
-  } catch (err) {
-    if (!useProxy && shouldTryProxy(currentLanguage)) {
-      console.warn("Direct fetch failed, retrying via CORS proxy", err);
-      return loadBanzuke(currentLanguage, { useProxy: true });
-    }
-
-    console.warn("Falling back to bundled sample data", err);
-    elements.status.textContent =
-      "Live fetch failed. Showing bundled sample data instead.";
-
-    try {
-      const fallbackUrl = new URL("./sample-data.json", import.meta.url);
-      const fallbackResponse = await fetch(fallbackUrl);
-
-      if (!fallbackResponse.ok) {
-        throw new Error(`Fallback fetch failed with ${fallbackResponse.status}`);
+    if (!cachedSnapshot) {
+      const snapshotResponse = await fetch(DATA_URL, { cache: "no-store" });
+      if (!snapshotResponse.ok) {
+        throw new Error(`Static JSON failed with ${snapshotResponse.status}`);
       }
+      cachedSnapshot = await snapshotResponse.json();
+    }
 
-      const fallbackPayload = await fallbackResponse.json();
-      applyPayload(fallbackPayload, getSourceLabel("sample"));
+    const payload = pickPayloadForLanguage(cachedSnapshot, currentLanguage);
+    if (!payload) {
+      throw new Error(`No payload available for language "${currentLanguage}"`);
+    }
+
+    applyPayload(payload, describeSnapshot(cachedSnapshot, currentLanguage));
+  } catch (err) {
+    console.warn("Static snapshot load failed", err);
+    try {
+      await loadSampleFallback();
     } catch (fallbackErr) {
       console.error("Unable to load bundled sample data", fallbackErr);
       elements.status.textContent =
         "Could not load the banzuke. Please refresh to try again.";
     }
   }
+}
+
+async function loadSampleFallback() {
+  elements.status.textContent = "Static snapshot unavailable. Showing bundled sample data.";
+  const fallbackResponse = await fetch(new URL(SAMPLE_URL, import.meta.url));
+  if (!fallbackResponse.ok) {
+    throw new Error(`Fallback fetch failed with ${fallbackResponse.status}`);
+  }
+  const fallbackPayload = await fallbackResponse.json();
+  applyPayload(fallbackPayload, "Sample data");
 }
 
 function applyPayload(payload, sourceLabel) {
@@ -93,12 +73,13 @@ function updateSummary(payload, sourceLabel) {
   const info = payload.BashoInfo || {};
   const start = formatDate(info.start_date);
   const end = formatDate(info.end_date);
-  elements.bashoName.textContent = `${payload.basho_name || "—"} (${payload.Kakuzuke})`;
+  const bashoName = payload.basho_name || "—";
+  const division = payload.Kakuzuke ? ` (${payload.Kakuzuke.replace(/&nbsp;/g, " ")})` : "";
+  elements.bashoName.textContent = `${bashoName}${division}`;
   elements.bashoDates.textContent = start && end ? `${start} → ${end}` : "—";
   elements.banzukeAnnouncement.textContent = formatDateTime(
     info.banzuke_announcement_datetime
   );
-  elements.lastUpdated.textContent = `${sourceLabel} • ${new Date().toLocaleString()}`;
 }
 
 function formatDate(value) {
@@ -128,15 +109,22 @@ function renderRows(rows) {
   grouped.forEach((group) => {
     const rowEl = document.createElement("div");
     rowEl.className = "rank-row";
+    const sample = group.east || group.west;
+    if (sample) {
+      rowEl.dataset.rankLevel = getRankLevel(sample);
+    }
 
-    rowEl.appendChild(createSideCard(group.east, "East"));
+    const inner = document.createElement("div");
+    inner.className = "rank-row__inner";
+    inner.appendChild(createSideCell(group.east, "East"));
 
     const labelEl = document.createElement("div");
     labelEl.className = "rank-row__label";
-    labelEl.textContent = group.name || "—";
-    rowEl.appendChild(labelEl);
+    labelEl.textContent = formatRankLabel(group) || "—";
+    inner.appendChild(labelEl);
 
-    rowEl.appendChild(createSideCard(group.west, "West"));
+    inner.appendChild(createSideCell(group.west, "West"));
+    rowEl.appendChild(inner);
 
     fragment.appendChild(rowEl);
   });
@@ -173,108 +161,128 @@ function groupRowsByRank(rows) {
   return groups;
 }
 
-function createSideCard(rikishi, sideLabel) {
-  const card = document.createElement("article");
-  card.className = "card side-card";
-  card.dataset.side = sideLabel.toLowerCase();
+function createSideCell(rikishi, sideLabel) {
+  const cell = document.createElement("div");
+  cell.className = "side-cell";
+  cell.dataset.side = sideLabel.toLowerCase();
 
-  const header = document.createElement("div");
-  header.className = "card__header";
+  const sideTag = document.createElement("span");
+  sideTag.className = "side-cell__side";
+  sideTag.textContent = sideLabel === "West" ? "W" : "E";
+  const nameSpan = document.createElement("span");
+  nameSpan.className = "rikishi-name";
+  nameSpan.textContent = rikishi?.shikona || "—";
 
-  const rankSpan = document.createElement("span");
-  rankSpan.className = "card__rank";
-  rankSpan.textContent = sideLabel;
-  header.appendChild(rankSpan);
+  const infoWrapper = document.createElement("span");
+  infoWrapper.className = "side-cell__info";
 
-  if (rikishi && rikishi.rank_new) {
-    const badge = document.createElement("span");
-    badge.className = "badge--pill";
-    badge.textContent = rikishi.rank_new;
-    header.appendChild(badge);
+  if (rikishi?.photo) {
+    const avatar = document.createElement("img");
+    avatar.src = buildPhotoUrl(rikishi.photo);
+    avatar.alt = `${rikishi.shikona || "Rikishi"} portrait`;
+    avatar.loading = "lazy";
+    avatar.width = 48;
+    avatar.height = 48;
+    infoWrapper.appendChild(avatar);
   }
 
-  card.appendChild(header);
-
-  const shikona = document.createElement("h2");
-  shikona.className = "card__shikona";
-  shikona.textContent = rikishi?.shikona || "—";
-  card.appendChild(shikona);
-
-  const meta = document.createElement("div");
-  meta.className = "card__meta";
-
-  if (rikishi) {
-    appendMeta(meta, "Heya", rikishi.heya_name);
-    appendMeta(meta, "Origin", rikishi.pref_name);
+  if (sideLabel === "East") {
+    infoWrapper.appendChild(nameSpan);
+    if (rikishi?.photo) {
+      const avatar = infoWrapper.querySelector("img");
+      infoWrapper.appendChild(avatar);
+    }
+    if (rikishi?.rank_new) {
+      cell.appendChild(createRankBadge(rikishi.rank_new));
+    }
+    cell.appendChild(sideTag);
+    cell.appendChild(infoWrapper);
   } else {
-    meta.classList.add("card__meta--empty");
-    meta.textContent = "Vacant";
+    if (rikishi?.photo) {
+      const avatar = infoWrapper.querySelector("img");
+      infoWrapper.appendChild(avatar);
+    }
+    infoWrapper.appendChild(nameSpan);
+    cell.appendChild(infoWrapper);
+    cell.appendChild(sideTag);
+    if (rikishi?.rank_new) {
+      cell.appendChild(createRankBadge(rikishi.rank_new));
+    }
   }
 
-  card.appendChild(meta);
-  return card;
+  return cell;
 }
 
-function appendMeta(metaEl, label, value) {
-  const span = document.createElement("span");
-  span.textContent = `${label}: `;
-  const strong = document.createElement("strong");
-  strong.textContent = value || "—";
-  span.appendChild(strong);
-  metaEl.appendChild(span);
+function createRankBadge(text) {
+  const badge = document.createElement("span");
+  badge.className = "badge--pill";
+  badge.textContent = text;
+  return badge;
+}
+
+function buildPhotoUrl(filename) {
+  return `https://www.sumo.or.jp/img/sumo_data/rikishi/60x60/${filename}`;
+}
+
+function formatRankLabel(group) {
+  const sample = group.east || group.west;
+  if (!sample) return group.name || "";
+  const rank = Number(sample.rank);
+  if (rank === 100) return "Y";
+  if (rank === 200) return "O";
+  if (rank === 300) return "S";
+  if (rank === 400) return "K";
+  if (rank >= 500) {
+    const number =
+      sample.number != null && sample.number !== ""
+        ? String(sample.number)
+        : sample.numberKanji || "";
+    return `M${number}`;
+  }
+  return group.name || "";
+}
+
+function getRankLevel(row) {
+  const rank = Number(row.rank);
+  if (rank === 100) return "yokozuna";
+  if (rank === 200) return "ozeki";
+  if (rank === 300) return "sekiwake";
+  if (rank === 400) return "komusubi";
+  return "maegashira";
+}
+
+function pickPayloadForLanguage(snapshot, language) {
+  if (!snapshot || typeof snapshot !== "object") return null;
+  if (snapshot.payloads && snapshot.payloads[language]) {
+    return snapshot.payloads[language];
+  }
+  if (snapshot.payloads && snapshot.payloads[DEFAULT_LANGUAGE]) {
+    return snapshot.payloads[DEFAULT_LANGUAGE];
+  }
+  if (snapshot.payload) {
+    return snapshot.payload;
+  }
+  return snapshot;
+}
+
+function describeSnapshot(snapshot, language) {
+  const parts = ["Static snapshot"];
+  if (snapshot?.fetchedAt) {
+    try {
+      const date = new Date(snapshot.fetchedAt);
+      parts.push(Number.isNaN(date.getTime()) ? snapshot.fetchedAt : date.toLocaleString());
+    } catch {
+      parts.push(snapshot.fetchedAt);
+    }
+  }
+  if (snapshot?.sources?.[language]) {
+    parts.push(snapshot.sources[language]);
+  }
+  return parts.join(" • ");
 }
 
 function normalizeLanguage(value) {
   return value === "jp" ? "jp" : "en";
-}
-
-function getApiUrl(language, { useProxy = false } = {}) {
-  if (API_OVERRIDE) {
-    return withLanguageParam(API_OVERRIDE, language);
-  }
-  const base = API_URLS[language] || API_URLS.en;
-  if (useProxy) {
-    return `${CORS_PROXY}${base}`;
-  }
-  return base;
-}
-
-function withLanguageParam(base, language) {
-  try {
-    const url = new URL(base, window.location.href);
-    if (!url.searchParams.has("lang")) {
-      url.searchParams.set("lang", language);
-    } else if (url.searchParams.get("lang") !== language) {
-      url.searchParams.set("lang", language);
-    }
-    return url.toString();
-  } catch (err) {
-    return base;
-  }
-}
-
-function setActiveLanguage(language) {
-  setLanguageContext(language);
-  elements.languageButtons.forEach((button) => {
-    if (normalizeLanguage(button.dataset.language) === language) {
-      button.classList.add("lang-button--active");
-    } else {
-      button.classList.remove("lang-button--active");
-    }
-  });
-}
-
-function getSourceLabel(type, { useProxy = false } = {}) {
-  if (type === "live") {
-    if (API_OVERRIDE) {
-      return "Live JSON (Custom)";
-    }
-    const langLabel = currentLanguage === "jp" ? "JP" : "EN";
-    return useProxy ? `Live JSON (${langLabel} via proxy)` : `Live JSON (${langLabel})`;
-  }
-  return currentLanguage === "jp"
-    ? "Sample data unavailable (showing EN)"
-    : "Sample data (EN)";
 }
 
 function showLoading() {
@@ -293,8 +301,4 @@ function setLanguageContext(language) {
   }
 }
 
-function shouldTryProxy(language) {
-  return !API_OVERRIDE && language === "jp";
-}
-
-loadBanzuke(currentLanguage);
+loadBanzuke();
