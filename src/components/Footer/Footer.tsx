@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react'
 import styles from './Footer.module.css'
 
 /** Returns the current year for copyright display */
