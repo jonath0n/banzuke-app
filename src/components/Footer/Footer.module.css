@@ -154,6 +154,14 @@
   }
 }
 
+.franSans {
+  font-family: 'FranSans Solid', sans-serif;
+  text-transform: none;
+  letter-spacing: normal;
+  word-spacing: -0.15em;
+  margin-right: 0.3em;
+}
+
 @media (max-width: 480px) {
   .meta {
     flex-direction: column;
