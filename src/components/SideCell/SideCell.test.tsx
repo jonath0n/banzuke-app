@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { Rikishi } from '../../types/banzuke'
+import { LanguageProvider } from '../../contexts/LanguageContext'
 import { SideCell } from './SideCell'
 
 const rikishi: Rikishi = {
@@ -25,7 +26,11 @@ const rikishi: Rikishi = {
 
 describe('SideCell', () => {
   it('renders rikishi name and avatar', () => {
-    render(<SideCell rikishi={rikishi} side="east" rankLevel="yokozuna" />)
+    render(
+      <LanguageProvider>
+        <SideCell rikishi={rikishi} side="east" rankLevel="yokozuna" />
+      </LanguageProvider>
+    )
 
     expect(screen.getByText('Test')).toBeInTheDocument()
     expect(screen.getByAltText('Portrait of Test from Test stable')).toBeInTheDocument()

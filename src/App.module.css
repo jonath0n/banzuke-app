@@ -1,3 +1,23 @@
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .status {
   text-align: center;
   padding: 3rem 1rem;
@@ -26,6 +46,93 @@
   animation: fadeSlideIn 400ms var(--ease-out-expo);
 }
 
+/* Search bar */
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  animation: fadeSlideIn 400ms var(--ease-out-expo) 200ms backwards;
+}
+
+.searchInputWrapper {
+  position: relative;
+  flex: 1;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.55rem 2.25rem 0.55rem 2.25rem;
+  font-family: inherit;
+  font-size: 0.8rem;
+  color: var(--text);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  outline: none;
+  transition:
+    border-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.searchInput::placeholder {
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+.searchInput:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(176, 48, 63, 0.1);
+}
+
+.searchClear {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  color: var(--muted);
+  cursor: pointer;
+  transition:
+    color 150ms ease,
+    background 150ms ease;
+}
+
+.searchClear:hover {
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.searchClear:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.searchCount {
+  font-size: 0.7rem;
+  color: var(--muted);
+  white-space: nowrap;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
 @media (prefers-color-scheme: dark) {
   .error {
     background: rgba(220, 38, 38, 0.12);
@@ -38,47 +145,24 @@
     border-color: rgba(217, 119, 6, 0.3);
     color: #fcd34d;
   }
-}
 
-.skeleton {
-  display: grid;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-
-.skeletonRow {
-  display: grid;
-  grid-template-columns: 1fr 60px 1fr;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  border-radius: var(--radius);
-  background: var(--card-bg);
-}
-
-.skeletonCell,
-.skeletonLabel {
-  height: 20px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.04));
-  background-size: 200% 100%;
-  animation: shimmer 1.2s ease-in-out infinite;
-}
-
-.skeletonLabel {
-  height: 24px;
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: 0% 50%;
+  .searchInput:focus {
+    box-shadow: 0 0 0 3px rgba(248, 132, 150, 0.15);
   }
-  100% {
-    background-position: 200% 50%;
+
+  .searchClear:hover {
+    background: rgba(255, 255, 255, 0.08);
   }
 }
 
 @media (max-width: 600px) {
-  .skeletonRow {
-    grid-template-columns: 1fr;
+  .searchBar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.35rem;
+  }
+
+  .searchCount {
+    text-align: center;
   }
 }

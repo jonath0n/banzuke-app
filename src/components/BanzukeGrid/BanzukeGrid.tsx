@@ -1,10 +1,11 @@
 import type { Rikishi } from '../../types/banzuke'
-import { groupRowsByRank } from '../../utils/formatting'
+import { groupRowsByRank, getRankLevel } from '../../utils/formatting'
 import { RankRow } from '../RankRow/RankRow'
 import styles from './BanzukeGrid.module.css'
 
 interface BanzukeGridProps {
   rows: Rikishi[]
+  onSelectRikishi?: (rikishi: Rikishi) => void
 }
 
 /** Number of skeleton rows to display during loading */
@@ -45,7 +46,13 @@ export function BanzukeGridSkeleton() {
   )
 }
 
-export function BanzukeGrid({ rows }: BanzukeGridProps) {
+/** Determines the rank level string from a RankGroup */
+function getGroupRankLevel(group: { east: Rikishi | null; west: Rikishi | null }): string {
+  const sample = group.east || group.west
+  return sample ? getRankLevel(sample) : 'maegashira'
+}
+
+export function BanzukeGrid({ rows, onSelectRikishi }: BanzukeGridProps) {
   // Filter out empty entries and sort by rank
   const cleanRows = rows.filter((entry) => entry && entry.shikona && entry.shikona.trim())
   cleanRows.sort((a, b) => Number(a.sort) - Number(b.sort))
@@ -54,17 +61,58 @@ export function BanzukeGrid({ rows }: BanzukeGridProps) {
 
   if (grouped.length === 0) {
     return (
-      <div role="status" className={styles.status}>
-        No rikishi available right now.
+      <div role="status" className={styles.emptyState}>
+        <div className={styles.emptyIcon} aria-hidden="true">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
+            <path
+              d="M8 15s1.5 2 4 2 4-2 4-2"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+            <circle cx="9" cy="10" r="1" fill="currentColor" />
+            <circle cx="15" cy="10" r="1" fill="currentColor" />
+          </svg>
+        </div>
+        <p>No rikishi available right now.</p>
+        <p className={styles.emptyHint}>Check back when the next banzuke is announced.</p>
       </div>
     )
   }
 
-  return (
-    <div className={styles.grid}>
-      {grouped.map((group, index) => (
-        <RankRow key={`${group.name}-${index}`} group={group} index={index} />
-      ))}
-    </div>
-  )
+  // Build elements with rank tier dividers
+  const elements: React.ReactNode[] = []
+  let lastRankLevel = ''
+
+  grouped.forEach((group, index) => {
+    const rankLevel = getGroupRankLevel(group)
+
+    // Insert tier divider when rank level changes
+    if (rankLevel !== lastRankLevel) {
+      const tierLabel = rankLevel.charAt(0).toUpperCase() + rankLevel.slice(1)
+      elements.push(
+        <div
+          key={`divider-${rankLevel}-${index}`}
+          className={styles.tierDivider}
+          data-rank-level={rankLevel}
+          role="separator"
+        >
+          <span className={styles.tierLabel}>{tierLabel}</span>
+        </div>
+      )
+      lastRankLevel = rankLevel
+    }
+
+    elements.push(
+      <RankRow
+        key={`${group.name}-${index}`}
+        group={group}
+        index={index}
+        onSelectRikishi={onSelectRikishi}
+      />
+    )
+  })
+
+  return <div className={styles.grid}>{elements}</div>
 }

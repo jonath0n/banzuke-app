@@ -13,6 +13,8 @@ interface SideCellProps {
   rankLevel: RankLevel
   /** Row index for staggered animations */
   rowIndex?: number
+  /** Callback when wrestler is clicked */
+  onSelect?: (rikishi: Rikishi) => void
 }
 
 /** Gets the display name for a rikishi based on current language */
@@ -27,7 +29,7 @@ function getDisplayName(rikishi: Rikishi | null, language: 'en' | 'jp'): string 
   return rikishi.shikona || '—'
 }
 
-function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0 }: SideCellProps) {
+function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0, onSelect }: SideCellProps) {
   const { language } = useLanguage()
   const [imageError, setImageError] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
@@ -75,17 +77,70 @@ function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0 }: SideCellProps
     </span>
   )
 
-  const sideLabelElement = <span className={styles['side-label']}>{sideLabel}</span>
+  const sideLabelElement = (
+    <span key="side" className={styles['side-label']}>
+      {sideLabel}
+    </span>
+  )
 
   // East: name then avatar; West: avatar then name
-  const infoContent = isEast ? [name, avatar] : [avatar, name]
-  const info = <span className={styles.info}>{infoContent}</span>
+  const info = (
+    <span key="info" className={styles.info}>
+      {isEast ? (
+        <>
+          {name}
+          {avatar}
+        </>
+      ) : (
+        <>
+          {avatar}
+          {name}
+        </>
+      )}
+    </span>
+  )
 
   // East: badge, label, info; West: info, label, badge (mirrored layout)
-  const content = isEast ? [badge, sideLabelElement, info] : [info, sideLabelElement, badge]
+  const content = isEast ? (
+    <>
+      {badge}
+      {sideLabelElement}
+      {info}
+    </>
+  ) : (
+    <>
+      {info}
+      {sideLabelElement}
+      {badge}
+    </>
+  )
+
+  const handleClick = () => {
+    if (rikishi && onSelect) {
+      onSelect(rikishi)
+    }
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if ((e.key === 'Enter' || e.key === ' ') && rikishi && onSelect) {
+      e.preventDefault()
+      onSelect(rikishi)
+    }
+  }
+
+  const isClickable = !!rikishi && !!onSelect
 
   return (
-    <div className={styles.cell} data-side={side} data-rank-level={rankLevel}>
+    <div
+      className={`${styles.cell} ${isClickable ? styles.clickable : ''}`}
+      data-side={side}
+      data-rank-level={rankLevel}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      role={isClickable ? 'button' : undefined}
+      tabIndex={isClickable ? 0 : undefined}
+      aria-label={isClickable ? `View details for ${displayName}` : undefined}
+    >
       {content}
     </div>
   )
