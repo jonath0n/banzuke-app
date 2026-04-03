@@ -213,6 +213,96 @@
   }
 }
 
+/* Tier dividers between rank groups */
+.tierDivider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.25rem 0;
+  margin-top: 0.5rem;
+}
+
+.tierDivider:first-child {
+  margin-top: 0;
+}
+
+.tierDivider::before,
+.tierDivider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.tierLabel {
+  font-family: 'FranSans Solid', 'Inter', system-ui, sans-serif;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+  opacity: 0.7;
+}
+
+.tierDivider[data-rank-level='yokozuna'] .tierLabel {
+  color: var(--tier-yokozuna);
+  opacity: 1;
+}
+
+.tierDivider[data-rank-level='yokozuna']::before,
+.tierDivider[data-rank-level='yokozuna']::after {
+  background: linear-gradient(90deg, var(--tier-yokozuna), transparent);
+}
+
+.tierDivider[data-rank-level='yokozuna']::after {
+  background: linear-gradient(270deg, var(--tier-yokozuna), transparent);
+}
+
+.tierDivider[data-rank-level='ozeki'] .tierLabel {
+  color: var(--tier-ozeki);
+  opacity: 1;
+}
+
+.tierDivider[data-rank-level='sekiwake'] .tierLabel {
+  color: var(--tier-sekiwake);
+  opacity: 0.9;
+}
+
+.tierDivider[data-rank-level='komusubi'] .tierLabel {
+  color: var(--tier-komusubi);
+  opacity: 0.9;
+}
+
+/* Empty state */
+.emptyState {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.emptyIcon {
+  opacity: 0.4;
+  margin-bottom: 0.5rem;
+}
+
+.emptyState p {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.emptyHint {
+  font-size: 0.85rem !important;
+  font-weight: 400 !important;
+  color: var(--muted) !important;
+}
+
 .status {
   text-align: center;
   padding: 2rem 1rem;
