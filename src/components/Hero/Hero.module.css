@@ -76,7 +76,7 @@
 
 .hero h1 {
   margin: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-wordmark);
   font-weight: 400;
   font-size: var(--text-display);
   letter-spacing: 0.01em;
@@ -134,7 +134,8 @@
 }
 
 .summary dt {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
+  font-weight: var(--label-weight);
   font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: var(--tracking-caps);
@@ -155,7 +156,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  font-family: var(--font-display);
+  font-family: var(--font-names);
+  font-weight: var(--label-weight);
   font-size: var(--text-xs);
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;

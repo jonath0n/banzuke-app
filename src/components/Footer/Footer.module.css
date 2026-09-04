@@ -91,10 +91,17 @@
 }
 
 .franSans {
-  font-family: 'FranSans Solid', sans-serif;
+  font-family: var(--font-wordmark);
   text-transform: none;
   word-spacing: -0.3em;
   margin-right: 0.2em;
+}
+
+.instrumentSans {
+  font-family: var(--font-names);
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 .hanko {

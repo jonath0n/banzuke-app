@@ -22,10 +22,14 @@
 .option {
   position: relative;
   z-index: 1;
-  min-width: 2.75rem;
+  /* Equal widths so the 50% slider lines up under either label */
+  flex: 1 1 0;
+  min-width: 3rem;
+  white-space: nowrap;
   min-height: 28px;
   padding: 0.3rem 0.6rem;
-  font-family: var(--font-display);
+  font-family: var(--font-names);
+  font-weight: 700;
   font-size: var(--text-xs);
   letter-spacing: 0.06em;
   text-transform: uppercase;

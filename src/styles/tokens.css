@@ -48,9 +48,11 @@
   --warning-rgb: 217 119 6;
 
   /* Typography ----------------------------------------------------------- */
-  /* Display voice: the wordmark, ring names, rank rail, chips */
-  --font-display: 'FranSans Solid', 'Segoe UI', system-ui, -apple-system, sans-serif;
-  /* Reading text: hero facts, search, modal details, footer */
+  /* The wordmark only: FranSans is a poster face whose M and A blur at text sizes */
+  --font-wordmark: 'FranSans Solid', 'Instrument Sans', system-ui, sans-serif;
+  /* Names voice: ring names, rank badges, tabs, chips (self-hosted, OFL) */
+  --font-names: 'Instrument Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  /* Reading text and every small label: hero facts, search, modal details, footer */
   --font-body:
     system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
     'Hiragino Sans', 'Yu Gothic', 'Noto Sans JP', sans-serif;
@@ -71,6 +73,8 @@
   --text-2xl: 1.75rem;
   --text-display: clamp(1.9rem, 5.5vw, 2.6rem);
   --tracking-caps: 0.08em;
+  /* Small caps labels (dt, tier labels, counts): body face, never the display faces */
+  --label-weight: 600;
 
   /* Rank name sizes: the size ladder carries the hierarchy */
   --name-yokozuna: 1.65rem;

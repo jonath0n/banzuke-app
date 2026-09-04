@@ -31,6 +31,11 @@ export function Footer() {
           <a href="https://emilysneddon.com" target="_blank" rel="noreferrer">
             Emily Sneddon
           </a>
+          {' · '}
+          <span className={styles.instrumentSans}>Instrument Sans</span> {strings.footerFontBy}{' '}
+          <a href="https://github.com/Instrument/instrument-sans" target="_blank" rel="noreferrer">
+            Instrument
+          </a>
         </p>
       </div>
       <p className={styles.disclaimer}>{strings.footerDisclaimer}</p>

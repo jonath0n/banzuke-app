@@ -176,9 +176,10 @@
 
 /* Ring name: the size ladder is the hierarchy */
 .name {
-  font-family: var(--font-display);
-  font-weight: 400;
+  font-family: var(--font-names);
+  font-weight: 600;
   font-size: var(--name-maegashira);
+  letter-spacing: -0.01em;
   line-height: 1.15;
   white-space: nowrap;
   overflow: hidden;
@@ -190,6 +191,7 @@
 .name:lang(ja) {
   font-family: var(--font-jp-serif);
   font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .name-en {
@@ -242,7 +244,8 @@
 .pill {
   flex-shrink: 0;
   padding: 0.2rem 0.4rem;
-  font-family: var(--font-display);
+  font-family: var(--font-names);
+  font-weight: 700;
   font-size: var(--text-xs);
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -297,29 +300,30 @@
     display: none;
   }
 
+  /* Nothing below --text-xs on a phone: names and chips must stay readable */
   .name,
   .cell[data-side='east'] .name {
     width: 100%;
     white-space: normal;
     overflow-wrap: anywhere;
     text-align: center;
-    font-size: var(--text-sm);
+    font-size: var(--text-base);
     line-height: 1.2;
   }
 
   .cell[data-rank-level='yokozuna'] .name {
-    font-size: var(--text-md);
+    font-size: var(--text-lg);
   }
 
   .cell[data-rank-level='ozeki'] .name,
   .cell[data-rank-level='sekiwake'] .name,
   .cell[data-rank-level='komusubi'] .name {
-    font-size: var(--text-base);
+    font-size: var(--text-md);
   }
 
   .pill {
-    font-size: 0.55rem;
-    padding: 0.15rem 0.3rem;
+    font-size: var(--text-xs);
+    padding: 0.15rem 0.35rem;
   }
 }
 

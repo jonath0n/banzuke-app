@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import type { Rikishi } from '../../types/banzuke'
 import type { RikishiProfile } from '../../data/profiles'
 import { buildPhotoUrl, profileUrl, PHOTO_DIMENSIONS } from '../../utils/formatting'
-import { getRankLabel } from '../../constants/ranks'
+import { jpRankShort } from '../../data/kanji'
 import { describePromotion } from '../../utils/promotion'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { useStrings } from '../../i18n/useStrings'
@@ -142,8 +142,15 @@ export function WrestlerModal({ rikishi, onClose }: WrestlerModalProps) {
                 </div>
               )}
             </div>
-            <div className={styles.rankBadge} data-rank-level={rikishi.rankLevel} lang="en">
-              {getRankLabel(rikishi.rankCode, rikishi.rankNumber) || rikishi.rankName.en}
+            {/* The seal under the portrait reads the rank in kanji, as the rail does;
+                the Rank row below carries it in the UI language for assistive tech. */}
+            <div
+              className={styles.rankBadge}
+              data-rank-level={rikishi.rankLevel}
+              lang="ja"
+              aria-hidden="true"
+            >
+              {jpRankShort(rikishi.rankCode, rikishi.rankNumber) || rikishi.rankName.jp}
             </div>
           </div>
 

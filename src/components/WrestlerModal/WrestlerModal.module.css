@@ -186,10 +186,12 @@
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  font-family: var(--font-display);
-  font-size: var(--text-sm);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-family: var(--font-jp-serif);
+  font-size: var(--text-md);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  white-space: nowrap;
   color: var(--on-accent);
   background: var(--accent);
   padding: 0.35rem 0.9rem;
@@ -209,9 +211,10 @@
 
 .primaryName {
   margin: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-names);
   font-size: var(--text-2xl);
-  font-weight: 400;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   line-height: 1.1;
 }
 
@@ -251,7 +254,8 @@
 }
 
 .metaLabel {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
+  font-weight: var(--label-weight);
   font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: var(--tracking-caps);
