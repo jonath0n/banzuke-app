@@ -213,17 +213,26 @@
   }
 }
 
-/* Tier dividers between rank groups */
+/* Each rank tier is a section: heading divider followed by its rows */
+.tier {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.tier + .tier {
+  margin-top: 0.5rem;
+}
+
+/* Tier dividers (h2) between rank groups */
 .tierDivider {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   padding: 0.25rem 0;
-  margin-top: 0.5rem;
-}
-
-.tierDivider:first-child {
-  margin-top: 0;
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
 }
 
 .tierDivider::before,
@@ -242,14 +251,9 @@
   text-transform: uppercase;
   color: var(--muted);
   white-space: nowrap;
-  opacity: 0.7;
 }
 
-.tierDivider[data-rank-level='yokozuna'] .tierLabel {
-  color: var(--tier-yokozuna);
-  opacity: 1;
-}
-
+/* Tier colour lives on the rules, not the small text, to keep it legible */
 .tierDivider[data-rank-level='yokozuna']::before,
 .tierDivider[data-rank-level='yokozuna']::after {
   background: linear-gradient(90deg, var(--tier-yokozuna), transparent);
@@ -259,19 +263,13 @@
   background: linear-gradient(270deg, var(--tier-yokozuna), transparent);
 }
 
-.tierDivider[data-rank-level='ozeki'] .tierLabel {
-  color: var(--tier-ozeki);
-  opacity: 1;
+.tierDivider[data-rank-level='ozeki']::before,
+.tierDivider[data-rank-level='ozeki']::after {
+  background: linear-gradient(90deg, var(--tier-ozeki), transparent);
 }
 
-.tierDivider[data-rank-level='sekiwake'] .tierLabel {
-  color: var(--tier-sekiwake);
-  opacity: 0.9;
-}
-
-.tierDivider[data-rank-level='komusubi'] .tierLabel {
-  color: var(--tier-komusubi);
-  opacity: 0.9;
+.tierDivider[data-rank-level='ozeki']::after {
+  background: linear-gradient(270deg, var(--tier-ozeki), transparent);
 }
 
 /* Empty state */
@@ -297,14 +295,26 @@
   color: var(--text);
 }
 
-.emptyHint {
-  font-size: 0.85rem !important;
-  font-weight: 400 !important;
-  color: var(--muted) !important;
+.emptyState p.emptyHint {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--muted);
 }
 
-.status {
-  text-align: center;
-  padding: 2rem 1rem;
-  color: var(--muted);
+.emptyAction {
+  margin-top: 0.75rem;
+  min-height: 44px;
+  padding: 0.5rem 1.25rem;
+  font: inherit;
+  font-weight: 600;
+  color: var(--on-accent);
+  background: var(--accent);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.emptyAction:hover {
+  background: var(--accent-hover);
 }

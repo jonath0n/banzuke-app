@@ -37,20 +37,25 @@ function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0, onSelect }: Sid
   const staggerDelay = Math.min(rowIndex * STAGGER_MS_PER_ROW, STAGGER_MAX_MS)
 
   const promotionLabel = rikishi ? describePromotion(rikishi, language, 'short') : null
-  const badge = promotionLabel ? (
-    <span className={styles.pill} title={describePromotion(rikishi!, language) ?? undefined}>
-      {promotionLabel}
-    </span>
-  ) : null
+  const badge =
+    rikishi && promotionLabel ? (
+      <span
+        className={styles.pill}
+        title={describePromotion(rikishi, language) ?? undefined}
+        lang={language === 'jp' ? 'ja' : 'en'}
+      >
+        {promotionLabel}
+      </span>
+    ) : null
 
   const photo = rikishi?.photo
   const imageLoaded = imageState === 'loaded'
   const avatar =
-    photo && imageState !== 'error' ? (
+    rikishi && photo && imageState !== 'error' ? (
       <span className={`${styles['avatar-wrapper']} ${imageLoaded ? styles.loaded : ''}`}>
         <img
           src={buildPhotoUrl(photo)}
-          alt={`Portrait of ${rikishi.shikona.en} from ${rikishi.heya.en || 'unknown'} stable`}
+          alt=""
           loading="lazy"
           decoding="async"
           referrerPolicy="no-referrer"
@@ -78,7 +83,7 @@ function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0, onSelect }: Sid
   )
 
   const sideLabelElement = (
-    <span key="side" className={styles['side-label']}>
+    <span key="side" className={styles['side-label']} aria-hidden="true">
       {sideLabel}
     </span>
   )
@@ -115,32 +120,25 @@ function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0, onSelect }: Sid
     </>
   )
 
-  const handleClick = () => {
-    if (rikishi && onSelect) {
-      onSelect(rikishi)
-    }
-  }
+  const className = `${styles.cell} ${rikishi && onSelect ? styles.clickable : ''}`
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if ((e.key === 'Enter' || e.key === ' ') && rikishi && onSelect) {
-      e.preventDefault()
-      onSelect(rikishi)
-    }
+  if (rikishi && onSelect) {
+    return (
+      <button
+        type="button"
+        className={className}
+        data-side={side}
+        data-rank-level={rankLevel}
+        onClick={() => onSelect(rikishi)}
+        aria-label={`${displayName}, ${isEast ? 'East' : 'West'}. View details`}
+      >
+        {content}
+      </button>
+    )
   }
-
-  const isClickable = !!rikishi && !!onSelect
 
   return (
-    <div
-      className={`${styles.cell} ${isClickable ? styles.clickable : ''}`}
-      data-side={side}
-      data-rank-level={rankLevel}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-      role={isClickable ? 'button' : undefined}
-      tabIndex={isClickable ? 0 : undefined}
-      aria-label={isClickable ? `View details for ${displayName}` : undefined}
-    >
+    <div className={className} data-side={side} data-rank-level={rankLevel}>
       {content}
     </div>
   )

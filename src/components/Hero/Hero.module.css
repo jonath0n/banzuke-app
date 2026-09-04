@@ -237,13 +237,13 @@
 
 .statusBadge[data-status='live'] {
   background: rgba(22, 163, 74, 0.1);
-  color: #16a34a;
+  color: #15803d;
   border: 1px solid rgba(22, 163, 74, 0.2);
 }
 
 .statusBadge[data-status='upcoming'] {
   background: rgba(37, 99, 235, 0.08);
-  color: #2563eb;
+  color: #1d4ed8;
   border: 1px solid rgba(37, 99, 235, 0.15);
 }
 
@@ -263,9 +263,8 @@
 
 /* Data freshness indicator */
 .freshness {
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   color: var(--muted);
-  opacity: 0.6;
   margin-top: 0.5rem;
   letter-spacing: 0.04em;
   animation: fadeIn 400ms var(--ease-out-expo) 500ms backwards;

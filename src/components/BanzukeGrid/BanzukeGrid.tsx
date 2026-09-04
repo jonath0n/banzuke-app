@@ -1,4 +1,4 @@
-import type { Rikishi } from '../../types/banzuke'
+import type { RankGroup, RankLevel, Rikishi } from '../../types/banzuke'
 import { groupRowsByRank } from '../../utils/formatting'
 import { RANK_LEVEL_NAMES } from '../../constants/ranks'
 import { RankRow } from '../RankRow/RankRow'
@@ -8,6 +8,10 @@ interface BanzukeGridProps {
   /** Wrestlers in banzuke order. */
   rows: Rikishi[]
   onSelectRikishi?: (rikishi: Rikishi) => void
+  /** Why the grid might be empty: no data at all, or a search with no matches. */
+  emptyReason?: 'no-data' | 'no-matches'
+  /** Shown in the no-matches state to reset the search. */
+  onClearSearch?: () => void
 }
 
 /** Number of skeleton rows to display during loading */
@@ -40,65 +44,112 @@ function SkeletonRow({ index }: { index: number }) {
 /** Loading skeleton for the banzuke grid */
 export function BanzukeGridSkeleton() {
   return (
-    <div className={styles['skeleton-grid']} aria-busy="true" aria-label="Loading banzuke data">
+    <div className={styles['skeleton-grid']} role="status" aria-busy="true">
+      <span className="visually-hidden">Loading the banzuke…</span>
       {Array.from({ length: SKELETON_ROW_COUNT }, (_, i) => (
-        <SkeletonRow key={i} index={i} />
+        <SkeletonRow key={i} index={i} aria-hidden="true" />
       ))}
     </div>
   )
 }
 
-export function BanzukeGrid({ rows, onSelectRikishi }: BanzukeGridProps) {
+interface Tier {
+  level: RankLevel
+  groups: RankGroup[]
+}
+
+/** Splits grouped rows into consecutive rank tiers (Yokozuna, Ozeki, …). */
+function splitIntoTiers(groups: RankGroup[]): Tier[] {
+  const tiers: Tier[] = []
+  for (const group of groups) {
+    const last = tiers[tiers.length - 1]
+    if (last && last.level === group.rankLevel) {
+      last.groups.push(group)
+    } else {
+      tiers.push({ level: group.rankLevel, groups: [group] })
+    }
+  }
+  return tiers
+}
+
+function EmptyState({
+  reason,
+  onClearSearch,
+}: {
+  reason: 'no-data' | 'no-matches'
+  onClearSearch?: () => void
+}) {
+  return (
+    <div role="status" className={styles.emptyState}>
+      <div className={styles.emptyIcon} aria-hidden="true">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
+          <path
+            d="M8 15s1.5 2 4 2 4-2 4-2"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+          <circle cx="9" cy="10" r="1" fill="currentColor" />
+          <circle cx="15" cy="10" r="1" fill="currentColor" />
+        </svg>
+      </div>
+      {reason === 'no-matches' ? (
+        <>
+          <p>No wrestlers match your search.</p>
+          <p className={styles.emptyHint}>Try a ring name, stable, or region in either language.</p>
+          {onClearSearch && (
+            <button type="button" className={styles.emptyAction} onClick={onClearSearch}>
+              Clear search
+            </button>
+          )}
+        </>
+      ) : (
+        <>
+          <p>No rikishi available right now.</p>
+          <p className={styles.emptyHint}>Check back when the next banzuke is announced.</p>
+        </>
+      )}
+    </div>
+  )
+}
+
+export function BanzukeGrid({
+  rows,
+  onSelectRikishi,
+  emptyReason = 'no-data',
+  onClearSearch,
+}: BanzukeGridProps) {
   const grouped = groupRowsByRank(rows)
 
   if (grouped.length === 0) {
-    return (
-      <div role="status" className={styles.emptyState}>
-        <div className={styles.emptyIcon} aria-hidden="true">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
-            <path
-              d="M8 15s1.5 2 4 2 4-2 4-2"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-            <circle cx="9" cy="10" r="1" fill="currentColor" />
-            <circle cx="15" cy="10" r="1" fill="currentColor" />
-          </svg>
-        </div>
-        <p>No rikishi available right now.</p>
-        <p className={styles.emptyHint}>Check back when the next banzuke is announced.</p>
-      </div>
-    )
+    return <EmptyState reason={emptyReason} onClearSearch={onClearSearch} />
   }
 
-  // Build elements with rank tier dividers
-  const elements: React.ReactNode[] = []
-  let lastRankLevel = ''
+  let rowIndex = 0
 
-  grouped.forEach((group, index) => {
-    const rankLevel = group.rankLevel
-
-    // Insert tier divider when rank level changes
-    if (rankLevel !== lastRankLevel) {
-      elements.push(
-        <div
-          key={`divider-${rankLevel}`}
-          className={styles.tierDivider}
-          data-rank-level={rankLevel}
-          role="separator"
+  return (
+    <div className={styles.grid}>
+      {splitIntoTiers(grouped).map((tier) => (
+        <section
+          key={tier.level}
+          className={styles.tier}
+          aria-labelledby={`tier-${tier.level}`}
+          data-rank-level={tier.level}
         >
-          <span className={styles.tierLabel}>{RANK_LEVEL_NAMES[rankLevel]}</span>
-        </div>
-      )
-      lastRankLevel = rankLevel
-    }
-
-    elements.push(
-      <RankRow key={group.key} group={group} index={index} onSelectRikishi={onSelectRikishi} />
-    )
-  })
-
-  return <div className={styles.grid}>{elements}</div>
+          <h2 id={`tier-${tier.level}`} className={styles.tierDivider} data-rank-level={tier.level}>
+            <span className={styles.tierLabel}>{RANK_LEVEL_NAMES[tier.level]}</span>
+          </h2>
+          {tier.groups.map((group) => (
+            <RankRow
+              key={group.key}
+              group={group}
+              index={rowIndex++}
+              onSelectRikishi={onSelectRikishi}
+            />
+          ))}
+        </section>
+      ))}
+    </div>
+  )
 }

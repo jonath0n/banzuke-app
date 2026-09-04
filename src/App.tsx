@@ -52,6 +52,10 @@ function AppContent() {
     setSelectedRikishi(null)
   }, [])
 
+  const handleClearSearch = useCallback(() => {
+    setSearchQuery('')
+  }, [])
+
   const handleToggleLanguage = useCallback(() => {
     setLanguage(language === 'en' ? 'jp' : 'en')
   }, [language, setLanguage])
@@ -84,8 +88,11 @@ function AppContent() {
 
   return (
     <>
+      <a href="#main" className="skip-link">
+        Skip to the banzuke
+      </a>
       <Hero data={data} />
-      <main>
+      <main id="main" tabIndex={-1}>
         {data && allRows.length > 0 && (
           <SearchBar
             query={searchQuery}
@@ -107,7 +114,12 @@ function AppContent() {
         )}
         {data && (
           <ErrorBoundary>
-            <BanzukeGrid rows={filteredRows} onSelectRikishi={handleSelectRikishi} />
+            <BanzukeGrid
+              rows={filteredRows}
+              onSelectRikishi={handleSelectRikishi}
+              emptyReason={trimmedQuery ? 'no-matches' : 'no-data'}
+              onClearSearch={handleClearSearch}
+            />
           </ErrorBoundary>
         )}
       </main>
@@ -132,7 +144,7 @@ function SearchBar({
   const isFiltering = query.trim().length > 0
 
   return (
-    <div className={styles.searchBar}>
+    <div className={styles.searchBar} role="search">
       <div className={styles.searchInputWrapper}>
         <svg
           className={styles.searchIcon}
@@ -146,12 +158,14 @@ function SearchBar({
           <path d="M16 16l4.5 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
         </svg>
         <input
-          type="text"
+          type="search"
           className={styles.searchInput}
           placeholder="Search wrestlers, stables, or regions..."
           value={query}
           onChange={(e) => onQueryChange(e.target.value)}
           aria-label="Search wrestlers"
+          aria-keyshortcuts="/"
+          autoComplete="off"
           data-search-input
         />
         {isFiltering && (
@@ -172,11 +186,9 @@ function SearchBar({
           </button>
         )}
       </div>
-      {isFiltering && (
-        <span className={styles.searchCount}>
-          {filteredCount} of {totalCount} wrestlers
-        </span>
-      )}
+      <span className={styles.searchCount} role="status" aria-live="polite">
+        {isFiltering ? `${filteredCount} of ${totalCount} wrestlers` : ''}
+      </span>
     </div>
   )
 }

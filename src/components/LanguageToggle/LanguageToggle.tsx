@@ -10,7 +10,12 @@ export function LanguageToggle({ language, onLanguageChange }: LanguageTogglePro
   const isEnglish = language === 'en'
 
   return (
-    <div className={styles.toggle} role="group" aria-label="Language selection">
+    <div
+      className={styles.toggle}
+      role="group"
+      aria-label="Language selection"
+      aria-keyshortcuts="l"
+    >
       <button
         type="button"
         className={`${styles.option} ${isEnglish ? styles.active : ''}`}

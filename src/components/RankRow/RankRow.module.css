@@ -93,7 +93,7 @@
 .label {
   font-family: 'FranSans Solid', 'Inter', system-ui, sans-serif;
   font-weight: 600;
-  color: #fff;
+  color: var(--on-accent);
   font-size: 0.8rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -119,6 +119,12 @@
 }
 
 /* Tier-specific label colors */
+.row[data-rank-level='yokozuna'] .label,
+.row[data-rank-level='ozeki'] .label,
+.row[data-rank-level='sekiwake'] .label {
+  color: var(--on-tier);
+}
+
 .row[data-rank-level='yokozuna'] .label {
   background: linear-gradient(135deg, var(--tier-yokozuna) 0%, #c9a227 100%);
   box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);

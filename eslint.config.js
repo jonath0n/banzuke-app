@@ -2,6 +2,7 @@ import js from '@eslint/js'
 import tseslint from 'typescript-eslint'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import jsxA11y from 'eslint-plugin-jsx-a11y'
 import globals from 'globals'
 
 export default tseslint.config(
@@ -28,6 +29,12 @@ export default tseslint.config(
     rules: {
       'no-console': 'off',
     },
+  },
+
+  // Accessibility rules for JSX
+  {
+    ...jsxA11y.flatConfigs.recommended,
+    files: ['src/**/*.tsx'],
   },
 
   // React configuration for app TypeScript/TSX files

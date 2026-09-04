@@ -5,9 +5,12 @@
   --card-bg: #ffffff;
   --surface: #fefefe;
   --text: #1a1a1a;
-  --muted: #666666;
+  --muted: #5c5c5c;
   --accent: #b0303f;
   --accent-hover: #8a252f;
+  /* Text placed on the accent colour and on the (light) tier colours. */
+  --on-accent: #ffffff;
+  --on-tier: #1a1a1a;
   --border: #e0e0e0;
   --radius: 0.5rem;
 
@@ -133,7 +136,12 @@ main {
 /* Selection styling */
 ::selection {
   background: var(--accent);
-  color: white;
+  color: var(--on-accent);
+}
+
+/* Lock page scroll while a modal dialog is open */
+body:has(dialog[open]) {
+  overflow: hidden;
 }
 
 /* Global focus-visible styling */
@@ -311,10 +319,13 @@ main {
     --card-bg: #1e1e1e;
     --surface: #242424;
     --text: #f0f0f0;
-    --muted: #999999;
+    --muted: #a8a8a8;
     --border: #333333;
     --accent: #f88496;
     --accent-hover: #ffa5b4;
+    /* The dark accent is a light pink, so text on it must be dark. */
+    --on-accent: #1a1a1a;
+    --on-tier: #1a1a1a;
     --blossom-mist: rgba(255, 150, 175, 0.07);
 
     /* Dark mode tier colors - warm gradient from gold to red */

@@ -16,7 +16,7 @@ export function Footer() {
           <a href="https://www.linkedin.com/in/jonathon2" target="_blank" rel="noreferrer">
             Jon Allen
           </a>
-          <span className={styles.hanko} aria-label="丈"></span>
+          <span className={styles.hanko} aria-hidden="true"></span>
         </p>
         <p>
           Data source:{' '}
