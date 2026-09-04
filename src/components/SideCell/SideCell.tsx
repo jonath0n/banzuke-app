@@ -72,15 +72,27 @@ function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0, onSelect }: Sid
 
   const displayName = getDisplayName(rikishi, language)
   const directionClass = language === 'jp' ? styles['name-jp'] : styles['name-en']
+  const langAttr = language === 'jp' ? 'ja' : 'en'
+  // Stable and home region under the name; shown on wide sheets only (CSS).
+  const detail = rikishi
+    ? [rikishi.heya[language], rikishi.pref[language]].filter(Boolean).join(' · ')
+    : ''
   const name = (
-    // Keyed by language so the swap animation replays on toggle.
-    <span
-      key={language}
-      className={`${styles.name} ${directionClass}`}
-      style={{ animationDelay: `${staggerDelay}ms` }}
-      lang={language === 'jp' ? 'ja' : 'en'}
-    >
-      {displayName}
+    <span key="text" className={styles.text}>
+      {/* Keyed by language so the swap animation replays on toggle. */}
+      <span
+        key={language}
+        className={`${styles.name} ${directionClass}`}
+        style={{ animationDelay: `${staggerDelay}ms` }}
+        lang={langAttr}
+      >
+        {displayName}
+      </span>
+      {detail && (
+        <span className={styles.detail} lang={langAttr}>
+          {detail}
+        </span>
+      )}
     </span>
   )
 
@@ -123,7 +135,11 @@ function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0, onSelect }: Sid
     </>
   )
 
-  const className = `${styles.cell} ${rikishi && onSelect ? styles.clickable : ''}`
+  const className = [
+    styles.cell,
+    rikishi && onSelect ? styles.clickable : '',
+    rikishi ? '' : styles.vacant,
+  ].join(' ')
 
   if (rikishi && onSelect) {
     return (

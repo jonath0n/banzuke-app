@@ -164,6 +164,7 @@ function AppContent() {
                 rows={filteredRows}
                 onSelectRikishi={handleSelectRikishi}
                 emptyReason={isFiltering ? 'no-matches' : 'no-data'}
+                query={query}
                 onClearSearch={handleClearSearch}
               />
             </div>

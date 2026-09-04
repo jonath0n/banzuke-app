@@ -170,14 +170,9 @@
   animation: fadeSlideIn var(--dur-slow) var(--ease-out-expo) 200ms backwards;
 }
 
+/* Status is ink on paper; only the live dot is vermilion */
 .statusBadge[data-status='live'] {
-  color: var(--status-live);
-  border-color: rgb(var(--status-live-rgb) / 0.35);
-}
-
-.statusBadge[data-status='upcoming'] {
-  color: var(--status-upcoming);
-  border-color: rgb(var(--status-upcoming-rgb) / 0.3);
+  border-color: rgb(var(--accent-rgb) / 0.5);
 }
 
 .statusBadge[data-status='completed'] {

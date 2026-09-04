@@ -25,17 +25,19 @@
   }
 }
 
-/* The sheet: one continuous piece of paper holding every rank */
+/* The sheet: one continuous piece of paper holding every rank.
+   `overflow: clip` rounds the corners without becoming a scroll container,
+   so the sticky tier bands inside can still pin to the viewport. */
 .grid {
   margin-top: var(--space-4);
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-md);
-  overflow: hidden;
+  overflow: clip;
 }
 
-/* A rank tier: heading band followed by its rows */
+/* A rank tier: heading band (numbered tiers only) followed by its rows */
 .tier {
   display: flex;
   flex-direction: column;
@@ -45,8 +47,16 @@
   border-top: 2px solid var(--rule);
 }
 
-/* Tier heading band (an <h2>) */
+/* Gold ink along the top of the sheet, where the Yokozuna sit */
+.tier[data-rank-level='yokozuna'] {
+  border-top: 2px solid var(--tier-yokozuna);
+}
+
+/* Tier heading band (an <h2>) stays in view while its rows scroll past */
 .tierDivider {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
   display: flex;
   align-items: baseline;
   justify-content: center;
@@ -55,7 +65,9 @@
   margin: 0;
   font-size: inherit;
   font-weight: inherit;
-  background: rgb(var(--ink-rgb) / 0.04);
+  /* Opaque paper under the ink tint, so rows never show through when pinned */
+  background:
+    linear-gradient(rgb(var(--ink-rgb) / 0.04), rgb(var(--ink-rgb) / 0.04)), var(--card-bg);
   border-bottom: 1px solid var(--rule);
 }
 
@@ -75,12 +87,6 @@
   text-transform: uppercase;
   color: var(--muted);
   white-space: nowrap;
-}
-
-/* Gold ink for the top of the sheet */
-.tierDivider[data-rank-level='yokozuna'] {
-  border-bottom-color: var(--tier-yokozuna);
-  box-shadow: inset 0 -1px 0 var(--tier-yokozuna);
 }
 
 /* Loading skeleton styles */
@@ -176,7 +182,8 @@
 }
 
 .emptyIcon {
-  opacity: 0.4;
+  color: var(--muted);
+  opacity: 0.6;
   margin-bottom: var(--space-2);
 }
 

@@ -1,6 +1,8 @@
 import type { RankGroup, RankLevel, Rikishi } from '../../types/banzuke'
 import { groupRowsByRank } from '../../utils/formatting'
 import { RANK_LEVEL_NAMES, RANK_LEVEL_KANJI } from '../../constants/ranks'
+import { useLanguage } from '../../contexts/LanguageContext'
+import { langAttr } from '../../i18n/strings'
 import { RankRow } from '../RankRow/RankRow'
 import { useStrings } from '../../i18n/useStrings'
 import styles from './BanzukeGrid.module.css'
@@ -11,9 +13,14 @@ interface BanzukeGridProps {
   onSelectRikishi?: (rikishi: Rikishi) => void
   /** Why the grid might be empty: no data at all, or a search with no matches. */
   emptyReason?: 'no-data' | 'no-matches'
+  /** The search text, quoted back in the no-matches state. */
+  query?: string
   /** Shown in the no-matches state to reset the search. */
   onClearSearch?: () => void
 }
+
+/** Tiers whose single row already stamps the rank on its rail need no band. */
+const BANDED_TIERS: ReadonlySet<RankLevel> = new Set(['maegashira', 'juryo'])
 
 /** Number of skeleton rows to display during loading */
 const SKELETON_ROW_COUNT = 8
@@ -74,32 +81,39 @@ function splitIntoTiers(groups: RankGroup[]): Tier[] {
   return tiers
 }
 
+/** An open brush circle (ensō): the sheet has nothing to show here. */
+function EnsoIcon() {
+  return (
+    <svg width="56" height="56" viewBox="0 0 56 56" fill="none" aria-hidden="true">
+      <path
+        d="M39 9.5A21 21 0 1 0 47.5 27"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
 function EmptyState({
   reason,
+  query,
   onClearSearch,
 }: {
   reason: 'no-data' | 'no-matches'
+  query?: string
   onClearSearch?: () => void
 }) {
   const strings = useStrings()
+  const { language } = useLanguage()
   return (
-    <div role="status" className={styles.emptyState}>
-      <div className={styles.emptyIcon} aria-hidden="true">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
-          <path
-            d="M8 15s1.5 2 4 2 4-2 4-2"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-          <circle cx="9" cy="10" r="1" fill="currentColor" />
-          <circle cx="15" cy="10" r="1" fill="currentColor" />
-        </svg>
+    <div role="status" className={styles.emptyState} lang={langAttr(language)}>
+      <div className={styles.emptyIcon}>
+        <EnsoIcon />
       </div>
       {reason === 'no-matches' ? (
         <>
-          <p>{strings.noMatches}</p>
+          <p>{strings.noMatches(query?.trim() ?? '')}</p>
           <p className={styles.emptyHint}>{strings.noMatchesHint}</p>
           {onClearSearch && (
             <button type="button" className={styles.emptyAction} onClick={onClearSearch}>
@@ -121,12 +135,13 @@ export function BanzukeGrid({
   rows,
   onSelectRikishi,
   emptyReason = 'no-data',
+  query,
   onClearSearch,
 }: BanzukeGridProps) {
   const grouped = groupRowsByRank(rows)
 
   if (grouped.length === 0) {
-    return <EmptyState reason={emptyReason} onClearSearch={onClearSearch} />
+    return <EmptyState reason={emptyReason} query={query} onClearSearch={onClearSearch} />
   }
 
   let rowIndex = 0
@@ -140,7 +155,12 @@ export function BanzukeGrid({
           aria-labelledby={`tier-${tier.level}`}
           data-rank-level={tier.level}
         >
-          <h2 id={`tier-${tier.level}`} className={styles.tierDivider} data-rank-level={tier.level}>
+          {/* Sanyaku headings stay for structure but the rail already shows them */}
+          <h2
+            id={`tier-${tier.level}`}
+            className={BANDED_TIERS.has(tier.level) ? styles.tierDivider : 'visually-hidden'}
+            data-rank-level={tier.level}
+          >
             <span className={styles.tierKanji} lang="ja">
               {RANK_LEVEL_KANJI[tier.level]}
             </span>

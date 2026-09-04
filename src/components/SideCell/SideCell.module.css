@@ -107,6 +107,45 @@
   min-width: 0;
 }
 
+/* Name over its detail line; East text is ranged against the rail */
+.text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  gap: 0.1rem;
+}
+
+.cell[data-side='east'] .text {
+  align-items: flex-end;
+  text-align: right;
+}
+
+/* Stable · region: only where the sheet is wide enough to carry a second line */
+.detail {
+  display: none;
+  max-width: 100%;
+  font-size: var(--text-sm);
+  color: var(--muted);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (min-width: 768px) {
+  .detail {
+    display: block;
+  }
+}
+
+/* A vacant slot reads as empty, not as an error */
+.vacant .name {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: var(--text-md);
+}
+
 /* Portrait */
 .avatar-wrapper {
   position: relative;
@@ -176,6 +215,7 @@
 
 /* Ring name: the size ladder is the hierarchy */
 .name {
+  max-width: 100%;
   font-family: var(--font-names);
   font-weight: 600;
   font-size: var(--name-maegashira);
@@ -289,6 +329,13 @@
 
   .cell[data-side='east'] .info {
     flex-direction: column-reverse;
+  }
+
+  .text,
+  .cell[data-side='east'] .text {
+    align-items: center;
+    text-align: center;
+    width: 100%;
   }
 
   .avatar-wrapper {

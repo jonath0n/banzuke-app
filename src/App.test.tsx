@@ -72,7 +72,7 @@ describe('App', () => {
     const user = userEvent.setup()
     render(<App />)
     await user.type(await screen.findByRole('searchbox'), 'zzzz')
-    expect(screen.getByText('No wrestlers match your search.')).toBeInTheDocument()
+    expect(screen.getByText(/Nothing on the sheet for/)).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Show all wrestlers' }))
     expect(await screen.findByRole('button', { name: /Hoshoryu/ })).toBeInTheDocument()
   })

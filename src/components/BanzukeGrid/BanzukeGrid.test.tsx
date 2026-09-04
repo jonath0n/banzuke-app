@@ -33,6 +33,10 @@ describe('BanzukeGrid', () => {
       '大関Ozeki',
       '前頭Maegashira',
     ])
+    // Sanyaku rails already stamp the rank, so only numbered tiers show a band
+    expect(headings[0]).toHaveClass('visually-hidden')
+    expect(headings[1]).toHaveClass('visually-hidden')
+    expect(headings[2]).not.toHaveClass('visually-hidden')
 
     const yokozuna = screen.getByRole('region', { name: /Yokozuna/ })
     expect(within(yokozuna).getByText('Hoshoryu')).toBeInTheDocument()
@@ -80,8 +84,15 @@ describe('BanzukeGrid', () => {
   it('explains an empty search and offers to clear it', async () => {
     const user = userEvent.setup()
     const onClearSearch = vi.fn()
-    renderGrid(<BanzukeGrid rows={[]} emptyReason="no-matches" onClearSearch={onClearSearch} />)
-    expect(screen.getByRole('status')).toHaveTextContent('No wrestlers match your search.')
+    renderGrid(
+      <BanzukeGrid
+        rows={[]}
+        emptyReason="no-matches"
+        query=" mongolia "
+        onClearSearch={onClearSearch}
+      />
+    )
+    expect(screen.getByRole('status')).toHaveTextContent('Nothing on the sheet for “mongolia”.')
     await user.click(screen.getByRole('button', { name: 'Show all wrestlers' }))
     expect(onClearSearch).toHaveBeenCalled()
   })

@@ -34,7 +34,7 @@ const en = {
   searchClear: 'Clear search',
   showAll: 'Show all wrestlers',
   searchCount: (matched: number, total: number) => `${matched} of ${total} wrestlers`,
-  noMatches: 'No wrestlers match your search.',
+  noMatches: (query: string) => `Nothing on the sheet for “${query}”.`,
   noMatchesHint:
     'Try a ring name, stable, region, or a rank like "M5" or "ozeki", in either language.',
   noData: 'No rikishi available right now.',
@@ -111,7 +111,7 @@ const jp: Strings = {
   searchClear: '検索をクリア',
   showAll: 'すべての力士を表示',
   searchCount: (matched: number, total: number) => `${total}人中 ${matched}人`,
-  noMatches: '該当する力士はいません。',
+  noMatches: (query: string) => `「${query}」に該当する力士はいません。`,
   noMatchesHint: '四股名、部屋、出身地、または「前頭五」「大関」などの番付で検索できます。',
   noData: '現在表示できる力士がいません。',
   noDataHint: '次の番付発表をお待ちください。',
