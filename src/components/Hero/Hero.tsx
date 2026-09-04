@@ -1,61 +1,69 @@
-import type { BanzukePayload } from '../../types/banzuke'
-import { formatDate, formatDateTime } from '../../utils/formatting'
+import type { Banzuke } from '../../types/banzuke'
+import {
+  formatDateRange,
+  formatDateTime,
+  formatRelativeTime,
+  getTournamentStatus,
+} from '../../utils/dates'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { LanguageToggle } from '../LanguageToggle/LanguageToggle'
 import styles from './Hero.module.css'
 
 interface HeroProps {
-  data: BanzukePayload | null
-  sourceLabel?: string
+  data: Banzuke | null
 }
 
-function TournamentStatus({ data }: { data: BanzukePayload }) {
-  const info = data.BashoInfo
-  if (!info) return null
+const DIVISION_LABELS = {
+  makuuchi: { en: 'Makuuchi', jp: '幕内' },
+  juryo: { en: 'Juryo', jp: '十両' },
+} as const
 
-  const isActive = info.BattleNow === 1
-  const day = info.day
+function TournamentStatus({ data }: { data: Banzuke }) {
+  const status = getTournamentStatus(data.basho)
 
-  if (isActive && day) {
-    return (
-      <span className={styles.statusBadge} data-status="live">
-        <span className={styles.liveDot} aria-hidden="true" />
-        Day {day}
-      </span>
-    )
+  switch (status.kind) {
+    case 'live':
+      return (
+        <span className={styles.statusBadge} data-status="live">
+          <span className={styles.liveDot} aria-hidden="true" />
+          Day {status.day}
+        </span>
+      )
+    case 'upcoming':
+      return (
+        <span className={styles.statusBadge} data-status="upcoming">
+          {status.daysUntil === 1 ? 'Starts tomorrow' : `Starts in ${status.daysUntil} days`}
+        </span>
+      )
+    case 'finished':
+      return (
+        <span className={styles.statusBadge} data-status="completed">
+          Completed
+        </span>
+      )
+    default:
+      return null
   }
-
-  // Check if tournament is upcoming or completed
-  const now = new Date()
-  const start = new Date(info.start_date)
-  const end = new Date(info.end_date)
-
-  if (!Number.isNaN(start.getTime()) && now < start) {
-    return (
-      <span className={styles.statusBadge} data-status="upcoming">
-        Upcoming
-      </span>
-    )
-  }
-
-  if (!Number.isNaN(end.getTime()) && now > end) {
-    return (
-      <span className={styles.statusBadge} data-status="completed">
-        Completed
-      </span>
-    )
-  }
-
-  return null
 }
 
-export function Hero({ data, sourceLabel }: HeroProps) {
+function Freshness({ data }: { data: Banzuke }) {
+  const { language } = useLanguage()
+  if (data.source === 'sample') {
+    return <p className={styles.freshness}>Bundled sample data</p>
+  }
+  const checked = formatRelativeTime(data.fetchedAt, language)
+  return (
+    <p className={styles.freshness}>Data from sumo.or.jp{checked ? ` · checked ${checked}` : ''}</p>
+  )
+}
+
+export function Hero({ data }: HeroProps) {
   const { language, setLanguage } = useLanguage()
-  const info = data?.BashoInfo
-  const start = formatDate(info?.start_date)
-  const end = formatDate(info?.end_date)
-  const bashoName = data?.basho_name || '—'
-  const division = data?.Kakuzuke ? ` (${data.Kakuzuke.replace(/&nbsp;/g, ' ')})` : ''
+  const basho = data?.basho
+  const bashoName = basho ? basho.name[language] || basho.name.en : '—'
+  const division = data ? ` (${DIVISION_LABELS[data.division][language]})` : ''
+  const dates = basho ? formatDateRange(basho.startDate, basho.endDate, language) : ''
+  const announced = basho?.announcedAt ? formatDateTime(basho.announcedAt, language) : ''
 
   return (
     <header className={styles.hero}>
@@ -73,14 +81,14 @@ export function Hero({ data, sourceLabel }: HeroProps) {
         </div>
         <div>
           <dt>Dates</dt>
-          <dd>{start && end ? `${start} → ${end}` : '—'}</dd>
+          <dd>{dates || '—'}</dd>
         </div>
         <div>
           <dt>Announced</dt>
-          <dd>{formatDateTime(info?.banzuke_announcement_datetime)}</dd>
+          <dd>{announced || '—'}</dd>
         </div>
       </dl>
-      {sourceLabel && <p className={styles.freshness}>{sourceLabel}</p>}
+      {data && <Freshness data={data} />}
     </header>
   )
 }

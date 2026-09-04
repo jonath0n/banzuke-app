@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { useBanzuke } from './hooks/useBanzuke'
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
@@ -21,8 +21,25 @@ function App() {
   )
 }
 
+const EMPTY: Rikishi[] = []
+
+/** Case-insensitive substring match across names, readings, stables and regions. */
+function matchesQuery(rikishi: Rikishi, query: string): boolean {
+  const q = query.toLowerCase()
+  const haystack = [
+    rikishi.shikona.en,
+    rikishi.shikona.jp,
+    rikishi.reading ?? '',
+    rikishi.heya.en,
+    rikishi.heya.jp,
+    rikishi.pref.en,
+    rikishi.pref.jp,
+  ]
+  return haystack.some((value) => value.toLowerCase().includes(q))
+}
+
 function AppContent() {
-  const { data, loading, error, sourceLabel } = useBanzuke()
+  const { data, loading, error } = useBanzuke()
   const { language, setLanguage } = useLanguage()
   const [selectedRikishi, setSelectedRikishi] = useState<Rikishi | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -58,33 +75,23 @@ function AppContent() {
     onEscape: handleEscape,
   })
 
-  // Filter rows based on search query
-  const allRows = data?.BanzukeTable || []
-  const filteredRows = searchQuery.trim()
-    ? allRows.filter((r) => {
-        const q = searchQuery.toLowerCase()
-        return (
-          r.shikona?.toLowerCase().includes(q) ||
-          r.shikona_en?.toLowerCase().includes(q) ||
-          r.shikona_jp?.includes(searchQuery) ||
-          r.heya_name?.toLowerCase().includes(q) ||
-          r.pref_name?.toLowerCase().includes(q)
-        )
-      })
-    : allRows
+  const allRows = data?.rikishi ?? EMPTY
+  const trimmedQuery = searchQuery.trim()
+  const filteredRows = useMemo(
+    () => (trimmedQuery ? allRows.filter((r) => matchesQuery(r, trimmedQuery)) : allRows),
+    [allRows, trimmedQuery]
+  )
 
   return (
     <>
-      <Hero data={data} sourceLabel={sourceLabel} />
+      <Hero data={data} />
       <main>
         {data && allRows.length > 0 && (
           <SearchBar
             query={searchQuery}
             onQueryChange={setSearchQuery}
-            totalCount={allRows.filter((r) => r.shikona?.trim()).length}
-            filteredCount={
-              searchQuery.trim() ? filteredRows.filter((r) => r.shikona?.trim()).length : 0
-            }
+            totalCount={allRows.length}
+            filteredCount={trimmedQuery ? filteredRows.length : 0}
           />
         )}
         {loading && !data && <BanzukeGridSkeleton />}
@@ -111,7 +118,6 @@ function AppContent() {
   )
 }
 
-/* Inline SearchBar to avoid circular dependency issues — will extract if needed */
 function SearchBar({
   query,
   onQueryChange,

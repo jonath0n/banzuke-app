@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
-import type { BanzukePayload, BanzukeSnapshot, Rikishi } from '../types/banzuke'
-import { isValidBanzukeSnapshot } from '../utils/validation'
+import type { Banzuke, DataSource } from '../types/banzuke'
+import { validateSnapshot } from '../data/schema'
+import { normalizeSnapshot } from '../data/normalize'
 
 // Use Vite's BASE_URL to handle deployment base paths (e.g., /banzuke-app/)
 const DATA_URL = `${import.meta.env.BASE_URL}latest-banzuke.json`
@@ -9,10 +10,9 @@ const MAX_RETRIES = 3
 const RETRY_DELAY_MS = 1000
 
 interface UseBanzukeResult {
-  data: BanzukePayload | null
+  data: Banzuke | null
   loading: boolean
   error: string | null
-  sourceLabel: string
 }
 
 /** Error types for more specific error handling */
@@ -20,11 +20,14 @@ type FetchErrorType = 'network' | 'http' | 'parse' | 'validation' | 'abort' | 'u
 
 class BanzukeError extends Error {
   type: FetchErrorType
+  /** Whether another attempt could plausibly succeed. */
+  retryable: boolean
 
-  constructor(message: string, type: FetchErrorType) {
+  constructor(message: string, type: FetchErrorType, retryable = true) {
     super(message)
     this.name = 'BanzukeError'
     this.type = type
+    this.retryable = retryable
   }
 }
 
@@ -41,7 +44,7 @@ function getErrorMessage(err: unknown): string {
       case 'parse':
         return 'Data error: The server returned invalid data format.'
       case 'validation':
-        return 'Data error: The banzuke data structure is invalid or corrupted.'
+        return `Data error: ${err.message}`
       case 'abort':
         return 'Request was cancelled.'
       default:
@@ -67,7 +70,7 @@ async function fetchWithRetry(
   for (let attempt = 0; attempt < retries; attempt++) {
     try {
       if (options?.signal?.aborted) {
-        throw new BanzukeError('Request aborted', 'abort')
+        throw new BanzukeError('Request aborted', 'abort', false)
       }
       const response = await fetch(url, options)
       if (response.ok) {
@@ -77,7 +80,8 @@ async function fetchWithRetry(
       if (response.status >= 400 && response.status < 500) {
         throw new BanzukeError(
           `HTTP ${response.status}: ${response.statusText || 'Client error'}`,
-          'http'
+          'http',
+          false
         )
       }
       lastError = new BanzukeError(
@@ -86,10 +90,10 @@ async function fetchWithRetry(
       )
     } catch (err) {
       if (err instanceof DOMException && err.name === 'AbortError') {
-        throw new BanzukeError('Request aborted', 'abort')
+        throw new BanzukeError('Request aborted', 'abort', false)
       }
       if (err instanceof BanzukeError) {
-        if (err.type === 'abort') {
+        if (!err.retryable) {
           throw err
         }
         lastError = err
@@ -102,7 +106,7 @@ async function fetchWithRetry(
     }
 
     // Wait before retrying (exponential backoff)
-    if (attempt < retries - 1 && lastError?.type !== 'abort') {
+    if (attempt < retries - 1) {
       await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS * (attempt + 1)))
     }
   }
@@ -111,64 +115,43 @@ async function fetchWithRetry(
 }
 
 /**
- * Merges English and Japanese payloads into a single payload with bilingual data.
- * Each rikishi gets both shikona_en and shikona_jp fields.
+ * Fetches, validates and normalizes a snapshot file.
  */
-function mergePayloads(snapshot: BanzukeSnapshot): BanzukePayload | null {
-  const enPayload = snapshot.payloads?.['en']
-  const jpPayload = snapshot.payloads?.['jp']
+async function loadSnapshot(
+  url: string,
+  source: DataSource,
+  signal: AbortSignal,
+  retries = MAX_RETRIES
+): Promise<Banzuke> {
+  const response = await fetchWithRetry(url, { cache: 'no-store', signal }, retries)
 
-  // Use English as base, fall back to Japanese, then legacy payload
-  const basePayload = enPayload || jpPayload || snapshot.payload
-  if (!basePayload) return null
-
-  // If we only have one language, return as-is
-  if (!enPayload || !jpPayload) {
-    return basePayload
+  let parsed: unknown
+  try {
+    parsed = await response.json()
+  } catch {
+    throw new BanzukeError('Invalid JSON response from server', 'parse')
   }
 
-  // Create a lookup of JP rikishi by ID for fast merging
-  const jpLookup = new Map<string | number, Rikishi>()
-  jpPayload.BanzukeTable.forEach((r) => {
-    jpLookup.set(r.rikishi_id, r)
-  })
-
-  // Merge: add both language names to each rikishi
-  const mergedTable: Rikishi[] = enPayload.BanzukeTable.map((enRikishi) => {
-    const jpRikishi = jpLookup.get(enRikishi.rikishi_id)
-    return {
-      ...enRikishi,
-      shikona_en: enRikishi.shikona,
-      shikona_jp: jpRikishi?.shikona || enRikishi.shikona,
-      banzuke_name_en: enRikishi.banzuke_name,
-      banzuke_name_jp: jpRikishi?.banzuke_name || enRikishi.banzuke_name,
-    }
-  })
-
-  return {
-    ...enPayload,
-    BanzukeTable: mergedTable,
+  const validation = validateSnapshot(parsed)
+  if (!validation.ok) {
+    throw new BanzukeError(validation.errors[0] ?? 'Snapshot is invalid', 'validation')
   }
+
+  const banzuke = normalizeSnapshot(validation.snapshot, source)
+  if (banzuke.rikishi.length === 0) {
+    throw new BanzukeError('No wrestlers in snapshot', 'validation')
+  }
+  return banzuke
 }
 
-function describeSnapshot(snapshot: BanzukeSnapshot): string {
-  const parts = ['Static snapshot']
-  if (snapshot?.fetchedAt) {
-    try {
-      const date = new Date(snapshot.fetchedAt)
-      parts.push(Number.isNaN(date.getTime()) ? snapshot.fetchedAt : date.toLocaleString())
-    } catch {
-      parts.push(snapshot.fetchedAt)
-    }
-  }
-  return parts.join(' • ')
+function isAbort(err: unknown): boolean {
+  return err instanceof BanzukeError && err.type === 'abort'
 }
 
 export function useBanzuke(): UseBanzukeResult {
-  const [data, setData] = useState<BanzukePayload | null>(null)
+  const [data, setData] = useState<Banzuke | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [sourceLabel, setSourceLabel] = useState('')
 
   useEffect(() => {
     let cancelled = false
@@ -179,64 +162,25 @@ export function useBanzuke(): UseBanzukeResult {
       setError(null)
 
       try {
-        const response = await fetchWithRetry(DATA_URL, {
-          cache: 'no-store',
-          signal: controller.signal,
-        })
-
-        let fetchedSnapshot: unknown
-        try {
-          fetchedSnapshot = await response.json()
-        } catch {
-          throw new BanzukeError('Invalid JSON response from server', 'parse')
-        }
-
-        // Validate the response structure
-        if (!isValidBanzukeSnapshot(fetchedSnapshot)) {
-          throw new BanzukeError('Banzuke data structure is invalid or corrupted', 'validation')
-        }
-
-        const payload = mergePayloads(fetchedSnapshot)
-        if (!payload) {
-          throw new BanzukeError('No data available in snapshot', 'validation')
-        }
-
+        const banzuke = await loadSnapshot(DATA_URL, 'live', controller.signal)
         if (!cancelled) {
-          setData(payload)
-          setSourceLabel(describeSnapshot(fetchedSnapshot))
+          setData(banzuke)
           setLoading(false)
         }
       } catch (err) {
-        if (err instanceof BanzukeError && err.type === 'abort') {
-          return
-        }
-        const errorMessage = getErrorMessage(err)
-        console.warn('Static snapshot load failed:', errorMessage, err)
+        if (isAbort(err)) return
+        console.warn('Static snapshot load failed:', getErrorMessage(err), err)
 
         try {
-          const fallbackResponse = await fetchWithRetry(SAMPLE_URL, {
-            signal: controller.signal,
-          })
-
-          let fallbackPayload: unknown
-          try {
-            fallbackPayload = await fallbackResponse.json()
-          } catch {
-            throw new BanzukeError('Invalid sample data format', 'parse')
-          }
-
+          const sample = await loadSnapshot(SAMPLE_URL, 'sample', controller.signal, 1)
           if (!cancelled) {
-            setData(fallbackPayload as BanzukePayload)
-            setSourceLabel('Sample data')
+            setData(sample)
             setError('Live data unavailable. Showing bundled sample data.')
             setLoading(false)
           }
         } catch (fallbackErr) {
-          if (fallbackErr instanceof BanzukeError && fallbackErr.type === 'abort') {
-            return
-          }
-          const fallbackMessage = getErrorMessage(fallbackErr)
-          console.error('Unable to load bundled sample data:', fallbackMessage)
+          if (isAbort(fallbackErr)) return
+          console.error('Unable to load bundled sample data:', getErrorMessage(fallbackErr))
           if (!cancelled) {
             setError(
               'Could not load the banzuke. Please check your connection and refresh to try again.'
@@ -255,5 +199,5 @@ export function useBanzuke(): UseBanzukeResult {
     }
   }, [])
 
-  return { data, loading, error, sourceLabel }
+  return { data, loading, error }
 }

@@ -1,9 +1,11 @@
 import type { Rikishi } from '../../types/banzuke'
-import { groupRowsByRank, getRankLevel } from '../../utils/formatting'
+import { groupRowsByRank } from '../../utils/formatting'
+import { RANK_LEVEL_NAMES } from '../../constants/ranks'
 import { RankRow } from '../RankRow/RankRow'
 import styles from './BanzukeGrid.module.css'
 
 interface BanzukeGridProps {
+  /** Wrestlers in banzuke order. */
   rows: Rikishi[]
   onSelectRikishi?: (rikishi: Rikishi) => void
 }
@@ -46,18 +48,8 @@ export function BanzukeGridSkeleton() {
   )
 }
 
-/** Determines the rank level string from a RankGroup */
-function getGroupRankLevel(group: { east: Rikishi | null; west: Rikishi | null }): string {
-  const sample = group.east || group.west
-  return sample ? getRankLevel(sample) : 'maegashira'
-}
-
 export function BanzukeGrid({ rows, onSelectRikishi }: BanzukeGridProps) {
-  // Filter out empty entries and sort by rank
-  const cleanRows = rows.filter((entry) => entry && entry.shikona && entry.shikona.trim())
-  cleanRows.sort((a, b) => Number(a.sort) - Number(b.sort))
-
-  const grouped = groupRowsByRank(cleanRows)
+  const grouped = groupRowsByRank(rows)
 
   if (grouped.length === 0) {
     return (
@@ -86,31 +78,25 @@ export function BanzukeGrid({ rows, onSelectRikishi }: BanzukeGridProps) {
   let lastRankLevel = ''
 
   grouped.forEach((group, index) => {
-    const rankLevel = getGroupRankLevel(group)
+    const rankLevel = group.rankLevel
 
     // Insert tier divider when rank level changes
     if (rankLevel !== lastRankLevel) {
-      const tierLabel = rankLevel.charAt(0).toUpperCase() + rankLevel.slice(1)
       elements.push(
         <div
-          key={`divider-${rankLevel}-${index}`}
+          key={`divider-${rankLevel}`}
           className={styles.tierDivider}
           data-rank-level={rankLevel}
           role="separator"
         >
-          <span className={styles.tierLabel}>{tierLabel}</span>
+          <span className={styles.tierLabel}>{RANK_LEVEL_NAMES[rankLevel]}</span>
         </div>
       )
       lastRankLevel = rankLevel
     }
 
     elements.push(
-      <RankRow
-        key={`${group.name}-${index}`}
-        group={group}
-        index={index}
-        onSelectRikishi={onSelectRikishi}
-      />
+      <RankRow key={group.key} group={group} index={index} onSelectRikishi={onSelectRikishi} />
     )
   })
 

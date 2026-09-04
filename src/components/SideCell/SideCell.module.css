@@ -212,11 +212,11 @@
 }
 
 /* Language-direction animations */
-.name-ltr {
+.name-en {
   animation: nameSwapLTR 320ms var(--ease-out-expo) backwards;
 }
 
-.name-rtl {
+.name-jp {
   animation: nameSwapRTL 320ms var(--ease-out-expo) backwards;
 }
 
@@ -428,8 +428,8 @@
     animation: none;
   }
 
-  .name-ltr,
-  .name-rtl {
+  .name-en,
+  .name-jp {
     animation: none;
   }
 

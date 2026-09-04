@@ -11,6 +11,7 @@
     "validate-data": "tsx scripts/validate-banzuke.ts public/latest-banzuke.json",
     "test": "vitest",
     "test:run": "vitest run",
+    "test:tz": "TZ=America/Los_Angeles vitest run src/utils/dates.test.ts src/components/Hero && TZ=Pacific/Kiritimati vitest run src/utils/dates.test.ts",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"scripts/**/*.ts\"",

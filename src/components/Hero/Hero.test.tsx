@@ -1,51 +1,64 @@
 import { render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
-import type { BanzukePayload } from '../../types/banzuke'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { LanguageProvider } from '../../contexts/LanguageContext'
+import { makeBanzuke } from '../../test/fixtures'
 import { Hero } from './Hero'
 
-const payload: BanzukePayload = {
-  BanzukeTable: [],
-  basho_name: 'Hatsu',
-  year_jp: 'Reiwa 6',
-  lang: 'en',
-  kakuzuke_id: '1',
-  page: '1',
-  Kakuzuke: 'Makuuchi',
-  list_max: 42,
-  basho_id: 1,
-  BashoInfo: {
-    today: '2024-01-01',
-    basho_id: 1,
-    start_date: '2024-01-14',
-    end_date: '2024-01-28',
-    year_jp: 'Reiwa 6',
-    basho_name: 'Hatsu',
-    basho_name_eng: 'Hatsu',
-    start_datetime: '2024-01-14T00:00:00Z',
-    end_datetime: '2024-01-28T00:00:00Z',
-    ticket_advanceselling_start_datetime: '2024-01-01T00:00:00Z',
-    ticket_advanceselling_end_datetime: '2024-01-02T00:00:00Z',
-    ticket_preselling_datetime: '2024-01-03T00:00:00Z',
-    year_eng: '2024',
-    JpDate: 'Reiwa 6-01',
-    BattleNow: 0,
-    banzuke_announcement_datetime: '2023-12-25T00:00:00Z',
-    day: '1',
-    venue_id: 1,
-  },
-  Result: 'OK',
+function renderHero(now: string, lang: 'en' | 'jp' = 'en') {
+  vi.setSystemTime(new Date(now))
+  window.history.replaceState({}, '', `/?lang=${lang}`)
+  return render(
+    <LanguageProvider>
+      <Hero data={makeBanzuke({ fetchedAt: new Date(now).toISOString() })} />
+    </LanguageProvider>
+  )
 }
 
 describe('Hero', () => {
-  it('renders the title and basho info', () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+    window.history.replaceState({}, '', '/')
+  })
+
+  it('renders the title, basho and JST dates', () => {
+    renderHero('2026-09-01T12:00:00Z')
+    expect(screen.getByText('Grand Sumo Banzuke')).toBeInTheDocument()
+    expect(screen.getByText('September Grand Sumo Tournament (Makuuchi)')).toBeInTheDocument()
+    expect(screen.getByText(/Sep 13\s*[–-]\s*27, 2026/)).toBeInTheDocument()
+    expect(screen.getByText(/Aug 31, 2026,? 6:00\sAM JST/)).toBeInTheDocument()
+  })
+
+  it('shows a countdown before the tournament', () => {
+    renderHero('2026-09-01T12:00:00Z')
+    expect(screen.getByText('Starts in 12 days')).toBeInTheDocument()
+  })
+
+  it('computes the day number during the tournament', () => {
+    renderHero('2026-09-20T03:00:00Z')
+    expect(screen.getByText('Day 8')).toBeInTheDocument()
+  })
+
+  it('marks a finished tournament as completed', () => {
+    renderHero('2026-10-05T00:00:00Z')
+    expect(screen.getByText('Completed')).toBeInTheDocument()
+  })
+
+  it('switches names and dates to Japanese', () => {
+    renderHero('2026-09-01T12:00:00Z', 'jp')
+    expect(screen.getByText('九月場所 (幕内)')).toBeInTheDocument()
+    expect(screen.getByText(/2026年9月13日/)).toBeInTheDocument()
+  })
+
+  it('renders placeholders without data', () => {
     render(
       <LanguageProvider>
-        <Hero data={payload} />
+        <Hero data={null} />
       </LanguageProvider>
     )
-
-    expect(screen.getByText('Grand Sumo Banzuke')).toBeInTheDocument()
-    expect(screen.getByText('Hatsu (Makuuchi)')).toBeInTheDocument()
+    expect(screen.getAllByText('—')).toHaveLength(3)
   })
 })

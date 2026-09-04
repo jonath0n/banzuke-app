@@ -175,6 +175,8 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* The JSA portrait is a tall 270x474 shot; keep the face in the circle. */
+  object-position: 50% 12%;
 }
 
 .photoPlaceholder {

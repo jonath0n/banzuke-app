@@ -1,27 +1,20 @@
 import { useEffect, useRef, useCallback } from 'react'
-import type { Rikishi, RankLevel } from '../../types/banzuke'
-import { getRankLevel, buildPhotoUrl } from '../../utils/formatting'
+import type { Rikishi } from '../../types/banzuke'
+import { buildPhotoUrl, PHOTO_DIMENSIONS } from '../../utils/formatting'
 import { getRankLabel } from '../../constants/ranks'
+import { describePromotion } from '../../utils/promotion'
 import { useLanguage } from '../../contexts/LanguageContext'
 import styles from './WrestlerModal.module.css'
-
-const LARGE_PHOTO_BASE = 'https://www.sumo.or.jp/img/sumo_data/rikishi/240x240/'
 
 interface WrestlerModalProps {
   rikishi: Rikishi | null
   onClose: () => void
 }
 
-function getRankDisplay(rikishi: Rikishi): string {
-  const rankCode = Number(rikishi.rank)
-  const number = rikishi.number != null && rikishi.number !== '' ? String(rikishi.number) : ''
-  const label = getRankLabel(rankCode, number)
-  return label || rikishi.banzuke_name || ''
-}
-
-function getSideLabel(ew: number): string {
-  return Number(ew) === 2 ? 'West' : 'East'
-}
+const SIDE_LABELS = {
+  east: { en: 'East', jp: '東' },
+  west: { en: 'West', jp: '西' },
+} as const
 
 export function WrestlerModal({ rikishi, onClose }: WrestlerModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
@@ -57,15 +50,13 @@ export function WrestlerModal({ rikishi, onClose }: WrestlerModalProps) {
 
   if (!rikishi) return null
 
-  const rankLevel: RankLevel = getRankLevel(rikishi)
-  const rankDisplay = getRankDisplay(rikishi)
-  const side = getSideLabel(rikishi.ew)
-  const enName = rikishi.shikona_en || rikishi.shikona
-  const jpName = rikishi.shikona_jp || ''
-  const primaryName = language === 'jp' ? jpName || enName : enName
-  const secondaryName = language === 'jp' ? enName : jpName
-  const photoUrl = rikishi.photo ? `${LARGE_PHOTO_BASE}${rikishi.photo}` : ''
-  const smallPhotoUrl = rikishi.photo ? buildPhotoUrl(rikishi.photo) : ''
+  const rankLevel = rikishi.rankLevel
+  const rankDisplay = getRankLabel(rikishi.rankCode, rikishi.rankNumber) || rikishi.rankName.en
+  const primaryName = rikishi.shikona[language] || rikishi.shikona.en
+  const secondaryName =
+    language === 'jp' ? rikishi.reading || rikishi.shikona.en : rikishi.shikona.jp
+  const portrait = PHOTO_DIMENSIONS['270x474']
+  const promotion = describePromotion(rikishi, language)
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -80,7 +71,7 @@ export function WrestlerModal({ rikishi, onClose }: WrestlerModalProps) {
         className={styles.modal}
         data-rank-level={rankLevel}
         open
-        aria-label={`Details for ${enName}`}
+        aria-label={`Details for ${rikishi.shikona.en}`}
         tabIndex={-1}
       >
         <button
@@ -101,16 +92,19 @@ export function WrestlerModal({ rikishi, onClose }: WrestlerModalProps) {
 
         <div className={styles.photoSection}>
           <div className={styles.photoWrapper} data-rank-level={rankLevel}>
-            {photoUrl ? (
+            {rikishi.photo ? (
               <img
-                src={photoUrl}
-                alt={`Portrait of ${enName}`}
-                width={160}
-                height={160}
+                src={buildPhotoUrl(rikishi.photo, '270x474')}
+                alt={`Portrait of ${rikishi.shikona.en}`}
+                width={portrait.width}
+                height={portrait.height}
+                decoding="async"
+                referrerPolicy="no-referrer"
                 onError={(e) => {
-                  // Fall back to small photo if large isn't available
-                  if (smallPhotoUrl && e.currentTarget.src !== smallPhotoUrl) {
-                    e.currentTarget.src = smallPhotoUrl
+                  // Fall back to the thumbnail if the portrait isn't available
+                  const small = buildPhotoUrl(rikishi.photo!, '60x60')
+                  if (e.currentTarget.src !== small) {
+                    e.currentTarget.src = small
                   }
                 }}
               />
@@ -134,43 +128,45 @@ export function WrestlerModal({ rikishi, onClose }: WrestlerModalProps) {
         </div>
 
         <div className={styles.details}>
-          <h2 className={styles.primaryName}>{primaryName}</h2>
+          <h2 className={styles.primaryName} lang={language === 'jp' ? 'ja' : 'en'}>
+            {primaryName}
+          </h2>
           {secondaryName && secondaryName !== primaryName && (
-            <p className={styles.secondaryName}>{secondaryName}</p>
+            <p className={styles.secondaryName} lang={language === 'jp' ? 'ja' : 'ja'}>
+              {secondaryName}
+            </p>
           )}
 
           <div className={styles.meta}>
             <div className={styles.metaItem}>
               <span className={styles.metaLabel}>Rank</span>
-              <span className={styles.metaValue}>
-                {rikishi.banzuke_name_en || rikishi.banzuke_name}
-              </span>
+              <span className={styles.metaValue}>{rikishi.rankName[language]}</span>
             </div>
             <div className={styles.metaItem}>
               <span className={styles.metaLabel}>Side</span>
               <span className={styles.metaValue}>
-                {side}
-                <span className={styles.sideKanji}>{Number(rikishi.ew) === 2 ? '西' : '東'}</span>
+                {SIDE_LABELS[rikishi.side].en}
+                <span className={styles.sideKanji} lang="ja">
+                  {SIDE_LABELS[rikishi.side].jp}
+                </span>
               </span>
             </div>
-            {rikishi.heya_name && (
+            {rikishi.heya.en && (
               <div className={styles.metaItem}>
                 <span className={styles.metaLabel}>Stable</span>
-                <span className={styles.metaValue}>{rikishi.heya_name}</span>
+                <span className={styles.metaValue}>{rikishi.heya[language]}</span>
               </div>
             )}
-            {rikishi.pref_name && (
+            {rikishi.pref.en && (
               <div className={styles.metaItem}>
                 <span className={styles.metaLabel}>From</span>
-                <span className={styles.metaValue}>{rikishi.pref_name}</span>
+                <span className={styles.metaValue}>{rikishi.pref[language]}</span>
               </div>
             )}
-            {rikishi.rank_new && (
+            {promotion && (
               <div className={styles.metaItem}>
                 <span className={styles.metaLabel}>Status</span>
-                <span className={`${styles.metaValue} ${styles.statusBadge}`}>
-                  {rikishi.rank_new}
-                </span>
+                <span className={`${styles.metaValue} ${styles.statusBadge}`}>{promotion}</span>
               </div>
             )}
           </div>
