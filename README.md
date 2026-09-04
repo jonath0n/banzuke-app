@@ -16,6 +16,8 @@ src/
     RankRow/                   # Single rank row (East | Label | West)
     SideCell/                  # Wrestler cell with photo & name
     Footer/                    # Attribution
+  data/
+    schema.ts                  # Raw upstream types + snapshot validation (shared with scripts)
   hooks/
     useBanzuke.ts              # Data fetching hook
   types/
@@ -28,11 +30,14 @@ public/
   assets/
     FranSans-Solid.otf         # Custom font
 scripts/
-  fetch-banzuke.mjs            # Fetches latest data from sumo.or.jp
+  fetch-banzuke.ts             # Fetches + validates the latest data from sumo.or.jp
+  validate-banzuke.ts          # Validates a snapshot file
+  lib/http.ts                  # fetch with timeout, retries and a User-Agent
+  lib/jp-search-page.ts        # Parses the Japanese rikishi list page
+  lib/jp-payload.ts            # Builds the Japanese payload from EN data + that page
 .github/
   workflows/
-    deploy.yml                 # Build & deploy to GitHub Pages
-    refresh-banzuke.yml        # Daily auto-refresh via GitHub Actions
+    deploy.yml                 # Refresh data, build, and deploy to GitHub Pages
 ```
 
 ## Getting started
@@ -55,35 +60,36 @@ npm run build
 
 This outputs to `dist/`. Deploy this folder to any static host (GitHub Pages, Netlify, Vercel, etc.).
 
-## Data refresh
+## Data refresh and deployment
 
-### Automatic (GitHub Actions)
+A single workflow (`.github/workflows/deploy.yml`) runs on every push to `main`, once a day at
+07:00 JST, and on demand from the Actions tab. It:
 
-The banzuke data is automatically refreshed daily at 6:00 AM JST via GitHub Actions. The workflow:
+1. Fetches the English and Japanese banzuke from sumo.or.jp and validates them
+   (both languages present, same tournament, same wrestlers, sane row counts).
+2. Commits `public/latest-banzuke.json` to `main` when the tournament data actually changed
+   (a fresh fetch timestamp alone is not a change).
+3. Builds the site with the freshest valid data and deploys it to GitHub Pages.
 
-1. Fetches both English and Japanese data from sumo.or.jp
-2. Commits the updated `public/latest-banzuke.json` if changed
-3. Your static host will pick up the changes on next deploy
+If sumo.or.jp is unreachable the committed snapshot is deployed instead, so a data hiccup never
+breaks a deploy.
 
-You can also trigger a manual refresh from the GitHub Actions tab.
+### Data sources
+
+- **English**: the JSON endpoint behind the official English banzuke page
+  (`EnHonbashoBanzuke/indexAjax`). Provides ids, rank codes, photos, tournament dates and
+  English names.
+- **Japanese**: the server-rendered rikishi list page (`ResultRikishiData/search`). Provides
+  kanji ring names, hiragana readings, and Japanese stable and prefecture names. The JSA's
+  Japanese JSON endpoints only answer browser sessions, so the Japanese payload is assembled
+  from this page plus the language-independent fields of the English payload.
 
 ### Manual (local)
 
-To refresh the data locally:
-
 ```sh
-npm run fetch-remote
+npm run fetch-remote     # fetch, validate and write public/latest-banzuke.json
+npm run validate-data    # validate the committed snapshot
 ```
-
-This fetches both EN and JP banzuke and saves to `public/latest-banzuke.json`.
-
-## Deployment
-
-The site auto-deploys to GitHub Pages on every push to `main`. The deploy workflow:
-
-1. Installs dependencies
-2. Builds the React app with Vite
-3. Deploys to GitHub Pages
 
 Live site: https://jonath0n.github.io/banzuke-app/
 

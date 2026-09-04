@@ -14,22 +14,25 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
 
-  // Node.js scripts configuration
+  // Node.js scripts configuration (TypeScript, run with tsx)
   {
-    files: ['scripts/**/*.mjs'],
+    files: ['scripts/**/*.ts'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
       globals: {
         ...globals.node,
-        ...globals.es2020,
+        ...globals.es2022,
       },
+    },
+    rules: {
+      'no-console': 'off',
     },
   },
 
-  // React configuration for all TypeScript/TSX files
+  // React configuration for app TypeScript/TSX files
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ['src/**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
