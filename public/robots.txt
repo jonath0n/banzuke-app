@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jonath0n.github.io/banzuke-app/sitemap.xml
