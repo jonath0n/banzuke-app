@@ -16,7 +16,7 @@ export default defineConfig({
       output: {
         // Keep React in its own long-lived chunk
         manualChunks: {
-          react: ['react', 'react-dom'],
+          react: ['react', 'react-dom', 'react-dom/client'],
         },
       },
     },
