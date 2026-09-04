@@ -32,6 +32,7 @@ public/
 scripts/
   fetch-banzuke.ts             # Fetches + validates the latest data from sumo.or.jp
   validate-banzuke.ts          # Validates a snapshot file
+  fetch-profiles.ts            # Scrapes wrestler profiles (height, weight, debut …)
   lib/http.ts                  # fetch with timeout, retries and a User-Agent
   lib/jp-search-page.ts        # Parses the Japanese rikishi list page
   lib/jp-payload.ts            # Builds the Japanese payload from EN data + that page
@@ -88,6 +89,7 @@ breaks a deploy.
 
 ```sh
 npm run fetch-remote     # fetch, validate and write public/latest-banzuke.json
+npm run fetch-profiles   # scrape wrestler profiles into public/rikishi-profiles.json
 npm run validate-data    # validate the committed snapshot
 ```
 

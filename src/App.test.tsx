@@ -12,7 +12,16 @@ describe('App', () => {
   beforeEach(() => {
     localStorage.clear()
     window.history.replaceState(null, '', '/')
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse(makeRawSnapshot())))
+    vi.stubGlobal(
+      'fetch',
+      vi.fn((url: RequestInfo | URL) =>
+        Promise.resolve(
+          String(url).includes('rikishi-profiles')
+            ? jsonResponse({ version: 1, fetchedAt: '2026-09-04T00:00:00Z', profiles: {} })
+            : jsonResponse(makeRawSnapshot())
+        )
+      )
+    )
   })
 
   afterEach(() => {

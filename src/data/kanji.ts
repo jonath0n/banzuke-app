@@ -67,4 +67,68 @@ export function jpEraYear(year: number): string {
 
 export const SIDE_KANJI = { east: '東', west: '西' } as const
 
+const KANJI_DIGITS: Record<string, number> = {
+  一: 1,
+  二: 2,
+  三: 3,
+  四: 4,
+  五: 5,
+  六: 6,
+  七: 7,
+  八: 8,
+  九: 9,
+}
+
+/** Parses 1–99 written in kanji (十七 → 17), Arabic digits, or 元 (→ 1). */
+export function fromKanjiNumber(text: string): number | null {
+  const s = text.trim()
+  if (!s) return null
+  if (/^\d+$/.test(s)) return Number(s)
+  if (s === '元') return 1
+  const m = /^(?:([一二三四五六七八九])?(十))?([一二三四五六七八九])?$/.exec(s)
+  if (!m || (!m[2] && !m[3])) return null
+  const tens = m[2] ? (m[1] ? KANJI_DIGITS[m[1]] : 1) : 0
+  const ones = m[3] ? KANJI_DIGITS[m[3]] : 0
+  return tens * 10 + ones
+}
+
+/** First Western year of each era minus one, so era year N maps to offset + N. */
+const ERA_OFFSETS: Record<string, number> = { 令和: 2018, 平成: 1988, 昭和: 1925 }
+
+const ERA_YEAR = '(令和|平成|昭和)(元|[一二三四五六七八九十]+|\\d+)年'
+
+function eraYear(era: string, year: string): number | null {
+  const n = fromKanjiNumber(year)
+  return n === null ? null : ERA_OFFSETS[era] + n
+}
+
+/**
+ * 令和五年五月場所 → { year: 2023, month: 5 }. Also accepts the May 2011
+ * 技量審査場所 (technical examination tournament held in place of a basho).
+ */
+export function parseJpBasho(text: string): { year: number; month: number } | null {
+  const m = new RegExp(
+    `^${ERA_YEAR}(十一|十二|[一二三四五六七八九]|\\d+)月(?:技量審査)?場所$`
+  ).exec(text.trim())
+  if (!m) return null
+  const year = eraYear(m[1], m[2])
+  const month = fromKanjiNumber(m[3])
+  if (year === null || month === null || month < 1 || month > 12) return null
+  return { year, month }
+}
+
+/** 平成12年6月7日（26歳） → "2000-06-07". Ignores any trailing text. */
+export function parseJpDate(text: string): string | null {
+  const m = new RegExp(
+    `^${ERA_YEAR}(\\d{1,2}|[一二三四五六七八九十]+)月(\\d{1,2}|[一二三四五六七八九十]+)日`
+  ).exec(text.trim())
+  if (!m) return null
+  const year = eraYear(m[1], m[2])
+  const month = fromKanjiNumber(m[3])
+  const day = fromKanjiNumber(m[4])
+  if (year === null || month === null || day === null) return null
+  if (month < 1 || month > 12 || day < 1 || day > 31) return null
+  return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+}
+
 export const DIVISION_KANJI: Record<Division, string> = { makuuchi: '幕内', juryo: '十両' }

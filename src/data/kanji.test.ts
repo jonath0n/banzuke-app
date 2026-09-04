@@ -1,10 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import {
+  fromKanjiNumber,
   jpBashoName,
   jpEraYear,
   jpNumberKanji,
   jpRankName,
   jpRankShort,
+  parseJpBasho,
+  parseJpDate,
   toKanjiNumber,
 } from './kanji'
 
@@ -63,5 +66,41 @@ describe('tournament naming', () => {
     expect(jpEraYear(2026)).toBe('令和八年')
     expect(jpEraYear(2030)).toBe('令和十二年')
     expect(jpEraYear(2018)).toBe('2018')
+  })
+})
+
+describe('fromKanjiNumber', () => {
+  it('reads kanji, Arabic and 元', () => {
+    expect(fromKanjiNumber('五')).toBe(5)
+    expect(fromKanjiNumber('十')).toBe(10)
+    expect(fromKanjiNumber('十七')).toBe(17)
+    expect(fromKanjiNumber('二十一')).toBe(21)
+    expect(fromKanjiNumber('12')).toBe(12)
+    expect(fromKanjiNumber('元')).toBe(1)
+    expect(fromKanjiNumber('')).toBeNull()
+    expect(fromKanjiNumber('abc')).toBeNull()
+  })
+})
+
+describe('parseJpBasho', () => {
+  it('converts era tournament names to year and month', () => {
+    expect(parseJpBasho('令和五年五月場所')).toEqual({ year: 2023, month: 5 })
+    expect(parseJpBasho('令和六年十一月場所')).toEqual({ year: 2024, month: 11 })
+    expect(parseJpBasho('令和元年九月場所')).toEqual({ year: 2019, month: 9 })
+    expect(parseJpBasho('平成三十年一月場所')).toEqual({ year: 2018, month: 1 })
+    expect(parseJpBasho('昭和六十三年三月場所')).toEqual({ year: 1988, month: 3 })
+    expect(parseJpBasho('令和8年9月場所')).toEqual({ year: 2026, month: 9 })
+    expect(parseJpBasho('平成二十三年五月技量審査場所')).toEqual({ year: 2011, month: 5 })
+    expect(parseJpBasho('九月場所')).toBeNull()
+    expect(parseJpBasho('令和五年十三月場所')).toBeNull()
+  })
+})
+
+describe('parseJpDate', () => {
+  it('converts era dates to ISO', () => {
+    expect(parseJpDate('平成12年6月7日（26歳）')).toBe('2000-06-07')
+    expect(parseJpDate('令和元年12月31日')).toBe('2019-12-31')
+    expect(parseJpDate('昭和64年1月7日')).toBe('1989-01-07')
+    expect(parseJpDate('2000-06-07')).toBeNull()
   })
 })

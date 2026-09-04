@@ -18,6 +18,7 @@ npm run test:run       # vitest, single run
 npm run test:tz        # date tests under non-JST time zones
 npm run build          # tsc -b && vite build → dist/
 npm run fetch-remote   # fetch + validate the latest banzuke into public/latest-banzuke.json
+npm run fetch-profiles # scrape wrestler profiles into public/rikishi-profiles.json (optional)
 npm run validate-data  # validate the committed snapshot
 ```
 
@@ -56,5 +57,7 @@ daily, and on demand, committing `public/latest-banzuke.json` only when tourname
 
 - `public/sample-data.json` is a full snapshot used only when the live file fails validation.
 - `readings` in the snapshot are hiragana readings of ring names, used for search and display.
+- `public/rikishi-profiles.json` (`src/data/profiles.ts`) is optional enrichment loaded on the first
+  modal open; the app must work without it.
 - Photos are hot-linked from the JSA CDN with `referrerPolicy="no-referrer"`; only the `60x60`
   and `270x474` sizes exist upstream.

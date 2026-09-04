@@ -1,13 +1,14 @@
 {
   "name": "banzuke-app",
   "version": "0.1.0",
-  "description": "Static viewer for the makuuchi banzuke with optional cloud automation.",
+  "description": "Static viewer for the grand sumo banzuke (Makuuchi and Juryo), refreshed automatically.",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "fetch-remote": "tsx scripts/fetch-banzuke.ts",
+    "fetch-profiles": "tsx scripts/fetch-profiles.ts",
     "validate-data": "tsx scripts/validate-banzuke.ts public/latest-banzuke.json",
     "test": "vitest",
     "test:run": "vitest run",

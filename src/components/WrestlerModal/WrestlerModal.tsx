@@ -1,12 +1,15 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import type { Rikishi } from '../../types/banzuke'
+import type { RikishiProfile } from '../../data/profiles'
 import { buildPhotoUrl, profileUrl, PHOTO_DIMENSIONS } from '../../utils/formatting'
 import { getRankLabel } from '../../constants/ranks'
 import { describePromotion } from '../../utils/promotion'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { useStrings } from '../../i18n/useStrings'
 import { langAttr } from '../../i18n/strings'
+import { useProfile } from '../../hooks/useProfiles'
+import { ageOn, formatBirthDate, formatMeasure, formatYearMonth } from '../../utils/profile'
 import styles from './WrestlerModal.module.css'
 
 interface WrestlerModalProps {
@@ -27,6 +30,7 @@ export function WrestlerModal({ rikishi, onClose }: WrestlerModalProps) {
   const strings = useStrings()
   const nameId = useId()
   const [copied, setCopied] = useState(false)
+  const profile = useProfile(rikishi?.id ?? null)
 
   useEffect(() => {
     const dialog = dialogRef.current
@@ -174,7 +178,9 @@ export function WrestlerModal({ rikishi, onClose }: WrestlerModalProps) {
               {rikishi.pref.en && (
                 <div className={styles.metaItem}>
                   <dt className={styles.metaLabel}>{strings.from}</dt>
-                  <dd className={styles.metaValue}>{rikishi.pref[language]}</dd>
+                  <dd className={styles.metaValue}>
+                    {profile?.birthplace[language] || rikishi.pref[language]}
+                  </dd>
                 </div>
               )}
               {rikishi.promotion && (
@@ -186,6 +192,8 @@ export function WrestlerModal({ rikishi, onClose }: WrestlerModalProps) {
                 </div>
               )}
             </dl>
+
+            {profile && <ProfileRows profile={profile} />}
 
             <div className={styles.actions}>
               <a
@@ -222,5 +230,48 @@ function SecondaryName({ rikishi }: { rikishi: Rikishi }) {
     <p className={styles.secondaryName} lang={isJapanese ? 'ja' : 'en'}>
       {secondary}
     </p>
+  )
+}
+
+/** Vital statistics and career facts from the scraped profile, when available. */
+function ProfileRows({ profile }: { profile: RikishiProfile }) {
+  const { language } = useLanguage()
+  const strings = useStrings()
+  const age = profile.birthDate ? ageOn(profile.birthDate) : null
+  const rows: Array<{ label: string; value: string; wide?: boolean }> = []
+
+  if (profile.realName[language]) {
+    rows.push({ label: strings.realName, value: profile.realName[language] })
+  }
+  if (profile.birthDate) {
+    const born = formatBirthDate(profile.birthDate, language)
+    rows.push({ label: strings.born, value: age === null ? born : `${born} ${strings.age(age)}` })
+  }
+  if (profile.heightCm !== null) {
+    rows.push({ label: strings.height, value: formatMeasure(profile.heightCm, 'cm', language) })
+  }
+  if (profile.weightKg !== null) {
+    rows.push({ label: strings.weight, value: formatMeasure(profile.weightKg, 'kg', language) })
+  }
+  if (profile.debut) {
+    rows.push({ label: strings.debut, value: formatYearMonth(profile.debut, language) })
+  }
+  if (profile.highestRank[language]) {
+    rows.push({ label: strings.highestRank, value: profile.highestRank[language] })
+  }
+  if (profile.kimarite[language]) {
+    rows.push({ label: strings.kimarite, value: profile.kimarite[language], wide: true })
+  }
+  if (rows.length === 0) return null
+
+  return (
+    <dl className={`${styles.meta} ${styles.profile}`}>
+      {rows.map((row) => (
+        <div key={row.label} className={`${styles.metaItem} ${row.wide ? styles.wide : ''}`}>
+          <dt className={styles.metaLabel}>{row.label}</dt>
+          <dd className={styles.metaValue}>{row.value}</dd>
+        </div>
+      ))}
+    </dl>
   )
 }

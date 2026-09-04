@@ -353,3 +353,15 @@
     animation: none;
   }
 }
+
+/* Profile facts sit under the banzuke facts, separated by a hairline */
+.profile {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+}
+
+/* Long values (signature moves) take the full row */
+.wide {
+  grid-column: 1 / -1;
+}

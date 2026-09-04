@@ -1,9 +1,17 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { LanguageProvider } from '../../contexts/LanguageContext'
 import { makeRikishi } from '../../test/fixtures'
+import { onosatoProfile } from '../../data/profiles.test'
+import { resetProfilesCache } from '../../hooks/useProfiles'
 import { WrestlerModal } from './WrestlerModal'
+
+const profilesFile = {
+  version: 1,
+  fetchedAt: '2026-09-04T00:00:00Z',
+  profiles: { '4227': onosatoProfile },
+}
 
 const onosato = makeRikishi({
   id: 4227,
@@ -26,7 +34,21 @@ function renderModal(rikishi = onosato, onClose = vi.fn(), lang: 'en' | 'jp' = '
 }
 
 describe('WrestlerModal', () => {
+  beforeEach(() => {
+    resetProfilesCache()
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve(profilesFile),
+      } as unknown as Response)
+    )
+  })
+
   afterEach(() => {
+    vi.unstubAllGlobals()
+    vi.restoreAllMocks()
     window.history.replaceState({}, '', '/')
   })
 
@@ -94,5 +116,38 @@ describe('WrestlerModal', () => {
       'href',
       'https://www.sumo.or.jp/ResultRikishiData/profile/4227/'
     )
+  })
+
+  it('adds profile facts once the profiles file has loaded', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date('2026-09-04T00:00:00Z'))
+    renderModal()
+    expect(await screen.findByText('Daiki Nakamura')).toBeInTheDocument()
+    expect(screen.getByText('June 7, 2000 (26)')).toBeInTheDocument()
+    expect(screen.getByText('190 cm')).toBeInTheDocument()
+    expect(screen.getByText('188 kg')).toBeInTheDocument()
+    expect(screen.getByText('May 2023')).toBeInTheDocument()
+    // Rank row and highest-rank row both read Yokozuna
+    expect(screen.getAllByText('Yokozuna')).toHaveLength(2)
+    expect(screen.getByText('tsuki, oshi, migi-yotsu, yori')).toBeInTheDocument()
+    vi.useRealTimers()
+  })
+
+  it('shows the detailed Japanese birthplace and labels in Japanese mode', async () => {
+    renderModal(onosato, vi.fn(), 'jp')
+    expect(await screen.findByText('中村 泰輝')).toBeInTheDocument()
+    expect(screen.getByText('石川県河北郡津幡町')).toBeInTheDocument()
+    expect(screen.getByText('本名')).toBeInTheDocument()
+    expect(screen.getByText('190cm')).toBeInTheDocument()
+    expect(screen.getByText('2023年5月')).toBeInTheDocument()
+  })
+
+  it('renders without profile facts when the file is unavailable', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 404 } as Response))
+    renderModal()
+    expect(screen.getByText('Ishikawa')).toBeInTheDocument()
+    await vi.waitFor(() => expect(console.warn).toHaveBeenCalled())
+    expect(screen.queryByText('Real name')).toBeNull()
   })
 })
