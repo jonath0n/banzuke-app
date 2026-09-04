@@ -40,6 +40,35 @@ describe('BanzukeGrid', () => {
     expect(within(screen.getByRole('region', { name: /Ozeki/ })).getByText('—')).toBeInTheDocument()
   })
 
+  it('renders three Ozeki as two rows under one heading', () => {
+    const ozeki = {
+      rankCode: 200,
+      rankLevel: 'ozeki' as const,
+      rankName: { en: 'Ozeki', jp: '大関' },
+    }
+    const rows = [
+      makeRikishi({ ...ozeki, id: 3622, side: 'east', shikona: { en: 'Kirishima', jp: '霧島' } }),
+      makeRikishi({ ...ozeki, id: 3661, side: 'west', shikona: { en: 'Kotozakura', jp: '琴櫻' } }),
+      makeRikishi({
+        ...ozeki,
+        id: 4230,
+        side: 'east',
+        seat: 2,
+        shikona: { en: 'Aonishiki', jp: '安青錦' },
+      }),
+    ]
+    renderGrid(<BanzukeGrid rows={rows} onSelectRikishi={vi.fn()} />)
+    expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(1)
+    const names = screen.getAllByRole('button').map((b) => b.getAttribute('aria-label'))
+    expect(names).toEqual([
+      'Kirishima, East. View details',
+      'Kotozakura, West. View details',
+      'Aonishiki, East. View details',
+    ])
+    // The vacant West seat beside the third Ozeki is shown as such
+    expect(screen.getByText('—')).toBeInTheDocument()
+  })
+
   it('makes wrestlers selectable buttons', async () => {
     const user = userEvent.setup()
     const onSelect = vi.fn()

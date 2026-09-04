@@ -149,6 +149,33 @@ export function makeRawSnapshotV1(overrides: Partial<RawSnapshotV1> = {}): RawSn
   }
 }
 
+/**
+ * A third Ozeki as the API lists one: rank number stays 1 and only the seat
+ * (and the sort key's last digits) mark the second pair. The West slot beside
+ * him is a placeholder row.
+ */
+export function makeThirdOzekiRow(lang: Lang): RawRikishi {
+  return makeRawRow(4, lang, {
+    sort: '002000000100002',
+    banzuke_name: lang === 'en' ? 'Ozeki' : '大関',
+    ew: 1,
+    banzuke_id: 5,
+    rikishi_id: 4230,
+    rikishi_banzuke_id: 114,
+    rank: 200,
+    rank_new: '再大関',
+    seat_order: 2,
+    number: 1,
+    numberKanji: lang === 'en' ? '#1' : '筆頭',
+    photo: '20230052.jpg',
+    pref_id: 10010,
+    pref_name: lang === 'en' ? 'Ukraine' : 'ウクライナ',
+    heya_id: 8,
+    heya_name: lang === 'en' ? 'Ajigawa' : '安治川',
+    shikona: lang === 'en' ? 'Aonishiki' : '安青錦　新大',
+  })
+}
+
 /** An all-blank alignment row as the API emits for vacancies. */
 export const placeholderRow = {
   pref_id: '',
@@ -175,6 +202,7 @@ export function makeRikishi(overrides: Partial<Rikishi> = {}): Rikishi {
     rankCode: 100,
     rankLevel: 'yokozuna',
     rankNumber: 1,
+    seat: 1,
     rankName: { en: 'Yokozuna', jp: '横綱' },
     numberKanji: '筆頭',
     sortKey: '001000000100001',

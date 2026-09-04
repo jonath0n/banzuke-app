@@ -63,6 +63,7 @@ function normalizeRikishi(
 ): Rikishi {
   const rankCode = toNumber(en.rank)
   const rankNumber = Math.max(1, toNumber(en.number, 1))
+  const seat = Math.max(1, toNumber(en.seat_order, 1))
   const side: Side = toNumber(en.ew) === 2 ? 'west' : 'east'
   const jpNumberKanjiValue =
     jp?.numberKanji && !jp.numberKanji.startsWith('#') ? jp.numberKanji : jpNumberKanji(rankNumber)
@@ -73,6 +74,7 @@ function normalizeRikishi(
     rankCode,
     rankLevel: getRankLevelFromCode(rankCode),
     rankNumber,
+    seat,
     rankName: {
       en: cleanText(en.banzuke_name),
       jp: cleanText(jp?.banzuke_name) || jpRankName(rankCode, rankNumber),

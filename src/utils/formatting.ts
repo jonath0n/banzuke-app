@@ -31,19 +31,24 @@ export function formatRankLabel(
 /**
  * Groups rikishi by rank position, pairing East and West. Input order is
  * preserved, so pass rows in banzuke order.
+ *
+ * A position is rank + number + seat: sanyaku ranks keep number 1 and use the
+ * seat for extra pairs (three Ozeki are seats 1 and 2), so the seat must be
+ * part of the key or the third wrestler would have nowhere to go.
  */
 export function groupRowsByRank(rows: Rikishi[]): RankGroup[] {
   const groups: RankGroup[] = []
   const lookup = new Map<string, RankGroup>()
 
   for (const rikishi of rows) {
-    const key = `${rikishi.rankCode}-${rikishi.rankNumber}`
+    const key = `${rikishi.rankCode}-${rikishi.rankNumber}-${rikishi.seat}`
     let group = lookup.get(key)
     if (!group) {
       group = {
         key,
         rankCode: rikishi.rankCode,
         rankNumber: rikishi.rankNumber,
+        seat: rikishi.seat,
         rankLevel: rikishi.rankLevel,
         name: rikishi.rankName,
         east: null,
@@ -59,7 +64,12 @@ export function groupRowsByRank(rows: Rikishi[]): RankGroup[] {
       // Two wrestlers marked for the same side at the same position: the
       // upstream table lists them consecutively, so fill the other slot.
       const other = rikishi.side === 'east' ? 'west' : 'east'
-      if (!group[other]) group[other] = rikishi
+      if (!group[other]) {
+        group[other] = rikishi
+      } else if (import.meta.env.DEV) {
+        // A full position means the data disagrees with itself; never drop silently.
+        console.warn(`groupRowsByRank: no slot for ${rikishi.shikona.en} at ${key}`)
+      }
     }
   }
 

@@ -46,6 +46,11 @@ export interface Rikishi {
   rankLevel: RankLevel
   /** Position within a numbered rank (Maegashira 1 → 1); 1 for sanyaku. */
   rankNumber: number
+  /**
+   * Pair within a rank position: 1 for the first East/West pair, 2+ when a
+   * rank holds extra pairs (a third Yokozuna or Ozeki). Upstream `seat_order`.
+   */
+  seat: number
   /** Full rank name, e.g. { en: 'Maegashira #17', jp: '前頭十七枚目' } */
   rankName: Localized
   /** Japanese ordinal for the position: 筆頭, 二枚目 … */
@@ -107,10 +112,12 @@ export interface BanzukeSet {
  * the same rank position.
  */
 export interface RankGroup {
-  /** Language-independent key, e.g. "500-17" */
+  /** Language-independent key `rankCode-rankNumber-seat`, e.g. "500-17-1" */
   key: string
   rankCode: number
   rankNumber: number
+  /** Pair within the position; a second Ozeki pair is seat 2. */
+  seat: number
   rankLevel: RankLevel
   name: Localized
   east: Rikishi | null
