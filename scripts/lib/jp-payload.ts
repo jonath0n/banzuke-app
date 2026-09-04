@@ -4,7 +4,13 @@
  * photos, tournament dates) are copied from the English payload; only the
  * text fields are replaced with their Japanese equivalents.
  */
-import { jpBashoName, jpEraYear, jpNumberKanji, jpRankName } from '../../src/data/kanji.ts'
+import {
+  DIVISION_KANJI,
+  jpBashoName,
+  jpEraYear,
+  jpNumberKanji,
+  jpRankName,
+} from '../../src/data/kanji.ts'
 import { isPlaceholderRow, type RawPayload, type RawRikishi } from '../../src/data/schema.ts'
 import type { JpSearchPage } from './jp-search-page.ts'
 
@@ -66,7 +72,7 @@ export function buildJpPayload(en: RawPayload, page: JpSearchPage): JpBuildResul
     basho_name: month ? jpBashoName(month) : en.BashoInfo?.basho_name || en.basho_name,
     year_jp: yearJp || en.year_jp,
     lang: 'JP',
-    Kakuzuke: '幕内',
+    Kakuzuke: String(en.kakuzuke_id) === '2' ? DIVISION_KANJI.juryo : DIVISION_KANJI.makuuchi,
   }
 
   return { payload, readings, missing }

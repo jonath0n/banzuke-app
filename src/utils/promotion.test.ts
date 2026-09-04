@@ -35,4 +35,21 @@ describe('describePromotion', () => {
     expect(describePromotion(newRank, 'en')).toBe('New Komusubi')
     expect(describePromotion(newRank, 'en', 'short')).toBe('New Komusubi')
   })
+
+  it('describes entering and returning to Juryo', () => {
+    const newJuryo = makeRikishi({
+      rankName: { en: 'Juryo #10', jp: '十両十枚目' },
+      promotion: { kind: 'new-to-division', raw: '新十両' },
+    })
+    expect(describePromotion(newJuryo, 'en')).toBe('New to Juryo')
+    expect(describePromotion(newJuryo, 'en', 'short')).toBe('New')
+    expect(describePromotion(newJuryo, 'jp', 'short')).toBe('新十両')
+
+    const backInJuryo = makeRikishi({
+      rankName: { en: 'Juryo #10', jp: '十両十枚目' },
+      promotion: { kind: 'returning', raw: '再十両' },
+    })
+    expect(describePromotion(backInJuryo, 'en')).toBe('Back in Juryo')
+    expect(describePromotion(backInJuryo, 'en', 'short')).toBe('Back')
+  })
 })

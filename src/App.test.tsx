@@ -77,4 +77,26 @@ describe('App', () => {
     expect(new URLSearchParams(window.location.search).get('lang')).toBe('jp')
     expect(document.documentElement.lang).toBe('ja')
   })
+
+  it('offers division tabs and switches to Juryo through the URL', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await screen.findByRole('button', { name: /Hoshoryu, East/ })
+    expect(screen.getByRole('tab', { name: /Makuuchi/ })).toHaveAttribute('aria-selected', 'true')
+    await user.click(screen.getByRole('tab', { name: /Juryo/ }))
+    expect(window.location.search).toBe('?div=juryo')
+    expect(await screen.findByRole('button', { name: /Dewanoryu, East/ })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Hoshoryu/ })).toBeNull()
+    expect(screen.getByRole('tabpanel')).toHaveAccessibleName(/Juryo/)
+    expect(screen.getByText(/Juryo\)/)).toBeInTheDocument()
+    await user.click(screen.getByRole('tab', { name: /Makuuchi/ }))
+    expect(window.location.search).toBe('')
+  })
+
+  it('opens Juryo from ?div= and a Juryo wrestler from ?rikishi=', async () => {
+    window.history.replaceState(null, '', '/?div=juryo&rikishi=2001')
+    render(<App />)
+    expect(await screen.findByRole('dialog')).toHaveAccessibleName('Kyokukaiyu')
+    expect(screen.getByRole('tab', { name: /Juryo/ })).toHaveAttribute('aria-selected', 'true')
+  })
 })

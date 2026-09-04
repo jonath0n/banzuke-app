@@ -7,13 +7,15 @@ import { useStrings } from './i18n/useStrings'
 import { buildSearchIndex, filterRikishi } from './utils/search'
 import { Hero } from './components/Hero/Hero'
 import { SearchBar } from './components/SearchBar/SearchBar'
+import { DivisionTabs } from './components/DivisionTabs/DivisionTabs'
+import { PANEL_ID, tabId } from './components/DivisionTabs/ids'
 import { BanzukeGrid, BanzukeGridSkeleton } from './components/BanzukeGrid/BanzukeGrid'
 import { WrestlerModal } from './components/WrestlerModal/WrestlerModal'
 import { ShortcutsHelp } from './components/ShortcutsHelp/ShortcutsHelp'
 import { Footer } from './components/Footer/Footer'
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary'
 import { ScrollToTop } from './components/ScrollToTop/ScrollToTop'
-import type { Rikishi } from './types/banzuke'
+import type { BanzukeSet, Division, Rikishi } from './types/banzuke'
 import styles from './App.module.css'
 
 function App() {
@@ -28,24 +30,43 @@ function App() {
 
 const EMPTY: Rikishi[] = []
 
+/** The division named in the URL, when the data actually has it. */
+function resolveDivision(param: string | null, data: BanzukeSet | null): Division {
+  return param === 'juryo' && data?.juryo ? 'juryo' : 'makuuchi'
+}
+
 function AppContent() {
   const { data, status, problem } = useBanzuke()
   const { language, setLanguage } = useLanguage()
   const strings = useStrings()
   const [searchQuery, setSearchQuery] = useUrlParam('q')
+  const [divisionParam, setDivisionParam] = useUrlParam('div')
   const [selectedId, setSelectedId] = useUrlParam('rikishi', 'push')
   const [helpOpen, setHelpOpen] = useState(false)
 
-  const allRows = data?.rikishi ?? EMPTY
+  const division = resolveDivision(divisionParam, data)
+  const banzuke = data ? (division === 'juryo' ? data.juryo : data.makuuchi) : null
+  const allRows = banzuke?.rikishi ?? EMPTY
   const query = searchQuery ?? ''
   const index = useMemo(() => buildSearchIndex(allRows), [allRows])
   const filteredRows = useMemo(() => filterRikishi(index, query), [index, query])
   const isFiltering = query.trim().length > 0
 
-  const selectedRikishi = useMemo(
-    () => (selectedId ? (allRows.find((r) => String(r.id) === selectedId) ?? null) : null),
-    [allRows, selectedId]
+  // A deep link may point at a wrestler in either division.
+  const selectedRikishi = useMemo(() => {
+    if (!selectedId || !data) return null
+    const everyone = data.juryo ? [...data.makuuchi.rikishi, ...data.juryo.rikishi] : allRows
+    return everyone.find((r) => String(r.id) === selectedId) ?? null
+  }, [allRows, data, selectedId])
+
+  const counts = useMemo(
+    () => ({
+      makuuchi: data?.makuuchi.rikishi.length,
+      juryo: data?.juryo?.rikishi.length,
+    }),
+    [data]
   )
+  const showTabs = data?.juryo != null
 
   const handleSelectRikishi = useCallback(
     (rikishi: Rikishi) => setSelectedId(String(rikishi.id)),
@@ -56,6 +77,11 @@ function AppContent() {
   const handleCloseModal = useCallback(() => clearUrlParam('rikishi'), [])
 
   const handleClearSearch = useCallback(() => setSearchQuery(null), [setSearchQuery])
+
+  const handleChangeDivision = useCallback(
+    (next: Division) => setDivisionParam(next === 'makuuchi' ? null : next),
+    [setDivisionParam]
+  )
 
   const handleToggleLanguage = useCallback(() => {
     setLanguage(language === 'en' ? 'jp' : 'en')
@@ -84,9 +110,9 @@ function AppContent() {
   })
 
   useEffect(() => {
-    const bashoName = data ? data.basho.name[language] || data.basho.name.en : ''
+    const bashoName = banzuke ? banzuke.basho.name[language] || banzuke.basho.name.en : ''
     document.title = bashoName ? `${strings.appTitle} · ${bashoName}` : strings.appTitle
-  }, [data, language, strings.appTitle])
+  }, [banzuke, language, strings.appTitle])
 
   const problemMessage =
     problem === 'sample'
@@ -102,9 +128,9 @@ function AppContent() {
       <a href="#main" className="skip-link" data-print="hide">
         {strings.skipLink}
       </a>
-      <Hero data={data} />
+      <Hero data={banzuke} />
       <main id="main" tabIndex={-1}>
-        {data && allRows.length > 0 && (
+        {banzuke && allRows.length > 0 && (
           <SearchBar
             value={query}
             onChange={(value) => setSearchQuery(value || null)}
@@ -123,17 +149,27 @@ function AppContent() {
             {problemMessage}
           </div>
         )}
-        {data && (
+        {showTabs && (
+          <DivisionTabs value={division} onChange={handleChangeDivision} counts={counts} />
+        )}
+        {banzuke && (
           <ErrorBoundary>
-            <BanzukeGrid
-              rows={filteredRows}
-              onSelectRikishi={handleSelectRikishi}
-              emptyReason={isFiltering ? 'no-matches' : 'no-data'}
-              onClearSearch={handleClearSearch}
-            />
+            <div
+              id={PANEL_ID}
+              role={showTabs ? 'tabpanel' : undefined}
+              aria-labelledby={showTabs ? tabId(division) : undefined}
+            >
+              <BanzukeGrid
+                key={division}
+                rows={filteredRows}
+                onSelectRikishi={handleSelectRikishi}
+                emptyReason={isFiltering ? 'no-matches' : 'no-data'}
+                onClearSearch={handleClearSearch}
+              />
+            </div>
           </ErrorBoundary>
         )}
-        {data && <ShortcutsHelp open={helpOpen} onToggle={setHelpOpen} />}
+        {banzuke && <ShortcutsHelp open={helpOpen} onToggle={setHelpOpen} />}
       </main>
       <Footer />
       <ScrollToTop />

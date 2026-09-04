@@ -1,21 +1,19 @@
 /**
- * Fetches the current makuuchi banzuke from sumo.or.jp, validates it, and
- * writes a bilingual snapshot file.
+ * Fetches the current banzuke (Makuuchi and Juryo) from sumo.or.jp in both
+ * languages, validates it, and writes a snapshot the app can load.
  *
- * Sources:
- *   EN  the JSON endpoint behind the English banzuke page (ids, ranks, photos,
- *       tournament dates, English names)
- *   JP  the server-rendered Japanese rikishi list page (kanji names, readings,
- *       Japanese stable and prefecture names). The JSA's Japanese JSON
- *       endpoints reject requests that don't come from a browser session, so
- *       the Japanese payload is assembled from this page plus the English data.
+ * English rows come from the JSON endpoint the official banzuke page uses.
+ * The Japanese JSON endpoints reject non-browser clients, so Japanese text
+ * (ring names in kanji, readings, stables, prefectures, rank names) is taken
+ * from the server-rendered rikishi list page and merged onto the English rows
+ * by rikishi_id.
  *
  * Usage:
  *   tsx scripts/fetch-banzuke.ts [--out <path>] [--previous <path>] [--if-changed] [--force]
  *
  * --out         Where to write the snapshot (default: public/latest-banzuke.json).
  * --previous    Snapshot to compare against (default: the --out path if it exists).
- * --if-changed  Only write when the payloads differ from --previous.
+ * --if-changed  Only write when the data differs from --previous.
  * --force       Allow writing a snapshot for an older tournament than --previous.
  *
  * Exit codes: 0 success, 1 fetch failure, 2 validation failure, 3 regression.
@@ -30,21 +28,29 @@ import { fetchJson, fetchText } from './lib/http.ts'
 import { parseJpSearchPage } from './lib/jp-search-page.ts'
 import { buildJpPayload } from './lib/jp-payload.ts'
 import {
+  DIVISIONS,
+  DIVISION_IDS,
   isPlaceholderRow,
   snapshotBashoId,
   snapshotsEqualIgnoringFetchedAt,
   validateSnapshot,
+  type Division,
   type Lang,
+  type RawDivisionSnapshot,
   type RawPayload,
   type RawSnapshot,
 } from '../src/data/schema.ts'
 
-/** Division 1 = makuuchi. */
-const DIVISION = 1
+const EN_BANZUKE_URL = 'https://sumo.or.jp/EnHonbashoBanzuke/indexAjax'
+/** The rikishi list form; the division is selected by POSTing `kakuzuke_id`. */
+const JP_SEARCH_URL = 'https://www.sumo.or.jp/ResultRikishiData/search/'
 
-export const SOURCES: Record<Lang, string> = {
-  en: `https://sumo.or.jp/EnHonbashoBanzuke/indexAjax/${DIVISION}/1/`,
-  jp: `https://www.sumo.or.jp/ResultRikishiData/search?kakuzuke_id=${DIVISION}`,
+export function sourcesFor(division: Division): Record<Lang, string> {
+  const id = DIVISION_IDS[division]
+  return {
+    en: `${EN_BANZUKE_URL}/${id}/1/`,
+    jp: `${JP_SEARCH_URL} (POST kakuzuke_id=${id})`,
+  }
 }
 
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
@@ -79,28 +85,74 @@ async function setOutput(name: string, value: string): Promise<void> {
   }
 }
 
-async function fetchSources(): Promise<{ en: RawPayload; jpHtml: string } | null> {
-  console.log(`Fetching EN banzuke from ${SOURCES.en}`)
-  console.log(`Fetching JP rikishi list from ${SOURCES.jp}`)
-  const [enResult, jpResult] = await Promise.allSettled([
-    fetchJson<RawPayload>(SOURCES.en, { form: { kakuzuke_id: DIVISION, page: 1 } }),
-    fetchText(SOURCES.jp),
-  ])
+interface Fetched {
+  en: RawPayload
+  jpHtml: string
+}
 
+/** Fetches every division in both languages; null if any request failed. */
+async function fetchSources(): Promise<Record<Division, Fetched> | null> {
+  const requests = DIVISIONS.flatMap((division) => {
+    const id = DIVISION_IDS[division]
+    console.log(`Fetching ${division}: EN banzuke ${sourcesFor(division).en}`)
+    console.log(`Fetching ${division}: JP rikishi list ${sourcesFor(division).jp}`)
+    return [
+      {
+        label: `${division} EN`,
+        promise: fetchJson<RawPayload>(`${EN_BANZUKE_URL}/${id}/1/`, {
+          form: { kakuzuke_id: id, page: 1 },
+        }),
+      },
+      {
+        label: `${division} JP`,
+        promise: fetchText(JP_SEARCH_URL, { form: { kakuzuke_id: id } }),
+      },
+    ]
+  })
+
+  const results = await Promise.allSettled(requests.map((request) => request.promise))
   let failed = false
-  for (const [label, result] of [
-    ['EN', enResult],
-    ['JP', jpResult],
-  ] as const) {
+  results.forEach((result, index) => {
     if (result.status === 'rejected') {
       const reason = result.reason instanceof Error ? result.reason.message : String(result.reason)
-      console.error(`${label} fetch failed: ${reason}`)
+      console.error(`${requests[index].label} fetch failed: ${reason}`)
       failed = true
     }
-  }
-  if (failed || enResult.status !== 'fulfilled' || jpResult.status !== 'fulfilled') return null
+  })
+  if (failed) return null
 
-  return { en: enResult.value, jpHtml: jpResult.value }
+  const values = results.map((result) => (result as PromiseFulfilledResult<unknown>).value)
+  const fetched = {} as Record<Division, Fetched>
+  DIVISIONS.forEach((division, index) => {
+    fetched[division] = {
+      en: values[index * 2] as RawPayload,
+      jpHtml: values[index * 2 + 1] as string,
+    }
+  })
+  return fetched
+}
+
+/** Merges the Japanese page onto the English payload for one division. */
+function buildDivision(division: Division, fetched: Fetched): RawDivisionSnapshot | null {
+  const jpPage = parseJpSearchPage(fetched.jpHtml)
+  const enWrestlers = fetched.en.BanzukeTable?.filter((row) => !isPlaceholderRow(row)).length ?? 0
+  console.log(
+    `${division}: EN payload has ${enWrestlers} wrestlers; JP page lists ${jpPage.rows.length}`
+  )
+
+  const jp = buildJpPayload(fetched.en, jpPage)
+  if (jp.missing.length > 0) {
+    console.error(
+      `${division}: the Japanese list does not include ${jp.missing.length} wrestler(s) from the English banzuke: ${jp.missing.join(', ')}. The two sources may describe different tournaments; try again later.`
+    )
+    return null
+  }
+
+  return {
+    sources: sourcesFor(division),
+    payloads: { en: fetched.en, jp: jp.payload },
+    readings: jp.readings,
+  }
 }
 
 async function main(): Promise<number> {
@@ -110,24 +162,17 @@ async function main(): Promise<number> {
   const fetched = await fetchSources()
   if (!fetched) return 1
 
-  const jpPage = parseJpSearchPage(fetched.jpHtml)
-  const enWrestlers = fetched.en.BanzukeTable?.filter((row) => !isPlaceholderRow(row)).length ?? 0
-  console.log(`EN payload: ${enWrestlers} wrestlers; JP page: ${jpPage.rows.length} wrestlers`)
-
-  const jp = buildJpPayload(fetched.en, jpPage)
-  if (jp.missing.length > 0) {
-    console.error(
-      `The Japanese list does not include ${jp.missing.length} wrestler(s) from the English banzuke: ${jp.missing.join(', ')}. The two sources may describe different tournaments; try again later.`
-    )
-    return 2
+  const divisions = {} as Record<Division, RawDivisionSnapshot>
+  for (const division of DIVISIONS) {
+    const built = buildDivision(division, fetched[division])
+    if (!built) return 2
+    divisions[division] = built
   }
 
   const candidate: RawSnapshot = {
-    version: 1,
+    version: 2,
     fetchedAt: new Date().toISOString(),
-    sources: SOURCES,
-    payloads: { en: fetched.en, jp: jp.payload },
-    readings: jp.readings,
+    divisions,
   }
 
   const validation = validateSnapshot(candidate)
@@ -140,7 +185,7 @@ async function main(): Promise<number> {
 
   const snapshot = validation.snapshot
   const bashoId = snapshotBashoId(snapshot)
-  const startDate = snapshot.payloads.en.BashoInfo.start_date
+  const startDate = snapshot.divisions.makuuchi.payloads.en.BashoInfo.start_date
   await setOutput('basho_id', String(bashoId))
   await setOutput('start_date', startDate)
 

@@ -1,6 +1,13 @@
 import { renderHook, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { makeBanzuke, makeRawPayload, makeRawSnapshot } from '../test/fixtures'
+import {
+  makeBanzuke,
+  makeBanzukeSet,
+  makeRawDivision,
+  makeRawPayload,
+  makeRawSnapshot,
+  makeRawSnapshotV1,
+} from '../test/fixtures'
 import { CACHE_KEY, readCachedBanzuke, useBanzuke } from './useBanzuke'
 
 function jsonResponse(body: unknown): Response {
@@ -29,15 +36,28 @@ describe('useBanzuke', () => {
 
     expect(result.current.problem).toBeNull()
     expect(result.current.refreshing).toBe(false)
-    expect(result.current.data?.source).toBe('live')
-    expect(result.current.data?.basho.name.en).toBe('September Grand Sumo Tournament')
-    expect(result.current.data?.rikishi[0].shikona).toEqual({ en: 'Hoshoryu', jp: '豊昇龍' })
+    const data = result.current.data
+    expect(data?.makuuchi.source).toBe('live')
+    expect(data?.makuuchi.basho.name.en).toBe('September Grand Sumo Tournament')
+    expect(data?.makuuchi.rikishi[0].shikona).toEqual({ en: 'Hoshoryu', jp: '豊昇龍' })
+    expect(data?.juryo?.rikishi).toHaveLength(28)
     expect(String(fetchSpy.mock.calls[0][0])).toMatch(/latest-banzuke\.json$/)
-    expect(readCachedBanzuke()?.basho.id).toBe(637)
+    expect(readCachedBanzuke()?.makuuchi.basho.id).toBe(637)
+    expect(readCachedBanzuke()?.juryo?.division).toBe('juryo')
+  })
+
+  it('still reads a version 1 (makuuchi-only) file', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse(makeRawSnapshotV1())))
+    const { result } = renderHook(() => useBanzuke())
+    await waitFor(() => expect(result.current.status).toBe('ready'))
+    expect(result.current.data?.makuuchi.rikishi).toHaveLength(24)
+    expect(result.current.data?.juryo).toBeNull()
   })
 
   it('shows the saved copy first, then the fresh data', async () => {
-    const cached = makeBanzuke({ basho: { ...makeBanzuke().basho, id: 634 } })
+    const cached = makeBanzukeSet({
+      makuuchi: makeBanzuke({ basho: { ...makeBanzuke().basho, id: 634 } }),
+    })
     localStorage.setItem(CACHE_KEY, JSON.stringify(cached))
     let resolveFetch: (r: Response) => void = () => {}
     vi.stubGlobal(
@@ -47,30 +67,37 @@ describe('useBanzuke', () => {
 
     const { result } = renderHook(() => useBanzuke())
     await waitFor(() => expect(result.current.status).toBe('ready'))
-    expect(result.current.data?.basho.id).toBe(634)
+    expect(result.current.data?.makuuchi.basho.id).toBe(634)
     expect(result.current.refreshing).toBe(true)
 
     resolveFetch(jsonResponse(makeRawSnapshot()))
     await waitFor(() => expect(result.current.refreshing).toBe(false))
-    expect(result.current.data?.basho.id).toBe(637)
+    expect(result.current.data?.makuuchi.basho.id).toBe(637)
     expect(result.current.problem).toBeNull()
   })
 
   it('keeps the saved copy and flags it stale when the refresh fails', async () => {
     vi.spyOn(console, 'warn').mockImplementation(() => undefined)
-    localStorage.setItem(CACHE_KEY, JSON.stringify(makeBanzuke()))
+    localStorage.setItem(CACHE_KEY, JSON.stringify(makeBanzukeSet({ juryo: null })))
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(notFound))
 
     const { result } = renderHook(() => useBanzuke())
     await waitFor(() => expect(result.current.refreshing).toBe(false))
     expect(result.current.status).toBe('ready')
     expect(result.current.problem).toBe('stale')
-    expect(result.current.data?.basho.id).toBe(637)
+    expect(result.current.data?.makuuchi.basho.id).toBe(637)
+    expect(result.current.data?.juryo).toBeNull()
   })
 
-  it('ignores a corrupt cache entry', async () => {
-    localStorage.setItem(CACHE_KEY, '{not json')
+  it('ignores a corrupt or outdated cache entry', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse(makeRawSnapshot())))
+
+    localStorage.setItem(CACHE_KEY, '{not json')
+    expect(readCachedBanzuke()).toBeNull()
+    // The pre-division cache shape (a bare Banzuke) is not reused.
+    localStorage.setItem(CACHE_KEY, JSON.stringify(makeBanzuke()))
+    expect(readCachedBanzuke()).toBeNull()
+
     const { result } = renderHook(() => useBanzuke())
     await waitFor(() => expect(result.current.status).toBe('ready'))
     expect(result.current.problem).toBeNull()
@@ -79,9 +106,13 @@ describe('useBanzuke', () => {
   it('falls back to sample data when the snapshot is invalid and nothing is cached', async () => {
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
     const sample = makeRawSnapshot({
-      payloads: {
-        en: makeRawPayload('en', 24, { basho_name: 'Sample Basho' }),
-        jp: makeRawPayload('jp'),
+      divisions: {
+        makuuchi: makeRawDivision('makuuchi', {
+          payloads: {
+            en: makeRawPayload('en', 24, { basho_name: 'Sample Basho' }),
+            jp: makeRawPayload('jp'),
+          },
+        }),
       },
     })
     const fetchSpy = vi
@@ -93,8 +124,8 @@ describe('useBanzuke', () => {
     const { result } = renderHook(() => useBanzuke())
     await waitFor(() => expect(result.current.status).toBe('ready'))
 
-    expect(result.current.data?.source).toBe('sample')
-    expect(result.current.data?.basho.name.en).toBe('Sample Basho')
+    expect(result.current.data?.makuuchi.source).toBe('sample')
+    expect(result.current.data?.makuuchi.basho.name.en).toBe('Sample Basho')
     expect(result.current.problem).toBe('sample')
     expect(warnSpy).toHaveBeenCalled()
     expect(String(fetchSpy.mock.calls[1][0])).toMatch(/sample-data\.json$/)

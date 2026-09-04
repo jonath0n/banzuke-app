@@ -13,6 +13,14 @@ export type Lang = 'en' | 'jp'
 
 export const LANGS: readonly Lang[] = ['en', 'jp'] as const
 
+/** Divisions the app knows about, in banzuke order (top first). */
+export const DIVISIONS = ['makuuchi', 'juryo'] as const
+
+export type Division = (typeof DIVISIONS)[number]
+
+/** Upstream `kakuzuke_id` for each division. */
+export const DIVISION_IDS: Record<Division, number> = { makuuchi: 1, juryo: 2 }
+
 /** A single wrestler row as returned by the API. */
 export interface RawRikishi {
   /** Zero-padded composite sort key (rank + number + seat), e.g. "005000001700001". */
@@ -74,16 +82,31 @@ export interface RawPayload {
   Result: string
 }
 
-/** The file written to `public/latest-banzuke.json`. */
-export interface RawSnapshot {
-  version?: 1
-  /** ISO timestamp of when the data was fetched. */
-  fetchedAt: string
+/** One division's bilingual payloads. */
+export interface RawDivisionSnapshot {
   /** Where each language payload came from. */
   sources: Record<Lang, string>
   payloads: Record<Lang, RawPayload>
   /** rikishi_id → hiragana reading of the ring name, when available. */
   readings?: Record<string, string>
+}
+
+/**
+ * The file written to `public/latest-banzuke.json` (format 2). Makuuchi is
+ * always present; lower divisions are optional so an older file, or a run
+ * where only the top division could be fetched, still works.
+ */
+export interface RawSnapshot {
+  version: 2
+  /** ISO timestamp of when the data was fetched. */
+  fetchedAt: string
+  divisions: { makuuchi: RawDivisionSnapshot } & Partial<Record<Division, RawDivisionSnapshot>>
+}
+
+/** The original single-division file layout, still accepted on read. */
+export interface RawSnapshotV1 extends RawDivisionSnapshot {
+  version?: 1
+  fetchedAt: string
 }
 
 export type ValidationResult =
@@ -198,8 +221,65 @@ function realIds(payload: RawPayload): Set<string> {
 }
 
 /**
- * Validates a complete snapshot: both languages present and internally valid,
- * and consistent with each other (same tournament, same set of wrestlers).
+ * Validates one division: both languages present and internally valid, and
+ * consistent with each other (same tournament, same set of wrestlers).
+ */
+export function validateDivision(
+  input: unknown,
+  label = 'division'
+): { errors: string[]; warnings: string[] } {
+  const errors: string[] = []
+  const warnings: string[] = []
+
+  if (!isRecord(input)) return { errors: [`${label}: not an object`], warnings }
+
+  if (!isRecord(input.payloads)) {
+    return { errors: [`${label}: payloads is missing`], warnings }
+  }
+
+  for (const lang of LANGS) {
+    if (!(lang in input.payloads)) {
+      errors.push(`${label}: payloads.${lang} is missing`)
+      continue
+    }
+    errors.push(...validatePayload(input.payloads[lang], `${label}: payloads.${lang}`))
+  }
+
+  if (errors.length > 0) return { errors, warnings }
+
+  const payloads = input.payloads as Record<Lang, RawPayload>
+  const en = payloads.en
+  const jp = payloads.jp
+
+  if (Number(en.basho_id) !== Number(jp.basho_id)) {
+    errors.push(
+      `${label}: basho_id differs between languages (en ${en.basho_id}, jp ${jp.basho_id})`
+    )
+  }
+
+  const enIds = realIds(en)
+  const jpIds = realIds(jp)
+  const missingInJp = [...enIds].filter((id) => !jpIds.has(id))
+  const missingInEn = [...jpIds].filter((id) => !enIds.has(id))
+  if (missingInJp.length > 0) {
+    errors.push(`${label}: rikishi_id present in en but not jp: ${missingInJp.join(', ')}`)
+  }
+  if (missingInEn.length > 0) {
+    errors.push(`${label}: rikishi_id present in jp but not en: ${missingInEn.join(', ')}`)
+  }
+
+  if (!isRecord(input.sources)) {
+    warnings.push(`${label}: sources is missing`)
+  }
+
+  return { errors, warnings }
+}
+
+/**
+ * Validates a complete snapshot in either file format and returns it in the
+ * current (version 2) shape. Every present division must be valid, describe
+ * the same tournament, carry the expected `kakuzuke_id`, and no wrestler may
+ * appear in two divisions.
  */
 export function validateSnapshot(input: unknown): ValidationResult {
   const errors: string[] = []
@@ -211,54 +291,83 @@ export function validateSnapshot(input: unknown): ValidationResult {
     errors.push('fetchedAt is not a valid timestamp')
   }
 
-  if (!isRecord(input.payloads)) {
-    return { ok: false, errors: [...errors, 'payloads is missing'] }
+  // Version 1 files carry a single (makuuchi) division at the top level.
+  const isV1 = !('divisions' in input) && 'payloads' in input
+  const divisions: unknown = isV1 ? { makuuchi: input } : input.divisions
+
+  if (!isRecord(divisions)) {
+    return { ok: false, errors: [...errors, 'divisions is missing'] }
+  }
+  if (!('makuuchi' in divisions)) {
+    return { ok: false, errors: [...errors, 'divisions.makuuchi is missing'] }
   }
 
-  for (const lang of LANGS) {
-    if (!(lang in input.payloads)) {
-      errors.push(`payloads.${lang} is missing`)
-      continue
+  const present = DIVISIONS.filter((division) => division in divisions)
+  for (const division of present) {
+    const result = validateDivision(divisions[division], `divisions.${division}`)
+    errors.push(...result.errors)
+    warnings.push(...result.warnings)
+  }
+  for (const key of Object.keys(divisions)) {
+    if (!(DIVISIONS as readonly string[]).includes(key)) {
+      warnings.push(`divisions.${key} is not a known division and will be ignored`)
     }
-    errors.push(...validatePayload(input.payloads[lang], `payloads.${lang}`))
   }
 
   if (errors.length > 0) return { ok: false, errors }
 
-  const payloads = input.payloads as Record<Lang, RawPayload>
-  const en = payloads.en
-  const jp = payloads.jp
-
-  if (Number(en.basho_id) !== Number(jp.basho_id)) {
-    errors.push(`basho_id differs between languages (en ${en.basho_id}, jp ${jp.basho_id})`)
-  }
-
-  const enIds = realIds(en)
-  const jpIds = realIds(jp)
-  const missingInJp = [...enIds].filter((id) => !jpIds.has(id))
-  const missingInEn = [...jpIds].filter((id) => !enIds.has(id))
-  if (missingInJp.length > 0) {
-    errors.push(`rikishi_id present in en but not jp: ${missingInJp.join(', ')}`)
-  }
-  if (missingInEn.length > 0) {
-    errors.push(`rikishi_id present in jp but not en: ${missingInEn.join(', ')}`)
-  }
-
-  if (!isRecord(input.sources)) {
-    warnings.push('sources is missing')
+  const valid = divisions as Record<Division, RawDivisionSnapshot>
+  const bashoId = Number(valid.makuuchi.payloads.en.basho_id)
+  const seen = new Map<string, Division>()
+  for (const division of present) {
+    const en = valid[division].payloads.en
+    const expectedId = DIVISION_IDS[division]
+    if (Number(en.kakuzuke_id) !== expectedId) {
+      errors.push(`divisions.${division}: kakuzuke_id is ${en.kakuzuke_id}, expected ${expectedId}`)
+    }
+    if (Number(en.basho_id) !== bashoId) {
+      errors.push(
+        `divisions.${division}: basho_id ${en.basho_id} differs from makuuchi (${bashoId})`
+      )
+    }
+    for (const id of realIds(en)) {
+      const other = seen.get(id)
+      if (other) errors.push(`rikishi_id ${id} appears in both ${other} and ${division}`)
+      seen.set(id, division)
+    }
   }
 
   if (errors.length > 0) return { ok: false, errors }
 
-  return { ok: true, snapshot: input as unknown as RawSnapshot, warnings }
+  const snapshot: RawSnapshot = {
+    version: 2,
+    fetchedAt: input.fetchedAt as string,
+    divisions: Object.fromEntries(
+      present.map((division) => {
+        const { sources, payloads, readings } = valid[division]
+        return [division, { sources, payloads, ...(readings ? { readings } : {}) }]
+      })
+    ) as RawSnapshot['divisions'],
+  }
+
+  return { ok: true, snapshot, warnings }
 }
 
 /**
- * Deep-compares two snapshots by their payloads only, ignoring `fetchedAt`
- * and `sources`. Used to decide whether a refreshed snapshot is worth committing.
+ * Deep-compares two snapshots by their data only, ignoring `fetchedAt` and
+ * `sources`. Used to decide whether a refreshed snapshot is worth committing.
  */
 export function snapshotsEqualIgnoringFetchedAt(a: RawSnapshot, b: RawSnapshot): boolean {
-  return stableStringify(a.payloads) === stableStringify(b.payloads)
+  return stableStringify(comparable(a)) === stableStringify(comparable(b))
+}
+
+function comparable(snapshot: RawSnapshot): unknown {
+  return Object.fromEntries(
+    snapshotDivisions(snapshot).map((division) => {
+      const { payloads, readings } = snapshot.divisions[division] as RawDivisionSnapshot
+      return [division, { payloads, readings: readings ?? {} }]
+    })
+  )
 }
 
 function stableStringify(value: unknown): string {
@@ -270,7 +379,12 @@ function stableStringify(value: unknown): string {
   return JSON.stringify(value) ?? 'null'
 }
 
+/** Divisions present in a valid snapshot, top division first. */
+export function snapshotDivisions(snapshot: RawSnapshot): Division[] {
+  return DIVISIONS.filter((division) => snapshot.divisions[division] != null)
+}
+
 /** Convenience accessor for the tournament id of a valid snapshot. */
 export function snapshotBashoId(snapshot: RawSnapshot): number {
-  return Number(snapshot.payloads.en.basho_id)
+  return Number(snapshot.divisions.makuuchi.payloads.en.basho_id)
 }

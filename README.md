@@ -1,7 +1,7 @@
 # banzuke-app
 
 React + TypeScript viewer for the official Japan Sumo Association banzuke endpoint.
-Renders the current makuuchi division with a modern, responsive UI.
+Renders the current Makuuchi and Juryo divisions with a modern, responsive UI.
 
 ## Project structure
 
@@ -25,7 +25,7 @@ src/
   utils/
     formatting.ts              # Date, rank, and URL helpers
 public/
-  latest-banzuke.json          # Static data snapshot (auto-updated)
+  latest-banzuke.json          # Static data snapshot, both divisions (auto-updated)
   sample-data.json             # Fallback for offline use
   assets/
     FranSans-Solid.otf         # Custom font

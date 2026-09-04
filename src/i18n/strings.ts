@@ -26,6 +26,7 @@ const en = {
   checked: (relative: string) => `checked ${relative}`,
   sampleData: 'Bundled sample data',
   division: { makuuchi: 'Makuuchi', juryo: 'Juryo' } satisfies Record<Division, string>,
+  divisionGroup: 'Division',
 
   // Search
   searchPlaceholder: 'Search wrestlers, stables, regions, or ranks…',
@@ -95,6 +96,7 @@ const jp: Strings = {
   checked: (relative: string) => `${relative}に確認`,
   sampleData: 'サンプルデータを表示中',
   division: { makuuchi: '幕内', juryo: '十両' },
+  divisionGroup: '階級',
 
   searchPlaceholder: '四股名・部屋・出身地・番付で検索…',
   searchLabel: '力士を検索',

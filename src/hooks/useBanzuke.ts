@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from 'react'
-import type { Banzuke, DataSource } from '../types/banzuke'
+import type { BanzukeSet, DataSource } from '../types/banzuke'
 import { validateSnapshot } from '../data/schema'
 import { normalizeSnapshot } from '../data/normalize'
 
@@ -9,7 +9,7 @@ const SAMPLE_URL = `${import.meta.env.BASE_URL}sample-data.json`
 const MAX_RETRIES = 3
 const RETRY_DELAY_MS = 1000
 /** localStorage key for the last good banzuke; bump when the model changes. */
-export const CACHE_KEY = 'banzuke:v2:makuuchi'
+export const CACHE_KEY = 'banzuke:v3'
 
 /**
  * What went wrong, if anything. The UI turns these into localized messages.
@@ -21,16 +21,16 @@ export type DataProblem = 'sample' | 'stale' | 'unavailable'
 
 export interface BanzukeState {
   status: 'loading' | 'ready' | 'error'
-  data: Banzuke | null
+  data: BanzukeSet | null
   /** True while a saved copy is displayed and a fresh fetch is in flight. */
   refreshing: boolean
   problem: DataProblem | null
 }
 
 type Action =
-  | { type: 'cached'; data: Banzuke }
-  | { type: 'loaded'; data: Banzuke }
-  | { type: 'sample'; data: Banzuke }
+  | { type: 'cached'; data: BanzukeSet }
+  | { type: 'loaded'; data: BanzukeSet }
+  | { type: 'sample'; data: BanzukeSet }
   | { type: 'failed' }
 
 function reducer(state: BanzukeState, action: Action): BanzukeState {
@@ -142,7 +142,7 @@ async function loadSnapshot(
   source: DataSource,
   signal: AbortSignal,
   retries = MAX_RETRIES
-): Promise<Banzuke> {
+): Promise<BanzukeSet> {
   const response = await fetchWithRetry(url, { signal }, retries)
 
   let parsed: unknown
@@ -157,40 +157,47 @@ async function loadSnapshot(
     throw new BanzukeError(validation.errors[0] ?? 'Snapshot is invalid', 'validation')
   }
 
-  const banzuke = normalizeSnapshot(validation.snapshot, source)
-  if (banzuke.rikishi.length === 0) {
+  const set = normalizeSnapshot(validation.snapshot, source)
+  if (set.makuuchi.rikishi.length === 0) {
     throw new BanzukeError('No wrestlers in snapshot', 'validation')
   }
-  return banzuke
+  return set
 }
 
 function isAbort(err: unknown): boolean {
   return err instanceof BanzukeError && err.type === 'abort'
 }
 
+function looksLikeBanzuke(value: unknown): boolean {
+  if (!value || typeof value !== 'object') return false
+  const b = value as { rikishi?: unknown; basho?: unknown; fetchedAt?: unknown }
+  return (
+    Array.isArray(b.rikishi) &&
+    b.rikishi.length > 0 &&
+    typeof b.basho === 'object' &&
+    b.basho !== null &&
+    typeof b.fetchedAt === 'string'
+  )
+}
+
 /** The last good live banzuke saved in this browser, if any. */
-export function readCachedBanzuke(): Banzuke | null {
+export function readCachedBanzuke(): BanzukeSet | null {
   try {
     const raw = localStorage.getItem(CACHE_KEY)
     if (!raw) return null
     const parsed: unknown = JSON.parse(raw)
-    if (
-      parsed &&
-      typeof parsed === 'object' &&
-      Array.isArray((parsed as Banzuke).rikishi) &&
-      (parsed as Banzuke).rikishi.length > 0 &&
-      typeof (parsed as Banzuke).basho === 'object' &&
-      typeof (parsed as Banzuke).fetchedAt === 'string'
-    ) {
-      return parsed as Banzuke
-    }
+    if (!parsed || typeof parsed !== 'object') return null
+    const set = parsed as { makuuchi?: unknown; juryo?: unknown }
+    if (!looksLikeBanzuke(set.makuuchi)) return null
+    if (set.juryo != null && !looksLikeBanzuke(set.juryo)) return null
+    return { makuuchi: set.makuuchi, juryo: set.juryo ?? null } as BanzukeSet
   } catch {
     // Unavailable or corrupt storage: behave as if nothing was cached.
   }
   return null
 }
 
-function writeCachedBanzuke(banzuke: Banzuke): void {
+function writeCachedBanzuke(banzuke: BanzukeSet): void {
   try {
     localStorage.setItem(CACHE_KEY, JSON.stringify(banzuke))
   } catch {

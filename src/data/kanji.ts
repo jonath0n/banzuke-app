@@ -4,6 +4,7 @@
  * Shared by the fetch script (to build the Japanese payload) and the app
  * (to render kanji rank labels). No DOM or React dependencies.
  */
+import type { Division } from './schema'
 
 const DIGITS = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九'] as const
 
@@ -65,3 +66,5 @@ export function jpEraYear(year: number): string {
 }
 
 export const SIDE_KANJI = { east: '東', west: '西' } as const
+
+export const DIVISION_KANJI: Record<Division, string> = { makuuchi: '幕内', juryo: '十両' }

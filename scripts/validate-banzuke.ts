@@ -6,7 +6,12 @@
  */
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { isPlaceholderRow, validateSnapshot } from '../src/data/schema.ts'
+import {
+  isPlaceholderRow,
+  snapshotDivisions,
+  validateSnapshot,
+  type RawDivisionSnapshot,
+} from '../src/data/schema.ts'
 
 async function main(): Promise<number> {
   const path = process.argv[2]
@@ -31,12 +36,15 @@ async function main(): Promise<number> {
   }
 
   const { snapshot } = result
-  const en = snapshot.payloads.en
-  const wrestlers = en.BanzukeTable.filter((row) => !isPlaceholderRow(row)).length
+  const top = snapshot.divisions.makuuchi.payloads.en
   console.log(`${path} is valid`)
-  console.log(`  basho:      ${en.basho_name} (id ${en.basho_id})`)
-  console.log(`  dates:      ${en.BashoInfo.start_date} to ${en.BashoInfo.end_date}`)
-  console.log(`  wrestlers:  ${wrestlers} (${en.BanzukeTable.length} rows)`)
+  console.log(`  basho:      ${top.basho_name} (id ${top.basho_id})`)
+  console.log(`  dates:      ${top.BashoInfo.start_date} to ${top.BashoInfo.end_date}`)
+  for (const division of snapshotDivisions(snapshot)) {
+    const en = (snapshot.divisions[division] as RawDivisionSnapshot).payloads.en
+    const wrestlers = en.BanzukeTable.filter((row) => !isPlaceholderRow(row)).length
+    console.log(`  ${division.padEnd(10)} ${wrestlers} wrestlers (${en.BanzukeTable.length} rows)`)
+  }
   console.log(`  fetched at: ${snapshot.fetchedAt}`)
   for (const warning of result.warnings) console.warn(`  warning: ${warning}`)
   return 0

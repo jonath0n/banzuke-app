@@ -7,11 +7,13 @@
  * languages, so nothing downstream needs to coerce or guess.
  */
 
+import type { Division } from '../data/schema'
+
+export type { Division }
+
 export type Language = 'en' | 'jp'
 
 export type Side = 'east' | 'west'
-
-export type Division = 'makuuchi' | 'juryo'
 
 /** Rank tiers, used for styling and grouping. */
 export type RankLevel = 'yokozuna' | 'ozeki' | 'sekiwake' | 'komusubi' | 'maegashira' | 'juryo'
@@ -89,6 +91,15 @@ export interface Banzuke {
   /** ISO timestamp of when the snapshot was fetched from sumo.or.jp. */
   fetchedAt: string
   source: DataSource
+}
+
+/**
+ * Every division of one tournament. Makuuchi is always present; Juryo is
+ * null when the snapshot did not include it.
+ */
+export interface BanzukeSet {
+  makuuchi: Banzuke
+  juryo: Banzuke | null
 }
 
 /**

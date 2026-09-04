@@ -1,9 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { makeRawPayload, makeRawRow, makeRawSnapshot, placeholderRow } from '../test/fixtures'
-import { normalizeSnapshot, parsePromotion, ringName } from './normalize'
+import { makeRawDivision, makeRawPayload, makeRawSnapshot, placeholderRow } from '../test/fixtures'
+import { normalizeDivision, normalizeSnapshot, parsePromotion, ringName } from './normalize'
+
+const FETCHED_AT = '2026-09-04T00:00:00.000Z'
 
 describe('normalizeSnapshot', () => {
-  const banzuke = normalizeSnapshot(makeRawSnapshot(), 'live')
+  const set = normalizeSnapshot(makeRawSnapshot(), 'live')
+  const banzuke = set.makuuchi
 
   it('produces numeric ids, word sides and both languages', () => {
     const first = banzuke.rikishi[0]
@@ -41,12 +44,42 @@ describe('normalizeSnapshot', () => {
     expect(promoted?.promotion).toEqual({ kind: 'new-to-division', raw: '新入幕' })
   })
 
+  it('normalizes every division it is given', () => {
+    expect(set.juryo?.division).toBe('juryo')
+    expect(set.juryo?.rikishi).toHaveLength(28)
+    expect(set.juryo?.rikishi[0]).toMatchObject({
+      id: 2000,
+      rankCode: 600,
+      rankLevel: 'juryo',
+      rankNumber: 1,
+      rankName: { en: 'Juryo #1', jp: '十両1枚目' },
+      shikona: { en: 'Dewanoryu', jp: '出羽ノ龍' },
+      reading: 'でわのりゅう',
+    })
+    expect(set.juryo?.rikishi.find((r) => r.id === 2005)?.promotion).toEqual({
+      kind: 'new-to-division',
+      raw: '新十両',
+    })
+    expect(set.juryo?.basho).toEqual(banzuke.basho)
+  })
+
+  it('leaves juryo null when the snapshot has only makuuchi', () => {
+    const only = normalizeSnapshot(
+      makeRawSnapshot({ divisions: { makuuchi: makeRawDivision() } }),
+      'live'
+    )
+    expect(only.juryo).toBeNull()
+    expect(only.makuuchi.rikishi).toHaveLength(24)
+  })
+
   it('derives Japanese rank names when the JP row is missing one', () => {
     const jp = makeRawPayload('jp')
     jp.BanzukeTable[4].banzuke_name = ''
     jp.BanzukeTable[4].numberKanji = '#1'
-    const result = normalizeSnapshot(
-      makeRawSnapshot({ payloads: { en: makeRawPayload('en'), jp } }),
+    const result = normalizeDivision(
+      'makuuchi',
+      makeRawDivision('makuuchi', { payloads: { en: makeRawPayload('en'), jp } }),
+      FETCHED_AT,
       'live'
     )
     const row = result.rikishi.find((r) => r.id === 1004)
@@ -57,9 +90,14 @@ describe('normalizeSnapshot', () => {
   it('falls back to English text when a wrestler is absent from the JP payload', () => {
     const jp = makeRawPayload('jp', 23)
     const en = makeRawPayload('en')
-    const result = normalizeSnapshot(makeRawSnapshot({ payloads: { en, jp } }), 'live')
+    const result = normalizeDivision(
+      'makuuchi',
+      makeRawDivision('makuuchi', { payloads: { en, jp } }),
+      FETCHED_AT,
+      'live'
+    )
     const last = result.rikishi.find((r) => r.id === 1023)
-    expect(last?.shikona).toEqual({ en: 'en-rikishi-23', jp: 'en-rikishi-23' })
+    expect(last?.shikona).toEqual({ en: 'en-makuuchi-23', jp: 'en-makuuchi-23' })
     expect(last?.heya.jp).toBe('Tatsunami')
     expect(last?.rankName.jp).toBe('前頭十枚目')
   })
@@ -72,7 +110,12 @@ describe('normalizeSnapshot', () => {
     jp.BanzukeTable.push(placeholderRow)
     jp.list_max += 1
     en.BanzukeTable[0].banzuke_name = 'Yokozuna&nbsp;'
-    const result = normalizeSnapshot(makeRawSnapshot({ payloads: { en, jp } }), 'sample')
+    const result = normalizeDivision(
+      'makuuchi',
+      makeRawDivision('makuuchi', { payloads: { en, jp } }),
+      FETCHED_AT,
+      'sample'
+    )
     expect(result.rikishi).toHaveLength(24)
     expect(result.rikishi[0].rankName.en).toBe('Yokozuna')
     expect(result.source).toBe('sample')
@@ -91,18 +134,7 @@ describe('normalizeSnapshot', () => {
       venueId: 1,
     })
     expect(banzuke.division).toBe('makuuchi')
-    expect(banzuke.fetchedAt).toBe('2026-09-04T00:00:00.000Z')
-  })
-
-  it('recognizes the juryo division', () => {
-    const en = makeRawPayload('en', 24, { kakuzuke_id: '2' })
-    en.BanzukeTable = en.BanzukeTable.map((row) =>
-      makeRawRow(Number(row.banzuke_id) - 1, 'en', { rank: 600 })
-    )
-    const jp = makeRawPayload('jp', 24, { kakuzuke_id: '2' })
-    const result = normalizeSnapshot(makeRawSnapshot({ payloads: { en, jp } }), 'live')
-    expect(result.division).toBe('juryo')
-    expect(result.rikishi[0].rankLevel).toBe('juryo')
+    expect(banzuke.fetchedAt).toBe(FETCHED_AT)
   })
 })
 
@@ -124,6 +156,7 @@ describe('parsePromotion', () => {
     expect(parsePromotion('新小結')).toEqual({ kind: 'new-rank', raw: '新小結' })
     expect(parsePromotion('新大関')).toEqual({ kind: 'new-rank', raw: '新大関' })
     expect(parsePromotion('再大関')).toEqual({ kind: 'returning', raw: '再大関' })
-    expect(parsePromotion('新十両')).toEqual({ kind: 'new-rank', raw: '新十両' })
+    expect(parsePromotion('新十両')).toEqual({ kind: 'new-to-division', raw: '新十両' })
+    expect(parsePromotion('再十両')).toEqual({ kind: 'returning', raw: '再十両' })
   })
 })

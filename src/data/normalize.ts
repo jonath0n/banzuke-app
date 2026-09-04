@@ -4,6 +4,7 @@
  */
 import type {
   Banzuke,
+  BanzukeSet,
   Basho,
   DataSource,
   Division,
@@ -13,7 +14,13 @@ import type {
 } from '../types/banzuke'
 import { getRankLevelFromCode } from '../constants/ranks'
 import { jpNumberKanji, jpRankName } from './kanji'
-import { isPlaceholderRow, type RawPayload, type RawRikishi, type RawSnapshot } from './schema'
+import {
+  isPlaceholderRow,
+  type RawDivisionSnapshot,
+  type RawPayload,
+  type RawRikishi,
+  type RawSnapshot,
+} from './schema'
 
 /**
  * Returns the ring name from an upstream shikona that may carry the given
@@ -27,7 +34,8 @@ export function ringName(shikona: string): string {
 export function parsePromotion(raw: string | undefined): Promotion | null {
   const flag = (raw ?? '').trim()
   if (!flag) return null
-  if (flag.includes('入幕') || flag.includes('入十両')) {
+  // 新入幕/再入幕 (Makuuchi) and 新十両/再十両 (Juryo) mark entering a division.
+  if (flag.includes('入幕') || flag.endsWith('十両')) {
     return { kind: flag.startsWith('再') ? 'returning' : 'new-to-division', raw: flag }
   }
   if (flag.startsWith('再')) return { kind: 'returning', raw: flag }
@@ -112,10 +120,6 @@ function normalizeBasho(en: RawPayload, jp: RawPayload): Basho {
   }
 }
 
-function divisionOf(payload: RawPayload): Division {
-  return String(payload.kakuzuke_id) === '2' ? 'juryo' : 'makuuchi'
-}
-
 /** Banzuke order: by upstream sort key, then East before West. */
 function compareRikishi(a: Rikishi, b: Rikishi): number {
   if (a.sortKey !== b.sortKey) return a.sortKey < b.sortKey ? -1 : 1
@@ -123,10 +127,16 @@ function compareRikishi(a: Rikishi, b: Rikishi): number {
   return 0
 }
 
-export function normalizeSnapshot(snapshot: RawSnapshot, source: DataSource): Banzuke {
-  const en = snapshot.payloads.en
-  const jp = snapshot.payloads.jp
-  const readings = snapshot.readings ?? {}
+/** Converts one division's raw payloads into a `Banzuke`. */
+export function normalizeDivision(
+  division: Division,
+  raw: RawDivisionSnapshot,
+  fetchedAt: string,
+  source: DataSource
+): Banzuke {
+  const en = raw.payloads.en
+  const jp = raw.payloads.jp
+  const readings = raw.readings ?? {}
 
   const jpById = new Map<number, RawRikishi>()
   for (const row of jp.BanzukeTable) {
@@ -140,10 +150,19 @@ export function normalizeSnapshot(snapshot: RawSnapshot, source: DataSource): Ba
   rikishi.sort(compareRikishi)
 
   return {
-    division: divisionOf(en),
+    division,
     basho: normalizeBasho(en, jp),
     rikishi,
-    fetchedAt: snapshot.fetchedAt,
+    fetchedAt,
     source,
+  }
+}
+
+/** Converts a validated snapshot into every division it carries. */
+export function normalizeSnapshot(snapshot: RawSnapshot, source: DataSource): BanzukeSet {
+  const { makuuchi, juryo } = snapshot.divisions
+  return {
+    makuuchi: normalizeDivision('makuuchi', makuuchi, snapshot.fetchedAt, source),
+    juryo: juryo ? normalizeDivision('juryo', juryo, snapshot.fetchedAt, source) : null,
   }
 }

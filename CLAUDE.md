@@ -1,6 +1,6 @@
 # banzuke-app
 
-Static React viewer for the official grand sumo banzuke (makuuchi division), bilingual
+Static React viewer for the official grand sumo banzuke (Makuuchi and Juryo), bilingual
 English/Japanese, deployed to GitHub Pages at https://jonath0n.github.io/banzuke-app/.
 
 ## Stack
@@ -26,9 +26,10 @@ Every change must pass `npm run validate && npm run test:run && npm run build` b
 ## Data flow (do not shortcut it)
 
 1. `scripts/fetch-banzuke.ts` fetches the English JSON endpoint and the Japanese rikishi
-   list page from sumo.or.jp and writes a `RawSnapshot` (`src/data/schema.ts`).
+   list page from sumo.or.jp for each division and writes a `RawSnapshot` (`src/data/schema.ts`,
+   format 2: `divisions.makuuchi` and `divisions.juryo`; format 1 files are still read).
 2. `validateSnapshot` (same module, shared by scripts and app) is the only gate on upstream data.
-3. `normalizeSnapshot` (`src/data/normalize.ts`) converts raw JSON into the app model in
+3. `normalizeSnapshot` (`src/data/normalize.ts`) converts raw JSON into a `BanzukeSet` in
    `src/types/banzuke.ts`: numeric ids, `side: 'east' | 'west'`, `Localized { en, jp }` text.
 4. Components consume the normalized model only. **Never coerce or parse upstream fields in
    components**; add to `normalize.ts` instead.

@@ -15,12 +15,13 @@ export function describePromotion(
   if (lang === 'jp') return promotion.raw
 
   const division = promotion.raw.includes('十両') ? 'Juryo' : 'Makuuchi'
+  const enteredDivision = promotion.raw.includes('入幕') || promotion.raw.endsWith('十両')
   switch (promotion.kind) {
     case 'new-to-division':
       return style === 'short' ? 'New' : `New to ${division}`
     case 'returning':
       if (style === 'short') return 'Back'
-      return promotion.raw.includes('入') ? `Back in ${division}` : `Back at ${rikishi.rankName.en}`
+      return enteredDivision ? `Back in ${division}` : `Back at ${rikishi.rankName.en}`
     case 'new-rank':
       return `New ${rikishi.rankName.en}`
   }
