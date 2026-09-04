@@ -22,6 +22,8 @@ describe('formatYearMonth', () => {
   it('formats a tournament month', () => {
     expect(formatYearMonth('2023-05', 'en')).toBe('May 2023')
     expect(formatYearMonth('2023-05', 'jp')).toBe('2023年5月')
+    expect(formatYearMonth('2023-09', 'en', 'short')).toBe('Sep 2023')
+    expect(formatYearMonth('2023-09', 'jp', 'short')).toBe('2023年9月')
     expect(formatYearMonth('??', 'en')).toBe('??')
   })
 })

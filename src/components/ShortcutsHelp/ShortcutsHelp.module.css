@@ -1,5 +1,5 @@
 .help {
-  margin-top: var(--space-4);
+  margin-top: var(--space-2);
   font-size: var(--text-sm);
   color: var(--muted);
 }

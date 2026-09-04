@@ -23,7 +23,13 @@
   padding: var(--space-2) var(--space-3);
   transition: background var(--dur-fast) ease;
   animation: riseIn 200ms ease backwards;
-  animation-delay: calc(var(--row-index, 0) * 25ms);
+  /* Stagger the first ten rows; everything below the fold arrives together */
+  animation-delay: calc(min(var(--row-index, 0), 10) * 25ms);
+}
+
+/* Once the page has entered, rows appear in place (tab switch, search) */
+[data-entered] .row {
+  animation: none;
 }
 
 .row + .row {

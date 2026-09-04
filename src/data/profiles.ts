@@ -9,6 +9,30 @@ import type { Localized } from '../types/banzuke'
 
 export type CareerMilestone = 'juryo' | 'makuuchi' | 'sanyaku' | 'ozeki' | 'yokozuna'
 
+/** The debut plus each milestone, in career order. */
+export type CareerStep = 'debut' | CareerMilestone
+
+export const CAREER_STEPS: readonly CareerStep[] = [
+  'debut',
+  'juryo',
+  'makuuchi',
+  'sanyaku',
+  'ozeki',
+  'yokozuna',
+]
+
+/** The steps a profile records, in order, as [step, YYYY-MM] pairs. */
+export function careerSteps(
+  profile: Pick<RikishiProfile, 'debut' | 'milestones'>
+): Array<[CareerStep, string]> {
+  const steps: Array<[CareerStep, string]> = []
+  for (const step of CAREER_STEPS) {
+    const date = step === 'debut' ? profile.debut : profile.milestones[step]
+    if (date) steps.push([step, date])
+  }
+  return steps
+}
+
 export interface RikishiProfile {
   /** JSA rikishi id. */
   id: number

@@ -97,7 +97,6 @@ describe('App', () => {
     expect(await screen.findByRole('button', { name: /Dewanoryu, East/ })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /Hoshoryu/ })).toBeNull()
     expect(screen.getByRole('tabpanel')).toHaveAccessibleName(/Juryo/)
-    expect(screen.getByText(/Juryo\)/)).toBeInTheDocument()
     await user.click(screen.getByRole('tab', { name: /Makuuchi/ }))
     expect(window.location.search).toBe('')
   })

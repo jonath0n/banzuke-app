@@ -35,6 +35,8 @@
   border-radius: var(--radius);
   box-shadow: var(--shadow-md);
   overflow: clip;
+  /* A new sheet (tab switch) fades in as one piece rather than row by row */
+  animation: fadeIn var(--dur-base) ease;
 }
 
 /* A rank tier: heading band (numbered tiers only) followed by its rows */

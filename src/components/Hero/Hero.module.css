@@ -59,19 +59,23 @@
   animation: drawLine 600ms var(--ease-out-expo) 300ms backwards;
 }
 
+/* Wordmark and seal on the left, language toggle on the right */
 .titleRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-  flex-wrap: wrap;
-}
-
-.titleGroup {
   display: flex;
   align-items: center;
   gap: var(--space-3);
   flex-wrap: wrap;
+}
+
+.toggle {
+  margin-left: auto;
+}
+
+/* On a phone the wordmark takes its own line; seal and toggle share the next */
+@media (max-width: 600px) {
+  .hero h1 {
+    flex-basis: 100%;
+  }
 }
 
 .hero h1 {
@@ -104,54 +108,36 @@
   animation: fadeIn var(--dur-slow) var(--ease-out-expo) 250ms backwards;
 }
 
-.summary {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-  gap: 0 var(--space-5);
+/* Tournament name · venue */
+.deck {
   margin: var(--space-4) 0 0;
-  padding: var(--space-3) 0 0;
+  padding-top: var(--space-3);
   border-top: 1px solid var(--rule);
+  font-size: var(--text-lg);
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  animation: fadeSlideIn var(--dur-slow) var(--ease-out-expo) 180ms backwards;
 }
 
-.summary div {
+.deck strong {
+  font-weight: 600;
+}
+
+/* Status chip beside the dates */
+.statusRow {
   display: flex;
-  gap: var(--space-2);
-  align-items: baseline;
-  padding: var(--space-1) 0;
-  min-width: 0;
-  opacity: 0;
-  animation: fadeSlideIn var(--dur-slow) var(--ease-out-expo) forwards;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  margin: var(--space-2) 0 0;
+  animation: fadeSlideIn var(--dur-slow) var(--ease-out-expo) 240ms backwards;
 }
 
-.summary div:nth-child(1) {
-  animation-delay: 180ms;
-}
-.summary div:nth-child(2) {
-  animation-delay: 240ms;
-}
-.summary div:nth-child(3) {
-  animation-delay: 300ms;
-}
-
-.summary dt {
-  font-family: var(--font-body);
-  font-weight: var(--label-weight);
-  font-size: var(--text-xs);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-caps);
-  color: var(--muted);
-  margin: 0;
-  flex: 0 0 5.5rem;
-}
-
-.summary dd {
-  margin: 0;
+.dates {
   font-weight: 600;
   font-size: var(--text-base);
-  overflow-wrap: anywhere;
 }
 
-/* Tournament status */
 .statusBadge {
   display: inline-flex;
   align-items: center;
@@ -167,7 +153,6 @@
   color: var(--text);
   background: var(--card-bg);
   white-space: nowrap;
-  animation: fadeSlideIn var(--dur-slow) var(--ease-out-expo) 200ms backwards;
 }
 
 /* Status is ink on paper; only the live dot is vermilion */
@@ -187,20 +172,21 @@
   animation: livePulse 2s ease-in-out infinite;
 }
 
-.freshness {
+/* Announcement, source and freshness */
+.provenance {
+  margin: var(--space-2) 0 0;
   font-size: var(--text-sm);
   color: var(--muted);
-  margin-top: var(--space-2);
   animation: fadeIn var(--dur-slow) var(--ease-out-expo) 400ms backwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .hero::after,
-  .summary div,
   .hero h1,
   .seal,
-  .statusBadge,
-  .freshness {
+  .deck,
+  .statusRow,
+  .provenance {
     animation: fadeIn 300ms ease forwards;
   }
 

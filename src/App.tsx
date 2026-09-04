@@ -11,7 +11,6 @@ import { DivisionTabs } from './components/DivisionTabs/DivisionTabs'
 import { PANEL_ID, tabId } from './components/DivisionTabs/ids'
 import { BanzukeGrid, BanzukeGridSkeleton } from './components/BanzukeGrid/BanzukeGrid'
 import { WrestlerModal } from './components/WrestlerModal/WrestlerModal'
-import { ShortcutsHelp } from './components/ShortcutsHelp/ShortcutsHelp'
 import { Footer } from './components/Footer/Footer'
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary'
 import { ScrollToTop } from './components/ScrollToTop/ScrollToTop'
@@ -30,6 +29,9 @@ function App() {
 
 const EMPTY: Rikishi[] = []
 
+/** How long the entrance cascade may run after the first sheet renders. */
+const ENTRANCE_MS = 1200
+
 /** The division named in the URL, when the data actually has it. */
 function resolveDivision(param: string | null, data: BanzukeSet | null): Division {
   return param === 'juryo' && data?.juryo ? 'juryo' : 'makuuchi'
@@ -43,6 +45,15 @@ function AppContent() {
   const [divisionParam, setDivisionParam] = useUrlParam('div')
   const [selectedId, setSelectedId] = useUrlParam('rikishi', 'push')
   const [helpOpen, setHelpOpen] = useState(false)
+  // Entrance animations play once, on the first sheet; later renders (tab
+  // switches, search) must not replay the cascade.
+  const [entered, setEntered] = useState(false)
+
+  useEffect(() => {
+    if (!data || entered) return
+    const timer = window.setTimeout(() => setEntered(true), ENTRANCE_MS)
+    return () => window.clearTimeout(timer)
+  }, [data, entered])
 
   const division = resolveDivision(divisionParam, data)
   const banzuke = data ? (division === 'juryo' ? data.juryo : data.makuuchi) : null
@@ -129,7 +140,7 @@ function AppContent() {
         {strings.skipLink}
       </a>
       <Hero data={banzuke} />
-      <main id="main" tabIndex={-1}>
+      <main id="main" tabIndex={-1} data-entered={entered || undefined}>
         {banzuke && allRows.length > 0 && (
           <SearchBar
             value={query}
@@ -170,9 +181,8 @@ function AppContent() {
             </div>
           </ErrorBoundary>
         )}
-        {banzuke && <ShortcutsHelp open={helpOpen} onToggle={setHelpOpen} />}
       </main>
-      <Footer />
+      <Footer helpOpen={helpOpen} onToggleHelp={setHelpOpen} />
       <ScrollToTop />
       <WrestlerModal rikishi={selectedRikishi} onClose={handleCloseModal} />
     </>

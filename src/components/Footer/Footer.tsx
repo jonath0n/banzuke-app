@@ -1,47 +1,96 @@
+import type { ReactNode } from 'react'
+import { useLanguage } from '../../contexts/LanguageContext'
 import { useStrings } from '../../i18n/useStrings'
+import { ShortcutsHelp } from '../ShortcutsHelp/ShortcutsHelp'
 import styles from './Footer.module.css'
 
-/** Returns the current year for copyright display */
-function getCurrentYear(): number {
-  return new Date().getFullYear()
+interface FooterProps {
+  /** The keyboard-shortcuts panel lives in the footer; `?` toggles it too. */
+  helpOpen?: boolean
+  onToggleHelp?: (open: boolean) => void
 }
 
-export function Footer() {
+function ExternalLink({ href, children }: { href: string; children: ReactNode }) {
+  return (
+    <a href={href} target="_blank" rel="noreferrer">
+      {children}
+    </a>
+  )
+}
+
+/** "Fran Sans by Emily Sneddon" / "Fran Sans（Emily Sneddon 作）". */
+function FontCredit({
+  name,
+  className,
+  author,
+  href,
+}: {
+  name: string
+  className: string
+  author: string
+  href: string
+}) {
+  const { language } = useLanguage()
   const strings = useStrings()
-  const currentYear = getCurrentYear()
+  const sample = <span className={className}>{name}</span>
+  const link = <ExternalLink href={href}>{author}</ExternalLink>
+  if (language === 'jp') {
+    return (
+      <span className={styles.credit}>
+        {sample}（{link} {strings.footerFontBy}）
+      </span>
+    )
+  }
+  return (
+    <span className={styles.credit}>
+      {sample} {strings.footerFontBy} {link}
+    </span>
+  )
+}
+
+export function Footer({ helpOpen = false, onToggleHelp }: FooterProps) {
+  const strings = useStrings()
+  const currentYear = new Date().getFullYear()
 
   return (
     <footer className={styles.footer}>
-      <div className={styles.attribution}>
-        <p>
+      <p className={styles.line}>
+        <span className={styles.credit}>
           {strings.footerMadeBy}{' '}
-          <a href="https://www.linkedin.com/in/jonathon2" target="_blank" rel="noreferrer">
-            Jon Allen
-          </a>
-          <span className={styles.hanko} aria-hidden="true"></span>
-        </p>
-        <p>
+          <ExternalLink href="https://www.linkedin.com/in/jonathon2">Jon Allen</ExternalLink>
+          <span className={styles.hanko} aria-hidden="true" />
+        </span>
+        <span className={styles.separator} aria-hidden="true">
+          ·
+        </span>
+        <span className={styles.credit}>
           {strings.footerDataSource}{' '}
-          <a href="https://sumo.or.jp/" target="_blank" rel="noreferrer">
-            {strings.footerJsa}
-          </a>
-        </p>
-        <p>
-          <span className={styles.franSans}>Fran Sans</span> {strings.footerFontBy}{' '}
-          <a href="https://emilysneddon.com" target="_blank" rel="noreferrer">
-            Emily Sneddon
-          </a>
-          {' · '}
-          <span className={styles.instrumentSans}>Instrument Sans</span> {strings.footerFontBy}{' '}
-          <a href="https://github.com/Instrument/instrument-sans" target="_blank" rel="noreferrer">
-            Instrument
-          </a>
-        </p>
-      </div>
-      <p className={styles.disclaimer}>{strings.footerDisclaimer}</p>
-      <p className={styles.meta}>
-        <span>{strings.footerRights(currentYear)}</span>
+          <ExternalLink href="https://sumo.or.jp/">{strings.footerJsa}</ExternalLink>
+        </span>
+        <span className={styles.separator} aria-hidden="true">
+          ·
+        </span>
+        <span className={styles.credit}>
+          {strings.footerType}{' '}
+          <FontCredit
+            name="Fran Sans"
+            className={styles.franSans}
+            author="Emily Sneddon"
+            href="https://emilysneddon.com"
+          />
+          {', '}
+          <FontCredit
+            name="Instrument Sans"
+            className={styles.instrumentSans}
+            author="Instrument"
+            href="https://github.com/Instrument/instrument-sans"
+          />
+        </span>
       </p>
+      <p className={styles.small}>
+        <span>{strings.footerDisclaimer}</span> <span>{strings.footerRights(currentYear)}</span>
+      </p>
+      {onToggleHelp && <ShortcutsHelp open={helpOpen} onToggle={onToggleHelp} />}
     </footer>
   )
 }

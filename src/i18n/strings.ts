@@ -5,6 +5,7 @@
  * `jp` is typed as `Strings` (derived from `en`), so a missing key is a type
  * error, and `strings.test.ts` checks the two tables stay in step.
  */
+import type { CareerStep } from '../data/profiles'
 import type { Division, Language, Side } from '../types/banzuke'
 
 const en = {
@@ -13,10 +14,7 @@ const en = {
   languageGroup: 'Language selection',
 
   // Hero
-  basho: 'Basho',
-  dates: 'Dates',
-  announced: 'Announced',
-  venue: 'Venue',
+  announcedOn: (date: string) => `Banzuke announced ${date}`,
   statusLive: (day: number) => `Day ${day}`,
   statusSenshuraku: 'Senshuraku · Day 15',
   statusUpcomingTomorrow: 'Starts tomorrow',
@@ -59,8 +57,16 @@ const en = {
   height: 'Height',
   weight: 'Weight',
   kimarite: 'Signature moves',
-  debut: 'Debut',
   highestRank: 'Highest rank',
+  career: 'Career',
+  milestone: {
+    debut: 'Debut',
+    juryo: 'Juryo',
+    makuuchi: 'Makuuchi',
+    sanyaku: 'Sanyaku',
+    ozeki: 'Ozeki',
+    yokozuna: 'Yokozuna',
+  } satisfies Record<CareerStep, string>,
 
   // Data problems
   errorSample: 'Live data unavailable. Showing bundled sample data.',
@@ -76,8 +82,9 @@ const en = {
 
   // Footer
   footerMadeBy: 'Made by',
-  footerDataSource: 'Data source:',
+  footerDataSource: 'Data:',
   footerJsa: 'Japan Sumo Association',
+  footerType: 'Type:',
   footerFontBy: 'by',
   footerDisclaimer:
     'This is an unofficial fan project and is not affiliated with the Japan Sumo Association.',
@@ -91,10 +98,7 @@ const jp: Strings = {
   skipLink: '番付表へ移動',
   languageGroup: '言語の選択',
 
-  basho: '場所',
-  dates: '日程',
-  announced: '番付発表',
-  venue: '会場',
+  announcedOn: (date: string) => `番付発表 ${date}`,
   statusLive: (day: number) => `${day}日目`,
   statusSenshuraku: '千秋楽',
   statusUpcomingTomorrow: '明日初日',
@@ -134,8 +138,16 @@ const jp: Strings = {
   height: '身長',
   weight: '体重',
   kimarite: '得意技',
-  debut: '初土俵',
   highestRank: '最高位',
+  career: '昇進の歩み',
+  milestone: {
+    debut: '初土俵',
+    juryo: '新十両',
+    makuuchi: '新入幕',
+    sanyaku: '新三役',
+    ozeki: '大関昇進',
+    yokozuna: '横綱昇進',
+  },
 
   errorSample: '最新データを取得できないため、サンプルデータを表示しています。',
   errorStale: '最新データを取得できないため、保存済みの番付を表示しています。',
@@ -150,7 +162,8 @@ const jp: Strings = {
   footerMadeBy: '制作:',
   footerDataSource: 'データ提供:',
   footerJsa: '日本相撲協会',
-  footerFontBy: '書体制作',
+  footerType: '書体:',
+  footerFontBy: '作',
   footerDisclaimer: '本サイトは非公式のファンプロジェクトであり、日本相撲協会とは関係ありません。',
   footerRights: (year: number) => `© ${year} Jon Allen. All Rights Reserved.`,
 }
