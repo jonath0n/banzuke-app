@@ -110,8 +110,7 @@ export interface RawSnapshotV1 extends RawDivisionSnapshot {
 }
 
 export type ValidationResult =
-  | { ok: true; snapshot: RawSnapshot; warnings: string[] }
-  | { ok: false; errors: string[] }
+  { ok: true; snapshot: RawSnapshot; warnings: string[] } | { ok: false; errors: string[] }
 
 /** Minimum plausible number of wrestlers in a division payload. */
 const MIN_ROWS = 20
