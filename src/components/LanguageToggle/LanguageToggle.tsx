@@ -34,7 +34,7 @@ export function LanguageToggle({ language, onLanguageChange }: LanguageTogglePro
         aria-pressed={!isEnglish}
         lang="ja"
       >
-        日本
+        日本語
       </button>
       <span
         className={styles.slider}

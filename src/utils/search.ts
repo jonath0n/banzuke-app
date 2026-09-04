@@ -67,14 +67,31 @@ export function buildSearchIndex(rows: Rikishi[]): SearchEntry[] {
   }))
 }
 
+function termsOf(query: string): string[] {
+  return foldForSearch(query).split(' ').filter(Boolean)
+}
+
+function matches(entry: SearchEntry, terms: string[]): boolean {
+  return terms.every((term) => entry.text.includes(term))
+}
+
 /**
  * Wrestlers whose text contains every whitespace-separated term of the query.
  * An empty query matches everything.
  */
 export function filterRikishi(index: SearchEntry[], query: string): Rikishi[] {
-  const terms = foldForSearch(query).split(' ').filter(Boolean)
+  const terms = termsOf(query)
   if (terms.length === 0) return index.map((entry) => entry.rikishi)
-  return index
-    .filter((entry) => terms.every((term) => entry.text.includes(term)))
-    .map((entry) => entry.rikishi)
+  return index.filter((entry) => matches(entry, terms)).map((entry) => entry.rikishi)
+}
+
+/**
+ * Ids of the wrestlers matching the query, or null when the query is blank
+ * (nothing is being filtered). Lets the sheet keep a matching wrestler's
+ * East/West partner in view, dimmed, instead of dropping the half-row.
+ */
+export function matchingIds(index: SearchEntry[], query: string): Set<number> | null {
+  const terms = termsOf(query)
+  if (terms.length === 0) return null
+  return new Set(index.filter((entry) => matches(entry, terms)).map((entry) => entry.rikishi.id))
 }

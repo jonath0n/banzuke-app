@@ -37,20 +37,18 @@
   --tier-komusubi: #a8553a;
   --tier-komusubi-bg: rgba(168, 85, 58, 0.06);
 
-  /* Semantic status colours (AA on --bg at small sizes) */
-  --status-live: #166534;
-  --status-live-rgb: 22 163 74;
-  --status-upcoming: #1d4ed8;
-  --status-upcoming-rgb: 37 99 235;
+  /* Problem colours for data warnings (AA on --bg at small sizes) */
   --danger: #b91c1c;
   --danger-rgb: 220 38 38;
-  --warning: #b45309;
+  --warning: #a04a08;
   --warning-rgb: 217 119 6;
 
   /* Typography ----------------------------------------------------------- */
-  /* Display voice: the wordmark, ring names, rank rail, chips */
-  --font-display: 'FranSans Solid', 'Segoe UI', system-ui, -apple-system, sans-serif;
-  /* Reading text: hero facts, search, modal details, footer */
+  /* The wordmark only: FranSans is a poster face whose M and A blur at text sizes */
+  --font-wordmark: 'FranSans Solid', 'Instrument Sans', system-ui, sans-serif;
+  /* Names voice: ring names, rank badges, tabs, chips (self-hosted, OFL) */
+  --font-names: 'Instrument Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  /* Reading text and every small label: hero facts, search, modal details, footer */
   --font-body:
     system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
     'Hiragino Sans', 'Yu Gothic', 'Noto Sans JP', sans-serif;
@@ -71,6 +69,8 @@
   --text-2xl: 1.75rem;
   --text-display: clamp(1.9rem, 5.5vw, 2.6rem);
   --tracking-caps: 0.08em;
+  /* Small caps labels (dt, tier labels, counts): body face, never the display faces */
+  --label-weight: 600;
 
   /* Rank name sizes: the size ladder carries the hierarchy */
   --name-yokozuna: 1.65rem;
@@ -106,6 +106,7 @@
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* Layers --------------------------------------------------------------- */
+  --z-sticky: 10;
   --z-fab: 100;
   --z-skip-link: 1100;
 
@@ -150,10 +151,6 @@
     --tier-komusubi: #d4785a;
     --tier-komusubi-bg: rgba(212, 120, 90, 0.08);
 
-    --status-live: #4ade80;
-    --status-live-rgb: 34 197 94;
-    --status-upcoming: #7fb3ff;
-    --status-upcoming-rgb: 96 165 250;
     --danger: #fca5a5;
     --warning: #fcd34d;
 

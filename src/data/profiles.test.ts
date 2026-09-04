@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isRikishiProfile, validateProfiles, type RikishiProfile } from './profiles'
+import { careerSteps, isRikishiProfile, validateProfiles, type RikishiProfile } from './profiles'
 
 export const onosatoProfile: RikishiProfile = {
   id: 4227,
@@ -36,6 +36,19 @@ describe('validateProfiles', () => {
     expect(bad).toEqual({ ok: false, error: 'profile 4227 is malformed' })
     const misKeyed = validateProfiles({ ...file, profiles: { '1': onosatoProfile } })
     expect(misKeyed).toEqual({ ok: false, error: 'profile 1 has id 4227' })
+  })
+
+  it('lists the recorded career steps in order', () => {
+    expect(careerSteps(onosatoProfile)).toEqual([
+      ['debut', '2023-05'],
+      ['juryo', '2023-09'],
+      ['makuuchi', '2024-01'],
+      ['yokozuna', '2025-07'],
+    ])
+    expect(careerSteps({ debut: null, milestones: { ozeki: '2026-01' } })).toEqual([
+      ['ozeki', '2026-01'],
+    ])
+    expect(careerSteps({ debut: null, milestones: {} })).toEqual([])
   })
 
   it('allows unknown values to be null', () => {

@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { LanguageProvider } from '../../contexts/LanguageContext'
@@ -126,11 +126,23 @@ describe('WrestlerModal', () => {
     expect(screen.getByText('June 7, 2000 (26)')).toBeInTheDocument()
     expect(screen.getByText('190 cm')).toBeInTheDocument()
     expect(screen.getByText('188 kg')).toBeInTheDocument()
-    expect(screen.getByText('May 2023')).toBeInTheDocument()
-    // Rank row and highest-rank row both read Yokozuna
-    expect(screen.getAllByText('Yokozuna')).toHaveLength(2)
+    // Rank row, highest-rank row and the last career step all read Yokozuna
+    expect(screen.getAllByText('Yokozuna')).toHaveLength(3)
     expect(screen.getByText('tsuki, oshi, migi-yotsu, yori')).toBeInTheDocument()
     vi.useRealTimers()
+  })
+
+  it('lays out the career as steps from debut to the highest rank', async () => {
+    renderModal()
+    const career = await screen.findByRole('region', { name: 'Career' })
+    const steps = within(career).getAllByRole('listitem')
+    expect(steps.map((li) => li.textContent)).toEqual([
+      'DebutMay 2023',
+      'JuryoSep 2023',
+      'MakuuchiJan 2024',
+      'YokozunaJul 2025',
+    ])
+    expect(within(career).getByText('May 2023')).toHaveAttribute('datetime', '2023-05')
   })
 
   it('shows the detailed Japanese birthplace and labels in Japanese mode', async () => {
@@ -140,6 +152,7 @@ describe('WrestlerModal', () => {
     expect(screen.getByText('本名')).toBeInTheDocument()
     expect(screen.getByText('190cm')).toBeInTheDocument()
     expect(screen.getByText('2023年5月')).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: '昇進の歩み' })).toHaveTextContent('初土俵')
   })
 
   it('renders without profile facts when the file is unavailable', async () => {

@@ -1,5 +1,5 @@
 .help {
-  margin-top: var(--space-4);
+  margin-top: var(--space-2);
   font-size: var(--text-sm);
   color: var(--muted);
 }
@@ -7,7 +7,8 @@
 .summary {
   display: inline-block;
   cursor: pointer;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
+  font-weight: var(--label-weight);
   font-size: var(--text-xs);
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
@@ -54,7 +55,8 @@
   display: inline-block;
   min-width: 1.6rem;
   padding: 0.15rem 0.4rem;
-  font-family: var(--font-display);
+  font-family: var(--font-names);
+  font-weight: 600;
   font-size: var(--text-xs);
   line-height: 1.2;
   text-align: center;

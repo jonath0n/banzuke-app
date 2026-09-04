@@ -4,14 +4,13 @@ import { LanguageProvider, useLanguage } from './contexts/LanguageContext'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { clearUrlParam, useUrlParam } from './hooks/useUrlState'
 import { useStrings } from './i18n/useStrings'
-import { buildSearchIndex, filterRikishi } from './utils/search'
+import { buildSearchIndex, matchingIds } from './utils/search'
 import { Hero } from './components/Hero/Hero'
 import { SearchBar } from './components/SearchBar/SearchBar'
 import { DivisionTabs } from './components/DivisionTabs/DivisionTabs'
 import { PANEL_ID, tabId } from './components/DivisionTabs/ids'
 import { BanzukeGrid, BanzukeGridSkeleton } from './components/BanzukeGrid/BanzukeGrid'
 import { WrestlerModal } from './components/WrestlerModal/WrestlerModal'
-import { ShortcutsHelp } from './components/ShortcutsHelp/ShortcutsHelp'
 import { Footer } from './components/Footer/Footer'
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary'
 import { ScrollToTop } from './components/ScrollToTop/ScrollToTop'
@@ -30,6 +29,9 @@ function App() {
 
 const EMPTY: Rikishi[] = []
 
+/** How long the entrance cascade may run after the first sheet renders. */
+const ENTRANCE_MS = 1200
+
 /** The division named in the URL, when the data actually has it. */
 function resolveDivision(param: string | null, data: BanzukeSet | null): Division {
   return param === 'juryo' && data?.juryo ? 'juryo' : 'makuuchi'
@@ -43,14 +45,41 @@ function AppContent() {
   const [divisionParam, setDivisionParam] = useUrlParam('div')
   const [selectedId, setSelectedId] = useUrlParam('rikishi', 'push')
   const [helpOpen, setHelpOpen] = useState(false)
+  // Entrance animations play once, on the first sheet; later renders (tab
+  // switches, search) must not replay the cascade.
+  const [entered, setEntered] = useState(false)
+
+  useEffect(() => {
+    if (!data || entered) return
+    const timer = window.setTimeout(() => setEntered(true), ENTRANCE_MS)
+    return () => window.clearTimeout(timer)
+  }, [data, entered])
 
   const division = resolveDivision(divisionParam, data)
   const banzuke = data ? (division === 'juryo' ? data.juryo : data.makuuchi) : null
   const allRows = banzuke?.rikishi ?? EMPTY
   const query = searchQuery ?? ''
-  const index = useMemo(() => buildSearchIndex(allRows), [allRows])
-  const filteredRows = useMemo(() => filterRikishi(index, query), [index, query])
-  const isFiltering = query.trim().length > 0
+
+  // The search runs over both divisions so the tabs can say where the matches are.
+  const indexes = useMemo(
+    () => ({
+      makuuchi: buildSearchIndex(data?.makuuchi.rikishi ?? EMPTY),
+      juryo: buildSearchIndex(data?.juryo?.rikishi ?? EMPTY),
+    }),
+    [data]
+  )
+  const matches = useMemo(
+    () => ({
+      makuuchi: matchingIds(indexes.makuuchi, query),
+      juryo: data?.juryo ? matchingIds(indexes.juryo, query) : null,
+    }),
+    [indexes, query, data]
+  )
+  const highlight = matches[division]
+  const isFiltering = highlight !== null
+  const matchedCount = highlight ? highlight.size : allRows.length
+  const otherDivision: Division = division === 'makuuchi' ? 'juryo' : 'makuuchi'
+  const otherHits = matches[otherDivision]?.size ?? 0
 
   // A deep link may point at a wrestler in either division.
   const selectedRikishi = useMemo(() => {
@@ -66,6 +95,9 @@ function AppContent() {
     }),
     [data]
   )
+  const matchedByDivision = isFiltering
+    ? { makuuchi: matches.makuuchi?.size, juryo: matches.juryo?.size }
+    : undefined
   const showTabs = data?.juryo != null
 
   const handleSelectRikishi = useCallback(
@@ -81,6 +113,18 @@ function AppContent() {
   const handleChangeDivision = useCallback(
     (next: Division) => setDivisionParam(next === 'makuuchi' ? null : next),
     [setDivisionParam]
+  )
+
+  const otherMatches = useMemo(
+    () =>
+      isFiltering && otherHits > 0
+        ? {
+            division: otherDivision,
+            count: otherHits,
+            onShow: () => handleChangeDivision(otherDivision),
+          }
+        : null,
+    [isFiltering, otherHits, otherDivision, handleChangeDivision]
   )
 
   const handleToggleLanguage = useCallback(() => {
@@ -129,13 +173,13 @@ function AppContent() {
         {strings.skipLink}
       </a>
       <Hero data={banzuke} />
-      <main id="main" tabIndex={-1}>
+      <main id="main" tabIndex={-1} data-entered={entered || undefined}>
         {banzuke && allRows.length > 0 && (
           <SearchBar
             value={query}
             onChange={(value) => setSearchQuery(value || null)}
             totalCount={allRows.length}
-            matchedCount={filteredRows.length}
+            matchedCount={matchedCount}
           />
         )}
         {status === 'loading' && <BanzukeGridSkeleton />}
@@ -150,7 +194,12 @@ function AppContent() {
           </div>
         )}
         {showTabs && (
-          <DivisionTabs value={division} onChange={handleChangeDivision} counts={counts} />
+          <DivisionTabs
+            value={division}
+            onChange={handleChangeDivision}
+            counts={counts}
+            matched={matchedByDivision}
+          />
         )}
         {banzuke && (
           <ErrorBoundary>
@@ -161,17 +210,19 @@ function AppContent() {
             >
               <BanzukeGrid
                 key={division}
-                rows={filteredRows}
+                rows={allRows}
+                highlight={highlight}
                 onSelectRikishi={handleSelectRikishi}
                 emptyReason={isFiltering ? 'no-matches' : 'no-data'}
+                query={query}
+                otherMatches={otherMatches}
                 onClearSearch={handleClearSearch}
               />
             </div>
           </ErrorBoundary>
         )}
-        {banzuke && <ShortcutsHelp open={helpOpen} onToggle={setHelpOpen} />}
       </main>
-      <Footer />
+      <Footer helpOpen={helpOpen} onToggleHelp={setHelpOpen} />
       <ScrollToTop />
       <WrestlerModal rikishi={selectedRikishi} onClose={handleCloseModal} />
     </>

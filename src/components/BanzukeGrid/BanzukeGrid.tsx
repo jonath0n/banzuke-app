@@ -1,19 +1,40 @@
-import type { RankGroup, RankLevel, Rikishi } from '../../types/banzuke'
+import type { Division, RankGroup, RankLevel, Rikishi } from '../../types/banzuke'
 import { groupRowsByRank } from '../../utils/formatting'
 import { RANK_LEVEL_NAMES, RANK_LEVEL_KANJI } from '../../constants/ranks'
+import { useLanguage } from '../../contexts/LanguageContext'
+import { langAttr } from '../../i18n/strings'
 import { RankRow } from '../RankRow/RankRow'
 import { useStrings } from '../../i18n/useStrings'
 import styles from './BanzukeGrid.module.css'
+
+/** Matches in the other division, offered when this one has none. */
+export interface OtherMatches {
+  division: Division
+  count: number
+  onShow: () => void
+}
 
 interface BanzukeGridProps {
   /** Wrestlers in banzuke order. */
   rows: Rikishi[]
   onSelectRikishi?: (rikishi: Rikishi) => void
+  /**
+   * Ids matching the current search. Rows with a match stay whole (the
+   * partner is dimmed, not dropped); rows without one are left out.
+   * Null or undefined shows every row.
+   */
+  highlight?: Set<number> | null
   /** Why the grid might be empty: no data at all, or a search with no matches. */
   emptyReason?: 'no-data' | 'no-matches'
+  /** The search text, quoted back in the no-matches state. */
+  query?: string
+  otherMatches?: OtherMatches | null
   /** Shown in the no-matches state to reset the search. */
   onClearSearch?: () => void
 }
+
+/** Tiers whose single row already stamps the rank on its rail need no band. */
+const BANDED_TIERS: ReadonlySet<RankLevel> = new Set(['maegashira', 'juryo'])
 
 /** Number of skeleton rows to display during loading */
 const SKELETON_ROW_COUNT = 8
@@ -74,38 +95,58 @@ function splitIntoTiers(groups: RankGroup[]): Tier[] {
   return tiers
 }
 
+/** An open brush circle (ensō): the sheet has nothing to show here. */
+function EnsoIcon() {
+  return (
+    <svg width="56" height="56" viewBox="0 0 56 56" fill="none" aria-hidden="true">
+      <path
+        d="M39 9.5A21 21 0 1 0 47.5 27"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
 function EmptyState({
   reason,
+  query,
+  otherMatches,
   onClearSearch,
 }: {
   reason: 'no-data' | 'no-matches'
+  query?: string
+  otherMatches?: OtherMatches | null
   onClearSearch?: () => void
 }) {
   const strings = useStrings()
+  const { language } = useLanguage()
   return (
-    <div role="status" className={styles.emptyState}>
-      <div className={styles.emptyIcon} aria-hidden="true">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
-          <path
-            d="M8 15s1.5 2 4 2 4-2 4-2"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-          <circle cx="9" cy="10" r="1" fill="currentColor" />
-          <circle cx="15" cy="10" r="1" fill="currentColor" />
-        </svg>
+    <div role="status" className={styles.emptyState} lang={langAttr(language)}>
+      <div className={styles.emptyIcon}>
+        <EnsoIcon />
       </div>
       {reason === 'no-matches' ? (
         <>
-          <p>{strings.noMatches}</p>
+          <p>{strings.noMatches(query?.trim() ?? '')}</p>
           <p className={styles.emptyHint}>{strings.noMatchesHint}</p>
-          {onClearSearch && (
-            <button type="button" className={styles.emptyAction} onClick={onClearSearch}>
-              {strings.showAll}
-            </button>
-          )}
+          <div className={styles.emptyActions}>
+            {otherMatches && (
+              <button type="button" className={styles.emptyAction} onClick={otherMatches.onShow}>
+                {strings.showMatchesIn(otherMatches.count, strings.division[otherMatches.division])}
+              </button>
+            )}
+            {onClearSearch && (
+              <button
+                type="button"
+                className={otherMatches ? styles.emptyActionQuiet : styles.emptyAction}
+                onClick={onClearSearch}
+              >
+                {strings.showAll}
+              </button>
+            )}
+          </div>
         </>
       ) : (
         <>
@@ -117,16 +158,35 @@ function EmptyState({
   )
 }
 
+/** Rows where at least one side is a match; every row when not filtering. */
+function visibleGroups(groups: RankGroup[], highlight?: Set<number> | null): RankGroup[] {
+  if (!highlight) return groups
+  return groups.filter(
+    (group) =>
+      (group.east && highlight.has(group.east.id)) || (group.west && highlight.has(group.west.id))
+  )
+}
+
 export function BanzukeGrid({
   rows,
   onSelectRikishi,
+  highlight,
   emptyReason = 'no-data',
+  query,
+  otherMatches,
   onClearSearch,
 }: BanzukeGridProps) {
-  const grouped = groupRowsByRank(rows)
+  const grouped = visibleGroups(groupRowsByRank(rows), highlight)
 
   if (grouped.length === 0) {
-    return <EmptyState reason={emptyReason} onClearSearch={onClearSearch} />
+    return (
+      <EmptyState
+        reason={emptyReason}
+        query={query}
+        otherMatches={otherMatches}
+        onClearSearch={onClearSearch}
+      />
+    )
   }
 
   let rowIndex = 0
@@ -140,7 +200,12 @@ export function BanzukeGrid({
           aria-labelledby={`tier-${tier.level}`}
           data-rank-level={tier.level}
         >
-          <h2 id={`tier-${tier.level}`} className={styles.tierDivider} data-rank-level={tier.level}>
+          {/* Sanyaku headings stay for structure but the rail already shows them */}
+          <h2
+            id={`tier-${tier.level}`}
+            className={BANDED_TIERS.has(tier.level) ? styles.tierDivider : 'visually-hidden'}
+            data-rank-level={tier.level}
+          >
             <span className={styles.tierKanji} lang="ja">
               {RANK_LEVEL_KANJI[tier.level]}
             </span>
@@ -152,6 +217,7 @@ export function BanzukeGrid({
               group={group}
               index={rowIndex++}
               onSelectRikishi={onSelectRikishi}
+              highlight={highlight}
             />
           ))}
         </section>

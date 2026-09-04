@@ -24,6 +24,7 @@ describe('SideCell', () => {
     )
 
     expect(screen.getByText('Test')).toBeInTheDocument()
+    expect(screen.getByText('Test · Mongolia')).toHaveAttribute('lang', 'en')
     expect(screen.getByText('New')).toHaveAttribute('title', 'New to Makuuchi')
     const img = screen.getByRole('presentation', { hidden: true })
     expect(img).toHaveAttribute('src', expect.stringMatching(/60x60\/20170096\.jpg$/))
@@ -61,6 +62,7 @@ describe('SideCell', () => {
     )
 
     expect(screen.getByText('テスト')).toHaveAttribute('lang', 'ja')
+    expect(screen.getByText('テスト部屋 · モンゴル')).toHaveAttribute('lang', 'ja')
     expect(screen.getByText('新入幕')).toBeInTheDocument()
   })
 

@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { makeRawDivision, makeRawPayload, makeRawSnapshot, placeholderRow } from '../test/fixtures'
+import {
+  makeRawDivision,
+  makeRawPayload,
+  makeRawSnapshot,
+  makeThirdOzekiRow,
+  placeholderRow,
+} from '../test/fixtures'
 import { normalizeDivision, normalizeSnapshot, parsePromotion, ringName } from './normalize'
 
 const FETCHED_AT = '2026-09-04T00:00:00.000Z'
@@ -37,6 +43,50 @@ describe('normalizeSnapshot', () => {
       '002000000100001/west',
     ])
     expect(banzuke.rikishi.at(-1)?.rankNumber).toBe(10)
+  })
+
+  it('reads the seat so a third Ozeki keeps his own position', () => {
+    const en = makeRawPayload('en')
+    const jp = makeRawPayload('jp')
+    for (const [payload, lang] of [
+      [en, 'en'],
+      [jp, 'jp'],
+    ] as const) {
+      payload.BanzukeTable.splice(4, 0, makeThirdOzekiRow(lang), placeholderRow)
+      payload.list_max += 2
+    }
+    const result = normalizeDivision(
+      'makuuchi',
+      makeRawDivision('makuuchi', { payloads: { en, jp } }),
+      FETCHED_AT,
+      'live'
+    )
+    expect(result.rikishi).toHaveLength(25)
+    const third = result.rikishi[4]
+    expect(third).toMatchObject({
+      id: 4230,
+      side: 'east',
+      rankCode: 200,
+      rankNumber: 1,
+      seat: 2,
+      shikona: { en: 'Aonishiki', jp: '安青錦' },
+      rankName: { en: 'Ozeki', jp: '大関' },
+      promotion: { kind: 'returning', raw: '再大関' },
+    })
+    expect(result.rikishi[3].seat).toBe(1)
+    expect(result.rikishi[5].rankCode).toBe(500)
+  })
+
+  it('defaults the seat to 1 when upstream leaves it blank', () => {
+    const en = makeRawPayload('en')
+    en.BanzukeTable[0].seat_order = ''
+    const result = normalizeDivision(
+      'makuuchi',
+      makeRawDivision('makuuchi', { payloads: { en, jp: makeRawPayload('jp') } }),
+      FETCHED_AT,
+      'live'
+    )
+    expect(result.rikishi[0].seat).toBe(1)
   })
 
   it('maps promotion flags', () => {

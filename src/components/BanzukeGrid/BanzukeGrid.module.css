@@ -25,17 +25,21 @@
   }
 }
 
-/* The sheet: one continuous piece of paper holding every rank */
+/* The sheet: one continuous piece of paper holding every rank.
+   `overflow: clip` rounds the corners without becoming a scroll container,
+   so the sticky tier bands inside can still pin to the viewport. */
 .grid {
   margin-top: var(--space-4);
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-md);
-  overflow: hidden;
+  overflow: clip;
+  /* A new sheet (tab switch) fades in as one piece rather than row by row */
+  animation: fadeIn var(--dur-base) ease;
 }
 
-/* A rank tier: heading band followed by its rows */
+/* A rank tier: heading band (numbered tiers only) followed by its rows */
 .tier {
   display: flex;
   flex-direction: column;
@@ -45,8 +49,16 @@
   border-top: 2px solid var(--rule);
 }
 
-/* Tier heading band (an <h2>) */
+/* Gold ink along the top of the sheet, where the Yokozuna sit */
+.tier[data-rank-level='yokozuna'] {
+  border-top: 2px solid var(--tier-yokozuna);
+}
+
+/* Tier heading band (an <h2>) stays in view while its rows scroll past */
 .tierDivider {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
   display: flex;
   align-items: baseline;
   justify-content: center;
@@ -55,7 +67,9 @@
   margin: 0;
   font-size: inherit;
   font-weight: inherit;
-  background: rgb(var(--ink-rgb) / 0.04);
+  /* Opaque paper under the ink tint, so rows never show through when pinned */
+  background:
+    linear-gradient(rgb(var(--ink-rgb) / 0.04), rgb(var(--ink-rgb) / 0.04)), var(--card-bg);
   border-bottom: 1px solid var(--rule);
 }
 
@@ -68,18 +82,13 @@
 }
 
 .tierLabel {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
+  font-weight: var(--label-weight);
   font-size: var(--text-xs);
-  letter-spacing: 0.14em;
+  letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
   color: var(--muted);
   white-space: nowrap;
-}
-
-/* Gold ink for the top of the sheet */
-.tierDivider[data-rank-level='yokozuna'] {
-  border-bottom-color: var(--tier-yokozuna);
-  box-shadow: inset 0 -1px 0 var(--tier-yokozuna);
 }
 
 /* Loading skeleton styles */
@@ -175,7 +184,8 @@
 }
 
 .emptyIcon {
-  opacity: 0.4;
+  color: var(--muted);
+  opacity: 0.6;
   margin-bottom: var(--space-2);
 }
 
@@ -192,22 +202,47 @@
   color: var(--muted);
 }
 
-.emptyAction {
+.emptyActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
   margin-top: var(--space-3);
+}
+
+.emptyAction,
+.emptyActionQuiet {
   min-height: 44px;
   padding: var(--space-2) var(--space-5);
   font: inherit;
   font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) ease,
+    border-color var(--dur-fast) ease;
+}
+
+.emptyAction {
   color: var(--on-accent);
   background: var(--accent);
   border: none;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: background var(--dur-fast) ease;
 }
 
 .emptyAction:hover {
   background: var(--accent-hover);
+}
+
+/* The secondary choice when another division has matches */
+.emptyActionQuiet {
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid var(--rule);
+}
+
+.emptyActionQuiet:hover {
+  border-color: var(--accent);
+  background: rgb(var(--accent-rgb) / 0.06);
 }
 
 @media (max-width: 600px) {

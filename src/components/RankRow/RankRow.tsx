@@ -12,9 +12,20 @@ interface RankRowProps {
   index?: number
   /** Callback when a wrestler is selected */
   onSelectRikishi?: (rikishi: Rikishi) => void
+  /** Ids matching the current search; wrestlers outside it are dimmed. */
+  highlight?: Set<number> | null
 }
 
-export const RankRow = memo(function RankRow({ group, index = 0, onSelectRikishi }: RankRowProps) {
+function isDimmed(rikishi: Rikishi | null, highlight: Set<number> | null | undefined): boolean {
+  return Boolean(highlight && rikishi && !highlight.has(rikishi.id))
+}
+
+export const RankRow = memo(function RankRow({
+  group,
+  index = 0,
+  onSelectRikishi,
+  highlight,
+}: RankRowProps) {
   const kanji = jpRankShort(group.rankCode, group.rankNumber) || group.name.jp
   const romaji = isSanyaku(group.rankCode)
     ? RANK_LEVEL_NAMES[group.rankLevel].toUpperCase()
@@ -33,6 +44,7 @@ export const RankRow = memo(function RankRow({ group, index = 0, onSelectRikishi
           rankLevel={group.rankLevel}
           rowIndex={index}
           onSelect={onSelectRikishi}
+          dimmed={isDimmed(group.east, highlight)}
         />
         <div className={styles.rail}>
           <span className={styles.kanji} lang="ja">
@@ -46,6 +58,7 @@ export const RankRow = memo(function RankRow({ group, index = 0, onSelectRikishi
           rankLevel={group.rankLevel}
           rowIndex={index}
           onSelect={onSelectRikishi}
+          dimmed={isDimmed(group.west, highlight)}
         />
       </div>
     </div>

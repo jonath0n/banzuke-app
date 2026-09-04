@@ -22,6 +22,8 @@ interface SideCellProps {
   rowIndex?: number
   /** Callback when wrestler is clicked */
   onSelect?: (rikishi: Rikishi) => void
+  /** True while a search matches the partner but not this wrestler. */
+  dimmed?: boolean
 }
 
 /** Gets the display name for a rikishi based on current language */
@@ -30,7 +32,14 @@ function getDisplayName(rikishi: Rikishi | null, language: Language): string {
   return rikishi.shikona[language] || rikishi.shikona.en || '—'
 }
 
-function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0, onSelect }: SideCellProps) {
+function SideCellInner({
+  rikishi,
+  side,
+  rankLevel,
+  rowIndex = 0,
+  onSelect,
+  dimmed = false,
+}: SideCellProps) {
   const { language } = useLanguage()
   const strings = useStrings()
   const [imageState, setImageState] = useState<'pending' | 'loaded' | 'error'>('pending')
@@ -72,15 +81,27 @@ function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0, onSelect }: Sid
 
   const displayName = getDisplayName(rikishi, language)
   const directionClass = language === 'jp' ? styles['name-jp'] : styles['name-en']
+  const langAttr = language === 'jp' ? 'ja' : 'en'
+  // Stable and home region under the name; shown on wide sheets only (CSS).
+  const detail = rikishi
+    ? [rikishi.heya[language], rikishi.pref[language]].filter(Boolean).join(' · ')
+    : ''
   const name = (
-    // Keyed by language so the swap animation replays on toggle.
-    <span
-      key={language}
-      className={`${styles.name} ${directionClass}`}
-      style={{ animationDelay: `${staggerDelay}ms` }}
-      lang={language === 'jp' ? 'ja' : 'en'}
-    >
-      {displayName}
+    <span key="text" className={styles.text}>
+      {/* Keyed by language so the swap animation replays on toggle. */}
+      <span
+        key={language}
+        className={`${styles.name} ${directionClass}`}
+        style={{ animationDelay: `${staggerDelay}ms` }}
+        lang={langAttr}
+      >
+        {displayName}
+      </span>
+      {detail && (
+        <span className={styles.detail} lang={langAttr}>
+          {detail}
+        </span>
+      )}
     </span>
   )
 
@@ -123,7 +144,11 @@ function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0, onSelect }: Sid
     </>
   )
 
-  const className = `${styles.cell} ${rikishi && onSelect ? styles.clickable : ''}`
+  const className = [
+    styles.cell,
+    rikishi && onSelect ? styles.clickable : '',
+    rikishi ? '' : styles.vacant,
+  ].join(' ')
 
   if (rikishi && onSelect) {
     return (
@@ -132,6 +157,7 @@ function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0, onSelect }: Sid
         className={className}
         data-side={side}
         data-rank-level={rankLevel}
+        data-dimmed={dimmed || undefined}
         onClick={() => onSelect(rikishi)}
         aria-label={`${displayName}, ${strings.side[side]}. ${strings.viewDetails}`}
       >
@@ -141,7 +167,12 @@ function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0, onSelect }: Sid
   }
 
   return (
-    <div className={className} data-side={side} data-rank-level={rankLevel}>
+    <div
+      className={className}
+      data-side={side}
+      data-rank-level={rankLevel}
+      data-dimmed={dimmed || undefined}
+    >
       {content}
     </div>
   )

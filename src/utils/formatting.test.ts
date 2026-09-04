@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { makeRikishi } from '../test/fixtures'
 import { buildPhotoUrl, formatRankLabel, groupRowsByRank } from './formatting'
 
@@ -46,7 +46,7 @@ describe('groupRowsByRank', () => {
       makeRikishi({ id: 5, side: 'east', rankCode: 500, rankLevel: 'maegashira', rankNumber: 2 }),
     ]
     const groups = groupRowsByRank(rows)
-    expect(groups.map((g) => g.key)).toEqual(['100-1', '500-1', '500-2'])
+    expect(groups.map((g) => g.key)).toEqual(['100-1-1', '500-1-1', '500-2-1'])
     expect(groups[0].east?.id).toBe(1)
     expect(groups[0].west?.id).toBe(2)
     expect(groups[2].east?.id).toBe(5)
@@ -61,7 +61,23 @@ describe('groupRowsByRank', () => {
     expect(group.west?.id).toBe(2)
   })
 
-  it('ignores a third wrestler at an already full position', () => {
+  it('keeps a second Ozeki pair as its own row (three Ozeki)', () => {
+    const ozeki = { rankCode: 200, rankLevel: 'ozeki' as const, rankNumber: 1 }
+    const rows = [
+      makeRikishi({ ...ozeki, id: 3622, side: 'east', sortKey: '002000000100001' }),
+      makeRikishi({ ...ozeki, id: 3661, side: 'west', sortKey: '002000000100001' }),
+      makeRikishi({ ...ozeki, id: 4230, side: 'east', seat: 2, sortKey: '002000000100002' }),
+    ]
+    const groups = groupRowsByRank(rows)
+    expect(groups.map((g) => g.key)).toEqual(['200-1-1', '200-1-2'])
+    expect(groups[1].seat).toBe(2)
+    expect(groups[1].east?.id).toBe(4230)
+    // The vacant West beside the third Ozeki stays empty
+    expect(groups[1].west).toBeNull()
+  })
+
+  it('warns instead of silently dropping a wrestler at a full position', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
     const rows = [
       makeRikishi({ id: 1, side: 'east' }),
       makeRikishi({ id: 2, side: 'west' }),
@@ -70,5 +86,7 @@ describe('groupRowsByRank', () => {
     const groups = groupRowsByRank(rows)
     expect(groups).toHaveLength(1)
     expect(groups[0].west?.id).toBe(2)
+    expect(warn).toHaveBeenCalledTimes(1)
+    warn.mockRestore()
   })
 })

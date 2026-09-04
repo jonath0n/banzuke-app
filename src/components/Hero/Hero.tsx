@@ -49,62 +49,62 @@ function TournamentStatus({ data }: { data: Banzuke }) {
   }
 }
 
-function Freshness({ data }: { data: Banzuke }) {
-  const { language } = useLanguage()
-  const strings = useStrings()
-  if (data.source === 'sample') {
-    return <p className={styles.freshness}>{strings.sampleData}</p>
-  }
-  const checked = formatRelativeTime(data.fetchedAt, language)
-  return (
-    <p className={styles.freshness}>
-      {strings.dataFrom}
-      {checked ? ` · ${strings.checked(checked)}` : ''}
-    </p>
-  )
-}
+const SEPARATOR = ' · '
 
+/**
+ * The title deck: wordmark and language toggle, then the tournament as one
+ * line (name · venue), its status beside the dates, and a muted line for
+ * provenance (announcement, data source, freshness).
+ */
 export function Hero({ data }: HeroProps) {
   const { language, setLanguage } = useLanguage()
   const strings = useStrings()
   const basho = data?.basho
-  const bashoName = basho ? basho.name[language] || basho.name.en : '—'
-  const division = data ? ` (${strings.division[data.division]})` : ''
+  const bashoName = basho ? basho.name[language] || basho.name.en : ''
+  const venue = basho ? getVenue(basho.month) : null
   const dates = basho ? formatDateRange(basho.startDate, basho.endDate, language) : ''
   const announced = basho?.announcedAt ? formatDateTime(basho.announcedAt, language) : ''
-  const venue = basho ? getVenue(basho.month) : null
+
+  const provenance: string[] = []
+  if (announced) provenance.push(strings.announcedOn(announced))
+  if (data?.source === 'sample') {
+    provenance.push(strings.sampleData)
+  } else if (data) {
+    const checked = formatRelativeTime(data.fetchedAt, language)
+    provenance.push(checked ? `${strings.dataFrom}, ${strings.checked(checked)}` : strings.dataFrom)
+  }
 
   return (
     <header className={styles.hero} lang={langAttr(language)}>
       <div className={styles.titleRow}>
-        <div className={styles.titleGroup}>
-          <h1 lang="en">Grand Sumo Banzuke</h1>
-          <span className={styles.seal} lang="ja" aria-hidden="true">
-            番付
-          </span>
-          {data && <TournamentStatus data={data} />}
+        <h1 lang="en">Grand Sumo Banzuke</h1>
+        <span className={styles.seal} lang="ja" aria-hidden="true">
+          番付
+        </span>
+        <div className={styles.toggle}>
+          <LanguageToggle language={language} onLanguageChange={setLanguage} />
         </div>
-        <LanguageToggle language={language} onLanguageChange={setLanguage} />
       </div>
-      <dl className={styles.summary} aria-live="polite">
-        <div>
-          <dt>{strings.basho}</dt>
-          <dd>{`${bashoName}${division}`}</dd>
-        </div>
-        <div>
-          <dt>{strings.dates}</dt>
-          <dd>{dates || '—'}</dd>
-        </div>
-        <div>
-          <dt>{strings.venue}</dt>
-          <dd>{venue ? venue[language] : '—'}</dd>
-        </div>
-        <div>
-          <dt>{strings.announced}</dt>
-          <dd>{announced || '—'}</dd>
-        </div>
-      </dl>
-      {data && <Freshness data={data} />}
+
+      <p className={styles.deck}>
+        {data ? (
+          <>
+            <strong>{bashoName}</strong>
+            {venue ? `${SEPARATOR}${venue[language]}` : ''}
+          </>
+        ) : (
+          '—'
+        )}
+      </p>
+
+      {data && (
+        <p className={styles.statusRow}>
+          <TournamentStatus data={data} />
+          {dates && <span className={styles.dates}>{dates}</span>}
+        </p>
+      )}
+
+      {provenance.length > 0 && <p className={styles.provenance}>{provenance.join(SEPARATOR)}</p>}
     </header>
   )
 }

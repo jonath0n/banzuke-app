@@ -31,13 +31,17 @@ export function ageOn(iso: string, now: Date = new Date()): number | null {
   return age
 }
 
-/** "2023-05" → "May 2023" / "2023年5月". */
-export function formatYearMonth(yearMonth: string, language: Language): string {
+/** "2023-05" → "May 2023" / "2023年5月"; `short` gives "Sep 2023" for tight layouts. */
+export function formatYearMonth(
+  yearMonth: string,
+  language: Language,
+  style: 'long' | 'short' = 'long'
+): string {
   const date = utcDate(`${yearMonth}-01`)
   if (!date) return yearMonth
   return new Intl.DateTimeFormat(LOCALES[language], {
     year: 'numeric',
-    month: 'long',
+    month: language === 'jp' ? 'long' : style,
     timeZone: 'UTC',
   }).format(date)
 }

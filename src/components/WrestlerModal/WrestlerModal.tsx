@@ -1,9 +1,9 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import type { Rikishi } from '../../types/banzuke'
-import type { RikishiProfile } from '../../data/profiles'
+import { careerSteps, type RikishiProfile } from '../../data/profiles'
 import { buildPhotoUrl, profileUrl, PHOTO_DIMENSIONS } from '../../utils/formatting'
-import { getRankLabel } from '../../constants/ranks'
+import { jpRankShort } from '../../data/kanji'
 import { describePromotion } from '../../utils/promotion'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { useStrings } from '../../i18n/useStrings'
@@ -142,8 +142,15 @@ export function WrestlerModal({ rikishi, onClose }: WrestlerModalProps) {
                 </div>
               )}
             </div>
-            <div className={styles.rankBadge} data-rank-level={rikishi.rankLevel} lang="en">
-              {getRankLabel(rikishi.rankCode, rikishi.rankNumber) || rikishi.rankName.en}
+            {/* The seal under the portrait reads the rank in kanji, as the rail does;
+                the Rank row below carries it in the UI language for assistive tech. */}
+            <div
+              className={styles.rankBadge}
+              data-rank-level={rikishi.rankLevel}
+              lang="ja"
+              aria-hidden="true"
+            >
+              {jpRankShort(rikishi.rankCode, rikishi.rankNumber) || rikishi.rankName.jp}
             </div>
           </div>
 
@@ -253,25 +260,52 @@ function ProfileRows({ profile }: { profile: RikishiProfile }) {
   if (profile.weightKg !== null) {
     rows.push({ label: strings.weight, value: formatMeasure(profile.weightKg, 'kg', language) })
   }
-  if (profile.debut) {
-    rows.push({ label: strings.debut, value: formatYearMonth(profile.debut, language) })
-  }
   if (profile.highestRank[language]) {
     rows.push({ label: strings.highestRank, value: profile.highestRank[language] })
   }
   if (profile.kimarite[language]) {
     rows.push({ label: strings.kimarite, value: profile.kimarite[language], wide: true })
   }
-  if (rows.length === 0) return null
+  return (
+    <>
+      {rows.length > 0 && (
+        <dl className={`${styles.meta} ${styles.profile}`}>
+          {rows.map((row) => (
+            <div key={row.label} className={`${styles.metaItem} ${row.wide ? styles.wide : ''}`}>
+              <dt className={styles.metaLabel}>{row.label}</dt>
+              <dd className={styles.metaValue}>{row.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+      <CareerLadder profile={profile} />
+    </>
+  )
+}
+
+/** Debut and each promotion as steps along a rule, oldest first. */
+function CareerLadder({ profile }: { profile: RikishiProfile }) {
+  const { language } = useLanguage()
+  const strings = useStrings()
+  const headingId = useId()
+  const steps = careerSteps(profile)
+  if (steps.length === 0) return null
 
   return (
-    <dl className={`${styles.meta} ${styles.profile}`}>
-      {rows.map((row) => (
-        <div key={row.label} className={`${styles.metaItem} ${row.wide ? styles.wide : ''}`}>
-          <dt className={styles.metaLabel}>{row.label}</dt>
-          <dd className={styles.metaValue}>{row.value}</dd>
-        </div>
-      ))}
-    </dl>
+    <section className={styles.career} aria-labelledby={headingId}>
+      <h3 id={headingId} className={styles.careerTitle}>
+        {strings.career}
+      </h3>
+      <ol className={styles.ladder}>
+        {steps.map(([step, date]) => (
+          <li key={step} className={styles.step}>
+            <span className={styles.stepLabel}>{strings.milestone[step]}</span>
+            <time dateTime={date} className={styles.stepDate}>
+              {formatYearMonth(date, language, 'short')}
+            </time>
+          </li>
+        ))}
+      </ol>
+    </section>
   )
 }

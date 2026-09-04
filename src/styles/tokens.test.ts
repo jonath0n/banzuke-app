@@ -55,8 +55,8 @@ const TEXT_PAIRS: Array<[string, string]> = [
   ['on-tier', 'tier-yokozuna'],
   ['on-tier', 'tier-ozeki'],
   ['on-tier', 'tier-sekiwake'],
-  ['status-live', 'bg'],
-  ['status-upcoming', 'bg'],
+  ['danger', 'bg'],
+  ['warning', 'bg'],
 ]
 
 describe.each([
