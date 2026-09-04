@@ -31,6 +31,7 @@ const en = {
   searchLabel: 'Search wrestlers',
   searchClear: 'Clear search',
   showAll: 'Show all wrestlers',
+  showMatchesIn: (count: number, division: string) => `Show ${count} in ${division}`,
   searchCount: (matched: number, total: number) => `${matched} of ${total} wrestlers`,
   noMatches: (query: string) => `Nothing on the sheet for “${query}”.`,
   noMatchesHint:
@@ -114,6 +115,7 @@ const jp: Strings = {
   searchLabel: '力士を検索',
   searchClear: '検索をクリア',
   showAll: 'すべての力士を表示',
+  showMatchesIn: (count: number, division: string) => `${division}の${count}人を表示`,
   searchCount: (matched: number, total: number) => `${total}人中 ${matched}人`,
   noMatches: (query: string) => `「${query}」に該当する力士はいません。`,
   noMatchesHint: '四股名、部屋、出身地、または「前頭五」「大関」などの番付で検索できます。',

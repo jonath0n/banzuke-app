@@ -22,6 +22,8 @@ interface SideCellProps {
   rowIndex?: number
   /** Callback when wrestler is clicked */
   onSelect?: (rikishi: Rikishi) => void
+  /** True while a search matches the partner but not this wrestler. */
+  dimmed?: boolean
 }
 
 /** Gets the display name for a rikishi based on current language */
@@ -30,7 +32,14 @@ function getDisplayName(rikishi: Rikishi | null, language: Language): string {
   return rikishi.shikona[language] || rikishi.shikona.en || '—'
 }
 
-function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0, onSelect }: SideCellProps) {
+function SideCellInner({
+  rikishi,
+  side,
+  rankLevel,
+  rowIndex = 0,
+  onSelect,
+  dimmed = false,
+}: SideCellProps) {
   const { language } = useLanguage()
   const strings = useStrings()
   const [imageState, setImageState] = useState<'pending' | 'loaded' | 'error'>('pending')
@@ -148,6 +157,7 @@ function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0, onSelect }: Sid
         className={className}
         data-side={side}
         data-rank-level={rankLevel}
+        data-dimmed={dimmed || undefined}
         onClick={() => onSelect(rikishi)}
         aria-label={`${displayName}, ${strings.side[side]}. ${strings.viewDetails}`}
       >
@@ -157,7 +167,12 @@ function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0, onSelect }: Sid
   }
 
   return (
-    <div className={className} data-side={side} data-rank-level={rankLevel}>
+    <div
+      className={className}
+      data-side={side}
+      data-rank-level={rankLevel}
+      data-dimmed={dimmed || undefined}
+    >
       {content}
     </div>
   )

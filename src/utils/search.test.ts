@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { makeBanzuke, makeRikishi } from '../test/fixtures'
-import { buildSearchIndex, filterRikishi, foldForSearch } from './search'
+import { buildSearchIndex, filterRikishi, foldForSearch, matchingIds } from './search'
 
 describe('foldForSearch', () => {
   it('strips diacritics and case', () => {
@@ -75,5 +75,12 @@ describe('filterRikishi', () => {
   it('requires every term to match', () => {
     expect(ids('mongolia west')).toEqual([9])
     expect(ids('mongolia zzz')).toEqual([])
+  })
+
+  it('reports matching ids, or null when nothing is being filtered', () => {
+    expect(matchingIds(index, '')).toBeNull()
+    expect(matchingIds(index, '  ')).toBeNull()
+    expect([...matchingIds(index, 'mongolia')!]).toEqual([3842, 9])
+    expect(matchingIds(index, 'zzz')?.size).toBe(0)
   })
 })

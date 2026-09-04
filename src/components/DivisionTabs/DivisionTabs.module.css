@@ -72,6 +72,12 @@
   color: var(--accent);
 }
 
+/* No matches in this division for the current search */
+.count.none,
+.tab.selected .count.none {
+  color: var(--muted);
+}
+
 @media (max-width: 599px) {
   .tab {
     flex: 1;

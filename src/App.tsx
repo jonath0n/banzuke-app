@@ -4,7 +4,7 @@ import { LanguageProvider, useLanguage } from './contexts/LanguageContext'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { clearUrlParam, useUrlParam } from './hooks/useUrlState'
 import { useStrings } from './i18n/useStrings'
-import { buildSearchIndex, filterRikishi } from './utils/search'
+import { buildSearchIndex, matchingIds } from './utils/search'
 import { Hero } from './components/Hero/Hero'
 import { SearchBar } from './components/SearchBar/SearchBar'
 import { DivisionTabs } from './components/DivisionTabs/DivisionTabs'
@@ -59,9 +59,27 @@ function AppContent() {
   const banzuke = data ? (division === 'juryo' ? data.juryo : data.makuuchi) : null
   const allRows = banzuke?.rikishi ?? EMPTY
   const query = searchQuery ?? ''
-  const index = useMemo(() => buildSearchIndex(allRows), [allRows])
-  const filteredRows = useMemo(() => filterRikishi(index, query), [index, query])
-  const isFiltering = query.trim().length > 0
+
+  // The search runs over both divisions so the tabs can say where the matches are.
+  const indexes = useMemo(
+    () => ({
+      makuuchi: buildSearchIndex(data?.makuuchi.rikishi ?? EMPTY),
+      juryo: buildSearchIndex(data?.juryo?.rikishi ?? EMPTY),
+    }),
+    [data]
+  )
+  const matches = useMemo(
+    () => ({
+      makuuchi: matchingIds(indexes.makuuchi, query),
+      juryo: data?.juryo ? matchingIds(indexes.juryo, query) : null,
+    }),
+    [indexes, query, data]
+  )
+  const highlight = matches[division]
+  const isFiltering = highlight !== null
+  const matchedCount = highlight ? highlight.size : allRows.length
+  const otherDivision: Division = division === 'makuuchi' ? 'juryo' : 'makuuchi'
+  const otherHits = matches[otherDivision]?.size ?? 0
 
   // A deep link may point at a wrestler in either division.
   const selectedRikishi = useMemo(() => {
@@ -77,6 +95,9 @@ function AppContent() {
     }),
     [data]
   )
+  const matchedByDivision = isFiltering
+    ? { makuuchi: matches.makuuchi?.size, juryo: matches.juryo?.size }
+    : undefined
   const showTabs = data?.juryo != null
 
   const handleSelectRikishi = useCallback(
@@ -92,6 +113,18 @@ function AppContent() {
   const handleChangeDivision = useCallback(
     (next: Division) => setDivisionParam(next === 'makuuchi' ? null : next),
     [setDivisionParam]
+  )
+
+  const otherMatches = useMemo(
+    () =>
+      isFiltering && otherHits > 0
+        ? {
+            division: otherDivision,
+            count: otherHits,
+            onShow: () => handleChangeDivision(otherDivision),
+          }
+        : null,
+    [isFiltering, otherHits, otherDivision, handleChangeDivision]
   )
 
   const handleToggleLanguage = useCallback(() => {
@@ -146,7 +179,7 @@ function AppContent() {
             value={query}
             onChange={(value) => setSearchQuery(value || null)}
             totalCount={allRows.length}
-            matchedCount={filteredRows.length}
+            matchedCount={matchedCount}
           />
         )}
         {status === 'loading' && <BanzukeGridSkeleton />}
@@ -161,7 +194,12 @@ function AppContent() {
           </div>
         )}
         {showTabs && (
-          <DivisionTabs value={division} onChange={handleChangeDivision} counts={counts} />
+          <DivisionTabs
+            value={division}
+            onChange={handleChangeDivision}
+            counts={counts}
+            matched={matchedByDivision}
+          />
         )}
         {banzuke && (
           <ErrorBoundary>
@@ -172,10 +210,12 @@ function AppContent() {
             >
               <BanzukeGrid
                 key={division}
-                rows={filteredRows}
+                rows={allRows}
+                highlight={highlight}
                 onSelectRikishi={handleSelectRikishi}
                 emptyReason={isFiltering ? 'no-matches' : 'no-data'}
                 query={query}
+                otherMatches={otherMatches}
                 onClearSearch={handleClearSearch}
               />
             </div>

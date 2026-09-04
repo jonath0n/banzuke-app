@@ -73,6 +73,38 @@ describe('BanzukeGrid', () => {
     expect(screen.getByText('—')).toBeInTheDocument()
   })
 
+  it('keeps a matching wrestler’s partner in view, dimmed, and drops rows without a match', () => {
+    // Fixture: Hoshoryu (E) / Onosato (W) at Yokozuna, Wakatakakage (E) at M1
+    renderGrid(
+      <BanzukeGrid
+        rows={makeBanzuke().rikishi}
+        highlight={new Set([4227])}
+        onSelectRikishi={vi.fn()}
+      />
+    )
+    expect(screen.getByRole('button', { name: /Onosato/ })).not.toHaveAttribute('data-dimmed')
+    expect(screen.getByRole('button', { name: /Hoshoryu/ })).toHaveAttribute('data-dimmed', 'true')
+    expect(screen.queryByRole('button', { name: /Wakatakakage/ })).toBeNull()
+  })
+
+  it('offers the other division’s matches when this one has none', async () => {
+    const user = userEvent.setup()
+    const onShow = vi.fn()
+    renderGrid(
+      <BanzukeGrid
+        rows={makeBanzuke().rikishi}
+        highlight={new Set()}
+        emptyReason="no-matches"
+        query="dewa"
+        otherMatches={{ division: 'juryo', count: 2, onShow }}
+        onClearSearch={vi.fn()}
+      />
+    )
+    await user.click(screen.getByRole('button', { name: 'Show 2 in Juryo' }))
+    expect(onShow).toHaveBeenCalled()
+    expect(screen.getByRole('button', { name: 'Show all wrestlers' })).toBeInTheDocument()
+  })
+
   it('makes wrestlers selectable buttons', async () => {
     const user = userEvent.setup()
     const onSelect = vi.fn()

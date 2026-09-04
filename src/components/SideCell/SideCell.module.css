@@ -139,6 +139,17 @@
   }
 }
 
+/* The partner of a search match stays for context, faded until pointed at */
+.cell[data-dimmed] {
+  opacity: 0.4;
+  transition: opacity var(--dur-fast) ease;
+}
+
+.cell[data-dimmed]:hover,
+.cell[data-dimmed]:focus-visible {
+  opacity: 1;
+}
+
 /* A vacant slot reads as empty, not as an error */
 .vacant .name {
   color: var(--muted);

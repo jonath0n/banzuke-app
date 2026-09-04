@@ -12,13 +12,15 @@ interface DivisionTabsProps {
   onChange: (division: Division) => void
   /** Wrestler counts per division; a division with no count is not offered. */
   counts: Partial<Record<Division, number>>
+  /** Search matches per division while filtering, shown as matched/total. */
+  matched?: Partial<Record<Division, number>>
 }
 
 /**
  * Switches between divisions. Follows the WAI-ARIA tabs pattern: arrow keys
  * move between tabs and select them, Home/End jump to the ends.
  */
-export function DivisionTabs({ value, onChange, counts }: DivisionTabsProps) {
+export function DivisionTabs({ value, onChange, counts, matched }: DivisionTabsProps) {
   const strings = useStrings()
   const { language } = useLanguage()
   const listRef = useRef<HTMLDivElement>(null)
@@ -61,6 +63,7 @@ export function DivisionTabs({ value, onChange, counts }: DivisionTabsProps) {
     >
       {available.map((division) => {
         const selected = division === value
+        const hits = matched?.[division]
         return (
           <button
             key={division}
@@ -78,7 +81,9 @@ export function DivisionTabs({ value, onChange, counts }: DivisionTabsProps) {
               {DIVISION_KANJI[division]}
             </span>
             {language !== 'jp' && <span className={styles.name}>{strings.division[division]}</span>}
-            <span className={styles.count}>{counts[division]}</span>
+            <span className={`${styles.count} ${hits === 0 ? styles.none : ''}`}>
+              {hits != null ? `${hits}/${counts[division]}` : counts[division]}
+            </span>
           </button>
         )
       })}

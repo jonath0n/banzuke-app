@@ -62,6 +62,22 @@ describe('DivisionTabs', () => {
     expect(screen.getAllByRole('tab')).toHaveLength(1)
   })
 
+  it('shows matches against totals while a search is active', () => {
+    window.history.replaceState({}, '', '/?lang=en')
+    render(
+      <LanguageProvider>
+        <DivisionTabs
+          value="makuuchi"
+          onChange={vi.fn()}
+          counts={{ makuuchi: 42, juryo: 28 }}
+          matched={{ makuuchi: 6, juryo: 0 }}
+        />
+      </LanguageProvider>
+    )
+    const tabs = screen.getAllByRole('tab')
+    expect(tabs.map((t) => t.textContent)).toEqual(['幕内Makuuchi6/42', '十両Juryo0/28'])
+  })
+
   it('uses Japanese labels in Japanese mode', () => {
     renderTabs('juryo', 'jp')
     expect(screen.getByRole('tablist', { name: '階級' })).toBeInTheDocument()

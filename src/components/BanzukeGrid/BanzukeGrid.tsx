@@ -1,4 +1,4 @@
-import type { RankGroup, RankLevel, Rikishi } from '../../types/banzuke'
+import type { Division, RankGroup, RankLevel, Rikishi } from '../../types/banzuke'
 import { groupRowsByRank } from '../../utils/formatting'
 import { RANK_LEVEL_NAMES, RANK_LEVEL_KANJI } from '../../constants/ranks'
 import { useLanguage } from '../../contexts/LanguageContext'
@@ -7,14 +7,28 @@ import { RankRow } from '../RankRow/RankRow'
 import { useStrings } from '../../i18n/useStrings'
 import styles from './BanzukeGrid.module.css'
 
+/** Matches in the other division, offered when this one has none. */
+export interface OtherMatches {
+  division: Division
+  count: number
+  onShow: () => void
+}
+
 interface BanzukeGridProps {
   /** Wrestlers in banzuke order. */
   rows: Rikishi[]
   onSelectRikishi?: (rikishi: Rikishi) => void
+  /**
+   * Ids matching the current search. Rows with a match stay whole (the
+   * partner is dimmed, not dropped); rows without one are left out.
+   * Null or undefined shows every row.
+   */
+  highlight?: Set<number> | null
   /** Why the grid might be empty: no data at all, or a search with no matches. */
   emptyReason?: 'no-data' | 'no-matches'
   /** The search text, quoted back in the no-matches state. */
   query?: string
+  otherMatches?: OtherMatches | null
   /** Shown in the no-matches state to reset the search. */
   onClearSearch?: () => void
 }
@@ -98,10 +112,12 @@ function EnsoIcon() {
 function EmptyState({
   reason,
   query,
+  otherMatches,
   onClearSearch,
 }: {
   reason: 'no-data' | 'no-matches'
   query?: string
+  otherMatches?: OtherMatches | null
   onClearSearch?: () => void
 }) {
   const strings = useStrings()
@@ -115,11 +131,22 @@ function EmptyState({
         <>
           <p>{strings.noMatches(query?.trim() ?? '')}</p>
           <p className={styles.emptyHint}>{strings.noMatchesHint}</p>
-          {onClearSearch && (
-            <button type="button" className={styles.emptyAction} onClick={onClearSearch}>
-              {strings.showAll}
-            </button>
-          )}
+          <div className={styles.emptyActions}>
+            {otherMatches && (
+              <button type="button" className={styles.emptyAction} onClick={otherMatches.onShow}>
+                {strings.showMatchesIn(otherMatches.count, strings.division[otherMatches.division])}
+              </button>
+            )}
+            {onClearSearch && (
+              <button
+                type="button"
+                className={otherMatches ? styles.emptyActionQuiet : styles.emptyAction}
+                onClick={onClearSearch}
+              >
+                {strings.showAll}
+              </button>
+            )}
+          </div>
         </>
       ) : (
         <>
@@ -131,17 +158,35 @@ function EmptyState({
   )
 }
 
+/** Rows where at least one side is a match; every row when not filtering. */
+function visibleGroups(groups: RankGroup[], highlight?: Set<number> | null): RankGroup[] {
+  if (!highlight) return groups
+  return groups.filter(
+    (group) =>
+      (group.east && highlight.has(group.east.id)) || (group.west && highlight.has(group.west.id))
+  )
+}
+
 export function BanzukeGrid({
   rows,
   onSelectRikishi,
+  highlight,
   emptyReason = 'no-data',
   query,
+  otherMatches,
   onClearSearch,
 }: BanzukeGridProps) {
-  const grouped = groupRowsByRank(rows)
+  const grouped = visibleGroups(groupRowsByRank(rows), highlight)
 
   if (grouped.length === 0) {
-    return <EmptyState reason={emptyReason} query={query} onClearSearch={onClearSearch} />
+    return (
+      <EmptyState
+        reason={emptyReason}
+        query={query}
+        otherMatches={otherMatches}
+        onClearSearch={onClearSearch}
+      />
+    )
   }
 
   let rowIndex = 0
@@ -172,6 +217,7 @@ export function BanzukeGrid({
               group={group}
               index={rowIndex++}
               onSelectRikishi={onSelectRikishi}
+              highlight={highlight}
             />
           ))}
         </section>

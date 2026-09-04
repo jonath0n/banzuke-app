@@ -68,6 +68,28 @@ describe('App', () => {
     expect(await screen.findByRole('button', { name: /Hoshoryu/ })).toBeInTheDocument()
   })
 
+  it('keeps the partner of a match in view and counts matches per division', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.type(await screen.findByRole('searchbox'), 'onosato')
+    // Onosato (West Yokozuna) matches; Hoshoryu stays as the dimmed East partner
+    expect(screen.getByRole('button', { name: /Onosato, West/ })).not.toHaveAttribute('data-dimmed')
+    expect(screen.getByRole('button', { name: /Hoshoryu, East/ })).toHaveAttribute('data-dimmed')
+    expect(screen.queryByRole('button', { name: /Kirishima/ })).toBeNull()
+    expect(screen.getByRole('tab', { name: /Makuuchi/ })).toHaveTextContent('1/24')
+    expect(screen.getByRole('tab', { name: /Juryo/ })).toHaveTextContent('0/28')
+  })
+
+  it('points to the other division when only it has matches', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.type(await screen.findByRole('searchbox'), 'dewanoryu')
+    await user.click(screen.getByRole('button', { name: 'Show 1 in Juryo' }))
+    expect(window.location.search).toBe('?q=dewanoryu&div=juryo')
+    expect(await screen.findByRole('button', { name: /Dewanoryu, East/ })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /Juryo/ })).toHaveAttribute('aria-selected', 'true')
+  })
+
   it('shows a helpful empty state for a search with no matches', async () => {
     const user = userEvent.setup()
     render(<App />)
