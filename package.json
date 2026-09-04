@@ -17,7 +17,8 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"scripts/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" \"scripts/**/*.ts\"",
     "type-check": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.scripts.json",
-    "validate": "npm run type-check && npm run lint && npm run format:check"
+    "check:css": "tsx scripts/check-css-modules.ts",
+    "validate": "npm run type-check && npm run lint && npm run format:check && npm run check:css"
   },
   "engines": {
     "node": ">=22.0.0"
@@ -36,6 +37,7 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-v8": "^2.1.9",
     "axe-core": "^4.13.0",
     "eslint": "^9.0.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",

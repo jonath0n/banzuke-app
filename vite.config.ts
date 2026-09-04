@@ -4,37 +4,23 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  // For GitHub Pages: set base to repo name
-  // Change this if your repo has a different name
+  // GitHub Pages serves the site from /banzuke-app/
   base: '/banzuke-app/',
   build: {
     outDir: 'dist',
-    // Generate source maps for debugging production issues
-    sourcemap: true,
-    // Warn if chunks exceed this size (in kB)
+    // Emit source maps for debugging without referencing them from the bundle
+    sourcemap: 'hidden',
     chunkSizeWarningLimit: 500,
-    // Minification options
     minify: 'esbuild',
-    // Rollup options for chunk splitting
     rollupOptions: {
       output: {
-        // Manual chunk splitting for better caching
+        // Keep React in its own long-lived chunk
         manualChunks: {
-          // Separate React into its own chunk for better caching
           react: ['react', 'react-dom'],
-        },
-        // Asset file naming for cache busting
-        assetFileNames: (assetInfo) => {
-          // Keep fonts in assets folder without hash for consistency
-          if (assetInfo.name?.endsWith('.otf') || assetInfo.name?.endsWith('.woff2')) {
-            return 'assets/[name][extname]'
-          }
-          return 'assets/[name]-[hash][extname]'
         },
       },
     },
   },
-  // Preview server configuration
   preview: {
     port: 4173,
     strictPort: true,
@@ -43,11 +29,22 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './src/setupTests.ts',
     css: true,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text-summary', 'lcov'],
+      include: ['src/**/*.{ts,tsx}', 'scripts/lib/**/*.ts'],
+      exclude: ['src/main.tsx', 'src/test/**', 'src/**/*.d.ts', '**/*.test.*'],
+      thresholds: {
+        lines: 80,
+        functions: 80,
+        branches: 70,
+        statements: 80,
+      },
+    },
   },
-  // Development server configuration
   server: {
     port: 5173,
     strictPort: false,
-    open: true,
+    open: !process.env.CI,
   },
 })

@@ -27,6 +27,7 @@ export function ScrollToTop() {
       onClick={scrollToTop}
       type="button"
       aria-label="Scroll to top"
+      data-print="hide"
     >
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path

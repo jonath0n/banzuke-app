@@ -88,7 +88,7 @@ function AppContent() {
 
   return (
     <>
-      <a href="#main" className="skip-link">
+      <a href="#main" className="skip-link" data-print="hide">
         Skip to the banzuke
       </a>
       <Hero data={data} />
@@ -144,7 +144,7 @@ function SearchBar({
   const isFiltering = query.trim().length > 0
 
   return (
-    <div className={styles.searchBar} role="search">
+    <div className={styles.searchBar} role="search" data-print="hide">
       <div className={styles.searchInputWrapper}>
         <svg
           className={styles.searchIcon}

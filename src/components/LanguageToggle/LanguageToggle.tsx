@@ -15,6 +15,7 @@ export function LanguageToggle({ language, onLanguageChange }: LanguageTogglePro
       role="group"
       aria-label="Language selection"
       aria-keyshortcuts="l"
+      data-print="hide"
     >
       <button
         type="button"
