@@ -1,11 +1,18 @@
 import { memo, useState } from 'react'
-import type { Rikishi, RankLevel } from '../../types/banzuke'
+import type { Language, Rikishi, RankLevel } from '../../types/banzuke'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { buildPhotoUrl } from '../../utils/formatting'
+import { describePromotion } from '../../utils/promotion'
+import { SIDE_KANJI } from '../../data/kanji'
+import { useStrings } from '../../i18n/useStrings'
 import styles from './SideCell.module.css'
 
-/** Size of wrestler avatar images in pixels */
-const AVATAR_SIZE = 44
+/** Intrinsic size hint for wrestler avatars (the CSS size is a token). */
+const AVATAR_SIZE = 48
+
+/** Stagger for the language-switch animation: per row, capped. */
+const STAGGER_MS_PER_ROW = 20
+const STAGGER_MAX_MS = 400
 
 interface SideCellProps {
   rikishi: Rikishi | null
@@ -18,68 +25,69 @@ interface SideCellProps {
 }
 
 /** Gets the display name for a rikishi based on current language */
-function getDisplayName(rikishi: Rikishi | null, language: 'en' | 'jp'): string {
+function getDisplayName(rikishi: Rikishi | null, language: Language): string {
   if (!rikishi) return '—'
-  if (language === 'jp' && rikishi.shikona_jp) {
-    return rikishi.shikona_jp
-  }
-  if (language === 'en' && rikishi.shikona_en) {
-    return rikishi.shikona_en
-  }
-  return rikishi.shikona || '—'
+  return rikishi.shikona[language] || rikishi.shikona.en || '—'
 }
 
 function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0, onSelect }: SideCellProps) {
   const { language } = useLanguage()
-  const [imageError, setImageError] = useState(false)
-  const [imageLoaded, setImageLoaded] = useState(false)
+  const strings = useStrings()
+  const [imageState, setImageState] = useState<'pending' | 'loaded' | 'error'>('pending')
   const isEast = side === 'east'
-  const sideLabel = isEast ? 'E' : 'W'
 
-  // Stagger delay for language switch animation (20ms per row, max 400ms)
-  const staggerDelay = Math.min(rowIndex * 20, 400)
+  const staggerDelay = Math.min(rowIndex * STAGGER_MS_PER_ROW, STAGGER_MAX_MS)
 
-  const handleImageError = () => {
-    setImageError(true)
-  }
+  const promotionLabel = rikishi ? describePromotion(rikishi, language, 'short') : null
+  const badge =
+    rikishi && promotionLabel ? (
+      <span
+        className={styles.pill}
+        title={describePromotion(rikishi, language) ?? undefined}
+        lang={language === 'jp' ? 'ja' : 'en'}
+      >
+        {promotionLabel}
+      </span>
+    ) : null
 
-  const handleImageLoad = () => {
-    setImageLoaded(true)
-  }
-
-  const badge = rikishi?.rank_new ? <span className={styles.pill}>{rikishi.rank_new}</span> : null
-
-  const hasPhoto = rikishi?.photo && !imageError
-  const avatar = hasPhoto ? (
-    <span className={`${styles['avatar-wrapper']} ${imageLoaded ? styles.loaded : ''}`}>
-      <img
-        src={buildPhotoUrl(rikishi.photo)}
-        alt={`Portrait of ${rikishi.shikona || 'wrestler'} from ${rikishi.heya_name || 'unknown'} stable`}
-        loading="lazy"
-        width={AVATAR_SIZE}
-        height={AVATAR_SIZE}
-        onError={handleImageError}
-        onLoad={handleImageLoad}
-        className={imageLoaded ? styles.visible : ''}
-      />
-    </span>
-  ) : null
+  const photo = rikishi?.photo
+  const imageLoaded = imageState === 'loaded'
+  const avatar =
+    rikishi && photo && imageState !== 'error' ? (
+      <span className={`${styles['avatar-wrapper']} ${imageLoaded ? styles.loaded : ''}`}>
+        <img
+          src={buildPhotoUrl(photo)}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          referrerPolicy="no-referrer"
+          width={AVATAR_SIZE}
+          height={AVATAR_SIZE}
+          onError={() => setImageState('error')}
+          onLoad={() => setImageState('loaded')}
+          className={imageLoaded ? styles.visible : ''}
+        />
+      </span>
+    ) : null
 
   const displayName = getDisplayName(rikishi, language)
-  const directionClass = language === 'jp' ? styles['name-rtl'] : styles['name-ltr']
+  const directionClass = language === 'jp' ? styles['name-jp'] : styles['name-en']
   const name = (
+    // Keyed by language so the swap animation replays on toggle.
     <span
       key={language}
       className={`${styles.name} ${directionClass}`}
       style={{ animationDelay: `${staggerDelay}ms` }}
+      lang={language === 'jp' ? 'ja' : 'en'}
     >
       {displayName}
     </span>
   )
 
-  const sideLabelElement = (
-    <span key="side" className={styles['side-label']}>
-      {sideLabel}
+  // 東 / 西 seal; the side is already part of the button's accessible name
+  const sideSeal = (
+    <span key="side" className={styles['side-seal']} lang="ja" aria-hidden="true">
+      {SIDE_KANJI[side]}
     </span>
   )
 
@@ -100,47 +108,40 @@ function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0, onSelect }: Sid
     </span>
   )
 
-  // East: badge, label, info; West: info, label, badge (mirrored layout)
+  // East: badge, seal, info; West: info, seal, badge (mirrored layout)
   const content = isEast ? (
     <>
       {badge}
-      {sideLabelElement}
+      {sideSeal}
       {info}
     </>
   ) : (
     <>
       {info}
-      {sideLabelElement}
+      {sideSeal}
       {badge}
     </>
   )
 
-  const handleClick = () => {
-    if (rikishi && onSelect) {
-      onSelect(rikishi)
-    }
-  }
+  const className = `${styles.cell} ${rikishi && onSelect ? styles.clickable : ''}`
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if ((e.key === 'Enter' || e.key === ' ') && rikishi && onSelect) {
-      e.preventDefault()
-      onSelect(rikishi)
-    }
+  if (rikishi && onSelect) {
+    return (
+      <button
+        type="button"
+        className={className}
+        data-side={side}
+        data-rank-level={rankLevel}
+        onClick={() => onSelect(rikishi)}
+        aria-label={`${displayName}, ${strings.side[side]}. ${strings.viewDetails}`}
+      >
+        {content}
+      </button>
+    )
   }
-
-  const isClickable = !!rikishi && !!onSelect
 
   return (
-    <div
-      className={`${styles.cell} ${isClickable ? styles.clickable : ''}`}
-      data-side={side}
-      data-rank-level={rankLevel}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-      role={isClickable ? 'button' : undefined}
-      tabIndex={isClickable ? 0 : undefined}
-      aria-label={isClickable ? `View details for ${displayName}` : undefined}
-    >
+    <div className={className} data-side={side} data-rank-level={rankLevel}>
       {content}
     </div>
   )

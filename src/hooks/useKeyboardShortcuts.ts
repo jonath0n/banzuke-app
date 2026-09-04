@@ -4,12 +4,14 @@ interface ShortcutActions {
   onToggleLanguage: () => void
   onFocusSearch: () => void
   onEscape: () => void
+  onToggleHelp?: () => void
 }
 
 export function useKeyboardShortcuts({
   onToggleLanguage,
   onFocusSearch,
   onEscape,
+  onToggleHelp,
 }: ShortcutActions) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -37,6 +39,12 @@ export function useKeyboardShortcuts({
           e.preventDefault()
           onFocusSearch()
           break
+        case '?':
+          if (onToggleHelp) {
+            e.preventDefault()
+            onToggleHelp()
+          }
+          break
         case 'Escape':
           onEscape()
           break
@@ -45,5 +53,5 @@ export function useKeyboardShortcuts({
 
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [onToggleLanguage, onFocusSearch, onEscape])
+  }, [onToggleLanguage, onFocusSearch, onEscape, onToggleHelp])
 }

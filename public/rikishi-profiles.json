@@ -1,0 +1,1998 @@
+{
+  "version": 1,
+  "fetchedAt": "2026-09-04T17:39:56.442Z",
+  "profiles": {
+    "2565": {
+      "id": 2565,
+      "realName": {
+        "en": "Kaname Matsumura",
+        "jp": "松村 要"
+      },
+      "birthDate": "1987-05-11",
+      "birthplace": {
+        "en": "Kumamoto",
+        "jp": "熊本県熊本市東区"
+      },
+      "heightCm": 181,
+      "weightKg": 141,
+      "kimarite": {
+        "en": "migi-yotsu, yori",
+        "jp": "右四つ・寄り"
+      },
+      "debut": "2003-03",
+      "highestRank": {
+        "en": "Maegashira #1",
+        "jp": "前頭筆頭"
+      },
+      "milestones": {
+        "juryo": "2010-07",
+        "makuuchi": "2014-05"
+      },
+      "bashoId": 637
+    },
+    "2629": {
+      "id": 2629,
+      "realName": {
+        "en": "Ichiro Tamawashi",
+        "jp": "玉鷲 一朗"
+      },
+      "birthDate": "1984-11-16",
+      "birthplace": {
+        "en": "Mongolia",
+        "jp": "モンゴル・ウランバートル"
+      },
+      "heightCm": 189,
+      "weightKg": 178,
+      "kimarite": {
+        "en": "oshi",
+        "jp": "押し"
+      },
+      "debut": "2004-01",
+      "highestRank": {
+        "en": "Sekiwake",
+        "jp": "関脇"
+      },
+      "milestones": {
+        "juryo": "2008-01",
+        "makuuchi": "2008-09",
+        "sanyaku": "2015-03"
+      },
+      "bashoId": 637
+    },
+    "2775": {
+      "id": 2775,
+      "realName": {
+        "en": "Akira Takayasu",
+        "jp": "高安 晃"
+      },
+      "birthDate": "1990-02-28",
+      "birthplace": {
+        "en": "Ibaraki",
+        "jp": "茨城県土浦市"
+      },
+      "heightCm": 188,
+      "weightKg": 173,
+      "kimarite": {
+        "en": "tsuki, oshi",
+        "jp": "突き・押し"
+      },
+      "debut": "2005-03",
+      "highestRank": {
+        "en": "Ozeki",
+        "jp": "大関"
+      },
+      "milestones": {
+        "juryo": "2010-11",
+        "makuuchi": "2011-07",
+        "sanyaku": "2013-09",
+        "ozeki": "2017-07"
+      },
+      "bashoId": 637
+    },
+    "2890": {
+      "id": 2890,
+      "realName": {
+        "en": "Yuki Watanabe",
+        "jp": "渡邊 裕樹"
+      },
+      "birthDate": "1990-11-10",
+      "birthplace": {
+        "en": "Yamanashi",
+        "jp": "山梨県甲府市"
+      },
+      "heightCm": 189,
+      "weightKg": 159,
+      "kimarite": {
+        "en": "moro-zashi, yori",
+        "jp": "モロ差し・寄り"
+      },
+      "debut": "2006-03",
+      "highestRank": {
+        "en": "Komusubi",
+        "jp": "小結"
+      },
+      "milestones": {
+        "juryo": "2012-11",
+        "makuuchi": "2018-01",
+        "sanyaku": "2019-07"
+      },
+      "bashoId": 637
+    },
+    "2892": {
+      "id": 2892,
+      "realName": {
+        "en": "Tetsuya Kumagai",
+        "jp": "熊谷 徹也"
+      },
+      "birthDate": "1990-08-25",
+      "birthplace": {
+        "en": "Iwate",
+        "jp": "岩手県盛岡市"
+      },
+      "heightCm": 186,
+      "weightKg": 184,
+      "kimarite": {
+        "en": "oshi",
+        "jp": "押し"
+      },
+      "debut": "2006-03",
+      "highestRank": {
+        "en": "Komusubi",
+        "jp": "小結"
+      },
+      "milestones": {
+        "juryo": "2015-05",
+        "makuuchi": "2016-05",
+        "sanyaku": "2023-09"
+      },
+      "bashoId": 637
+    },
+    "3207": {
+      "id": 3207,
+      "realName": {
+        "en": "Shoma Ishibashi",
+        "jp": "石橋 翔馬"
+      },
+      "birthDate": "1991-07-20",
+      "birthplace": {
+        "en": "Mongolia",
+        "jp": "モンゴル・ウランバートル"
+      },
+      "heightCm": 184,
+      "weightKg": 144,
+      "kimarite": {
+        "en": "oshi, hidari-yotsu, yori",
+        "jp": "押し・左四つ・寄り"
+      },
+      "debut": "2009-07",
+      "highestRank": {
+        "en": "Maegashira #2",
+        "jp": "前頭二枚目"
+      },
+      "milestones": {
+        "juryo": "2016-01",
+        "makuuchi": "2016-09"
+      },
+      "bashoId": 637
+    },
+    "3255": {
+      "id": 3255,
+      "realName": {
+        "en": "Ryoya Tatsu",
+        "jp": "達 綾哉"
+      },
+      "birthDate": "1994-06-01",
+      "birthplace": {
+        "en": "Ishikawa",
+        "jp": "石川県七尾市"
+      },
+      "heightCm": 192,
+      "weightKg": 169,
+      "kimarite": {
+        "en": "tsuki, oshi",
+        "jp": "突き・押し"
+      },
+      "debut": "2010-03",
+      "highestRank": {
+        "en": "Maegashira #3",
+        "jp": "前頭三枚目"
+      },
+      "milestones": {
+        "juryo": "2014-11",
+        "makuuchi": "2016-01"
+      },
+      "bashoId": 637
+    },
+    "3265": {
+      "id": 3265,
+      "realName": {
+        "en": "Nobuaki Ishii",
+        "jp": "石井 伸明"
+      },
+      "birthDate": "1994-11-14",
+      "birthplace": {
+        "en": "Chiba",
+        "jp": "千葉県柏市"
+      },
+      "heightCm": 184,
+      "weightKg": 176,
+      "kimarite": {
+        "en": "oshi",
+        "jp": "押し"
+      },
+      "debut": "2010-03",
+      "highestRank": {
+        "en": "Sekiwake",
+        "jp": "関脇"
+      },
+      "milestones": {
+        "juryo": "2017-11",
+        "makuuchi": "2018-09",
+        "sanyaku": "2020-11"
+      },
+      "bashoId": 637
+    },
+    "3337": {
+      "id": 3337,
+      "realName": {
+        "en": "Meisei Kawabata",
+        "jp": "川畑 明生"
+      },
+      "birthDate": "1995-07-24",
+      "birthplace": {
+        "en": "Kagoshima",
+        "jp": "鹿児島県大島郡瀬戸内町"
+      },
+      "heightCm": 178,
+      "weightKg": 157,
+      "kimarite": {
+        "en": "hidari-yotsu, yori",
+        "jp": "左四つ・寄り"
+      },
+      "debut": "2011-05",
+      "highestRank": {
+        "en": "Sekiwake",
+        "jp": "関脇"
+      },
+      "milestones": {
+        "juryo": "2016-11",
+        "makuuchi": "2018-07",
+        "sanyaku": "2021-07"
+      },
+      "bashoId": 637
+    },
+    "3367": {
+      "id": 3367,
+      "realName": {
+        "en": "Erdenebileg Enkhmanlai",
+        "jp": "エルデンビィールグ・エンクマンライ"
+      },
+      "birthDate": "1993-03-06",
+      "birthplace": {
+        "en": "Mongolia",
+        "jp": "モンゴル・ウランバートル"
+      },
+      "heightCm": 189,
+      "weightKg": 123,
+      "kimarite": {
+        "en": "migi-yotsu, yori, nage",
+        "jp": "右四つ・寄り・投げ"
+      },
+      "debut": "2011-09",
+      "highestRank": {
+        "en": "Maegashira #16",
+        "jp": "前頭十六枚目"
+      },
+      "milestones": {
+        "juryo": "2023-03",
+        "makuuchi": "2025-01"
+      },
+      "bashoId": 637
+    },
+    "3371": {
+      "id": 3371,
+      "realName": {
+        "en": "Minato Onami",
+        "jp": "大波 港"
+      },
+      "birthDate": "1993-10-05",
+      "birthplace": {
+        "en": "Fukushima",
+        "jp": "福島県福島市"
+      },
+      "heightCm": 186,
+      "weightKg": 149,
+      "kimarite": {
+        "en": "hidari-yotsu, yori",
+        "jp": "左四つ・寄り"
+      },
+      "debut": "2011-11",
+      "highestRank": {
+        "en": "Sekiwake",
+        "jp": "関脇"
+      },
+      "milestones": {
+        "juryo": "2019-03",
+        "makuuchi": "2022-01",
+        "sanyaku": "2023-01"
+      },
+      "bashoId": 637
+    },
+    "3376": {
+      "id": 3376,
+      "realName": {
+        "en": "Hayato Takanishi",
+        "jp": "高西 勇人"
+      },
+      "birthDate": "1993-11-10",
+      "birthplace": {
+        "en": "Saitama",
+        "jp": "埼玉県朝霞市"
+      },
+      "heightCm": 182,
+      "weightKg": 163,
+      "kimarite": {
+        "en": "tsuki, oshi",
+        "jp": "突き・押し"
+      },
+      "debut": "2012-01",
+      "highestRank": {
+        "en": "Sekiwake",
+        "jp": "関脇"
+      },
+      "milestones": {
+        "juryo": "2014-07",
+        "makuuchi": "2015-09",
+        "sanyaku": "2020-01"
+      },
+      "bashoId": 637
+    },
+    "3485": {
+      "id": 3485,
+      "realName": {
+        "en": "Kosuke Horikiri",
+        "jp": "堀切 洸助"
+      },
+      "birthDate": "1994-05-04",
+      "birthplace": {
+        "en": "Saitama",
+        "jp": "埼玉県越谷市"
+      },
+      "heightCm": 186,
+      "weightKg": 167,
+      "kimarite": {
+        "en": "tsuki, oshi",
+        "jp": "突き・押し"
+      },
+      "debut": "2013-05",
+      "highestRank": {
+        "en": "Sekiwake",
+        "jp": "関脇"
+      },
+      "milestones": {
+        "juryo": "2015-03",
+        "makuuchi": "2018-01",
+        "sanyaku": "2019-07"
+      },
+      "bashoId": 637
+    },
+    "3521": {
+      "id": 3521,
+      "realName": {
+        "en": "Naoya Shodai",
+        "jp": "正代 直也"
+      },
+      "birthDate": "1991-11-05",
+      "birthplace": {
+        "en": "Kumamoto",
+        "jp": "熊本県宇土市"
+      },
+      "heightCm": 184,
+      "weightKg": 168,
+      "kimarite": {
+        "en": "migi-yotsu, yori",
+        "jp": "右四つ・寄り"
+      },
+      "debut": "2014-03",
+      "highestRank": {
+        "en": "Ozeki",
+        "jp": "大関"
+      },
+      "milestones": {
+        "juryo": "2015-09",
+        "makuuchi": "2016-01",
+        "sanyaku": "2017-01",
+        "ozeki": "2020-11"
+      },
+      "bashoId": 637
+    },
+    "3553": {
+      "id": 3553,
+      "realName": {
+        "en": "Shoto Tanimatsu",
+        "jp": "谷松 将人"
+      },
+      "birthDate": "1998-04-08",
+      "birthplace": {
+        "en": "Kanagawa",
+        "jp": "神奈川県中郡大磯町"
+      },
+      "heightCm": 193,
+      "weightKg": 180,
+      "kimarite": {
+        "en": "hidari-yotsu, yori, oshi",
+        "jp": "左四つ・寄り・押し"
+      },
+      "debut": "2014-03",
+      "highestRank": {
+        "en": "Maegashira #5",
+        "jp": "前頭五枚目"
+      },
+      "milestones": {
+        "juryo": "2023-01",
+        "makuuchi": "2023-07"
+      },
+      "bashoId": 637
+    },
+    "3594": {
+      "id": 3594,
+      "realName": {
+        "en": "Masaya Iwasaki",
+        "jp": "岩崎 正也"
+      },
+      "birthDate": "1992-04-24",
+      "birthplace": {
+        "en": "Tokyo",
+        "jp": "東京都江戸川区"
+      },
+      "heightCm": 173,
+      "weightKg": 135,
+      "kimarite": {
+        "en": "oshi",
+        "jp": "押し"
+      },
+      "debut": "2015-01",
+      "highestRank": {
+        "en": "Komusubi",
+        "jp": "小結"
+      },
+      "milestones": {
+        "juryo": "2017-07",
+        "makuuchi": "2020-09",
+        "sanyaku": "2022-11"
+      },
+      "bashoId": 637
+    },
+    "3616": {
+      "id": 3616,
+      "realName": {
+        "en": "Kazuki Ura",
+        "jp": "宇良 和輝"
+      },
+      "birthDate": "1992-06-22",
+      "birthplace": {
+        "en": "Osaka",
+        "jp": "大阪府寝屋川市"
+      },
+      "heightCm": 173,
+      "weightKg": 138,
+      "kimarite": {
+        "en": "oshi, ashitori",
+        "jp": "押し・足取り"
+      },
+      "debut": "2015-03",
+      "highestRank": {
+        "en": "Komusubi",
+        "jp": "小結"
+      },
+      "milestones": {
+        "juryo": "2016-05",
+        "makuuchi": "2017-03",
+        "sanyaku": "2024-01"
+      },
+      "bashoId": 637
+    },
+    "3620": {
+      "id": 3620,
+      "realName": {
+        "en": "Hisashi Omichi",
+        "jp": "大道 久司"
+      },
+      "birthDate": "1992-12-25",
+      "birthplace": {
+        "en": "Nagano",
+        "jp": "長野県木曽郡上松町"
+      },
+      "heightCm": 178,
+      "weightKg": 176,
+      "kimarite": {
+        "en": "tsuki, oshi",
+        "jp": "突き・押し"
+      },
+      "debut": "2015-03",
+      "highestRank": {
+        "en": "Ozeki",
+        "jp": "大関"
+      },
+      "milestones": {
+        "juryo": "2015-07",
+        "makuuchi": "2015-11",
+        "sanyaku": "2016-11",
+        "ozeki": "2022-03"
+      },
+      "bashoId": 637
+    },
+    "3622": {
+      "id": 3622,
+      "realName": {
+        "en": "Byambachuluun Lkhagvasuren",
+        "jp": "ビャンブチュルン・ハグワスレン"
+      },
+      "birthDate": "1996-04-24",
+      "birthplace": {
+        "en": "Mongolia",
+        "jp": "モンゴル・ドルノドゥ"
+      },
+      "heightCm": 186,
+      "weightKg": 150,
+      "kimarite": {
+        "en": "hidari-yotsu, yori, nage",
+        "jp": "左四つ・寄り・投げ"
+      },
+      "debut": "2015-05",
+      "highestRank": {
+        "en": "Ozeki",
+        "jp": "大関"
+      },
+      "milestones": {
+        "juryo": "2019-03",
+        "makuuchi": "2020-01",
+        "sanyaku": "2021-11",
+        "ozeki": "2023-07"
+      },
+      "bashoId": 637
+    },
+    "3661": {
+      "id": 3661,
+      "realName": {
+        "en": "Masakatsu Kamatani",
+        "jp": "鎌谷 将且"
+      },
+      "birthDate": "1997-11-19",
+      "birthplace": {
+        "en": "Chiba",
+        "jp": "千葉県松戸市"
+      },
+      "heightCm": 189,
+      "weightKg": 177,
+      "kimarite": {
+        "en": "migi-yotsu, yori, oshi",
+        "jp": "右四つ・寄り・押し"
+      },
+      "debut": "2015-11",
+      "highestRank": {
+        "en": "Ozeki",
+        "jp": "大関"
+      },
+      "milestones": {
+        "juryo": "2019-07",
+        "makuuchi": "2020-03",
+        "sanyaku": "2023-01",
+        "ozeki": "2024-03"
+      },
+      "bashoId": 637
+    },
+    "3682": {
+      "id": 3682,
+      "realName": {
+        "en": "Hiroki Ishibashi",
+        "jp": "石橋 広暉"
+      },
+      "birthDate": "1994-03-01",
+      "birthplace": {
+        "en": "Toyama",
+        "jp": "富山県富山市"
+      },
+      "heightCm": 188,
+      "weightKg": 172,
+      "kimarite": {
+        "en": "oshi, migi-yotsu, yori",
+        "jp": "押し・右四つ・寄り"
+      },
+      "debut": "2016-03",
+      "highestRank": {
+        "en": "Ozeki",
+        "jp": "大関"
+      },
+      "milestones": {
+        "juryo": "2017-03",
+        "makuuchi": "2017-09",
+        "sanyaku": "2019-11",
+        "ozeki": "2020-07"
+      },
+      "bashoId": 637
+    },
+    "3705": {
+      "id": 3705,
+      "realName": {
+        "en": "Yuki Sakaguchi",
+        "jp": "坂口 雄貴"
+      },
+      "birthDate": "2000-04-20",
+      "birthplace": {
+        "en": "Nagasaki",
+        "jp": "長崎県平戸市"
+      },
+      "heightCm": 178,
+      "weightKg": 142,
+      "kimarite": {
+        "en": "tsuki, oshi, migi-yotsu, yori",
+        "jp": "突き・押し・右四つ・寄り"
+      },
+      "debut": "2016-03",
+      "highestRank": {
+        "en": "Komusubi",
+        "jp": "小結"
+      },
+      "milestones": {
+        "juryo": "2021-11",
+        "makuuchi": "2022-09",
+        "sanyaku": "2024-07"
+      },
+      "bashoId": 637
+    },
+    "3711": {
+      "id": 3711,
+      "realName": {
+        "en": "Shinji Kizaki",
+        "jp": "木崎 信志"
+      },
+      "birthDate": "1993-05-06",
+      "birthplace": {
+        "en": "Okinawa",
+        "jp": "沖縄県うるま市"
+      },
+      "heightCm": 176,
+      "weightKg": 157,
+      "kimarite": {
+        "en": "hidari-yotsu, yori",
+        "jp": "左四つ・寄り"
+      },
+      "debut": "2016-03",
+      "highestRank": {
+        "en": "Maegashira #2",
+        "jp": "前頭二枚目"
+      },
+      "milestones": {
+        "juryo": "2018-07",
+        "makuuchi": "2023-11"
+      },
+      "bashoId": 637
+    },
+    "3742": {
+      "id": 3742,
+      "realName": {
+        "en": "Ryusei Ogasawara",
+        "jp": "小笠原 隆聖"
+      },
+      "birthDate": "1996-07-22",
+      "birthplace": {
+        "en": "Aomori",
+        "jp": "青森県十和田市"
+      },
+      "heightCm": 184,
+      "weightKg": 155,
+      "kimarite": {
+        "en": "hidari-yotsu, yori",
+        "jp": "左四つ・寄り"
+      },
+      "debut": "2016-09",
+      "highestRank": {
+        "en": "Maegashira #3",
+        "jp": "前頭三枚目"
+      },
+      "milestones": {
+        "juryo": "2020-09",
+        "makuuchi": "2022-07"
+      },
+      "bashoId": 637
+    },
+    "3743": {
+      "id": 3743,
+      "realName": {
+        "en": "Kazunari Ihara",
+        "jp": "庵原 一成"
+      },
+      "birthDate": "1996-08-30",
+      "birthplace": {
+        "en": "Shizuoka",
+        "jp": "静岡県焼津市"
+      },
+      "heightCm": 174,
+      "weightKg": 116,
+      "kimarite": {
+        "en": "oshi, katasukashi",
+        "jp": "押し・肩透かし"
+      },
+      "debut": "2016-09",
+      "highestRank": {
+        "en": "Maegashira #1",
+        "jp": "前頭筆頭"
+      },
+      "milestones": {
+        "juryo": "2020-03",
+        "makuuchi": "2021-01"
+      },
+      "bashoId": 637
+    },
+    "3753": {
+      "id": 3753,
+      "realName": {
+        "en": "Daiki Yamamoto",
+        "jp": "山本 大生"
+      },
+      "birthDate": "1993-10-01",
+      "birthplace": {
+        "en": "Hokkaido",
+        "jp": "北海道岩内郡岩内町"
+      },
+      "heightCm": 190,
+      "weightKg": 160,
+      "kimarite": {
+        "en": "tsuki, oshi",
+        "jp": "突き・押し"
+      },
+      "debut": "2017-01",
+      "highestRank": {
+        "en": "Maegashira #1",
+        "jp": "前頭筆頭"
+      },
+      "milestones": {
+        "juryo": "2019-07",
+        "makuuchi": "2021-07"
+      },
+      "bashoId": 637
+    },
+    "3761": {
+      "id": 3761,
+      "realName": {
+        "en": "Atsushi Onami",
+        "jp": "大波 渥"
+      },
+      "birthDate": "1994-12-06",
+      "birthplace": {
+        "en": "Fukushima",
+        "jp": "福島県福島市"
+      },
+      "heightCm": 183,
+      "weightKg": 138,
+      "kimarite": {
+        "en": "migi-yotsu, yori",
+        "jp": "右四つ・寄り"
+      },
+      "debut": "2017-03",
+      "highestRank": {
+        "en": "Sekiwake",
+        "jp": "関脇"
+      },
+      "milestones": {
+        "juryo": "2018-05",
+        "makuuchi": "2019-11",
+        "sanyaku": "2021-07"
+      },
+      "bashoId": 637
+    },
+    "3803": {
+      "id": 3803,
+      "realName": {
+        "en": "Yuya Nakamura",
+        "jp": "中村 友哉"
+      },
+      "birthDate": "1994-10-18",
+      "birthplace": {
+        "en": "Ishikawa",
+        "jp": "石川県金沢市"
+      },
+      "heightCm": 167,
+      "weightKg": 107,
+      "kimarite": {
+        "en": "hidrai-yotsu, shitatenage",
+        "jp": "左四つ・下手投げ"
+      },
+      "debut": "2017-03",
+      "highestRank": {
+        "en": "Maegashira #4",
+        "jp": "前頭四枚目"
+      },
+      "milestones": {
+        "juryo": "2018-03",
+        "makuuchi": "2019-05"
+      },
+      "bashoId": 637
+    },
+    "3818": {
+      "id": 3818,
+      "realName": {
+        "en": "Yuta Minami",
+        "jp": "南 友太"
+      },
+      "birthDate": "1994-12-02",
+      "birthplace": {
+        "en": "Kanagawa",
+        "jp": "神奈川県川崎市川崎区"
+      },
+      "heightCm": 185,
+      "weightKg": 173,
+      "kimarite": {
+        "en": "tsuki, oshi",
+        "jp": "突き・押し"
+      },
+      "debut": "2017-05",
+      "highestRank": {
+        "en": "Maegashira #3",
+        "jp": "前頭三枚目"
+      },
+      "milestones": {
+        "juryo": "2018-11",
+        "makuuchi": "2019-03"
+      },
+      "bashoId": 637
+    },
+    "3839": {
+      "id": 3839,
+      "realName": {
+        "en": "Takaaki Tsukahara",
+        "jp": "塚原 隆明"
+      },
+      "birthDate": "1999-10-12",
+      "birthplace": {
+        "en": "Saitama",
+        "jp": "埼玉県越谷市"
+      },
+      "heightCm": 193,
+      "weightKg": 161,
+      "kimarite": {
+        "en": "tsuki, oshi",
+        "jp": "突き・押し"
+      },
+      "debut": "2017-11",
+      "highestRank": {
+        "en": "Maegashira #18",
+        "jp": "前頭十八枚目"
+      },
+      "milestones": {
+        "juryo": "2024-05",
+        "makuuchi": "2025-05"
+      },
+      "bashoId": 637
+    },
+    "3840": {
+      "id": 3840,
+      "realName": {
+        "en": "Toshiki Tebakari",
+        "jp": "手計 富士紀"
+      },
+      "birthDate": "1999-08-26",
+      "birthplace": {
+        "en": "Chiba",
+        "jp": "千葉県柏市"
+      },
+      "heightCm": 189,
+      "weightKg": 170,
+      "kimarite": {
+        "en": "migi-yotsu, yori",
+        "jp": "右四つ・寄り"
+      },
+      "debut": "2017-11",
+      "highestRank": {
+        "en": "Sekiwake",
+        "jp": "関脇"
+      },
+      "milestones": {
+        "juryo": "2019-11",
+        "makuuchi": "2020-07",
+        "sanyaku": "2026-05"
+      },
+      "bashoId": 637
+    },
+    "3842": {
+      "id": 3842,
+      "realName": {
+        "en": "Sugarragchaa Byambasuren",
+        "jp": "スガラグチャー・ビャンバスレン"
+      },
+      "birthDate": "1999-05-22",
+      "birthplace": {
+        "en": "Mongolia",
+        "jp": "モンゴル・ウランバートル"
+      },
+      "heightCm": 188,
+      "weightKg": 148,
+      "kimarite": {
+        "en": "migi-yotsu, yori, nage",
+        "jp": "右四つ・寄り・投げ"
+      },
+      "debut": "2018-01",
+      "highestRank": {
+        "en": "Yokozuna",
+        "jp": "横綱"
+      },
+      "milestones": {
+        "juryo": "2019-11",
+        "makuuchi": "2020-09",
+        "sanyaku": "2022-03",
+        "ozeki": "2023-09",
+        "yokozuna": "2025-03"
+      },
+      "bashoId": 637
+    },
+    "3844": {
+      "id": 3844,
+      "realName": {
+        "en": "Konosuke Naya",
+        "jp": "納谷 幸之介"
+      },
+      "birthDate": "2000-02-14",
+      "birthplace": {
+        "en": "Tokyo",
+        "jp": "東京都江東区"
+      },
+      "heightCm": 192,
+      "weightKg": 185,
+      "kimarite": {
+        "en": "tsuki, oshi",
+        "jp": "突き・押し"
+      },
+      "debut": "2018-01",
+      "highestRank": {
+        "en": "Sekiwake",
+        "jp": "関脇"
+      },
+      "milestones": {
+        "juryo": "2021-01",
+        "makuuchi": "2022-01",
+        "sanyaku": "2025-03"
+      },
+      "bashoId": 637
+    },
+    "3907": {
+      "id": 3907,
+      "realName": {
+        "en": "Amartuvshin Amarsanaa",
+        "jp": "アマルトゥブシン・アマルサナー"
+      },
+      "birthDate": "1999-03-02",
+      "birthplace": {
+        "en": "Russia",
+        "jp": "ロシア・トゥヴァ"
+      },
+      "heightCm": 185,
+      "weightKg": 159,
+      "kimarite": {
+        "en": "migi-yotsu, yori",
+        "jp": "右四つ・寄り"
+      },
+      "debut": "2018-11",
+      "highestRank": {
+        "en": "Maegashira #5",
+        "jp": "前頭五枚目"
+      },
+      "milestones": {
+        "juryo": "2022-11",
+        "makuuchi": "2023-11"
+      },
+      "bashoId": 637
+    },
+    "3927": {
+      "id": 3927,
+      "realName": {
+        "en": "Ko Yoshii",
+        "jp": "吉井 虹"
+      },
+      "birthDate": "2003-08-01",
+      "birthplace": {
+        "en": "Shizuoka",
+        "jp": "静岡県焼津市"
+      },
+      "heightCm": 179,
+      "weightKg": 177,
+      "kimarite": {
+        "en": "oshi, hidari-yotsu, yori",
+        "jp": "押し・左四つ・寄り"
+      },
+      "debut": "2019-03",
+      "highestRank": {
+        "en": "Juryo #13",
+        "jp": "十両十三枚目"
+      },
+      "milestones": {
+        "juryo": "2026-09"
+      },
+      "bashoId": 637
+    },
+    "3933": {
+      "id": 3933,
+      "realName": {
+        "en": "Hideki Tomie",
+        "jp": "冨栄 秀喜"
+      },
+      "birthDate": "1996-08-25",
+      "birthplace": {
+        "en": "Miyagi",
+        "jp": "宮城県栗原市"
+      },
+      "heightCm": 179,
+      "weightKg": 135,
+      "kimarite": {
+        "en": "hidari-yotsu, yori, uwatenage",
+        "jp": "左四つ・寄り・上手投げ"
+      },
+      "debut": "2019-03",
+      "highestRank": {
+        "en": "Maegashira #9",
+        "jp": "前頭九枚目"
+      },
+      "milestones": {
+        "juryo": "2023-05",
+        "makuuchi": "2024-05"
+      },
+      "bashoId": 637
+    },
+    "3939": {
+      "id": 3939,
+      "realName": {
+        "en": "Daisuke Saito",
+        "jp": "齋藤 大輔"
+      },
+      "birthDate": "2000-11-12",
+      "birthplace": {
+        "en": "Yamagata",
+        "jp": "山形県酒田市"
+      },
+      "heightCm": 191,
+      "weightKg": 159,
+      "kimarite": {
+        "en": "tsuppari, migi-yotsu, yori, uwatenage",
+        "jp": "突っ張り・右四つ・寄り・上手投げ"
+      },
+      "debut": "2019-03",
+      "highestRank": {
+        "en": "Maegashira #14",
+        "jp": "前頭十四枚目"
+      },
+      "milestones": {
+        "juryo": "2022-01",
+        "makuuchi": "2023-11"
+      },
+      "bashoId": 637
+    },
+    "3969": {
+      "id": 3969,
+      "realName": {
+        "en": "Masahito Shiraishi",
+        "jp": "白石 雅仁"
+      },
+      "birthDate": "1996-04-17",
+      "birthplace": {
+        "en": "Tokyo",
+        "jp": "東京都墨田区"
+      },
+      "heightCm": 182,
+      "weightKg": 136,
+      "kimarite": {
+        "en": "tsuki, oshi",
+        "jp": "突き・押し"
+      },
+      "debut": "2019-05",
+      "highestRank": {
+        "en": "Maegashira #15",
+        "jp": "前頭十五枚目"
+      },
+      "milestones": {
+        "juryo": "2021-01",
+        "makuuchi": "2023-11"
+      },
+      "bashoId": 637
+    },
+    "3983": {
+      "id": 3983,
+      "realName": {
+        "en": "Tumurbaatar Temuulen",
+        "jp": "トムルバートル・テムレン"
+      },
+      "birthDate": "2001-03-07",
+      "birthplace": {
+        "en": "Mongolia",
+        "jp": "モンゴル・ウランバートル"
+      },
+      "heightCm": 181,
+      "weightKg": 154,
+      "kimarite": {
+        "en": "tsuki, oshi",
+        "jp": "突き・押し"
+      },
+      "debut": "2019-11",
+      "highestRank": {
+        "en": "Juryo #1",
+        "jp": "十両筆頭"
+      },
+      "milestones": {
+        "juryo": "2026-01"
+      },
+      "bashoId": 637
+    },
+    "3988": {
+      "id": 3988,
+      "realName": {
+        "en": "Tatsuya Nabatame",
+        "jp": "生田目 竜也"
+      },
+      "birthDate": "2002-02-22",
+      "birthplace": {
+        "en": "Tochigi",
+        "jp": "栃木県さくら市"
+      },
+      "heightCm": 177,
+      "weightKg": 176,
+      "kimarite": {
+        "en": "tsuki, oshi",
+        "jp": "突き・押し"
+      },
+      "debut": "2020-01",
+      "highestRank": {
+        "en": "Juryo #5",
+        "jp": "十両五枚目"
+      },
+      "milestones": {
+        "juryo": "2024-07"
+      },
+      "bashoId": 637
+    },
+    "3990": {
+      "id": 3990,
+      "realName": {
+        "en": "Sokolovskyi Serhii",
+        "jp": "ソコロフスキー・セルギイ"
+      },
+      "birthDate": "1997-01-16",
+      "birthplace": {
+        "en": "Ukraine",
+        "jp": "ウクライナ・ザポリジャ"
+      },
+      "heightCm": 193,
+      "weightKg": 182,
+      "kimarite": {
+        "en": "oshi",
+        "jp": "押し"
+      },
+      "debut": "2020-03",
+      "highestRank": {
+        "en": "Maegashira #9",
+        "jp": "前頭九枚目"
+      },
+      "milestones": {
+        "juryo": "2023-07",
+        "makuuchi": "2024-11"
+      },
+      "bashoId": 637
+    },
+    "4055": {
+      "id": 4055,
+      "realName": {
+        "en": "Sakutaro Takei",
+        "jp": "武井 朔太郎"
+      },
+      "birthDate": "2002-09-03",
+      "birthplace": {
+        "en": "Shizuoka",
+        "jp": "静岡県熱海市"
+      },
+      "heightCm": 185,
+      "weightKg": 198,
+      "kimarite": {
+        "en": "migi-yotsu, yori",
+        "jp": "右四つ・寄り"
+      },
+      "debut": "2020-11",
+      "highestRank": {
+        "en": "Sekiwake",
+        "jp": "関脇"
+      },
+      "milestones": {
+        "juryo": "2022-03",
+        "makuuchi": "2022-11",
+        "sanyaku": "2026-03"
+      },
+      "bashoId": 637
+    },
+    "4079": {
+      "id": 4079,
+      "realName": {
+        "en": "Toki Nishikawa",
+        "jp": "西川 登輝"
+      },
+      "birthDate": "1998-04-07",
+      "birthplace": {
+        "en": "Osaka",
+        "jp": "大阪府寝屋川市"
+      },
+      "heightCm": 178,
+      "weightKg": 163,
+      "kimarite": {
+        "en": "tsuki, oshi",
+        "jp": "突き・押し"
+      },
+      "debut": "2021-03",
+      "highestRank": {
+        "en": "Maegashira #2",
+        "jp": "前頭二枚目"
+      },
+      "milestones": {
+        "juryo": "2022-07",
+        "makuuchi": "2023-07"
+      },
+      "bashoId": 637
+    },
+    "4093": {
+      "id": 4093,
+      "realName": {
+        "en": "Tatsuki Higashi",
+        "jp": "東 龍輝"
+      },
+      "birthDate": "1997-12-05",
+      "birthplace": {
+        "en": "Kumamoto",
+        "jp": "熊本県熊本市西区"
+      },
+      "heightCm": 185,
+      "weightKg": 149,
+      "kimarite": {
+        "en": "migi-yotsu, yori",
+        "jp": "右四つ・寄り"
+      },
+      "debut": "2021-03",
+      "highestRank": {
+        "en": "Maegashira #6",
+        "jp": "前頭六枚目"
+      },
+      "milestones": {
+        "juryo": "2023-05",
+        "makuuchi": "2026-03"
+      },
+      "bashoId": 637
+    },
+    "4095": {
+      "id": 4095,
+      "realName": {
+        "en": "Hitoshi Sawada",
+        "jp": "沢田 日登志"
+      },
+      "birthDate": "1997-08-14",
+      "birthplace": {
+        "en": "Tokyo",
+        "jp": "東京都立川市"
+      },
+      "heightCm": 182,
+      "weightKg": 158,
+      "kimarite": {
+        "en": "migi-yotsu, yori",
+        "jp": "右四つ・寄り"
+      },
+      "debut": "2021-05",
+      "highestRank": {
+        "en": "Maegashira #17",
+        "jp": "前頭十七枚目"
+      },
+      "milestones": {
+        "juryo": "2023-11",
+        "makuuchi": "2025-09"
+      },
+      "bashoId": 637
+    },
+    "4101": {
+      "id": 4101,
+      "realName": {
+        "en": "Takuma Ishizaki",
+        "jp": "石崎 拓馬"
+      },
+      "birthDate": "1998-09-24",
+      "birthplace": {
+        "en": "Osaka",
+        "jp": "大阪府四條畷市"
+      },
+      "heightCm": 178,
+      "weightKg": 122,
+      "kimarite": {
+        "en": "oshi, migi-yotsu, yori",
+        "jp": "押し・右四つ・寄り"
+      },
+      "debut": "2021-05",
+      "highestRank": {
+        "en": "Maegashira #7",
+        "jp": "前頭七枚目"
+      },
+      "milestones": {
+        "juryo": "2023-09",
+        "makuuchi": "2024-11"
+      },
+      "bashoId": 637
+    },
+    "4108": {
+      "id": 4108,
+      "realName": {
+        "en": "Purevsuren Delgerbayar",
+        "jp": "プレブスレン・デルゲルバヤル"
+      },
+      "birthDate": "1997-04-09",
+      "birthplace": {
+        "en": "Mongolia",
+        "jp": "モンゴル・トブ"
+      },
+      "heightCm": 190,
+      "weightKg": 162,
+      "kimarite": {
+        "en": "oshi, inashi",
+        "jp": "押し・いなし"
+      },
+      "debut": "2021-11",
+      "highestRank": {
+        "en": "Komusubi",
+        "jp": "小結"
+      },
+      "milestones": {
+        "juryo": "2022-07",
+        "makuuchi": "2024-05",
+        "sanyaku": "2025-07"
+      },
+      "bashoId": 637
+    },
+    "4112": {
+      "id": 4112,
+      "realName": {
+        "en": "Baltagul Yersin",
+        "jp": "バルタグル・イェルシン"
+      },
+      "birthDate": "1997-06-24",
+      "birthplace": {
+        "en": "Kazakhstan",
+        "jp": "カザフスタン・アルマティ"
+      },
+      "heightCm": 194,
+      "weightKg": 181,
+      "kimarite": {
+        "en": "tsuki, oshi",
+        "jp": "突き・押し"
+      },
+      "debut": "2021-11",
+      "highestRank": {
+        "en": "Maegashira #3",
+        "jp": "前頭三枚目"
+      },
+      "milestones": {
+        "juryo": "2022-09",
+        "makuuchi": "2023-03"
+      },
+      "bashoId": 637
+    },
+    "4116": {
+      "id": 4116,
+      "realName": {
+        "en": "Asihada",
+        "jp": "アスハダ"
+      },
+      "birthDate": "2000-05-22",
+      "birthplace": {
+        "en": "China",
+        "jp": "中国内モンゴル自治区"
+      },
+      "heightCm": 191,
+      "weightKg": 171,
+      "kimarite": {
+        "en": "oshi, migi-yotsu, yori",
+        "jp": "押し・右四つ・寄り"
+      },
+      "debut": "2022-01",
+      "highestRank": {
+        "en": "Maegashira #16",
+        "jp": "前頭十六枚目"
+      },
+      "milestones": {
+        "juryo": "2024-09",
+        "makuuchi": "2026-07"
+      },
+      "bashoId": 637
+    },
+    "4120": {
+      "id": 4120,
+      "realName": {
+        "en": "Taiki Tebakari",
+        "jp": "手計 太希"
+      },
+      "birthDate": "2003-07-08",
+      "birthplace": {
+        "en": "Chiba",
+        "jp": "千葉県柏市"
+      },
+      "heightCm": 184,
+      "weightKg": 140,
+      "kimarite": {
+        "en": "migi-yotsu, yori",
+        "jp": "右四つ・寄り"
+      },
+      "debut": "2022-01",
+      "highestRank": {
+        "en": "Maegashira #1",
+        "jp": "前頭筆頭"
+      },
+      "milestones": {
+        "juryo": "2024-11",
+        "makuuchi": "2025-07"
+      },
+      "bashoId": 637
+    },
+    "4121": {
+      "id": 4121,
+      "realName": {
+        "en": "Shoichiro Takeda",
+        "jp": "竹田 章一郎"
+      },
+      "birthDate": "2003-08-22",
+      "birthplace": {
+        "en": "Tochigi",
+        "jp": "栃木県宇都宮市"
+      },
+      "heightCm": 178,
+      "weightKg": 143,
+      "kimarite": {
+        "en": "tsuki, oshi",
+        "jp": "突き・押し"
+      },
+      "debut": "2022-01",
+      "highestRank": {
+        "en": "Maegashira #11",
+        "jp": "前頭十一枚目"
+      },
+      "milestones": {
+        "juryo": "2025-03",
+        "makuuchi": "2026-05"
+      },
+      "bashoId": 637
+    },
+    "4124": {
+      "id": 4124,
+      "realName": {
+        "en": "Sho Hatsuyama",
+        "jp": "羽出山 将"
+      },
+      "birthDate": "1999-11-05",
+      "birthplace": {
+        "en": "Tokyo",
+        "jp": "東京都東村山市"
+      },
+      "heightCm": 195,
+      "weightKg": 134,
+      "kimarite": {
+        "en": "tsuki, oshi",
+        "jp": "突き・押し"
+      },
+      "debut": "2022-03",
+      "highestRank": {
+        "en": "Maegashira #17",
+        "jp": "前頭十七枚目"
+      },
+      "milestones": {
+        "juryo": "2025-01",
+        "makuuchi": "2026-01"
+      },
+      "bashoId": 637
+    },
+    "4142": {
+      "id": 4142,
+      "realName": {
+        "en": "Jun Tanji",
+        "jp": "丹治 純"
+      },
+      "birthDate": "2006-06-05",
+      "birthplace": {
+        "en": "Fukushima",
+        "jp": "福島県福島市"
+      },
+      "heightCm": 185,
+      "weightKg": 149,
+      "kimarite": {
+        "en": "migi-yotsu, yori",
+        "jp": "右四つ・寄り"
+      },
+      "debut": "2022-03",
+      "highestRank": {
+        "en": "Juryo #10",
+        "jp": "十両十枚目"
+      },
+      "milestones": {
+        "juryo": "2026-09"
+      },
+      "bashoId": 637
+    },
+    "4158": {
+      "id": 4158,
+      "realName": {
+        "en": "Genta Sumiki",
+        "jp": "住木 厳太"
+      },
+      "birthDate": "1999-06-04",
+      "birthplace": {
+        "en": "Ehime",
+        "jp": "愛媛県西予市"
+      },
+      "heightCm": 187,
+      "weightKg": 158,
+      "kimarite": {
+        "en": "oshi",
+        "jp": "押し"
+      },
+      "debut": "2022-03",
+      "highestRank": {
+        "en": "Juryo #4",
+        "jp": "十両四枚目"
+      },
+      "milestones": {
+        "juryo": "2024-05"
+      },
+      "bashoId": 637
+    },
+    "4164": {
+      "id": 4164,
+      "realName": {
+        "en": "Yuta Takahashi",
+        "jp": "高橋 優太"
+      },
+      "birthDate": "1999-05-25",
+      "birthplace": {
+        "en": "Fukushima",
+        "jp": "福島県須賀川市"
+      },
+      "heightCm": 185,
+      "weightKg": 161,
+      "kimarite": {
+        "en": "migi-yotsu, yori",
+        "jp": "右四つ・寄り"
+      },
+      "debut": "2022-05",
+      "highestRank": {
+        "en": "Maegashira #16",
+        "jp": "前頭十六枚目"
+      },
+      "milestones": {
+        "juryo": "2023-09",
+        "makuuchi": "2024-09"
+      },
+      "bashoId": 637
+    },
+    "4165": {
+      "id": 4165,
+      "realName": {
+        "en": "Yasutoki Kayo",
+        "jp": "嘉陽 快宗"
+      },
+      "birthDate": "1999-07-14",
+      "birthplace": {
+        "en": "Okinawa",
+        "jp": "沖縄県那覇市"
+      },
+      "heightCm": 174,
+      "weightKg": 168,
+      "kimarite": {
+        "en": "tsuki, oshi",
+        "jp": "突き・押し"
+      },
+      "debut": "2022-05",
+      "highestRank": {
+        "en": "Maegashira #16",
+        "jp": "前頭十六枚目"
+      },
+      "milestones": {
+        "juryo": "2024-07",
+        "makuuchi": "2025-05"
+      },
+      "bashoId": 637
+    },
+    "4171": {
+      "id": 4171,
+      "realName": {
+        "en": "Mikiya Ishioka",
+        "jp": "石岡 弥輝也"
+      },
+      "birthDate": "1999-04-09",
+      "birthplace": {
+        "en": "Aomori",
+        "jp": "青森県五所川原市"
+      },
+      "heightCm": 186,
+      "weightKg": 149,
+      "kimarite": {
+        "en": "tsuki, oshi",
+        "jp": "突き・押し"
+      },
+      "debut": "2022-09",
+      "highestRank": {
+        "en": "Maegashira #4",
+        "jp": "前頭四枚目"
+      },
+      "milestones": {
+        "juryo": "2024-01",
+        "makuuchi": "2024-03"
+      },
+      "bashoId": 637
+    },
+    "4175": {
+      "id": 4175,
+      "realName": {
+        "en": "Ragchaa Jamiyantogtokh",
+        "jp": "ラグチャー・ジャミントクトホ"
+      },
+      "birthDate": "1999-01-08",
+      "birthplace": {
+        "en": "Mongolia",
+        "jp": "モンゴル・ウランバートル"
+      },
+      "heightCm": 185,
+      "weightKg": 157,
+      "kimarite": {
+        "en": "migi-yotsu, yori",
+        "jp": "右四つ・寄り"
+      },
+      "debut": "2023-01",
+      "highestRank": {
+        "en": "Maegashira #8",
+        "jp": "前頭八枚目"
+      },
+      "milestones": {
+        "juryo": "2025-09",
+        "makuuchi": "2026-01"
+      },
+      "bashoId": 637
+    },
+    "4187": {
+      "id": 4187,
+      "realName": {
+        "en": "Tetsuya Ochiai",
+        "jp": "落合 哲也"
+      },
+      "birthDate": "2003-08-22",
+      "birthplace": {
+        "en": "Tottori",
+        "jp": "鳥取県倉吉市"
+      },
+      "heightCm": 181,
+      "weightKg": 162,
+      "kimarite": {
+        "en": "tsuki, oshi, hidari-yotsu, yori",
+        "jp": "突き・押し・左四つ・寄り"
+      },
+      "debut": "2023-01",
+      "highestRank": {
+        "en": "Komusubi",
+        "jp": "小結"
+      },
+      "milestones": {
+        "juryo": "2023-03",
+        "makuuchi": "2023-07",
+        "sanyaku": "2026-09"
+      },
+      "bashoId": 637
+    },
+    "4191": {
+      "id": 4191,
+      "realName": {
+        "en": "Seigo Saito",
+        "jp": "齋藤 成剛"
+      },
+      "birthDate": "2005-02-22",
+      "birthplace": {
+        "en": "Kyoto",
+        "jp": "京都府京都市西京区"
+      },
+      "heightCm": 177,
+      "weightKg": 125,
+      "kimarite": {
+        "en": "oshi",
+        "jp": "押し"
+      },
+      "debut": "2023-01",
+      "highestRank": {
+        "en": "Sekiwake",
+        "jp": "関脇"
+      },
+      "milestones": {
+        "juryo": "2024-11",
+        "makuuchi": "2025-07",
+        "sanyaku": "2026-09"
+      },
+      "bashoId": 637
+    },
+    "4227": {
+      "id": 4227,
+      "realName": {
+        "en": "Daiki Nakamura",
+        "jp": "中村 泰輝"
+      },
+      "birthDate": "2000-06-07",
+      "birthplace": {
+        "en": "Ishikawa",
+        "jp": "石川県河北郡津幡町"
+      },
+      "heightCm": 190,
+      "weightKg": 188,
+      "kimarite": {
+        "en": "tsuki, oshi, migi-yotsu, yori",
+        "jp": "突き・押し・右四つ・寄り"
+      },
+      "debut": "2023-05",
+      "highestRank": {
+        "en": "Yokozuna",
+        "jp": "横綱"
+      },
+      "milestones": {
+        "juryo": "2023-09",
+        "makuuchi": "2024-01",
+        "sanyaku": "2024-05",
+        "ozeki": "2024-11",
+        "yokozuna": "2025-07"
+      },
+      "bashoId": 637
+    },
+    "4230": {
+      "id": 4230,
+      "realName": {
+        "en": "Yavhusishyn Danylo",
+        "jp": "ヤブグシシン・ダニーロ"
+      },
+      "birthDate": "2004-03-23",
+      "birthplace": {
+        "en": "Ukraine",
+        "jp": "ウクライナ・ヴィンニツャ"
+      },
+      "heightCm": 182,
+      "weightKg": 142,
+      "kimarite": {
+        "en": "migi-yotsu, yori",
+        "jp": "右四つ・寄り"
+      },
+      "debut": "2023-09",
+      "highestRank": {
+        "en": "Ozeki",
+        "jp": "大関"
+      },
+      "milestones": {
+        "juryo": "2024-11",
+        "makuuchi": "2025-03",
+        "sanyaku": "2025-09",
+        "ozeki": "2026-01"
+      },
+      "bashoId": 637
+    },
+    "4231": {
+      "id": 4231,
+      "realName": {
+        "en": "Batjargal Choijilsuren",
+        "jp": "バトジャルガル・チョイジルスレン"
+      },
+      "birthDate": "2000-05-05",
+      "birthplace": {
+        "en": "Mongolia",
+        "jp": "モンゴル・ウブス"
+      },
+      "heightCm": 184,
+      "weightKg": 165,
+      "kimarite": {
+        "en": "migi-yotsu, yori",
+        "jp": "右四つ・寄り"
+      },
+      "debut": "2023-11",
+      "highestRank": {
+        "en": "Maegashira #3",
+        "jp": "前頭三枚目"
+      },
+      "milestones": {
+        "juryo": "2024-05",
+        "makuuchi": "2024-09"
+      },
+      "bashoId": 637
+    },
+    "4232": {
+      "id": 4232,
+      "realName": {
+        "en": "Shagdarsuren Dalaibaatar",
+        "jp": "シャグダルスレン・ダライバートル"
+      },
+      "birthDate": "2000-04-04",
+      "birthplace": {
+        "en": "Mongolia",
+        "jp": "モンゴル・バヤンホンゴル"
+      },
+      "heightCm": 183,
+      "weightKg": 165,
+      "kimarite": {
+        "en": "oshi, hidari-yotsu, yori",
+        "jp": "押し・左四つ・寄り"
+      },
+      "debut": "2023-11",
+      "highestRank": {
+        "en": "Juryo #1",
+        "jp": "十両筆頭"
+      },
+      "milestones": {
+        "juryo": "2025-09"
+      },
+      "bashoId": 637
+    },
+    "4243": {
+      "id": 4243,
+      "realName": {
+        "en": "Usukhbayar Demidjamts",
+        "jp": "ウスフバヤル・デミデジャムツ"
+      },
+      "birthDate": "2000-08-24",
+      "birthplace": {
+        "en": "Mongolia",
+        "jp": "モンゴル・ウランバートル"
+      },
+      "heightCm": 195,
+      "weightKg": 156,
+      "kimarite": {
+        "en": "migi-yotsu, yori, uwatenage",
+        "jp": "右四つ・寄り・上手投げ"
+      },
+      "debut": "2024-03",
+      "highestRank": {
+        "en": "Maegashira #16",
+        "jp": "前頭十六枚目"
+      },
+      "milestones": {
+        "juryo": "2026-03",
+        "makuuchi": "2026-09"
+      },
+      "bashoId": 637
+    },
+    "4267": {
+      "id": 4267,
+      "realName": {
+        "en": "Kanato Matsui",
+        "jp": "松井 奏凪人"
+      },
+      "birthDate": "2004-10-12",
+      "birthplace": {
+        "en": "Fukuoka",
+        "jp": "福岡県糟屋郡宇美町"
+      },
+      "heightCm": 172,
+      "weightKg": 123,
+      "kimarite": {
+        "en": "oshi",
+        "jp": "押し"
+      },
+      "debut": "2024-03",
+      "highestRank": {
+        "en": "Juryo #5",
+        "jp": "十両五枚目"
+      },
+      "milestones": {
+        "juryo": "2026-07"
+      },
+      "bashoId": 637
+    },
+    "4279": {
+      "id": 4279,
+      "realName": {
+        "en": "Naoya Kusano",
+        "jp": "草野 直哉"
+      },
+      "birthDate": "2001-06-25",
+      "birthplace": {
+        "en": "Kumamoto",
+        "jp": "熊本県宇土市"
+      },
+      "heightCm": 185,
+      "weightKg": 162,
+      "kimarite": {
+        "en": "migi-yotsu, yori",
+        "jp": "右四つ・寄り"
+      },
+      "debut": "2024-05",
+      "highestRank": {
+        "en": "Komusubi",
+        "jp": "小結"
+      },
+      "milestones": {
+        "juryo": "2025-03",
+        "makuuchi": "2025-07",
+        "sanyaku": "2026-07"
+      },
+      "bashoId": 637
+    },
+    "4285": {
+      "id": 4285,
+      "realName": {
+        "en": "Ryoma Ishizaki",
+        "jp": "石崎 涼馬"
+      },
+      "birthDate": "2000-08-09",
+      "birthplace": {
+        "en": "Osaka",
+        "jp": "大阪府四條畷市"
+      },
+      "heightCm": 175,
+      "weightKg": 120,
+      "kimarite": {
+        "en": "oshi",
+        "jp": "押し"
+      },
+      "debut": "2024-07",
+      "highestRank": {
+        "en": "Maegashira #15",
+        "jp": "前頭十五枚目"
+      },
+      "milestones": {
+        "juryo": "2025-09",
+        "makuuchi": "2026-09"
+      },
+      "bashoId": 637
+    },
+    "4287": {
+      "id": 4287,
+      "realName": {
+        "en": "Kazuma Kawabuchi",
+        "jp": "川渕 一意"
+      },
+      "birthDate": "2001-11-12",
+      "birthplace": {
+        "en": "Osaka",
+        "jp": "大阪府大阪市港区"
+      },
+      "heightCm": 185,
+      "weightKg": 202,
+      "kimarite": {
+        "en": "tsuki, oshi, hidari-yotsu, yori",
+        "jp": "突き・押し・左四つ・寄り"
+      },
+      "debut": "2024-07",
+      "highestRank": {
+        "en": "Maegashira #15",
+        "jp": "前頭十五枚目"
+      },
+      "milestones": {
+        "juryo": "2026-01",
+        "makuuchi": "2026-07"
+      },
+      "bashoId": 637
+    },
+    "4336": {
+      "id": 4336,
+      "realName": {
+        "en": "Masaharu Goshima",
+        "jp": "五島 雅治"
+      },
+      "birthDate": "2003-02-27",
+      "birthplace": {
+        "en": "Aichi",
+        "jp": "愛知県春日井市"
+      },
+      "heightCm": 180,
+      "weightKg": 184,
+      "kimarite": {
+        "en": "oshi",
+        "jp": "押し"
+      },
+      "debut": "2025-03",
+      "highestRank": {
+        "en": "Maegashira #4",
+        "jp": "前頭四枚目"
+      },
+      "milestones": {
+        "juryo": "2025-11",
+        "makuuchi": "2026-03"
+      },
+      "bashoId": 637
+    }
+  }
+}

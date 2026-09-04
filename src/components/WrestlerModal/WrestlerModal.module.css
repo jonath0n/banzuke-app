@@ -54,54 +54,51 @@
   }
 }
 
-.backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  animation: backdropIn 200ms ease forwards;
-  padding: 1rem;
-}
-
+/* The <dialog> itself. showModal() places it in the top layer and centres it. */
 .modal {
-  position: relative;
-  width: 100%;
-  max-width: 400px;
+  width: min(100% - 2rem, 400px);
   max-height: 85vh;
   overflow-y: auto;
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 1rem 1rem 0.75rem 0.75rem;
+  border-radius: var(--radius);
   box-shadow: var(--shadow-lg);
   padding: 0;
-  margin: 0;
+  /* The global margin reset would otherwise cancel the UA's centring. */
+  margin: auto;
   color: var(--text);
+  font-family: var(--font-body);
+}
+
+.modal[open] {
   animation: modalSlideUp 350ms var(--ease-out-expo) forwards;
-  outline: none;
 }
 
 .modal::backdrop {
-  display: none;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: backdropIn 200ms ease forwards;
+}
+
+/* Content wrapper: clicks on it are inside the dialog, clicks outside land on the backdrop. */
+.content {
+  position: relative;
 }
 
 .close {
   position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
+  top: 0.5rem;
+  right: 0.5rem;
   z-index: 2;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.06);
+  border-radius: var(--radius-sm);
+  background: rgb(var(--ink-rgb) / 0.06);
   color: var(--muted);
   cursor: pointer;
   transition:
@@ -111,7 +108,7 @@
 }
 
 .close:hover {
-  background: rgba(0, 0, 0, 0.12);
+  background: rgb(var(--ink-rgb) / 0.12);
   color: var(--text);
   transform: scale(1.1);
 }
@@ -120,25 +117,22 @@
   transform: scale(0.95);
 }
 
-.close:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
 /* Photo section */
 .photoSection {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2rem 1.5rem 1rem;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.03) 0%, transparent 100%);
+  padding: 2rem 1.5rem 1.25rem;
+  background: rgb(var(--ink-rgb) / 0.04);
+  border-bottom: 1px solid var(--rule);
 }
 
+/* The JSA portrait is a tall shot; show it as a mounted print */
 .photoWrapper {
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
+  width: 132px;
+  height: 176px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
   background: var(--border);
   box-shadow: var(--shadow-md);
@@ -150,8 +144,8 @@
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 0 0 2px var(--rule);
   pointer-events: none;
 }
 
@@ -175,6 +169,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: 50% 0%;
 }
 
 .photoPlaceholder {
@@ -191,35 +186,18 @@
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  font-family: 'FranSans Solid', 'Inter', system-ui, sans-serif;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #fff;
+  color: var(--on-accent);
   background: var(--accent);
-  padding: 0.35rem 1rem;
-  border-radius: 999px;
-  box-shadow: 0 2px 8px rgba(176, 48, 63, 0.25);
+  padding: 0.35rem 0.9rem;
+  border-radius: var(--radius-sm);
+  box-shadow:
+    inset 0 0 0 1.5px var(--on-accent),
+    inset 0 0 0 2.5px var(--accent);
   animation: badgePop 350ms var(--ease-spring) 200ms backwards;
-}
-
-.rankBadge[data-rank-level='yokozuna'] {
-  background: linear-gradient(135deg, var(--tier-yokozuna), #c9a227);
-  box-shadow: 0 2px 12px rgba(212, 175, 55, 0.35);
-}
-
-.rankBadge[data-rank-level='ozeki'] {
-  background: linear-gradient(135deg, var(--tier-ozeki), #b08a40);
-  box-shadow: 0 2px 10px rgba(201, 160, 85, 0.3);
-}
-
-.rankBadge[data-rank-level='sekiwake'] {
-  background: linear-gradient(135deg, var(--tier-sekiwake), #b86b22);
-}
-
-.rankBadge[data-rank-level='komusubi'] {
-  background: linear-gradient(135deg, var(--tier-komusubi), #a04830);
 }
 
 /* Details section */
@@ -231,10 +209,15 @@
 
 .primaryName {
   margin: 0;
-  font-size: 1.6rem;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.primaryName:lang(ja) {
+  font-family: var(--font-jp-serif);
+  font-weight: 600;
 }
 
 .secondaryName {
@@ -248,7 +231,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
-  margin-top: 1.25rem;
+  margin: 1.25rem 0 0;
   padding-top: 1.25rem;
   border-top: 1px solid var(--border);
 }
@@ -268,13 +251,15 @@
 }
 
 .metaLabel {
-  font-size: 0.6rem;
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-caps);
   color: var(--muted);
 }
 
 .metaValue {
+  margin: 0;
   font-size: 0.95rem;
   font-weight: 600;
   display: flex;
@@ -292,26 +277,49 @@
   color: var(--accent);
 }
 
+/* Footer actions: official profile link and copy link */
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--rule);
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 40px;
+  padding: 0.4rem 0.9rem;
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-fast) ease,
+    background var(--dur-fast) ease;
+}
+
+.action:hover {
+  border-color: var(--accent);
+  background: rgb(var(--accent-rgb) / 0.06);
+}
+
+.external {
+  font-size: var(--text-xs);
+}
+
 /* Dark mode */
 @media (prefers-color-scheme: dark) {
-  .backdrop {
+  .modal::backdrop {
     background: rgba(0, 0, 0, 0.7);
-  }
-
-  .close {
-    background: rgba(255, 255, 255, 0.08);
-  }
-
-  .close:hover {
-    background: rgba(255, 255, 255, 0.15);
-  }
-
-  .photoSection {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%);
-  }
-
-  .photoWrapper::after {
-    box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.1);
   }
 
   .metaItem:hover {
@@ -319,44 +327,41 @@
   }
 }
 
-/* Mobile */
+/* Mobile: bottom sheet */
 @media (max-width: 600px) {
-  .backdrop {
-    padding: 0;
-    align-items: flex-end;
-  }
-
   .modal {
+    width: 100%;
     max-width: none;
     max-height: 90vh;
-    border-radius: 1rem 1rem 0 0;
+    margin: auto auto 0;
+    border-radius: var(--radius) var(--radius) 0 0;
   }
 
   .photoWrapper {
-    width: 120px;
-    height: 120px;
+    width: 108px;
+    height: 144px;
   }
 }
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .backdrop {
-    animation: none;
-  }
-
-  .modal {
-    animation: none;
-  }
-
-  .photoWrapper {
-    animation: none;
-  }
-
-  .rankBadge {
-    animation: none;
-  }
-
+  .modal[open],
+  .modal::backdrop,
+  .photoWrapper,
+  .rankBadge,
   .details {
     animation: none;
   }
+}
+
+/* Profile facts sit under the banzuke facts, separated by a hairline */
+.profile {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+}
+
+/* Long values (signature moves) take the full row */
+.wide {
+  grid-column: 1 / -1;
 }

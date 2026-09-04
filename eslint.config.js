@@ -2,34 +2,44 @@ import js from '@eslint/js'
 import tseslint from 'typescript-eslint'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import jsxA11y from 'eslint-plugin-jsx-a11y'
 import globals from 'globals'
 
 export default tseslint.config(
   // Global ignores
   {
-    ignores: ['dist/**', 'node_modules/**', '*.config.js', '*.config.ts'],
+    ignores: ['dist/**', 'node_modules/**', 'design/**', 'coverage/**', '*.config.js', '*.config.ts'],
   },
 
   // Base recommended configs
   js.configs.recommended,
   ...tseslint.configs.recommended,
 
-  // Node.js scripts configuration
+  // Node.js scripts configuration (TypeScript, run with tsx)
   {
-    files: ['scripts/**/*.mjs'],
+    files: ['scripts/**/*.ts'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
       globals: {
         ...globals.node,
-        ...globals.es2020,
+        ...globals.es2022,
       },
+    },
+    rules: {
+      'no-console': 'off',
     },
   },
 
-  // React configuration for all TypeScript/TSX files
+  // Accessibility rules for JSX
   {
-    files: ['**/*.{ts,tsx}'],
+    ...jsxA11y.flatConfigs.recommended,
+    files: ['src/**/*.tsx'],
+  },
+
+  // React configuration for app TypeScript/TSX files
+  {
+    files: ['src/**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',

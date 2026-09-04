@@ -1,3 +1,4 @@
+import { useStrings } from '../../i18n/useStrings'
 import styles from './Footer.module.css'
 
 /** Returns the current year for copyright display */
@@ -6,36 +7,35 @@ function getCurrentYear(): number {
 }
 
 export function Footer() {
+  const strings = useStrings()
   const currentYear = getCurrentYear()
 
   return (
     <footer className={styles.footer}>
       <div className={styles.attribution}>
         <p>
-          Made by{' '}
+          {strings.footerMadeBy}{' '}
           <a href="https://www.linkedin.com/in/jonathon2" target="_blank" rel="noreferrer">
             Jon Allen
           </a>
-          <span className={styles.hanko} aria-label="丈"></span>
+          <span className={styles.hanko} aria-hidden="true"></span>
         </p>
         <p>
-          Data source:{' '}
+          {strings.footerDataSource}{' '}
           <a href="https://sumo.or.jp/" target="_blank" rel="noreferrer">
-            Japan Sumo Association
+            {strings.footerJsa}
           </a>
         </p>
         <p>
-          <span className={styles.franSans}>Fran Sans</span> by{' '}
+          <span className={styles.franSans}>Fran Sans</span> {strings.footerFontBy}{' '}
           <a href="https://emilysneddon.com" target="_blank" rel="noreferrer">
             Emily Sneddon
           </a>
         </p>
       </div>
-      <p className={styles.disclaimer}>
-        This is an unofficial fan project and is not affiliated with the Japan Sumo Association.
-      </p>
+      <p className={styles.disclaimer}>{strings.footerDisclaimer}</p>
       <p className={styles.meta}>
-        <span>© {currentYear} Jon Allen. All Rights Reserved.</span>
+        <span>{strings.footerRights(currentYear)}</span>
       </p>
     </footer>
   )

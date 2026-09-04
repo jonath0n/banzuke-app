@@ -1,0 +1,93 @@
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Two paper tabs sitting on the top edge of the sheet */
+.tabs {
+  display: flex;
+  gap: var(--space-2);
+  margin: 0 0 calc(-1 * var(--space-2));
+  padding: 0 var(--space-3);
+  animation: fadeSlideIn var(--dur-slow) var(--ease-out-expo) 120ms backwards;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: var(--space-2) var(--space-4) calc(var(--space-2) + var(--space-2));
+  background: var(--paper-2);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  cursor: pointer;
+  transition:
+    color var(--dur-base) ease,
+    background var(--dur-base) ease;
+}
+
+.tab:hover {
+  color: var(--text);
+}
+
+.tab.selected {
+  background: var(--card-bg);
+  color: var(--text);
+  box-shadow: inset 0 3px 0 var(--accent);
+}
+
+.kanji {
+  font-family: var(--font-jp-serif);
+  font-weight: 700;
+  font-size: var(--text-lg);
+  letter-spacing: 0.1em;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.count {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.tab.selected .count {
+  color: var(--accent);
+}
+
+@media (max-width: 599px) {
+  .tab {
+    flex: 1;
+    justify-content: center;
+    padding-inline: var(--space-3);
+  }
+
+  .name {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tabs {
+    animation: none;
+  }
+
+  .tab {
+    transition: none;
+  }
+}

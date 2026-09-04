@@ -1,0 +1,38 @@
+{
+  "name": "Grand Sumo Banzuke",
+  "short_name": "Banzuke",
+  "description": "The official grand sumo banzuke: Makuuchi and Juryo rankings for every tournament, in English and Japanese.",
+  "id": "/banzuke-app/",
+  "start_url": "/banzuke-app/",
+  "scope": "/banzuke-app/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "lang": "en",
+  "dir": "ltr",
+  "background_color": "#f3ede2",
+  "theme_color": "#b3301f",
+  "categories": ["sports"],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

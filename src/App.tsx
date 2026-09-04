@@ -1,14 +1,21 @@
-import { useState, useCallback } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useBanzuke } from './hooks/useBanzuke'
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
+import { clearUrlParam, useUrlParam } from './hooks/useUrlState'
+import { useStrings } from './i18n/useStrings'
+import { buildSearchIndex, filterRikishi } from './utils/search'
 import { Hero } from './components/Hero/Hero'
+import { SearchBar } from './components/SearchBar/SearchBar'
+import { DivisionTabs } from './components/DivisionTabs/DivisionTabs'
+import { PANEL_ID, tabId } from './components/DivisionTabs/ids'
 import { BanzukeGrid, BanzukeGridSkeleton } from './components/BanzukeGrid/BanzukeGrid'
 import { WrestlerModal } from './components/WrestlerModal/WrestlerModal'
+import { ShortcutsHelp } from './components/ShortcutsHelp/ShortcutsHelp'
 import { Footer } from './components/Footer/Footer'
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary'
 import { ScrollToTop } from './components/ScrollToTop/ScrollToTop'
-import type { Rikishi } from './types/banzuke'
+import type { BanzukeSet, Division, Rikishi } from './types/banzuke'
 import styles from './App.module.css'
 
 function App() {
@@ -21,157 +28,153 @@ function App() {
   )
 }
 
+const EMPTY: Rikishi[] = []
+
+/** The division named in the URL, when the data actually has it. */
+function resolveDivision(param: string | null, data: BanzukeSet | null): Division {
+  return param === 'juryo' && data?.juryo ? 'juryo' : 'makuuchi'
+}
+
 function AppContent() {
-  const { data, loading, error, sourceLabel } = useBanzuke()
+  const { data, status, problem } = useBanzuke()
   const { language, setLanguage } = useLanguage()
-  const [selectedRikishi, setSelectedRikishi] = useState<Rikishi | null>(null)
-  const [searchQuery, setSearchQuery] = useState('')
+  const strings = useStrings()
+  const [searchQuery, setSearchQuery] = useUrlParam('q')
+  const [divisionParam, setDivisionParam] = useUrlParam('div')
+  const [selectedId, setSelectedId] = useUrlParam('rikishi', 'push')
+  const [helpOpen, setHelpOpen] = useState(false)
 
-  const handleSelectRikishi = useCallback((rikishi: Rikishi) => {
-    setSelectedRikishi(rikishi)
-  }, [])
+  const division = resolveDivision(divisionParam, data)
+  const banzuke = data ? (division === 'juryo' ? data.juryo : data.makuuchi) : null
+  const allRows = banzuke?.rikishi ?? EMPTY
+  const query = searchQuery ?? ''
+  const index = useMemo(() => buildSearchIndex(allRows), [allRows])
+  const filteredRows = useMemo(() => filterRikishi(index, query), [index, query])
+  const isFiltering = query.trim().length > 0
 
-  const handleCloseModal = useCallback(() => {
-    setSelectedRikishi(null)
-  }, [])
+  // A deep link may point at a wrestler in either division.
+  const selectedRikishi = useMemo(() => {
+    if (!selectedId || !data) return null
+    const everyone = data.juryo ? [...data.makuuchi.rikishi, ...data.juryo.rikishi] : allRows
+    return everyone.find((r) => String(r.id) === selectedId) ?? null
+  }, [allRows, data, selectedId])
+
+  const counts = useMemo(
+    () => ({
+      makuuchi: data?.makuuchi.rikishi.length,
+      juryo: data?.juryo?.rikishi.length,
+    }),
+    [data]
+  )
+  const showTabs = data?.juryo != null
+
+  const handleSelectRikishi = useCallback(
+    (rikishi: Rikishi) => setSelectedId(String(rikishi.id)),
+    [setSelectedId]
+  )
+
+  // Undo the pushed entry (or replace a deep link) so Back never reopens it.
+  const handleCloseModal = useCallback(() => clearUrlParam('rikishi'), [])
+
+  const handleClearSearch = useCallback(() => setSearchQuery(null), [setSearchQuery])
+
+  const handleChangeDivision = useCallback(
+    (next: Division) => setDivisionParam(next === 'makuuchi' ? null : next),
+    [setDivisionParam]
+  )
 
   const handleToggleLanguage = useCallback(() => {
     setLanguage(language === 'en' ? 'jp' : 'en')
   }, [language, setLanguage])
 
   const handleFocusSearch = useCallback(() => {
-    const input = document.querySelector('[data-search-input]') as HTMLInputElement
+    const input = document.querySelector<HTMLInputElement>('[data-search-input]')
     input?.focus()
+    input?.select()
   }, [])
 
   const handleEscape = useCallback(() => {
-    if (selectedRikishi) {
-      setSelectedRikishi(null)
-    } else if (searchQuery) {
-      setSearchQuery('')
-    }
-  }, [selectedRikishi, searchQuery])
+    // The native <dialog> closes itself on Escape and reports through onClose.
+    if (selectedRikishi) return
+    if (helpOpen) setHelpOpen(false)
+    else if (query) setSearchQuery(null)
+  }, [selectedRikishi, helpOpen, query, setSearchQuery])
+
+  const handleToggleHelp = useCallback(() => setHelpOpen((open) => !open), [])
 
   useKeyboardShortcuts({
     onToggleLanguage: handleToggleLanguage,
     onFocusSearch: handleFocusSearch,
     onEscape: handleEscape,
+    onToggleHelp: handleToggleHelp,
   })
 
-  // Filter rows based on search query
-  const allRows = data?.BanzukeTable || []
-  const filteredRows = searchQuery.trim()
-    ? allRows.filter((r) => {
-        const q = searchQuery.toLowerCase()
-        return (
-          r.shikona?.toLowerCase().includes(q) ||
-          r.shikona_en?.toLowerCase().includes(q) ||
-          r.shikona_jp?.includes(searchQuery) ||
-          r.heya_name?.toLowerCase().includes(q) ||
-          r.pref_name?.toLowerCase().includes(q)
-        )
-      })
-    : allRows
+  useEffect(() => {
+    const bashoName = banzuke ? banzuke.basho.name[language] || banzuke.basho.name.en : ''
+    document.title = bashoName ? `${strings.appTitle} · ${bashoName}` : strings.appTitle
+  }, [banzuke, language, strings.appTitle])
+
+  const problemMessage =
+    problem === 'sample'
+      ? strings.errorSample
+      : problem === 'stale'
+        ? strings.errorStale
+        : problem === 'unavailable'
+          ? strings.errorNone
+          : null
 
   return (
     <>
-      <Hero data={data} sourceLabel={sourceLabel} />
-      <main>
-        {data && allRows.length > 0 && (
+      <a href="#main" className="skip-link" data-print="hide">
+        {strings.skipLink}
+      </a>
+      <Hero data={banzuke} />
+      <main id="main" tabIndex={-1}>
+        {banzuke && allRows.length > 0 && (
           <SearchBar
-            query={searchQuery}
-            onQueryChange={setSearchQuery}
-            totalCount={allRows.filter((r) => r.shikona?.trim()).length}
-            filteredCount={
-              searchQuery.trim() ? filteredRows.filter((r) => r.shikona?.trim()).length : 0
-            }
+            value={query}
+            onChange={(value) => setSearchQuery(value || null)}
+            totalCount={allRows.length}
+            matchedCount={filteredRows.length}
           />
         )}
-        {loading && !data && <BanzukeGridSkeleton />}
-        {error && !data && (
+        {status === 'loading' && <BanzukeGridSkeleton />}
+        {problemMessage && !data && (
           <div role="alert" className={`${styles.status} ${styles.error}`}>
-            {error}
+            {problemMessage}
           </div>
         )}
-        {error && data && (
+        {problemMessage && data && (
           <div role="status" className={`${styles.status} ${styles.warning}`}>
-            {error}
+            {problemMessage}
           </div>
         )}
-        {data && (
+        {showTabs && (
+          <DivisionTabs value={division} onChange={handleChangeDivision} counts={counts} />
+        )}
+        {banzuke && (
           <ErrorBoundary>
-            <BanzukeGrid rows={filteredRows} onSelectRikishi={handleSelectRikishi} />
+            <div
+              id={PANEL_ID}
+              role={showTabs ? 'tabpanel' : undefined}
+              aria-labelledby={showTabs ? tabId(division) : undefined}
+            >
+              <BanzukeGrid
+                key={division}
+                rows={filteredRows}
+                onSelectRikishi={handleSelectRikishi}
+                emptyReason={isFiltering ? 'no-matches' : 'no-data'}
+                onClearSearch={handleClearSearch}
+              />
+            </div>
           </ErrorBoundary>
         )}
+        {banzuke && <ShortcutsHelp open={helpOpen} onToggle={setHelpOpen} />}
       </main>
       <Footer />
       <ScrollToTop />
       <WrestlerModal rikishi={selectedRikishi} onClose={handleCloseModal} />
     </>
-  )
-}
-
-/* Inline SearchBar to avoid circular dependency issues — will extract if needed */
-function SearchBar({
-  query,
-  onQueryChange,
-  totalCount,
-  filteredCount,
-}: {
-  query: string
-  onQueryChange: (q: string) => void
-  totalCount: number
-  filteredCount: number
-}) {
-  const isFiltering = query.trim().length > 0
-
-  return (
-    <div className={styles.searchBar}>
-      <div className={styles.searchInputWrapper}>
-        <svg
-          className={styles.searchIcon}
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          aria-hidden="true"
-        >
-          <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
-          <path d="M16 16l4.5 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        </svg>
-        <input
-          type="text"
-          className={styles.searchInput}
-          placeholder="Search wrestlers, stables, or regions..."
-          value={query}
-          onChange={(e) => onQueryChange(e.target.value)}
-          aria-label="Search wrestlers"
-          data-search-input
-        />
-        {isFiltering && (
-          <button
-            className={styles.searchClear}
-            onClick={() => onQueryChange('')}
-            type="button"
-            aria-label="Clear search"
-          >
-            <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <path
-                d="M15 5L5 15M5 5l10 10"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
-        )}
-      </div>
-      {isFiltering && (
-        <span className={styles.searchCount}>
-          {filteredCount} of {totalCount} wrestlers
-        </span>
-      )}
-    </div>
   )
 }
 

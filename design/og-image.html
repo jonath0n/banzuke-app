@@ -1,0 +1,186 @@
+<!doctype html>
+<!--
+  Source for public/og-image.png (1200×630). Social crawlers do not render SVG
+  previews, so this page is rasterized with a headless browser:
+
+    node design/render-og-image.mjs
+
+  It uses the same paper/ink/vermilion palette and FranSans wordmark as the site.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      @font-face {
+        font-family: 'FranSans Solid';
+        src: url('../public/assets/FranSans-Solid.otf') format('opentype');
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+      }
+      body {
+        position: relative;
+        background: #f3ede2;
+        color: #221c18;
+        font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      }
+      .grain {
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.13 0 0 0 0 0.11 0 0 0 0 0.09 0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+      }
+      .sheet {
+        position: absolute;
+        inset: 48px;
+        background: #faf6ee;
+        border: 1px solid #d9d0c0;
+        border-radius: 6px;
+        box-shadow: 0 12px 32px rgba(34, 28, 24, 0.14);
+        display: grid;
+        grid-template-columns: 1fr 200px 1fr;
+        align-items: center;
+        padding: 0 72px;
+      }
+      .seal {
+        position: absolute;
+        top: 40px;
+        right: 48px;
+        width: 116px;
+        height: 116px;
+        background: #b3301f;
+        border-radius: 8px;
+        box-shadow: inset 0 0 0 4px #f3ede2, inset 0 0 0 7px #b3301f;
+        display: grid;
+        place-items: center;
+        color: #f3ede2;
+        font-family: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', 'Noto Serif CJK JP',
+          'IPAPGothic', 'Noto Sans JP', sans-serif;
+        font-size: 40px;
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: 0.05em;
+      }
+      .rail {
+        justify-self: center;
+        text-align: center;
+        border-left: 2px solid rgba(34, 28, 24, 0.14);
+        border-right: 2px solid rgba(34, 28, 24, 0.14);
+        padding: 24px 28px;
+      }
+      .rail .kanji {
+        display: block;
+        font-family: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', 'Noto Serif CJK JP', serif;
+        font-size: 56px;
+        font-weight: 700;
+        color: #b3301f;
+        letter-spacing: 0.1em;
+      }
+      .rail .romaji {
+        display: block;
+        margin-top: 8px;
+        font-family: 'FranSans Solid', sans-serif;
+        font-size: 18px;
+        letter-spacing: 0.18em;
+        color: #5f574f;
+      }
+      .side {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+      }
+      .side.east {
+        justify-content: flex-end;
+        text-align: right;
+      }
+      .side .name {
+        font-family: 'FranSans Solid', sans-serif;
+        font-size: 58px;
+        line-height: 1;
+      }
+      .side .jp {
+        font-family: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', 'Noto Serif CJK JP', serif;
+        font-size: 26px;
+        color: #5f574f;
+        margin-top: 10px;
+        letter-spacing: 0.08em;
+      }
+      .mark {
+        width: 40px;
+        height: 40px;
+        border: 2px solid rgba(34, 28, 24, 0.2);
+        border-radius: 4px;
+        display: grid;
+        place-items: center;
+        font-family: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', 'Noto Serif CJK JP', serif;
+        font-size: 24px;
+        font-weight: 700;
+        color: #5f574f;
+      }
+      .title {
+        position: absolute;
+        left: 84px;
+        top: 76px;
+        font-family: 'FranSans Solid', sans-serif;
+        font-size: 44px;
+        letter-spacing: 0.02em;
+      }
+      .sub {
+        position: absolute;
+        left: 84px;
+        top: 134px;
+        font-size: 22px;
+        color: #5f574f;
+        letter-spacing: 0.02em;
+      }
+      .rule {
+        position: absolute;
+        left: 84px;
+        bottom: 84px;
+        width: 120px;
+        height: 4px;
+        background: #b3301f;
+      }
+      .url {
+        position: absolute;
+        right: 84px;
+        bottom: 80px;
+        font-family: 'FranSans Solid', sans-serif;
+        font-size: 18px;
+        letter-spacing: 0.12em;
+        color: #5f574f;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="grain"></div>
+    <div class="sheet">
+      <div class="title">GRAND SUMO BANZUKE</div>
+      <div class="sub">The official makuuchi rankings, updated for every tournament</div>
+      <div class="seal">番付</div>
+      <div class="side east">
+        <div>
+          <div class="name">ONOSATO</div>
+          <div class="jp">大の里</div>
+        </div>
+        <div class="mark">東</div>
+      </div>
+      <div class="rail">
+        <span class="kanji">横綱</span>
+        <span class="romaji">YOKOZUNA</span>
+      </div>
+      <div class="side west">
+        <div class="mark">西</div>
+        <div>
+          <div class="name">HOSHORYU</div>
+          <div class="jp">豊昇龍</div>
+        </div>
+      </div>
+      <div class="rule"></div>
+      <div class="url">JONATH0N.GITHUB.IO/BANZUKE-APP</div>
+    </div>
+  </body>
+</html>

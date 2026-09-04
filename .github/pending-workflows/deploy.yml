@@ -1,0 +1,154 @@
+name: Build & Deploy
+
+# One pipeline does everything:
+#   data   – fetch the latest banzuke from sumo.or.jp, validate it, commit it
+#            to main when the tournament data changed, and hand it to the build
+#   build  – validate, test and build the site with that data
+#   deploy – publish to GitHub Pages
+#
+# It runs on every push to main, once a day (the JSA publishes a new banzuke
+# on a Monday morning JST roughly two weeks before each tournament), and on
+# demand. If sumo.or.jp is unreachable the committed snapshot is deployed
+# instead, so a data hiccup never breaks a deploy.
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    # 22:00 UTC = 07:00 JST, an hour after the banzuke is published
+    - cron: '0 22 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  data:
+    name: Refresh banzuke data
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.fetch.outputs.changed }}
+      basho_id: ${{ steps.fetch.outputs.basho_id }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Fetch latest banzuke
+        id: fetch
+        continue-on-error: true
+        run: |
+          npx tsx scripts/fetch-banzuke.ts \
+            --out .data/latest-banzuke.json \
+            --previous public/latest-banzuke.json \
+            --if-changed
+
+      - name: Fall back to the committed snapshot
+        if: steps.fetch.outcome != 'success'
+        run: |
+          echo "::warning::Could not refresh data from sumo.or.jp; deploying the committed snapshot."
+          mkdir -p .data
+          cp public/latest-banzuke.json .data/latest-banzuke.json
+
+      - name: Use the committed snapshot when nothing changed
+        if: steps.fetch.outcome == 'success' && steps.fetch.outputs.changed != 'true'
+        run: |
+          mkdir -p .data
+          cp public/latest-banzuke.json .data/latest-banzuke.json
+
+      - name: Validate the snapshot that will ship
+        run: npx tsx scripts/validate-banzuke.ts .data/latest-banzuke.json
+
+      # Profiles are refreshed once per tournament; a scraping failure keeps
+      # the previous file and never blocks the deploy.
+      - name: Refresh wrestler profiles
+        id: profiles
+        continue-on-error: true
+        run: |
+          [ -f public/rikishi-profiles.json ] && cp public/rikishi-profiles.json .data/rikishi-profiles.json
+          npx tsx scripts/fetch-profiles.ts \
+            --snapshot .data/latest-banzuke.json \
+            --previous public/rikishi-profiles.json \
+            --out .data/rikishi-profiles.json
+
+      - name: Commit refreshed data to main
+        if: steps.fetch.outputs.changed == 'true' || steps.profiles.outputs.changed == 'true'
+        run: |
+          cp .data/latest-banzuke.json public/latest-banzuke.json
+          [ -f .data/rikishi-profiles.json ] && cp .data/rikishi-profiles.json public/rikishi-profiles.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/latest-banzuke.json public/rikishi-profiles.json
+          git commit -m "data: banzuke ${{ steps.fetch.outputs.basho_id }} (${{ steps.fetch.outputs.start_date }})"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Upload data artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: banzuke-data
+          path: .data/
+          retention-days: 7
+
+  build:
+    name: Build site
+    needs: data
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Use refreshed data
+        uses: actions/download-artifact@v4
+        with:
+          name: banzuke-data
+          path: public
+
+      - name: Validate
+        run: npm run validate
+
+      - name: Test
+        run: npm run test:run
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

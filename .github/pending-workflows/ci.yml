@@ -1,0 +1,54 @@
+name: CI
+
+# Checks for pull requests and non-main branches. Deploys (and the daily data
+# refresh) live in deploy.yml.
+
+on:
+  pull_request:
+  push:
+    branches-ignore: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Validate, test, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate (types, lint, format, CSS modules)
+        run: npm run validate
+
+      - name: Validate committed data snapshot
+        run: npm run validate-data
+
+      - name: Test with coverage
+        run: npm run test:run -- --coverage
+
+      - name: Test under other time zones
+        run: npm run test:tz
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/lcov.info
+          retention-days: 7

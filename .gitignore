@@ -37,3 +37,6 @@ debug.log
 # Test coverage
 coverage/
 
+
+# Workflow scratch output
+.data/

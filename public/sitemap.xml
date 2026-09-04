@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://jonath0n.github.io/banzuke-app/</loc>
+    <changefreq>weekly</changefreq>
+    <xhtml:link rel="alternate" hreflang="en" href="https://jonath0n.github.io/banzuke-app/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://jonath0n.github.io/banzuke-app/?lang=jp" />
+  </url>
+  <url>
+    <loc>https://jonath0n.github.io/banzuke-app/?div=juryo</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+</urlset>

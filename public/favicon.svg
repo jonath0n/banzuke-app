@@ -1,14 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Banzuke">
-  <rect width="64" height="64" rx="12" fill="#b0303f" />
+  <rect width="64" height="64" rx="8" fill="#b3301f" />
+  <rect x="6.5" y="6.5" width="51" height="51" rx="3" fill="none" stroke="#f3ede2" stroke-width="2.5" />
   <text
     x="32"
-    y="40"
+    y="45"
     text-anchor="middle"
-    font-family="Arial, sans-serif"
-    font-size="32"
-    fill="#ffffff"
+    font-family="'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', 'Noto Serif CJK JP', serif"
+    font-size="34"
     font-weight="700"
+    fill="#f3ede2"
   >
-    B
+    番
   </text>
 </svg>

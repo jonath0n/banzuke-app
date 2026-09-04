@@ -14,9 +14,7 @@
   margin-top: 2.5rem;
   padding-top: 1.25rem;
   border-top: 1px solid var(--border);
-  font-family:
-    'M PLUS 1p', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', system-ui,
-    sans-serif;
+  font-family: var(--font-body);
   font-size: 0.75rem;
   color: var(--muted);
   display: flex;
@@ -35,8 +33,7 @@
   left: 0;
   width: 80px;
   height: 3px;
-  background: linear-gradient(90deg, var(--accent), var(--accent) 60%, transparent);
-  border-radius: 2px;
+  background: var(--accent);
   opacity: 0;
   animation: footerFadeIn 400ms var(--ease-out-expo) 400ms forwards;
 }
@@ -106,12 +103,12 @@
   width: 1.5rem;
   height: 1.5rem;
   margin-left: 0.5em;
-  font-family: 'LINE Seed JP', sans-serif;
+  font-family: var(--font-jp-serif);
   font-size: 1rem;
-  font-weight: 900;
-  color: #c41e3a;
-  border: 2px solid #c41e3a;
-  border-radius: 3px;
+  font-weight: 700;
+  color: var(--accent);
+  border: 2px solid var(--accent);
+  border-radius: var(--radius-sm);
   text-transform: none;
   vertical-align: middle;
   opacity: 0.9;

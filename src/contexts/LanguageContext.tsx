@@ -1,5 +1,14 @@
-import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react'
 import type { Language } from '../types/banzuke'
+import { setUrlParam } from '../hooks/useUrlState'
 
 const LANGUAGE_STORAGE_KEY = 'banzuke-language'
 const DEFAULT_LANGUAGE: Language = 'en'
@@ -12,20 +21,18 @@ interface LanguageContextValue {
 const LanguageContext = createContext<LanguageContextValue | null>(null)
 
 function normalizeLanguage(value: string | null | undefined): Language {
-  return value === 'jp' ? 'jp' : 'en'
+  return value?.toLowerCase() === 'jp' || value?.toLowerCase() === 'ja' ? 'jp' : 'en'
 }
 
 function getInitialLanguage(): Language {
   if (typeof window === 'undefined') return DEFAULT_LANGUAGE
 
-  // Check URL params first (allows sharing links with language)
-  const searchParams = new URLSearchParams(window.location.search)
-  const langParam = searchParams.get('lang')
+  // The URL wins (shared links), then the stored preference.
+  const langParam = new URLSearchParams(window.location.search).get('lang')
   if (langParam) {
     return normalizeLanguage(langParam)
   }
 
-  // Then check localStorage
   try {
     const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY)
     if (stored) {
@@ -46,7 +53,7 @@ function saveLanguagePreference(language: Language): void {
   }
 }
 
-function updateLanguageContext(language: Language) {
+function updateDocumentLanguage(language: Language) {
   if (typeof document === 'undefined') return
 
   if (language === 'jp') {
@@ -65,17 +72,17 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     const normalized = normalizeLanguage(lang)
     setLanguageState(normalized)
     saveLanguagePreference(normalized)
+    // Keep the URL shareable in the chosen language.
+    setUrlParam('lang', normalized)
   }, [])
 
   useEffect(() => {
-    updateLanguageContext(language)
+    updateDocumentLanguage(language)
   }, [language])
 
-  return (
-    <LanguageContext.Provider value={{ language, setLanguage }}>
-      {children}
-    </LanguageContext.Provider>
-  )
+  const value = useMemo(() => ({ language, setLanguage }), [language, setLanguage])
+
+  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>
 }
 
 // eslint-disable-next-line react-refresh/only-export-components

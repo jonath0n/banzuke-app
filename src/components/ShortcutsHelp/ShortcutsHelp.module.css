@@ -1,0 +1,66 @@
+.help {
+  margin-top: var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.summary {
+  display: inline-block;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  padding: var(--space-1) 0;
+  color: var(--muted);
+}
+
+.summary:lang(ja) {
+  font-family: var(--font-jp);
+  letter-spacing: 0.04em;
+}
+
+.summary:hover {
+  color: var(--text);
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--space-1) var(--space-5);
+  margin: var(--space-2) 0 0;
+  padding: var(--space-3);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.row dt {
+  flex: 0 0 3rem;
+}
+
+.row dd {
+  margin: 0;
+  color: var(--text);
+}
+
+.kbd {
+  display: inline-block;
+  min-width: 1.6rem;
+  padding: 0.15rem 0.4rem;
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  line-height: 1.2;
+  text-align: center;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-sm);
+}
