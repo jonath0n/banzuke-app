@@ -28,12 +28,16 @@ describe('BanzukeGrid', () => {
     renderGrid(<BanzukeGrid rows={rows} />)
 
     const headings = screen.getAllByRole('heading', { level: 2 })
-    expect(headings.map((h) => h.textContent)).toEqual(['Yokozuna', 'Ozeki', 'Maegashira'])
+    expect(headings.map((h) => h.textContent)).toEqual([
+      '横綱Yokozuna',
+      '大関Ozeki',
+      '前頭Maegashira',
+    ])
 
-    const yokozuna = screen.getByRole('region', { name: 'Yokozuna' })
+    const yokozuna = screen.getByRole('region', { name: /Yokozuna/ })
     expect(within(yokozuna).getByText('Hoshoryu')).toBeInTheDocument()
     expect(within(yokozuna).getByText('Onosato')).toBeInTheDocument()
-    expect(within(screen.getByRole('region', { name: 'Ozeki' })).getByText('—')).toBeInTheDocument()
+    expect(within(screen.getByRole('region', { name: /Ozeki/ })).getByText('—')).toBeInTheDocument()
   })
 
   it('makes wrestlers selectable buttons', async () => {

@@ -3,38 +3,42 @@
  * component should come from here. Component stylesheets must not hand-type
  * accent RGB values: use `rgb(var(--accent-rgb) / 0.2)` for tints.
  *
- * Light values live on :root; dark mode overrides only what changes.
+ * Identity: a banzuke is sumi ink on kinari (unbleached) paper with a
+ * vermilion seal. Light mode is paper; dark mode is ink on aged indigo.
+ * Rank hierarchy is expressed by type size, not by hue.
  */
 :root {
   color-scheme: light dark;
 
   /* Colour --------------------------------------------------------------- */
-  --bg: #fdf8f9;
-  --card-bg: #ffffff;
-  --text: #1a1a1a;
-  --muted: #5c5c5c;
-  --border: #e0e0e0;
-  --accent: #b0303f;
-  --accent-hover: #8a252f;
-  /* Same hue as --accent, as space-separated RGB for alpha tints */
-  --accent-rgb: 176 48 63;
-  /* Text placed on the accent colour and on the (light) tier colours */
+  --bg: #f3ede2;
+  --card-bg: #faf6ee;
+  --text: #221c18;
+  --muted: #5f574f;
+  --border: #d9d0c0;
+  /* Hairline rules between ranks on the sheet */
+  --rule: rgba(34, 28, 24, 0.14);
+  /* Vermilion (shu), the seal colour */
+  --accent: #b3301f;
+  --accent-hover: #8f2617;
+  --accent-rgb: 179 48 31;
   --on-accent: #ffffff;
-  --on-tier: #1a1a1a;
-  --blossom-mist: rgba(255, 180, 200, 0.09);
+  --on-tier: #221c18;
+  /* Ink tint for tier headings and hover states */
+  --ink-rgb: 34 28 24;
 
-  /* Tier colours: warm gradient from gold to red */
-  --tier-yokozuna: #d4af37;
-  --tier-yokozuna-bg: rgba(212, 175, 55, 0.08);
-  --tier-ozeki: #c9a055;
-  --tier-ozeki-bg: rgba(201, 160, 85, 0.06);
-  --tier-sekiwake: #cd7f32;
-  --tier-sekiwake-bg: rgba(205, 127, 50, 0.05);
-  --tier-komusubi: #be5a3a;
-  --tier-komusubi-bg: rgba(190, 90, 58, 0.05);
+  /* Tier colours: used sparingly (rules, rings), never as fills behind small text */
+  --tier-yokozuna: #c9a227;
+  --tier-yokozuna-bg: rgba(201, 162, 39, 0.1);
+  --tier-ozeki: #b8934f;
+  --tier-ozeki-bg: rgba(184, 147, 79, 0.08);
+  --tier-sekiwake: #c9853a;
+  --tier-sekiwake-bg: rgba(201, 133, 58, 0.06);
+  --tier-komusubi: #a8553a;
+  --tier-komusubi-bg: rgba(168, 85, 58, 0.06);
 
   /* Semantic status colours (AA on --bg at small sizes) */
-  --status-live: #15803d;
+  --status-live: #166534;
   --status-live-rgb: 22 163 74;
   --status-upcoming: #1d4ed8;
   --status-upcoming-rgb: 37 99 235;
@@ -44,13 +48,20 @@
   --warning-rgb: 217 119 6;
 
   /* Typography ----------------------------------------------------------- */
-  --font-display:
-    'FranSans Solid', 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont,
-    'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Noto Sans JP', sans-serif;
+  /* Display voice: the wordmark, ring names, rank rail, chips */
+  --font-display: 'FranSans Solid', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  /* Reading text: hero facts, search, modal details, footer */
+  --font-body:
+    system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'Hiragino Sans', 'Yu Gothic', 'Noto Sans JP', sans-serif;
+  /* Japanese gothic for readings, stables, prefectures */
   --font-jp:
-    'FranSans Solid', 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont,
-    'M PLUS 1p', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'YuGothic', 'Meiryo',
-    'Noto Sans JP', sans-serif;
+    'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'YuGothic', 'Meiryo', 'Noto Sans JP',
+    'Noto Sans CJK JP', system-ui, sans-serif;
+  /* Japanese mincho for ring names and rank kanji, the calligraphic voice */
+  --font-jp-serif:
+    'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', 'YuMincho', 'Noto Serif JP',
+    'Noto Serif CJK JP', 'MS PMincho', serif;
   --text-xs: 0.65rem;
   --text-sm: 0.75rem;
   --text-base: 0.875rem;
@@ -58,8 +69,15 @@
   --text-lg: 1.15rem;
   --text-xl: 1.4rem;
   --text-2xl: 1.75rem;
-  --text-display: clamp(1.75rem, 5vw, 2.25rem);
+  --text-display: clamp(1.9rem, 5.5vw, 2.6rem);
   --tracking-caps: 0.08em;
+
+  /* Rank name sizes: the size ladder carries the hierarchy */
+  --name-yokozuna: 1.65rem;
+  --name-ozeki: 1.4rem;
+  --name-sekiwake: 1.25rem;
+  --name-komusubi: 1.15rem;
+  --name-maegashira: 1.05rem;
 
   /* Spacing (4px base) --------------------------------------------------- */
   --space-1: 0.25rem;
@@ -70,9 +88,14 @@
   --space-6: 2rem;
   --space-7: 3rem;
 
-  /* Radii ---------------------------------------------------------------- */
-  --radius-sm: 4px;
-  --radius: 0.5rem;
+  /* Layout --------------------------------------------------------------- */
+  --sheet-max: 840px;
+  --avatar-size: 48px;
+  --rail-width: 5rem;
+
+  /* Radii: seals and sheets are square-cornered; only portraits are round */
+  --radius-sm: 2px;
+  --radius: 4px;
   --radius-pill: 999px;
 
   /* Motion --------------------------------------------------------------- */
@@ -86,28 +109,37 @@
   --z-fab: 100;
   --z-skip-link: 1100;
 
-  /* Shadows -------------------------------------------------------------- */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
-  --shadow-glow: 0 0 20px rgb(var(--accent-rgb) / 0.15);
-  --shadow-glow-gold: 0 0 20px rgba(212, 175, 55, 0.2);
+  /* Shadows: paper lies flat; keep them faint ---------------------------- */
+  --shadow-sm: 0 1px 2px rgba(34, 28, 24, 0.06);
+  --shadow-md: 0 2px 8px rgba(34, 28, 24, 0.08), 0 1px 2px rgba(34, 28, 24, 0.06);
+  --shadow-lg: 0 12px 32px rgba(34, 28, 24, 0.18), 0 2px 6px rgba(34, 28, 24, 0.08);
+  --shadow-glow: 0 0 0 3px rgb(var(--accent-rgb) / 0.15);
+  --shadow-glow-gold: 0 0 0 3px rgba(201, 162, 39, 0.25);
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --sheet-max: 960px;
+    --avatar-size: 56px;
+    --rail-width: 5.5rem;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #131214;
-    --card-bg: #1e1e1e;
-    --text: #f0f0f0;
-    --muted: #a8a8a8;
-    --border: #333333;
-    --accent: #f88496;
-    --accent-hover: #ffa5b4;
-    --accent-rgb: 248 132 150;
-    /* The dark accent is a light pink, so text on it must be dark */
-    --on-accent: #1a1a1a;
-    --on-tier: #1a1a1a;
-    --blossom-mist: rgba(255, 150, 175, 0.07);
+    --bg: #15181d;
+    --card-bg: #1c2027;
+    --text: #ece6da;
+    --muted: #a9a297;
+    --border: #343a44;
+    --rule: rgba(236, 230, 218, 0.12);
+    --accent: #e8664f;
+    --accent-hover: #f08470;
+    --accent-rgb: 232 102 79;
+    /* The dark accent is light enough that ink reads better on it */
+    --on-accent: #15181d;
+    --on-tier: #15181d;
+    --ink-rgb: 236 230 218;
 
     --tier-yokozuna: #e8c547;
     --tier-yokozuna-bg: rgba(232, 197, 71, 0.1);
@@ -120,15 +152,15 @@
 
     --status-live: #4ade80;
     --status-live-rgb: 34 197 94;
-    --status-upcoming: #60a5fa;
+    --status-upcoming: #7fb3ff;
     --status-upcoming-rgb: 96 165 250;
     --danger: #fca5a5;
     --warning: #fcd34d;
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
-    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4), 0 4px 8px rgba(0, 0, 0, 0.3);
-    --shadow-glow: 0 0 20px rgb(var(--accent-rgb) / 0.2);
-    --shadow-glow-gold: 0 0 25px rgba(232, 197, 71, 0.25);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.35);
+    --shadow-glow: 0 0 0 3px rgb(var(--accent-rgb) / 0.25);
+    --shadow-glow-gold: 0 0 0 3px rgba(232, 197, 71, 0.3);
   }
 }

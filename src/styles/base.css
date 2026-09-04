@@ -9,10 +9,11 @@
 }
 
 :root {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
 }
 
-body.lang-jp {
+/* Japanese runs get a proper Japanese face ahead of the system UI font */
+:lang(ja) {
   font-family: var(--font-jp);
 }
 
@@ -30,7 +31,7 @@ body {
   background: var(--bg);
   color: var(--text);
   line-height: 1.5;
-  max-width: 800px;
+  max-width: var(--sheet-max);
   margin: 0 auto;
   padding: var(--space-4) var(--space-5) var(--space-6);
   -webkit-font-smoothing: antialiased;
@@ -39,29 +40,14 @@ body {
   min-height: 100vh;
 }
 
-/* Breathing background effect */
+/* Paper grain: a still, faint fibre texture (no animation, no colour wash) */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background:
-    radial-gradient(ellipse 140% 100% at 25% 5%, var(--blossom-mist) 0%, transparent 50%),
-    radial-gradient(ellipse 120% 80% at 85% 95%, var(--blossom-mist) 0%, transparent 45%);
-  animation: breathe 12s ease-in-out infinite;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.13 0 0 0 0 0.11 0 0 0 0 0.09 0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
   pointer-events: none;
   z-index: -1;
-}
-
-@keyframes breathe {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1) translate(0, 0);
-  }
-  50% {
-    opacity: 0.7;
-    transform: scale(1.05) translate(2%, 1%);
-  }
 }
 
 main {
@@ -101,24 +87,10 @@ body:has(dialog[open]) {
   background: var(--muted);
 }
 
-/* Keyframes shared by several components (CSS Modules resolve these globally) */
-@keyframes fadeSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
+@media (prefers-color-scheme: dark) {
+  body::before {
+    opacity: 0.5;
+    filter: invert(1);
   }
 }
 

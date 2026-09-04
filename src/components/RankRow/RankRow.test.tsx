@@ -22,6 +22,7 @@ describe('RankRow', () => {
       </LanguageProvider>
     )
     expect(screen.getByText('M3')).toBeInTheDocument()
+    expect(screen.getByText('前頭三')).toHaveAttribute('lang', 'ja')
     const cells = container.querySelectorAll('[data-side]')
     expect(cells[0]).toHaveAttribute('data-side', 'east')
     expect(cells[0]).toHaveTextContent('Left')
@@ -45,7 +46,8 @@ describe('RankRow', () => {
         <RankRow group={group} />
       </LanguageProvider>
     )
-    expect(screen.getByText('O')).toBeInTheDocument()
+    expect(screen.getByText('OZEKI')).toBeInTheDocument()
+    expect(screen.getByText('大関')).toBeInTheDocument()
     expect(screen.getByText('—')).toBeInTheDocument()
   })
 })

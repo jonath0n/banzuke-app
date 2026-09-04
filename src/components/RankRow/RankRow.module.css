@@ -1,113 +1,10 @@
-.row {
-  background: var(--card-bg);
-  border-radius: var(--radius);
-  padding: 0.5rem 0.75rem;
-  transition:
-    background 150ms ease,
-    box-shadow 150ms ease,
-    transform 150ms ease;
-  animation: riseIn 200ms ease backwards;
-  animation-delay: calc(var(--row-index, 0) * 30ms);
-}
-
-.row:hover {
-  box-shadow:
-    var(--shadow-md),
-    0 0 0 1px rgb(var(--accent-rgb) / 0.05);
-  transform: translateY(-2px);
-}
-
-.row:active {
-  transform: translateY(0);
-  box-shadow: var(--shadow-sm);
-}
-
-/* Tier-specific styling */
-.row[data-rank-level='yokozuna'] {
-  background: linear-gradient(135deg, var(--card-bg) 0%, var(--tier-yokozuna-bg) 100%);
-}
-
-.row[data-rank-level='yokozuna']:hover {
-  box-shadow: var(--shadow-md), var(--shadow-glow-gold);
-}
-
-.row[data-rank-level='ozeki'] {
-  background: linear-gradient(135deg, var(--card-bg) 0%, var(--tier-ozeki-bg) 100%);
-}
-
-.row[data-rank-level='sekiwake'] {
-  background: linear-gradient(135deg, var(--card-bg) 0%, var(--tier-sekiwake-bg) 100%);
-}
-
-.row[data-rank-level='komusubi'] {
-  background: linear-gradient(135deg, var(--card-bg) 0%, var(--tier-komusubi-bg) 100%);
-}
-
-.inner {
-  display: grid;
-  grid-template-columns: 1fr 60px 1fr;
-  align-items: center;
-  gap: 0.75rem;
-  position: relative;
-  z-index: 1;
-}
-
-.label {
-  font-family: 'FranSans Solid', 'Inter', system-ui, sans-serif;
-  font-weight: 600;
-  color: var(--on-accent);
-  font-size: 0.8rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  text-align: center;
-  background: var(--accent);
-  border-radius: 999px;
-  min-width: 48px;
-  padding: 0.4rem 0.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  justify-self: center;
-  box-shadow: 0 2px 8px rgb(var(--accent-rgb) / 0.2);
-  transition:
-    transform 250ms var(--ease-spring),
-    box-shadow 250ms ease;
-}
-
-/* Label lift and glow on row hover */
-.row:hover .label {
-  transform: scale(1.05) translateY(-1px);
-  box-shadow: 0 4px 12px rgb(var(--accent-rgb) / 0.3);
-}
-
-/* Tier-specific label colors */
-.row[data-rank-level='yokozuna'] .label,
-.row[data-rank-level='ozeki'] .label,
-.row[data-rank-level='sekiwake'] .label {
-  color: var(--on-tier);
-}
-
-.row[data-rank-level='yokozuna'] .label {
-  background: linear-gradient(135deg, var(--tier-yokozuna) 0%, #c9a227 100%);
-  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
-}
-
-.row[data-rank-level='yokozuna']:hover .label {
-  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.4);
-}
-
-.row[data-rank-level='ozeki'] .label {
-  background: linear-gradient(135deg, var(--tier-ozeki) 0%, #b08a40 100%);
-  box-shadow: 0 2px 8px rgba(201, 160, 85, 0.25);
-}
-
-.row[data-rank-level='ozeki']:hover .label {
-  box-shadow: 0 4px 12px rgba(201, 160, 85, 0.4);
-}
-
-.row[data-rank-level='sekiwake'] .label {
-  background: linear-gradient(135deg, var(--tier-sekiwake) 0%, #b86b22 100%);
-  box-shadow: 0 2px 8px rgba(205, 127, 50, 0.25);
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes riseIn {
@@ -121,48 +18,125 @@
   }
 }
 
+/* One rank position on the sheet: East | rail | West */
+.row {
+  padding: var(--space-2) var(--space-3);
+  transition: background var(--dur-fast) ease;
+  animation: riseIn 200ms ease backwards;
+  animation-delay: calc(var(--row-index, 0) * 25ms);
+}
+
+.row + .row {
+  border-top: 1px solid var(--rule);
+}
+
+.row:hover {
+  background: rgb(var(--ink-rgb) / 0.035);
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--rail-width) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* The centre rail: rank in kanji over its romaji short form */
+.rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  min-height: 2.75rem;
+  padding: 0.2rem 0.25rem;
+  border-inline: 1px solid var(--rule);
+  text-align: center;
+  line-height: 1;
+}
+
+.kanji {
+  display: block;
+  font-family: var(--font-jp-serif);
+  font-size: var(--text-md);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.romaji {
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* Sanyaku ranks are stamped in vermilion; the Yokozuna rail is edged in gold */
+.row[data-rank-level='yokozuna'] .kanji,
+.row[data-rank-level='ozeki'] .kanji,
+.row[data-rank-level='sekiwake'] .kanji,
+.row[data-rank-level='komusubi'] .kanji {
+  color: var(--accent);
+}
+
+.row[data-rank-level='yokozuna'] .rail {
+  border-inline-color: var(--tier-yokozuna);
+}
+
+.row[data-rank-level='yokozuna'] .kanji,
+.row[data-rank-level='ozeki'] .kanji {
+  font-size: var(--text-lg);
+}
+
 @media (max-width: 600px) {
   .row {
-    padding: 0.4rem 0.5rem;
+    padding: var(--space-2) var(--space-2);
   }
 
   .inner {
-    grid-template-columns: 1fr;
-    gap: 0.35rem;
-    text-align: center;
+    grid-template-columns: minmax(0, 1fr) 2.25rem minmax(0, 1fr);
+    gap: var(--space-2);
+    align-items: start;
   }
 
-  .label {
-    order: -1;
+  .rail {
+    display: grid;
+    place-items: center;
+    padding: 0.2rem 0;
+    min-height: 4.5rem;
+    align-self: stretch;
+  }
+
+  /* One character per line, as on the printed banzuke. A 1em column with
+     CJK line breaking works with any font, unlike writing-mode, which needs
+     vertical metrics the fallback fonts on some devices lack. */
+  .kanji {
+    align-self: center;
     justify-self: center;
-    font-size: 0.7rem;
-    padding: 0.3rem 0.6rem;
-    min-width: auto;
+    width: 1.1em;
+    white-space: normal;
+    word-break: break-all;
+    text-align: center;
+    font-size: var(--text-base);
+    letter-spacing: 0;
+    line-height: 1.15;
+  }
+
+  .row[data-rank-level='yokozuna'] .kanji,
+  .row[data-rank-level='ozeki'] .kanji {
+    font-size: var(--text-md);
+  }
+
+  .romaji {
+    display: none;
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .row[data-rank-level='yokozuna'] .label {
-    background: linear-gradient(135deg, var(--tier-yokozuna) 0%, #d4af37 100%);
-  }
-
-  .row[data-rank-level='ozeki'] .label {
-    background: linear-gradient(135deg, var(--tier-ozeki) 0%, #c9a050 100%);
-  }
-}
-
-/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .row {
     animation: fadeIn 200ms ease forwards;
-    transition: box-shadow 150ms ease;
-  }
-
-  .row:hover {
-    transform: none;
-  }
-
-  .row:hover .label {
-    transform: none;
   }
 }

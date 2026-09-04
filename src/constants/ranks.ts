@@ -46,6 +46,16 @@ export const RANK_LEVEL_NAMES: Record<RankLevel, string> = {
   juryo: 'Juryo',
 }
 
+/** Japanese tier names, keyed by RankLevel. */
+export const RANK_LEVEL_KANJI: Record<RankLevel, string> = {
+  yokozuna: '横綱',
+  ozeki: '大関',
+  sekiwake: '関脇',
+  komusubi: '小結',
+  maegashira: '前頭',
+  juryo: '十両',
+}
+
 /** Maps rank codes to their corresponding RankLevel type. */
 export function getRankLevelFromCode(rankCode: number): RankLevel {
   return RANK_LEVELS[rankCode] ?? 'maegashira'

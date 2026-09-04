@@ -70,6 +70,9 @@ export function Hero({ data }: HeroProps) {
       <div className={styles.titleRow}>
         <div className={styles.titleGroup}>
           <h1>Grand Sumo Banzuke</h1>
+          <span className={styles.seal} lang="ja" aria-hidden="true">
+            番付
+          </span>
           {data && <TournamentStatus data={data} />}
         </div>
         <LanguageToggle language={language} onLanguageChange={setLanguage} />
@@ -77,7 +80,7 @@ export function Hero({ data }: HeroProps) {
       <dl className={styles.summary} aria-live="polite">
         <div>
           <dt>Basho</dt>
-          <dd>{`${bashoName}${division}`}</dd>
+          <dd lang={language === 'jp' ? 'ja' : undefined}>{`${bashoName}${division}`}</dd>
         </div>
         <div>
           <dt>Dates</dt>

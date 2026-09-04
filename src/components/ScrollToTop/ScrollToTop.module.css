@@ -11,7 +11,7 @@
   background: var(--card-bg);
   color: var(--muted);
   border: 1px solid var(--border);
-  border-radius: 50%;
+  border-radius: var(--radius-sm);
   box-shadow: var(--shadow-md);
   cursor: pointer;
   opacity: 0;

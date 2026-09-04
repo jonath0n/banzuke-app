@@ -3,9 +3,10 @@ import type { Language, Rikishi, RankLevel } from '../../types/banzuke'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { buildPhotoUrl } from '../../utils/formatting'
 import { describePromotion } from '../../utils/promotion'
+import { SIDE_KANJI } from '../../data/kanji'
 import styles from './SideCell.module.css'
 
-/** Rendered size of wrestler avatars in CSS pixels (matches the stylesheet). */
+/** Intrinsic size hint for wrestler avatars (the CSS size is a token). */
 const AVATAR_SIZE = 48
 
 /** Stagger for the language-switch animation: per row, capped. */
@@ -32,7 +33,6 @@ function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0, onSelect }: Sid
   const { language } = useLanguage()
   const [imageState, setImageState] = useState<'pending' | 'loaded' | 'error'>('pending')
   const isEast = side === 'east'
-  const sideLabel = isEast ? 'E' : 'W'
 
   const staggerDelay = Math.min(rowIndex * STAGGER_MS_PER_ROW, STAGGER_MAX_MS)
 
@@ -82,9 +82,10 @@ function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0, onSelect }: Sid
     </span>
   )
 
-  const sideLabelElement = (
-    <span key="side" className={styles['side-label']} aria-hidden="true">
-      {sideLabel}
+  // 東 / 西 seal; the side is already part of the button's accessible name
+  const sideSeal = (
+    <span key="side" className={styles['side-seal']} lang="ja" aria-hidden="true">
+      {SIDE_KANJI[side]}
     </span>
   )
 
@@ -105,17 +106,17 @@ function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0, onSelect }: Sid
     </span>
   )
 
-  // East: badge, label, info; West: info, label, badge (mirrored layout)
+  // East: badge, seal, info; West: info, seal, badge (mirrored layout)
   const content = isEast ? (
     <>
       {badge}
-      {sideLabelElement}
+      {sideSeal}
       {info}
     </>
   ) : (
     <>
       {info}
-      {sideLabelElement}
+      {sideSeal}
       {badge}
     </>
   )

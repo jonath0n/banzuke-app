@@ -1,6 +1,6 @@
 import type { RankGroup, RankLevel, Rikishi } from '../../types/banzuke'
 import { groupRowsByRank } from '../../utils/formatting'
-import { RANK_LEVEL_NAMES } from '../../constants/ranks'
+import { RANK_LEVEL_NAMES, RANK_LEVEL_KANJI } from '../../constants/ranks'
 import { RankRow } from '../RankRow/RankRow'
 import styles from './BanzukeGrid.module.css'
 
@@ -138,6 +138,9 @@ export function BanzukeGrid({
           data-rank-level={tier.level}
         >
           <h2 id={`tier-${tier.level}`} className={styles.tierDivider} data-rank-level={tier.level}>
+            <span className={styles.tierKanji} lang="ja">
+              {RANK_LEVEL_KANJI[tier.level]}
+            </span>
             <span className={styles.tierLabel}>{RANK_LEVEL_NAMES[tier.level]}</span>
           </h2>
           {tier.groups.map((group) => (

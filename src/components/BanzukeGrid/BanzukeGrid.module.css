@@ -1,12 +1,18 @@
-/* Define keyframes locally for CSS Modules compatibility */
-@keyframes skeletonFadeIn {
+@keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(12px) scale(0.98);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes skeletonFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
@@ -19,85 +25,96 @@
   }
 }
 
-@keyframes shimmerGlow {
-  0% {
-    background-position: -200% 0;
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    background-position: 200% 0;
-    opacity: 0.6;
-  }
+/* The sheet: one continuous piece of paper holding every rank */
+.grid {
+  margin-top: var(--space-4);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
 }
 
-.grid {
+/* A rank tier: heading band followed by its rows */
+.tier {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
-  margin-top: 1rem;
-  position: relative;
 }
 
-/* Subtle top fade for visual depth */
-.grid::before {
-  content: '';
-  position: absolute;
-  top: -1rem;
-  left: 0;
-  right: 0;
-  height: 1rem;
-  background: linear-gradient(to bottom, var(--bg), transparent);
-  pointer-events: none;
-  z-index: 1;
+.tier + .tier {
+  border-top: 2px solid var(--rule);
+}
+
+/* Tier heading band (an <h2>) */
+.tierDivider {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  background: rgb(var(--ink-rgb) / 0.04);
+  border-bottom: 1px solid var(--rule);
+}
+
+.tierKanji {
+  font-family: var(--font-jp-serif);
+  font-size: var(--text-md);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--text);
+}
+
+.tierLabel {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* Gold ink for the top of the sheet */
+.tierDivider[data-rank-level='yokozuna'] {
+  border-bottom-color: var(--tier-yokozuna);
+  box-shadow: inset 0 -1px 0 var(--tier-yokozuna);
 }
 
 /* Loading skeleton styles */
 .skeleton-grid {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
-  margin-top: 1rem;
-}
-
-.skeleton-row {
+  margin-top: var(--space-4);
   background: var(--card-bg);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 0.6rem 0.85rem;
-  box-shadow: var(--shadow-sm);
-  opacity: 0;
-  animation: skeletonFadeIn 500ms var(--ease-out-expo) forwards;
-  animation-delay: calc(var(--row-index, 0) * 50ms);
-  position: relative;
   overflow: hidden;
 }
 
-/* Glowing edge effect on skeleton cards */
-.skeleton-row::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-  animation: shimmer 2s ease-in-out infinite;
-  animation-delay: calc(var(--row-index, 0) * 100ms);
+.skeleton-row {
+  padding: var(--space-3) var(--space-3);
+  opacity: 0;
+  animation: skeletonFadeIn var(--dur-slow) var(--ease-out-expo) forwards;
+  animation-delay: calc(var(--row-index, 0) * 50ms);
+}
+
+.skeleton-row + .skeleton-row {
+  border-top: 1px solid var(--rule);
 }
 
 .skeleton-inner {
   display: grid;
-  grid-template-columns: 1fr 60px 1fr;
+  grid-template-columns: 1fr var(--rail-width) 1fr;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--space-3);
 }
 
 .skeleton-cell {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-2);
 }
 
 .skeleton-cell[data-side='east'] {
@@ -108,44 +125,23 @@
   justify-content: flex-start;
 }
 
-.skeleton-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: linear-gradient(
-    90deg,
-    var(--border) 0%,
-    rgba(255, 255, 255, 0.1) 20%,
-    var(--border) 40%,
-    var(--border) 100%
-  );
+.skeleton-avatar,
+.skeleton-name,
+.skeleton-label {
+  background: linear-gradient(90deg, var(--border) 0%, var(--bg) 50%, var(--border) 100%);
   background-size: 300% 100%;
-  animation: shimmerGlow 2s ease-in-out infinite;
-  position: relative;
+  animation: shimmer 2s ease-in-out infinite;
 }
 
-/* Inner glow for avatar skeleton */
-.skeleton-avatar::after {
-  content: '';
-  position: absolute;
-  inset: 2px;
+.skeleton-avatar {
+  width: var(--avatar-size);
+  height: var(--avatar-size);
   border-radius: 50%;
-  background: var(--card-bg);
-  opacity: 0.3;
 }
 
 .skeleton-name {
   height: 1rem;
-  border-radius: 6px;
-  background: linear-gradient(
-    90deg,
-    var(--border) 0%,
-    rgba(255, 255, 255, 0.08) 20%,
-    var(--border) 40%,
-    var(--border) 100%
-  );
-  background-size: 300% 100%;
-  animation: shimmerGlow 2s ease-in-out infinite;
+  border-radius: var(--radius-sm);
 }
 
 .long {
@@ -161,160 +157,79 @@
 }
 
 .skeleton-label {
-  width: 52px;
-  height: 30px;
-  border-radius: 999px;
-  background: linear-gradient(
-    90deg,
-    var(--border) 0%,
-    rgba(255, 255, 255, 0.1) 20%,
-    var(--border) 40%,
-    var(--border) 100%
-  );
-  background-size: 300% 100%;
-  animation: shimmerGlow 2s ease-in-out infinite;
+  width: 2.5rem;
+  height: 2rem;
+  border-radius: var(--radius-sm);
   justify-self: center;
-}
-
-@media (max-width: 600px) {
-  .skeleton-inner {
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-    text-align: center;
-  }
-
-  .skeleton-label {
-    order: -1;
-    justify-self: center;
-  }
-
-  .skeleton-cell {
-    justify-content: center;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .skeleton-row::after {
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.02), transparent);
-  }
-}
-
-/* Reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  .skeleton-row {
-    animation: fadeIn 200ms ease forwards;
-  }
-
-  .skeleton-row::after,
-  .skeleton-avatar,
-  .skeleton-name,
-  .skeleton-label {
-    animation: none;
-  }
-}
-
-/* Each rank tier is a section: heading divider followed by its rows */
-.tier {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-
-.tier + .tier {
-  margin-top: 0.5rem;
-}
-
-/* Tier dividers (h2) between rank groups */
-.tierDivider {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.25rem 0;
-  margin: 0;
-  font-size: inherit;
-  font-weight: inherit;
-}
-
-.tierDivider::before,
-.tierDivider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-
-.tierLabel {
-  font-family: 'FranSans Solid', 'Inter', system-ui, sans-serif;
-  font-size: 0.6rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  white-space: nowrap;
-}
-
-/* Tier colour lives on the rules, not the small text, to keep it legible */
-.tierDivider[data-rank-level='yokozuna']::before,
-.tierDivider[data-rank-level='yokozuna']::after {
-  background: linear-gradient(90deg, var(--tier-yokozuna), transparent);
-}
-
-.tierDivider[data-rank-level='yokozuna']::after {
-  background: linear-gradient(270deg, var(--tier-yokozuna), transparent);
-}
-
-.tierDivider[data-rank-level='ozeki']::before,
-.tierDivider[data-rank-level='ozeki']::after {
-  background: linear-gradient(90deg, var(--tier-ozeki), transparent);
-}
-
-.tierDivider[data-rank-level='ozeki']::after {
-  background: linear-gradient(270deg, var(--tier-ozeki), transparent);
 }
 
 /* Empty state */
 .emptyState {
   text-align: center;
-  padding: 3rem 1rem;
+  padding: var(--space-7) var(--space-4);
   color: var(--muted);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-2);
 }
 
 .emptyIcon {
   opacity: 0.4;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--space-2);
 }
 
 .emptyState p {
   margin: 0;
-  font-size: 1rem;
+  font-size: var(--text-md);
   font-weight: 600;
   color: var(--text);
 }
 
 .emptyState p.emptyHint {
-  font-size: 0.85rem;
+  font-size: var(--text-base);
   font-weight: 400;
   color: var(--muted);
 }
 
 .emptyAction {
-  margin-top: 0.75rem;
+  margin-top: var(--space-3);
   min-height: 44px;
-  padding: 0.5rem 1.25rem;
+  padding: var(--space-2) var(--space-5);
   font: inherit;
   font-weight: 600;
   color: var(--on-accent);
   background: var(--accent);
   border: none;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: background 150ms ease;
+  transition: background var(--dur-fast) ease;
 }
 
 .emptyAction:hover {
   background: var(--accent-hover);
+}
+
+@media (max-width: 600px) {
+  .skeleton-inner {
+    grid-template-columns: minmax(0, 1fr) 2.5rem minmax(0, 1fr);
+    gap: var(--space-2);
+  }
+
+  .skeleton-avatar {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-row {
+    animation: fadeIn 200ms ease forwards;
+  }
+
+  .skeleton-avatar,
+  .skeleton-name,
+  .skeleton-label {
+    animation: none;
+  }
 }
