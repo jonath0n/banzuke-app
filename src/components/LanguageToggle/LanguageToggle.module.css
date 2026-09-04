@@ -72,17 +72,7 @@
   background: var(--accent);
   border-radius: 999px;
   transition: transform 250ms var(--ease-spring);
-  box-shadow: 0 2px 8px rgba(176, 48, 63, 0.25);
-}
-
-@media (prefers-color-scheme: dark) {
-  .toggle {
-    background: var(--border);
-  }
-
-  .slider {
-    box-shadow: 0 2px 10px rgba(248, 132, 150, 0.3);
-  }
+  box-shadow: 0 2px 8px rgb(var(--accent-rgb) / 0.25);
 }
 
 @media (prefers-reduced-motion: reduce) {

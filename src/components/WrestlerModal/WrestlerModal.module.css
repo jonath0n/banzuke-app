@@ -193,7 +193,7 @@
   background: var(--accent);
   padding: 0.35rem 1rem;
   border-radius: 999px;
-  box-shadow: 0 2px 8px rgba(176, 48, 63, 0.25);
+  box-shadow: 0 2px 8px rgb(var(--accent-rgb) / 0.25);
   animation: badgePop 350ms var(--ease-spring) 200ms backwards;
 }
 

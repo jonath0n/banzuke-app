@@ -48,16 +48,6 @@
   outline-offset: 2px;
 }
 
-@media (prefers-color-scheme: dark) {
-  .button {
-    box-shadow: var(--shadow-md);
-  }
-
-  .button:hover {
-    box-shadow: var(--shadow-glow);
-  }
-}
-
 @media (max-width: 600px) {
   .button {
     bottom: 1rem;
