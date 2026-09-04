@@ -65,3 +65,10 @@ export function groupRowsByRank(rows: Rikishi[]): RankGroup[] {
 
   return groups
 }
+
+/** Official JSA profile page for a wrestler, in the UI language. */
+export function profileUrl(id: number, language: 'en' | 'jp'): string {
+  return language === 'jp'
+    ? `https://www.sumo.or.jp/ResultRikishiData/profile/${id}/`
+    : `https://www.sumo.or.jp/EnSumoDataRikishi/profile/${id}/`
+}

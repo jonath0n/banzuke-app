@@ -13,6 +13,7 @@ function setup() {
     onToggleLanguage: vi.fn(),
     onFocusSearch: vi.fn(),
     onEscape: vi.fn(),
+    onToggleHelp: vi.fn(),
   }
   const hook = renderHook(() => useKeyboardShortcuts(actions))
   return { ...actions, ...hook }
@@ -24,7 +25,7 @@ describe('useKeyboardShortcuts', () => {
   })
 
   it('maps l, / and Escape to actions', () => {
-    const { onToggleLanguage, onFocusSearch, onEscape } = setup()
+    const { onToggleLanguage, onFocusSearch, onEscape, onToggleHelp } = setup()
     expect(press('l').defaultPrevented).toBe(true)
     press('L')
     expect(onToggleLanguage).toHaveBeenCalledTimes(2)
@@ -32,6 +33,8 @@ describe('useKeyboardShortcuts', () => {
     expect(onFocusSearch).toHaveBeenCalledTimes(1)
     press('Escape')
     expect(onEscape).toHaveBeenCalledTimes(1)
+    expect(press('?').defaultPrevented).toBe(true)
+    expect(onToggleHelp).toHaveBeenCalledTimes(1)
   })
 
   it('ignores shortcuts when a modifier is held', () => {

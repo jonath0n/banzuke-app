@@ -42,6 +42,10 @@ describe('WrestlerModal', () => {
     expect(screen.getByText('New Yokozuna')).toBeInTheDocument()
     const img = screen.getByRole('presentation', { hidden: true })
     expect(img).toHaveAttribute('src', expect.stringMatching(/270x474\/20170096\.jpg$/))
+    expect(screen.getByRole('link', { name: /Official profile/ })).toHaveAttribute(
+      'href',
+      'https://www.sumo.or.jp/EnSumoDataRikishi/profile/4227/'
+    )
   })
 
   it('renders nothing visible without a wrestler', () => {
@@ -86,5 +90,9 @@ describe('WrestlerModal', () => {
     expect(screen.getByText('おおのさと')).toBeInTheDocument()
     expect(screen.getByText('二所ノ関')).toBeInTheDocument()
     expect(screen.getByText('新横綱')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /公式プロフィール/ })).toHaveAttribute(
+      'href',
+      'https://www.sumo.or.jp/ResultRikishiData/profile/4227/'
+    )
   })
 })

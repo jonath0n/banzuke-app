@@ -1,21 +1,18 @@
-import { useEffect, useId, useRef } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import type { Rikishi } from '../../types/banzuke'
-import { buildPhotoUrl, PHOTO_DIMENSIONS } from '../../utils/formatting'
+import { buildPhotoUrl, profileUrl, PHOTO_DIMENSIONS } from '../../utils/formatting'
 import { getRankLabel } from '../../constants/ranks'
 import { describePromotion } from '../../utils/promotion'
 import { useLanguage } from '../../contexts/LanguageContext'
+import { useStrings } from '../../i18n/useStrings'
+import { langAttr } from '../../i18n/strings'
 import styles from './WrestlerModal.module.css'
 
 interface WrestlerModalProps {
   rikishi: Rikishi | null
   onClose: () => void
 }
-
-const SIDE_LABELS = {
-  east: { en: 'East', jp: '東' },
-  west: { en: 'West', jp: '西' },
-} as const
 
 /**
  * Wrestler detail dialog built on the native <dialog> element: `showModal()`
@@ -27,7 +24,9 @@ export function WrestlerModal({ rikishi, onClose }: WrestlerModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const openerRef = useRef<Element | null>(null)
   const { language } = useLanguage()
+  const strings = useStrings()
   const nameId = useId()
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     const dialog = dialogRef.current
@@ -40,6 +39,7 @@ export function WrestlerModal({ rikishi, onClose }: WrestlerModalProps) {
     } else if (dialog.open) {
       dialog.close()
     }
+    setCopied(false)
   }, [rikishi])
 
   // Fires for Escape, the close button and programmatic close alike.
@@ -57,8 +57,22 @@ export function WrestlerModal({ rikishi, onClose }: WrestlerModalProps) {
     if (e.target === dialogRef.current) onClose()
   }
 
+  const handleCopyLink = async () => {
+    const url = window.location.href
+    try {
+      if (navigator.share) {
+        await navigator.share({ url, title: document.title })
+      } else {
+        await navigator.clipboard.writeText(url)
+        setCopied(true)
+      }
+    } catch {
+      // Cancelled share sheet or clipboard denied: nothing to report.
+    }
+  }
+
   const portrait = PHOTO_DIMENSIONS['270x474']
-  const langAttr = language === 'jp' ? 'ja' : 'en'
+  const lang = langAttr(language)
 
   return createPortal(
     // The click handler only implements "click the backdrop to dismiss", a
@@ -72,6 +86,7 @@ export function WrestlerModal({ rikishi, onClose }: WrestlerModalProps) {
       aria-labelledby={nameId}
       onClose={handleClose}
       onClick={handleClick}
+      lang={lang}
     >
       {rikishi && (
         <div className={styles.content}>
@@ -79,7 +94,7 @@ export function WrestlerModal({ rikishi, onClose }: WrestlerModalProps) {
             className={styles.close}
             onClick={onClose}
             type="button"
-            aria-label="Close wrestler details"
+            aria-label={strings.closeDetails}
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
               <path
@@ -123,58 +138,71 @@ export function WrestlerModal({ rikishi, onClose }: WrestlerModalProps) {
                 </div>
               )}
             </div>
-            <div className={styles.rankBadge} data-rank-level={rikishi.rankLevel}>
+            <div className={styles.rankBadge} data-rank-level={rikishi.rankLevel} lang="en">
               {getRankLabel(rikishi.rankCode, rikishi.rankNumber) || rikishi.rankName.en}
             </div>
           </div>
 
           <div className={styles.details}>
-            <h2 id={nameId} className={styles.primaryName} lang={langAttr}>
+            <h2 id={nameId} className={styles.primaryName} lang={lang}>
               {rikishi.shikona[language] || rikishi.shikona.en}
             </h2>
             <SecondaryName rikishi={rikishi} />
 
             <dl className={styles.meta}>
               <div className={styles.metaItem}>
-                <dt className={styles.metaLabel}>Rank</dt>
-                <dd className={styles.metaValue} lang={langAttr}>
-                  {rikishi.rankName[language]}
-                </dd>
+                <dt className={styles.metaLabel}>{strings.rank}</dt>
+                <dd className={styles.metaValue}>{rikishi.rankName[language]}</dd>
               </div>
               <div className={styles.metaItem}>
-                <dt className={styles.metaLabel}>Side</dt>
+                <dt className={styles.metaLabel}>{strings.sideLabel}</dt>
                 <dd className={styles.metaValue}>
-                  {SIDE_LABELS[rikishi.side].en}
-                  <span className={styles.sideKanji} lang="ja">
-                    {SIDE_LABELS[rikishi.side].jp}
-                  </span>
+                  {strings.side[rikishi.side]}
+                  {language === 'en' && (
+                    <span className={styles.sideKanji} lang="ja">
+                      {rikishi.side === 'east' ? '東' : '西'}
+                    </span>
+                  )}
                 </dd>
               </div>
               {rikishi.heya.en && (
                 <div className={styles.metaItem}>
-                  <dt className={styles.metaLabel}>Stable</dt>
-                  <dd className={styles.metaValue} lang={langAttr}>
-                    {rikishi.heya[language]}
-                  </dd>
+                  <dt className={styles.metaLabel}>{strings.stable}</dt>
+                  <dd className={styles.metaValue}>{rikishi.heya[language]}</dd>
                 </div>
               )}
               {rikishi.pref.en && (
                 <div className={styles.metaItem}>
-                  <dt className={styles.metaLabel}>From</dt>
-                  <dd className={styles.metaValue} lang={langAttr}>
-                    {rikishi.pref[language]}
-                  </dd>
+                  <dt className={styles.metaLabel}>{strings.from}</dt>
+                  <dd className={styles.metaValue}>{rikishi.pref[language]}</dd>
                 </div>
               )}
               {rikishi.promotion && (
                 <div className={styles.metaItem}>
-                  <dt className={styles.metaLabel}>Status</dt>
-                  <dd className={`${styles.metaValue} ${styles.statusBadge}`} lang={langAttr}>
+                  <dt className={styles.metaLabel}>{strings.status}</dt>
+                  <dd className={`${styles.metaValue} ${styles.statusBadge}`}>
                     {describePromotion(rikishi, language)}
                   </dd>
                 </div>
               )}
             </dl>
+
+            <div className={styles.actions}>
+              <a
+                className={styles.action}
+                href={profileUrl(rikishi.id, language)}
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                {strings.officialProfile}
+                <span className={styles.external} aria-hidden="true">
+                  ↗
+                </span>
+              </a>
+              <button type="button" className={styles.action} onClick={handleCopyLink}>
+                {copied ? strings.linkCopied : strings.copyLink}
+              </button>
+            </div>
           </div>
         </div>
       )}

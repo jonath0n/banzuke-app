@@ -47,8 +47,16 @@ describe('LanguageContext', () => {
     expect(localStorage.getItem('banzuke-language')).toBe('jp')
     expect(document.documentElement.lang).toBe('ja')
 
+    expect(new URLSearchParams(window.location.search).get('lang')).toBe('jp')
+
     const fresh = renderHook(() => useLanguage(), { wrapper })
     expect(fresh.result.current.language).toBe('jp')
+  })
+
+  it('accepts "ja" as well as "jp" in the URL', () => {
+    window.history.replaceState({}, '', '/?lang=ja')
+    const { result } = renderHook(() => useLanguage(), { wrapper })
+    expect(result.current.language).toBe('jp')
   })
 
   it('prefers the URL over a stored preference', () => {

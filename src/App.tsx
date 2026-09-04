@@ -1,10 +1,15 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useBanzuke } from './hooks/useBanzuke'
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
+import { clearUrlParam, useUrlParam } from './hooks/useUrlState'
+import { useStrings } from './i18n/useStrings'
+import { buildSearchIndex, filterRikishi } from './utils/search'
 import { Hero } from './components/Hero/Hero'
+import { SearchBar } from './components/SearchBar/SearchBar'
 import { BanzukeGrid, BanzukeGridSkeleton } from './components/BanzukeGrid/BanzukeGrid'
 import { WrestlerModal } from './components/WrestlerModal/WrestlerModal'
+import { ShortcutsHelp } from './components/ShortcutsHelp/ShortcutsHelp'
 import { Footer } from './components/Footer/Footer'
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary'
 import { ScrollToTop } from './components/ScrollToTop/ScrollToTop'
@@ -23,93 +28,99 @@ function App() {
 
 const EMPTY: Rikishi[] = []
 
-/** Case-insensitive substring match across names, readings, stables and regions. */
-function matchesQuery(rikishi: Rikishi, query: string): boolean {
-  const q = query.toLowerCase()
-  const haystack = [
-    rikishi.shikona.en,
-    rikishi.shikona.jp,
-    rikishi.reading ?? '',
-    rikishi.heya.en,
-    rikishi.heya.jp,
-    rikishi.pref.en,
-    rikishi.pref.jp,
-  ]
-  return haystack.some((value) => value.toLowerCase().includes(q))
-}
-
 function AppContent() {
-  const { data, loading, error } = useBanzuke()
+  const { data, status, problem } = useBanzuke()
   const { language, setLanguage } = useLanguage()
-  const [selectedRikishi, setSelectedRikishi] = useState<Rikishi | null>(null)
-  const [searchQuery, setSearchQuery] = useState('')
+  const strings = useStrings()
+  const [searchQuery, setSearchQuery] = useUrlParam('q')
+  const [selectedId, setSelectedId] = useUrlParam('rikishi', 'push')
+  const [helpOpen, setHelpOpen] = useState(false)
 
-  const handleSelectRikishi = useCallback((rikishi: Rikishi) => {
-    setSelectedRikishi(rikishi)
-  }, [])
+  const allRows = data?.rikishi ?? EMPTY
+  const query = searchQuery ?? ''
+  const index = useMemo(() => buildSearchIndex(allRows), [allRows])
+  const filteredRows = useMemo(() => filterRikishi(index, query), [index, query])
+  const isFiltering = query.trim().length > 0
 
-  const handleCloseModal = useCallback(() => {
-    setSelectedRikishi(null)
-  }, [])
+  const selectedRikishi = useMemo(
+    () => (selectedId ? (allRows.find((r) => String(r.id) === selectedId) ?? null) : null),
+    [allRows, selectedId]
+  )
 
-  const handleClearSearch = useCallback(() => {
-    setSearchQuery('')
-  }, [])
+  const handleSelectRikishi = useCallback(
+    (rikishi: Rikishi) => setSelectedId(String(rikishi.id)),
+    [setSelectedId]
+  )
+
+  // Undo the pushed entry (or replace a deep link) so Back never reopens it.
+  const handleCloseModal = useCallback(() => clearUrlParam('rikishi'), [])
+
+  const handleClearSearch = useCallback(() => setSearchQuery(null), [setSearchQuery])
 
   const handleToggleLanguage = useCallback(() => {
     setLanguage(language === 'en' ? 'jp' : 'en')
   }, [language, setLanguage])
 
   const handleFocusSearch = useCallback(() => {
-    const input = document.querySelector('[data-search-input]') as HTMLInputElement
+    const input = document.querySelector<HTMLInputElement>('[data-search-input]')
     input?.focus()
+    input?.select()
   }, [])
 
   const handleEscape = useCallback(() => {
-    if (selectedRikishi) {
-      setSelectedRikishi(null)
-    } else if (searchQuery) {
-      setSearchQuery('')
-    }
-  }, [selectedRikishi, searchQuery])
+    // The native <dialog> closes itself on Escape and reports through onClose.
+    if (selectedRikishi) return
+    if (helpOpen) setHelpOpen(false)
+    else if (query) setSearchQuery(null)
+  }, [selectedRikishi, helpOpen, query, setSearchQuery])
+
+  const handleToggleHelp = useCallback(() => setHelpOpen((open) => !open), [])
 
   useKeyboardShortcuts({
     onToggleLanguage: handleToggleLanguage,
     onFocusSearch: handleFocusSearch,
     onEscape: handleEscape,
+    onToggleHelp: handleToggleHelp,
   })
 
-  const allRows = data?.rikishi ?? EMPTY
-  const trimmedQuery = searchQuery.trim()
-  const filteredRows = useMemo(
-    () => (trimmedQuery ? allRows.filter((r) => matchesQuery(r, trimmedQuery)) : allRows),
-    [allRows, trimmedQuery]
-  )
+  useEffect(() => {
+    const bashoName = data ? data.basho.name[language] || data.basho.name.en : ''
+    document.title = bashoName ? `${strings.appTitle} · ${bashoName}` : strings.appTitle
+  }, [data, language, strings.appTitle])
+
+  const problemMessage =
+    problem === 'sample'
+      ? strings.errorSample
+      : problem === 'stale'
+        ? strings.errorStale
+        : problem === 'unavailable'
+          ? strings.errorNone
+          : null
 
   return (
     <>
       <a href="#main" className="skip-link" data-print="hide">
-        Skip to the banzuke
+        {strings.skipLink}
       </a>
       <Hero data={data} />
       <main id="main" tabIndex={-1}>
         {data && allRows.length > 0 && (
           <SearchBar
-            query={searchQuery}
-            onQueryChange={setSearchQuery}
+            value={query}
+            onChange={(value) => setSearchQuery(value || null)}
             totalCount={allRows.length}
-            filteredCount={trimmedQuery ? filteredRows.length : 0}
+            matchedCount={filteredRows.length}
           />
         )}
-        {loading && !data && <BanzukeGridSkeleton />}
-        {error && !data && (
+        {status === 'loading' && <BanzukeGridSkeleton />}
+        {problemMessage && !data && (
           <div role="alert" className={`${styles.status} ${styles.error}`}>
-            {error}
+            {problemMessage}
           </div>
         )}
-        {error && data && (
+        {problemMessage && data && (
           <div role="status" className={`${styles.status} ${styles.warning}`}>
-            {error}
+            {problemMessage}
           </div>
         )}
         {data && (
@@ -117,79 +128,17 @@ function AppContent() {
             <BanzukeGrid
               rows={filteredRows}
               onSelectRikishi={handleSelectRikishi}
-              emptyReason={trimmedQuery ? 'no-matches' : 'no-data'}
+              emptyReason={isFiltering ? 'no-matches' : 'no-data'}
               onClearSearch={handleClearSearch}
             />
           </ErrorBoundary>
         )}
+        {data && <ShortcutsHelp open={helpOpen} onToggle={setHelpOpen} />}
       </main>
       <Footer />
       <ScrollToTop />
       <WrestlerModal rikishi={selectedRikishi} onClose={handleCloseModal} />
     </>
-  )
-}
-
-function SearchBar({
-  query,
-  onQueryChange,
-  totalCount,
-  filteredCount,
-}: {
-  query: string
-  onQueryChange: (q: string) => void
-  totalCount: number
-  filteredCount: number
-}) {
-  const isFiltering = query.trim().length > 0
-
-  return (
-    <div className={styles.searchBar} role="search" data-print="hide">
-      <div className={styles.searchInputWrapper}>
-        <svg
-          className={styles.searchIcon}
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          aria-hidden="true"
-        >
-          <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
-          <path d="M16 16l4.5 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        </svg>
-        <input
-          type="search"
-          className={styles.searchInput}
-          placeholder="Search wrestlers, stables, or regions..."
-          value={query}
-          onChange={(e) => onQueryChange(e.target.value)}
-          aria-label="Search wrestlers"
-          aria-keyshortcuts="/"
-          autoComplete="off"
-          data-search-input
-        />
-        {isFiltering && (
-          <button
-            className={styles.searchClear}
-            onClick={() => onQueryChange('')}
-            type="button"
-            aria-label="Clear search"
-          >
-            <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <path
-                d="M15 5L5 15M5 5l10 10"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
-        )}
-      </div>
-      <span className={styles.searchCount} role="status" aria-live="polite">
-        {isFiltering ? `${filteredCount} of ${totalCount} wrestlers` : ''}
-      </span>
-    </div>
   )
 }
 

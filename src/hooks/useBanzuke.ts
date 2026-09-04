@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useReducer } from 'react'
 import type { Banzuke, DataSource } from '../types/banzuke'
 import { validateSnapshot } from '../data/schema'
 import { normalizeSnapshot } from '../data/normalize'
@@ -8,11 +8,51 @@ const DATA_URL = `${import.meta.env.BASE_URL}latest-banzuke.json`
 const SAMPLE_URL = `${import.meta.env.BASE_URL}sample-data.json`
 const MAX_RETRIES = 3
 const RETRY_DELAY_MS = 1000
+/** localStorage key for the last good banzuke; bump when the model changes. */
+export const CACHE_KEY = 'banzuke:v2:makuuchi'
 
-interface UseBanzukeResult {
+/**
+ * What went wrong, if anything. The UI turns these into localized messages.
+ * - sample: live data failed, the bundled sample is shown
+ * - stale: live data failed, the last saved copy is shown
+ * - unavailable: nothing could be loaded
+ */
+export type DataProblem = 'sample' | 'stale' | 'unavailable'
+
+export interface BanzukeState {
+  status: 'loading' | 'ready' | 'error'
   data: Banzuke | null
-  loading: boolean
-  error: string | null
+  /** True while a saved copy is displayed and a fresh fetch is in flight. */
+  refreshing: boolean
+  problem: DataProblem | null
+}
+
+type Action =
+  | { type: 'cached'; data: Banzuke }
+  | { type: 'loaded'; data: Banzuke }
+  | { type: 'sample'; data: Banzuke }
+  | { type: 'failed' }
+
+function reducer(state: BanzukeState, action: Action): BanzukeState {
+  switch (action.type) {
+    case 'cached':
+      return { status: 'ready', data: action.data, refreshing: true, problem: null }
+    case 'loaded':
+      return { status: 'ready', data: action.data, refreshing: false, problem: null }
+    case 'sample':
+      return { status: 'ready', data: action.data, refreshing: false, problem: 'sample' }
+    case 'failed':
+      return state.data
+        ? { ...state, refreshing: false, problem: 'stale' }
+        : { status: 'error', data: null, refreshing: false, problem: 'unavailable' }
+  }
+}
+
+const initialState: BanzukeState = {
+  status: 'loading',
+  data: null,
+  refreshing: false,
+  problem: null,
 }
 
 /** Error types for more specific error handling */
@@ -31,30 +71,10 @@ class BanzukeError extends Error {
   }
 }
 
-/**
- * Converts an error to a user-friendly message with context.
- */
-function getErrorMessage(err: unknown): string {
-  if (err instanceof BanzukeError) {
-    switch (err.type) {
-      case 'network':
-        return 'Network error: Unable to connect. Check your internet connection.'
-      case 'http':
-        return `Server error: ${err.message}`
-      case 'parse':
-        return 'Data error: The server returned invalid data format.'
-      case 'validation':
-        return `Data error: ${err.message}`
-      case 'abort':
-        return 'Request was cancelled.'
-      default:
-        return err.message
-    }
-  }
-  if (err instanceof Error) {
-    return err.message
-  }
-  return 'An unexpected error occurred.'
+function describeError(err: unknown): string {
+  if (err instanceof BanzukeError) return `${err.type}: ${err.message}`
+  if (err instanceof Error) return err.message
+  return String(err)
 }
 
 /**
@@ -123,7 +143,7 @@ async function loadSnapshot(
   signal: AbortSignal,
   retries = MAX_RETRIES
 ): Promise<Banzuke> {
-  const response = await fetchWithRetry(url, { cache: 'no-store', signal }, retries)
+  const response = await fetchWithRetry(url, { signal }, retries)
 
   let parsed: unknown
   try {
@@ -148,50 +168,79 @@ function isAbort(err: unknown): boolean {
   return err instanceof BanzukeError && err.type === 'abort'
 }
 
-export function useBanzuke(): UseBanzukeResult {
-  const [data, setData] = useState<Banzuke | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+/** The last good live banzuke saved in this browser, if any. */
+export function readCachedBanzuke(): Banzuke | null {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY)
+    if (!raw) return null
+    const parsed: unknown = JSON.parse(raw)
+    if (
+      parsed &&
+      typeof parsed === 'object' &&
+      Array.isArray((parsed as Banzuke).rikishi) &&
+      (parsed as Banzuke).rikishi.length > 0 &&
+      typeof (parsed as Banzuke).basho === 'object' &&
+      typeof (parsed as Banzuke).fetchedAt === 'string'
+    ) {
+      return parsed as Banzuke
+    }
+  } catch {
+    // Unavailable or corrupt storage: behave as if nothing was cached.
+  }
+  return null
+}
+
+function writeCachedBanzuke(banzuke: Banzuke): void {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(banzuke))
+  } catch {
+    // Quota or privacy mode: caching is best effort.
+  }
+}
+
+/**
+ * Loads the banzuke. Shows the last saved copy immediately when there is
+ * one, then refreshes from the live snapshot; falls back to the bundled
+ * sample when nothing else is available.
+ */
+export function useBanzuke(): BanzukeState {
+  const [state, dispatch] = useReducer(reducer, initialState)
 
   useEffect(() => {
     let cancelled = false
     const controller = new AbortController()
 
-    async function loadBanzuke() {
-      setLoading(true)
-      setError(null)
+    const cached = readCachedBanzuke()
+    if (cached) dispatch({ type: 'cached', data: cached })
 
+    async function load() {
       try {
-        const banzuke = await loadSnapshot(DATA_URL, 'live', controller.signal)
-        if (!cancelled) {
-          setData(banzuke)
-          setLoading(false)
-        }
+        const live = await loadSnapshot(DATA_URL, 'live', controller.signal)
+        if (cancelled) return
+        writeCachedBanzuke(live)
+        dispatch({ type: 'loaded', data: live })
+        return
       } catch (err) {
         if (isAbort(err)) return
-        console.warn('Static snapshot load failed:', getErrorMessage(err), err)
+        console.warn('Live banzuke unavailable:', describeError(err))
+      }
 
-        try {
-          const sample = await loadSnapshot(SAMPLE_URL, 'sample', controller.signal, 1)
-          if (!cancelled) {
-            setData(sample)
-            setError('Live data unavailable. Showing bundled sample data.')
-            setLoading(false)
-          }
-        } catch (fallbackErr) {
-          if (isAbort(fallbackErr)) return
-          console.error('Unable to load bundled sample data:', getErrorMessage(fallbackErr))
-          if (!cancelled) {
-            setError(
-              'Could not load the banzuke. Please check your connection and refresh to try again.'
-            )
-            setLoading(false)
-          }
-        }
+      if (cached) {
+        if (!cancelled) dispatch({ type: 'failed' })
+        return
+      }
+
+      try {
+        const sample = await loadSnapshot(SAMPLE_URL, 'sample', controller.signal, 1)
+        if (!cancelled) dispatch({ type: 'sample', data: sample })
+      } catch (err) {
+        if (isAbort(err)) return
+        console.error('Bundled sample data unavailable:', describeError(err))
+        if (!cancelled) dispatch({ type: 'failed' })
       }
     }
 
-    loadBanzuke()
+    load()
 
     return () => {
       cancelled = true
@@ -199,5 +248,5 @@ export function useBanzuke(): UseBanzukeResult {
     }
   }, [])
 
-  return { data, loading, error }
+  return state
 }

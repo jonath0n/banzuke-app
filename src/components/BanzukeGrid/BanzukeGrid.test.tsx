@@ -53,7 +53,7 @@ describe('BanzukeGrid', () => {
     const onClearSearch = vi.fn()
     renderGrid(<BanzukeGrid rows={[]} emptyReason="no-matches" onClearSearch={onClearSearch} />)
     expect(screen.getByRole('status')).toHaveTextContent('No wrestlers match your search.')
-    await user.click(screen.getByRole('button', { name: 'Clear search' }))
+    await user.click(screen.getByRole('button', { name: 'Show all wrestlers' }))
     expect(onClearSearch).toHaveBeenCalled()
   })
 
@@ -63,7 +63,7 @@ describe('BanzukeGrid', () => {
   })
 
   it('announces loading', () => {
-    render(<BanzukeGridSkeleton />)
+    renderGrid(<BanzukeGridSkeleton />)
     expect(screen.getByRole('status')).toHaveTextContent('Loading the banzuke')
   })
 })

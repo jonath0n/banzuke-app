@@ -2,6 +2,7 @@ import type { RankGroup, RankLevel, Rikishi } from '../../types/banzuke'
 import { groupRowsByRank } from '../../utils/formatting'
 import { RANK_LEVEL_NAMES, RANK_LEVEL_KANJI } from '../../constants/ranks'
 import { RankRow } from '../RankRow/RankRow'
+import { useStrings } from '../../i18n/useStrings'
 import styles from './BanzukeGrid.module.css'
 
 interface BanzukeGridProps {
@@ -43,9 +44,10 @@ function SkeletonRow({ index }: { index: number }) {
 
 /** Loading skeleton for the banzuke grid */
 export function BanzukeGridSkeleton() {
+  const strings = useStrings()
   return (
     <div className={styles['skeleton-grid']} role="status" aria-busy="true">
-      <span className="visually-hidden">Loading the banzuke…</span>
+      <span className="visually-hidden">{strings.loading}</span>
       {Array.from({ length: SKELETON_ROW_COUNT }, (_, i) => (
         <SkeletonRow key={i} index={i} aria-hidden="true" />
       ))}
@@ -79,6 +81,7 @@ function EmptyState({
   reason: 'no-data' | 'no-matches'
   onClearSearch?: () => void
 }) {
+  const strings = useStrings()
   return (
     <div role="status" className={styles.emptyState}>
       <div className={styles.emptyIcon} aria-hidden="true">
@@ -96,18 +99,18 @@ function EmptyState({
       </div>
       {reason === 'no-matches' ? (
         <>
-          <p>No wrestlers match your search.</p>
-          <p className={styles.emptyHint}>Try a ring name, stable, or region in either language.</p>
+          <p>{strings.noMatches}</p>
+          <p className={styles.emptyHint}>{strings.noMatchesHint}</p>
           {onClearSearch && (
             <button type="button" className={styles.emptyAction} onClick={onClearSearch}>
-              Clear search
+              {strings.showAll}
             </button>
           )}
         </>
       ) : (
         <>
-          <p>No rikishi available right now.</p>
-          <p className={styles.emptyHint}>Check back when the next banzuke is announced.</p>
+          <p>{strings.noData}</p>
+          <p className={styles.emptyHint}>{strings.noDataHint}</p>
         </>
       )}
     </div>

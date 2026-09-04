@@ -4,6 +4,7 @@ import { useLanguage } from '../../contexts/LanguageContext'
 import { buildPhotoUrl } from '../../utils/formatting'
 import { describePromotion } from '../../utils/promotion'
 import { SIDE_KANJI } from '../../data/kanji'
+import { useStrings } from '../../i18n/useStrings'
 import styles from './SideCell.module.css'
 
 /** Intrinsic size hint for wrestler avatars (the CSS size is a token). */
@@ -31,6 +32,7 @@ function getDisplayName(rikishi: Rikishi | null, language: Language): string {
 
 function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0, onSelect }: SideCellProps) {
   const { language } = useLanguage()
+  const strings = useStrings()
   const [imageState, setImageState] = useState<'pending' | 'loaded' | 'error'>('pending')
   const isEast = side === 'east'
 
@@ -131,7 +133,7 @@ function SideCellInner({ rikishi, side, rankLevel, rowIndex = 0, onSelect }: Sid
         data-side={side}
         data-rank-level={rankLevel}
         onClick={() => onSelect(rikishi)}
-        aria-label={`${displayName}, ${isEast ? 'East' : 'West'}. View details`}
+        aria-label={`${displayName}, ${strings.side[side]}. ${strings.viewDetails}`}
       >
         {content}
       </button>

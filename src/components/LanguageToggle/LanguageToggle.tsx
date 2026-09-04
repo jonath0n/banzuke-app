@@ -1,4 +1,5 @@
 import type { Language } from '../../types/banzuke'
+import { useStrings } from '../../i18n/useStrings'
 import styles from './LanguageToggle.module.css'
 
 interface LanguageToggleProps {
@@ -8,12 +9,13 @@ interface LanguageToggleProps {
 
 export function LanguageToggle({ language, onLanguageChange }: LanguageToggleProps) {
   const isEnglish = language === 'en'
+  const strings = useStrings()
 
   return (
     <div
       className={styles.toggle}
       role="group"
-      aria-label="Language selection"
+      aria-label={strings.languageGroup}
       aria-keyshortcuts="l"
       data-print="hide"
     >

@@ -30,6 +30,7 @@ describe('Hero', () => {
     expect(screen.getByText('September Grand Sumo Tournament (Makuuchi)')).toBeInTheDocument()
     expect(screen.getByText(/Sep 13\s*[–-]\s*27, 2026/)).toBeInTheDocument()
     expect(screen.getByText(/Aug 31, 2026,? 6:00\sAM JST/)).toBeInTheDocument()
+    expect(screen.getByText('Ryogoku Kokugikan, Tokyo')).toBeInTheDocument()
   })
 
   it('shows a countdown before the tournament', () => {
@@ -51,6 +52,8 @@ describe('Hero', () => {
     renderHero('2026-09-01T12:00:00Z', 'jp')
     expect(screen.getByText('九月場所 (幕内)')).toBeInTheDocument()
     expect(screen.getByText(/2026年9月13日/)).toBeInTheDocument()
+    expect(screen.getByText('初日まであと12日')).toBeInTheDocument()
+    expect(screen.getByText('両国国技館（東京）')).toBeInTheDocument()
   })
 
   it('renders placeholders without data', () => {
@@ -59,6 +62,6 @@ describe('Hero', () => {
         <Hero data={null} />
       </LanguageProvider>
     )
-    expect(screen.getAllByText('—')).toHaveLength(3)
+    expect(screen.getAllByText('—')).toHaveLength(4)
   })
 })
