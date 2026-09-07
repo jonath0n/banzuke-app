@@ -43,7 +43,7 @@ function renderSheet(props: Partial<Parameters<typeof BanzukeSheet>[0]> = {}) {
 describe('BanzukeSheet', () => {
   it('reads each half from its highest rank down, East half first', () => {
     const { container } = renderSheet({ onSelectRikishi: vi.fn() })
-    const columns = [...container.querySelectorAll('[data-side]')]
+    const columns = [...container.querySelectorAll('button[data-side]')]
 
     expect(columns.map((c) => c.getAttribute('data-side'))).toEqual([
       'east',
@@ -90,7 +90,7 @@ describe('BanzukeSheet', () => {
       onSelectRikishi: vi.fn(),
       highlight: new Set([yokozunaEast.id]),
     })
-    const columns = [...container.querySelectorAll('[data-side]')]
+    const columns = [...container.querySelectorAll('button[data-side]')]
     expect(columns).toHaveLength(2)
     expect(columns[0]).not.toHaveAttribute('data-dimmed')
     expect(columns[1]).toHaveAttribute('data-dimmed')
@@ -150,5 +150,32 @@ describe('BanzukeSheet', () => {
     expect(onosato).toHaveTextContent('10–2')
     expect(onosato).toHaveTextContent('優')
     expect(screen.getByRole('button', { name: /Hoshoryu/ })).not.toHaveAccessibleName(/wins/)
+  })
+
+  it('moves focus with the arrow keys and lights the partner', async () => {
+    const user = userEvent.setup()
+    const { container } = renderSheet({ onSelectRikishi: vi.fn() })
+    const onosato = screen.getByRole('button', { name: /Onosato/ })
+    const hoshoryu = screen.getByRole('button', { name: /Hoshoryu/ })
+    const atamifuji = screen.getByRole('button', { name: /Atamifuji/ })
+    expect(onosato).toHaveAttribute('data-pair', '100-1-1')
+    expect(onosato).toHaveAttribute('data-id', '1')
+
+    onosato.focus()
+    // Focus lights the partner across the halves, never the focused column itself
+    expect(hoshoryu).toHaveAttribute('data-lit')
+    expect(onosato).not.toHaveAttribute('data-lit')
+
+    await user.keyboard('{ArrowLeft}')
+    expect(atamifuji).toHaveFocus()
+    await user.keyboard('{ArrowDown}')
+    expect(screen.getByRole('button', { name: /Takayasu/ })).toHaveFocus()
+    await user.keyboard('{Home}')
+    expect(hoshoryu).toHaveFocus()
+
+    await user.hover(atamifuji)
+    expect(screen.getByRole('button', { name: /Takayasu/ })).toHaveAttribute('data-lit')
+    await user.unhover(atamifuji)
+    expect(container.querySelectorAll('[data-lit]')).toHaveLength(1) // focus still on Hoshoryu → Onosato lit
   })
 })

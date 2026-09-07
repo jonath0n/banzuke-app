@@ -1,3 +1,5 @@
+import { memo, useCallback, useState } from 'react'
+import { flushSync } from 'react-dom'
 import type { Division, RankGroup, Rikishi, Side } from '../../types/banzuke'
 import { groupRowsByRank } from '../../utils/formatting'
 import { shortPrefecture, SIDE_KANJI, toKanjiNumber } from '../../data/kanji'
@@ -9,6 +11,7 @@ import { describeMovement, type Movement } from '../../utils/diff'
 import { MovementBadge } from '../MovementBadge/MovementBadge'
 import { describeRecord, type RikishiRecord } from '../../data/results'
 import { Hoshitori } from '../Hoshitori/Hoshitori'
+import { handleRovingKey } from '../../utils/rovingFocus'
 import styles from './BanzukeSheet.module.css'
 
 interface BanzukeSheetProps {
@@ -39,6 +42,18 @@ const SANYAKU_SCALE: Record<string, number> = {
 
 const NUMBERED_SCALE = { top: 1.45, bottom: 0.95 }
 
+interface PairRef {
+  pair: string
+  side: string
+}
+
+const refOf = (target: EventTarget | null): PairRef | null => {
+  const el = (target as HTMLElement | null)?.closest<HTMLElement>('[data-pair]')
+  return el?.dataset.pair && el.dataset.side
+    ? { pair: el.dataset.pair, side: el.dataset.side }
+    : null
+}
+
 function columnScale(rikishi: Rikishi, lowestNumber: number): number {
   const fixed = SANYAKU_SCALE[rikishi.rankLevel]
   if (fixed) return fixed
@@ -57,7 +72,7 @@ function visibleGroups(groups: RankGroup[], highlight?: Set<number> | null): Ran
   )
 }
 
-function Column({
+const Column = memo(function Column({
   rikishi,
   scale,
   onSelect,
@@ -65,6 +80,8 @@ function Column({
   movement,
   record,
   champion,
+  pairKey,
+  lit,
 }: {
   rikishi: Rikishi
   scale: number
@@ -73,6 +90,8 @@ function Column({
   movement: Movement | null
   record: RikishiRecord | null
   champion: boolean
+  pairKey: string
+  lit: boolean
 }) {
   const { language } = useLanguage()
   const strings = useStrings()
@@ -127,8 +146,12 @@ function Column({
       <div
         className={styles.column}
         style={style}
+        data-id={rikishi.id}
+        data-pair={pairKey}
+        data-side={rikishi.side}
         data-rank-level={rikishi.rankLevel}
         data-dimmed={dimmed || undefined}
+        data-lit={lit || undefined}
       >
         {content}
       </div>
@@ -140,16 +163,19 @@ function Column({
       type="button"
       className={`${styles.column} ${styles.clickable}`}
       style={style}
+      data-id={rikishi.id}
+      data-pair={pairKey}
       data-side={rikishi.side}
       data-rank-level={rikishi.rankLevel}
       data-dimmed={dimmed || undefined}
+      data-lit={lit || undefined}
       onClick={() => onSelect(rikishi)}
       aria-label={label}
     >
       {content}
     </button>
   )
-}
+})
 
 /**
  * The banzuke as it is printed. Each half is headed 東 or 西 and read right to
@@ -176,6 +202,12 @@ export function BanzukeSheet({
   const { language } = useLanguage()
   const groups = visibleGroups(groupRowsByRank(rows), highlight)
   const championIds = new Set(Object.values(champions ?? {}))
+  const [hover, setHover] = useState<PairRef | null>(null)
+  const [focus, setFocus] = useState<PairRef | null>(null)
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => handleRovingKey(e.currentTarget, e, 'sheet'),
+    []
+  )
 
   // The lowest numbered rank on this sheet sets the bottom of the size ladder.
   const lowestNumber = rows.reduce(
@@ -185,11 +217,13 @@ export function BanzukeSheet({
 
   const isDimmed = (rikishi: Rikishi) => Boolean(highlight && !highlight.has(rikishi.id))
 
+  const active = hover ?? focus
+
   const half = (side: Side) => {
-    const wrestlers = groups
-      .map((group) => group[side])
-      .filter((rikishi): rikishi is Rikishi => rikishi !== null)
-    if (wrestlers.length === 0) return null
+    const entries = groups.flatMap((group) =>
+      group[side] ? [{ group, rikishi: group[side]! }] : []
+    )
+    if (entries.length === 0) return null
     // A group, not the landmark a named <section> would otherwise become:
     // these are the two halves of one sheet, not two regions of the page.
     return (
@@ -199,7 +233,7 @@ export function BanzukeSheet({
           {SIDE_KANJI[side]}
         </p>
         <div className={styles.bands}>
-          {wrestlers.map((rikishi) => (
+          {entries.map(({ group, rikishi }) => (
             <Column
               key={rikishi.id}
               rikishi={rikishi}
@@ -209,6 +243,8 @@ export function BanzukeSheet({
               movement={movements?.get(rikishi.id) ?? null}
               record={records?.[String(rikishi.id)] ?? null}
               champion={championIds.has(rikishi.id)}
+              pairKey={group.key}
+              lit={active !== null && active.pair === group.key && active.side !== rikishi.side}
             />
           ))}
         </div>
@@ -218,7 +254,19 @@ export function BanzukeSheet({
 
   return (
     <div className={styles.sheet} lang={langAttr(language)}>
-      <div className={styles.paper} role="group" aria-label={strings.sheetLabel}>
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions --
+          event delegation for the buttons inside */}
+      <div
+        className={styles.paper}
+        role="group"
+        aria-label={strings.sheetLabel}
+        onPointerOver={(e) => flushSync(() => setHover(refOf(e.target)))}
+        onPointerOut={(e) => flushSync(() => setHover(refOf(e.relatedTarget)))}
+        onPointerLeave={() => flushSync(() => setHover(null))}
+        onFocus={(e) => flushSync(() => setFocus(refOf(e.target)))}
+        onBlur={(e) => flushSync(() => setFocus(refOf(e.relatedTarget)))}
+        onKeyDown={handleKeyDown}
+      >
         {half('east')}
         {half('west')}
       </div>
