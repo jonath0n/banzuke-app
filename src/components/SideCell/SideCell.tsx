@@ -24,6 +24,8 @@ interface SideCellProps {
   record?: RikishiRecord | null
   /** Tournament champion, once decided. */
   champion?: boolean
+  /** Pair key for keyboard navigation (shared by east/west partners). */
+  pairKey?: string
 }
 
 /** Gets the display name for a rikishi based on current language */
@@ -47,6 +49,7 @@ function SideCellInner({
   movement = null,
   record = null,
   champion = false,
+  pairKey,
 }: SideCellProps) {
   const { language } = useLanguage()
   const strings = useStrings()
@@ -113,6 +116,8 @@ function SideCellInner({
         data-side={side}
         data-rank-level={rankLevel}
         data-dimmed={dimmed || undefined}
+        data-id={rikishi.id}
+        data-pair={pairKey}
         onClick={() => onSelect(rikishi)}
         aria-label={label}
       >
@@ -127,6 +132,7 @@ function SideCellInner({
       data-side={side}
       data-rank-level={rankLevel}
       data-dimmed={dimmed || undefined}
+      data-pair={pairKey}
     >
       {content}
     </div>
