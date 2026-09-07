@@ -36,9 +36,14 @@ jobs:
       changed: ${{ steps.fetch.outputs.changed }}
       basho_id: ${{ steps.fetch.outputs.basho_id }}
     steps:
+      # Checked out over SSH with the deploy key so the data commit below can
+      # push to main past the "changes via pull request" ruleset, which the
+      # default GITHUB_TOKEN cannot (deploy keys are the only bypass actor a
+      # personal repo allows).
       - uses: actions/checkout@v4
         with:
           ref: main
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
 
       - uses: actions/setup-node@v4
         with:

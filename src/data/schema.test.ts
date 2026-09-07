@@ -238,4 +238,33 @@ describe('snapshotsEqualIgnoringFetchedAt', () => {
     const b = makeRawSnapshot({ divisions: { makuuchi: makeRawDivision() } })
     expect(snapshotsEqualIgnoringFetchedAt(a, b)).toBe(false)
   })
+
+  it('ignores the JSA fields that change every day regardless of the banzuke', () => {
+    const a = makeRawSnapshot()
+    const b = structuredClone(a)
+    for (const division of ['makuuchi', 'juryo'] as const) {
+      for (const lang of ['en', 'jp'] as const) {
+        const info = (b.divisions[division] as RawDivisionSnapshot).payloads[lang].BashoInfo
+        info.today = '2026-09-07'
+        info.JpDate = '令和8年9月20日(日)'
+        info.BattleNow = 7
+        info.day = '7'
+      }
+    }
+    expect(snapshotsEqualIgnoringFetchedAt(a, b)).toBe(true)
+  })
+
+  it('detects a changed start_date as a real change', () => {
+    const a = makeRawSnapshot()
+    const b = structuredClone(a)
+    b.divisions.makuuchi.payloads.en.BashoInfo.start_date = '2026-09-14'
+    expect(snapshotsEqualIgnoringFetchedAt(a, b)).toBe(false)
+  })
+
+  it('detects a changed shikona as a real change', () => {
+    const a = makeRawSnapshot()
+    const b = structuredClone(a)
+    b.divisions.makuuchi.payloads.en.BanzukeTable[0].shikona = 'Someone'
+    expect(snapshotsEqualIgnoringFetchedAt(a, b)).toBe(false)
+  })
 })
