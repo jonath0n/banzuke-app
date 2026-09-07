@@ -122,6 +122,8 @@ jobs:
           name: banzuke-data
           path: .data/
           retention-days: 7
+          # .data/ is a dot-directory; upload-artifact@v4 skips hidden paths unless told otherwise
+          include-hidden-files: true
 
   build:
     name: Build site
