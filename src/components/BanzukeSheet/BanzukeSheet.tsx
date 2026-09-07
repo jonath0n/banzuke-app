@@ -11,6 +11,7 @@ import { MovementBadge } from '../MovementBadge/MovementBadge'
 import { describeRecord, type RikishiRecord } from '../../data/results'
 import { Hoshitori } from '../Hoshitori/Hoshitori'
 import { handleRovingKey } from '../../utils/rovingFocus'
+import type { Guide, GuideZone } from '../../utils/guide'
 import styles from './BanzukeSheet.module.css'
 
 interface BanzukeSheetProps {
@@ -25,7 +26,12 @@ interface BanzukeSheetProps {
   records?: Record<string, RikishiRecord> | null
   /** Tournament champion per division, once decided. */
   champions?: Partial<Record<Division, number>>
+  /** Guided-tour marks to overlay, or null/undefined when the guide is off. */
+  guide?: Guide | null
 }
+
+/** Fixed rendering order for a column's marks, matching the bands top to bottom. */
+const ZONES: GuideZone[] = ['top', 'rank', 'numeral', 'origin', 'name', 'movement', 'record']
 
 /**
  * Character size at each rank, in rem. This is the sheet: a banzuke is
@@ -93,6 +99,7 @@ const Column = memo(function Column({
   champion,
   pairKey,
   lit,
+  marks,
 }: {
   rikishi: Rikishi
   scale: number
@@ -103,6 +110,7 @@ const Column = memo(function Column({
   champion: boolean
   pairKey: string
   lit: boolean
+  marks?: Partial<Record<GuideZone, number>>
 }) {
   const { language } = useLanguage()
   const strings = useStrings()
@@ -147,6 +155,12 @@ const Column = memo(function Column({
         {movement && <MovementBadge movement={movement} variant="sheet" />}
         {record && <Hoshitori record={record} variant="sheet" champion={champion} />}
       </span>
+      {marks &&
+        ZONES.filter((zone) => marks[zone] !== undefined).map((zone) => (
+          <span key={zone} className={styles.mark} data-zone={zone} aria-hidden="true">
+            {marks[zone]}
+          </span>
+        ))}
     </>
   )
 
@@ -208,11 +222,25 @@ export function BanzukeSheet({
   movements,
   records,
   champions,
+  guide,
 }: BanzukeSheetProps) {
   const strings = useStrings()
   const { language } = useLanguage()
   const groups = useMemo(() => visibleGroups(groupRowsByRank(rows), highlight), [rows, highlight])
   const championIds = useMemo(() => new Set(Object.values(champions ?? {})), [champions])
+  // Column is memoized, so marks objects must stay stable across renders that
+  // don't change the guide; build the per-wrestler lookup once here.
+  const marksById = useMemo(() => {
+    const map = new Map<number, Partial<Record<GuideZone, number>>>()
+    for (const mark of guide?.marks ?? []) {
+      if (mark.rikishiId === null) continue
+      const entry = map.get(mark.rikishiId) ?? {}
+      entry[mark.zone] = mark.n
+      map.set(mark.rikishiId, entry)
+    }
+    return map
+  }, [guide])
+  const sideMarkN = guide?.marks.find((m) => m.zone === 'sideMark')?.n
   const [hover, setHover] = useState<PairRef | null>(null)
   const [focus, setFocus] = useState<PairRef | null>(null)
   const handleKeyDown = useCallback(
@@ -246,6 +274,11 @@ export function BanzukeSheet({
         {/* 東 / 西 head their half from the top centre, as the sheet marks them */}
         <p className={styles.sideMark} lang="ja" aria-hidden="true">
           {SIDE_KANJI[side]}
+          {side === 'east' && sideMarkN && (
+            <span className={styles.mark} data-zone="sideMark" aria-hidden="true">
+              {sideMarkN}
+            </span>
+          )}
         </p>
         <div className={styles.bands}>
           {entries.map(({ group, rikishi }) => (
@@ -260,6 +293,7 @@ export function BanzukeSheet({
               champion={championIds.has(rikishi.id)}
               pairKey={group.key}
               lit={active !== null && active.pair === group.key && active.side !== rikishi.side}
+              marks={marksById.get(rikishi.id)}
             />
           ))}
         </div>

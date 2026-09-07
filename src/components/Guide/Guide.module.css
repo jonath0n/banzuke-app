@@ -1,0 +1,95 @@
+/* The guide: a quiet link in, a legend beneath the paper in the sheet's small hand */
+.link {
+  align-self: flex-end;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-names);
+  font-weight: 700;
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-underline-offset: 0.2em;
+}
+
+.link:hover {
+  color: var(--text);
+  text-decoration-color: var(--text);
+}
+
+.link:lang(ja) {
+  font-family: var(--font-jp-serif);
+  font-size: var(--text-sm);
+  text-transform: none;
+  letter-spacing: 0.1em;
+}
+
+.guide {
+  border-top: 1px solid var(--rule);
+  padding-top: var(--space-2);
+  margin-top: var(--space-5);
+}
+
+.heading {
+  font-size: var(--text-base);
+  font-weight: var(--label-weight);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: var(--space-3) 0 var(--space-2);
+}
+
+.heading:lang(ja) {
+  text-transform: none;
+  letter-spacing: 0.1em;
+}
+
+.intro {
+  max-width: 60ch;
+  font-size: var(--text-sm);
+  color: var(--text);
+  margin: 0 0 var(--space-3);
+}
+
+.list {
+  list-style: none;
+  display: grid;
+  gap: var(--space-2);
+  max-width: 60ch;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 1.2rem minmax(0, 1fr);
+  gap: var(--space-2);
+  align-items: start;
+  font-size: var(--text-sm);
+}
+
+/* The same circle as on the sheet */
+.mark {
+  display: inline-grid;
+  place-items: center;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-top: 0.1rem;
+  font-family: var(--font-names);
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text);
+  background: var(--card-bg);
+  border: 1px solid var(--text);
+  border-radius: 50%;
+}
+
+.text:lang(ja) {
+  line-height: 1.8;
+}
+
+.foot {
+  margin: var(--space-3) 0 0;
+}

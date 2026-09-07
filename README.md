@@ -8,7 +8,8 @@ which marks each name with the rank it held at the previous tournament and lists
 division. During a tournament **Results** lays the hoshitori over both views — each name's
 record, ○● on the List, kachi-koshi and the yusho — with the day's bouts and the leaders beneath
 the paper. Arrow keys move between wrestlers on the Sheet and the List; the wrestler dialog steps
-along the banzuke with ‹ › or ← →. Bilingual English/Japanese.
+along the banzuke with ‹ › or ← →. Not sure how to read it? `?guide=1` marks the real sheet with
+numbered notes and explains each beneath it, in English and Japanese. Bilingual English/Japanese.
 
 ## Project structure
 
@@ -29,6 +30,7 @@ src/
     SideCell/                  # Wrestler cell on a list row
     Hoshitori/                 # The star chart: score on the Sheet, ○●休 strip on the List
     ResultsToggle/             # Results on/off (on by default in season)
+    Guide/                     # ?guide=1: the legend beneath the paper and its link
     Bouts/                     # The day's card and the leaders, under the paper
     Footer/                    # Attribution
   data/
