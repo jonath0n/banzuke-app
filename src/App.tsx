@@ -8,7 +8,7 @@ import { diffBanzuke, type CurrentRow } from './utils/diff'
 import { getTournamentStatus } from './utils/dates'
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
-import { clearUrlParam, useUrlParam } from './hooks/useUrlState'
+import { clearUrlParam, setUrlParam, useUrlParam } from './hooks/useUrlState'
 import { useStrings } from './i18n/useStrings'
 import { buildSearchIndex, matchingIds } from './utils/search'
 import { formatYearMonth } from './utils/profile'
@@ -124,6 +124,23 @@ function AppContent() {
     const everyone = data.juryo ? [...data.makuuchi.rikishi, ...data.juryo.rikishi] : allRows
     return everyone.find((r) => String(r.id) === selectedId) ?? null
   }, [allRows, data, selectedId])
+
+  // Previous and next in banzuke order (East then West at each rank), within
+  // the selected wrestler's own division — the walk never crosses the Juryo line.
+  const neighbours = useMemo(() => {
+    if (!selectedRikishi || !data) return undefined
+    const rows = data.makuuchi.rikishi.includes(selectedRikishi)
+      ? data.makuuchi.rikishi
+      : (data.juryo?.rikishi ?? [])
+    const i = rows.indexOf(selectedRikishi)
+    return { previous: rows[i - 1] ?? null, next: rows[i + 1] ?? null }
+  }, [data, selectedRikishi])
+
+  // Stepping replaces the dialog's history entry, so Back still closes it in one step.
+  const handleStep = useCallback(
+    (rikishi: Rikishi) => setUrlParam('rikishi', String(rikishi.id), 'replace'),
+    []
+  )
 
   const counts = useMemo(
     () => ({
@@ -385,6 +402,8 @@ function AppContent() {
         rikishi={selectedRikishi}
         onClose={handleCloseModal}
         record={selectedRikishi ? (records?.[String(selectedRikishi.id)] ?? null) : null}
+        neighbours={neighbours}
+        onStep={handleStep}
       />
     </>
   )

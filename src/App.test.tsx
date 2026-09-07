@@ -276,4 +276,18 @@ describe('App', () => {
     expect(screen.queryByRole('button', { name: /Results/ })).toBeNull()
     expect(fetch).not.toHaveBeenCalledWith(expect.stringContaining('results/'))
   })
+
+  it('walks the banzuke from the dialog without growing the history', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.click(await screen.findByRole('button', { name: /Hoshoryu, East/ }))
+    const dialog = await screen.findByRole('dialog')
+    expect(dialog).toHaveAccessibleName('Hoshoryu')
+    const depth = window.history.length
+    await user.click(screen.getByRole('button', { name: 'Next: Onosato' }))
+    await waitFor(() => expect(dialog).toHaveAccessibleName('Onosato'))
+    expect(window.location.search).toBe('?rikishi=1001')
+    expect(window.history.length).toBe(depth)
+    expect(screen.queryByRole('button', { name: /Previous: Hoshoryu/ })).toBeInTheDocument()
+  })
 })
