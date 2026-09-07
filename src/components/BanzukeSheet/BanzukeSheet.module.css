@@ -118,9 +118,13 @@
   background: rgb(var(--ink-rgb) / 0.06);
 }
 
-/* Gold at the head of the Yokozuna column, the sheet's one rank hue */
+/* Gold at the head of the Yokozuna column, the sheet's one rank hue. The
+   rule sits above the column's box rather than inside it: a border would push
+   every band in this one column down by its own width, and the ranks, provinces
+   and names would no longer line up with the columns beside it. */
 .column[data-rank-level='yokozuna'] {
   border-top: 2px solid var(--gold);
+  margin-top: -2px;
 }
 
 /* The rank band: uniform, heavy, black — the sheet's top rule of characters */
