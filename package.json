@@ -12,6 +12,7 @@
     "subset-fonts": "tsx scripts/subset-fonts.ts",
     "make-sample": "tsx scripts/make-sample.ts",
     "archive-banzuke": "tsx scripts/archive-banzuke.ts",
+    "backfill-archive": "tsx scripts/backfill-archive.ts",
     "validate-data": "tsx scripts/validate-banzuke.ts public/latest-banzuke.json",
     "test": "vitest",
     "test:run": "vitest run",
