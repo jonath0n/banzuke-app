@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "fetch-remote": "tsx scripts/fetch-banzuke.ts",
     "fetch-profiles": "tsx scripts/fetch-profiles.ts",
+    "fetch-stables": "tsx scripts/fetch-stables.ts",
     "subset-fonts": "tsx scripts/subset-fonts.ts",
     "make-sample": "tsx scripts/make-sample.ts",
     "archive-banzuke": "tsx scripts/archive-banzuke.ts",

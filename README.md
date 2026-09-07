@@ -33,6 +33,7 @@ src/
     Hoshitori/                 # The star chart: score on the Sheet, ○●休 strip on the List
     ResultsToggle/             # Results on/off (on by default in season)
     Guide/                     # ?guide=1: the legend beneath the paper and its link
+    StableModal/               # ?heya=<id>: a stable, its master and its sekitori
     Bouts/                     # The day's card and the leaders, under the paper
     Footer/                    # Attribution
   data/
@@ -62,6 +63,7 @@ scripts/
   fetch-banzuke.ts             # Fetches + validates the latest data from sumo.or.jp
   validate-banzuke.ts          # Validates a snapshot file
   fetch-profiles.ts            # Scrapes wrestler profiles (height, weight, debut …)
+  fetch-stables.ts             # Scrapes each stable's master and address into public/stables.json
   subset-fonts.ts              # Builds the mincho subset from the snapshot + source
   make-sample.ts               # Derives sample-data.json from the live snapshot
   archive-banzuke.ts           # Adds the snapshot's tournament to public/banzuke/
@@ -109,10 +111,12 @@ A single workflow (`.github/workflows/deploy.yml`) runs on every push to `main`,
    them (both languages present, same tournament, same wrestlers, sane row counts).
 2. When the tournament data changed, archives it under `public/banzuke/` and regenerates the
    mincho subset (new wrestlers can bring new kanji). Wrestler profiles are checked on every
-   run and re-scraped only for wrestlers whose stored profile predates the current tournament.
+   run and re-scraped only for wrestlers whose stored profile predates the current tournament;
+   the stables on the sheet (`public/stables.json`: master, former ring name, address) follow
+   the same rule.
 3. During a tournament, fetches every wrestler's record, each day's bouts and the yusho from
    sumo-api.com into `public/results/`.
-4. Commits `public/latest-banzuke.json`, `public/rikishi-profiles.json`, the font files,
+4. Commits `public/latest-banzuke.json`, `public/rikishi-profiles.json`, `public/stables.json`, the font files,
    `public/banzuke/` and `public/results/` to `main` when any of them changed (a fresh fetch
    timestamp alone is not a change).
 5. Validates, tests and builds the site with the freshest valid data and deploys it to
@@ -153,6 +157,7 @@ by `nskId`. The browser never calls sumo-api.com; it reads only this file.
 npm run fetch-remote     # fetch, validate and write public/latest-banzuke.json
 npm run subset-fonts     # rebuild the mincho subset after the data (or source) gains new kanji
 npm run fetch-profiles   # scrape wrestler profiles into public/rikishi-profiles.json
+npm run fetch-stables    # scrape the stables on the sheet into public/stables.json
 npm run make-sample      # derive the labelled Makuuchi-only fallback from the live snapshot
 npm run validate-data    # validate the committed snapshot
 npm run archive-banzuke  # add the current snapshot's tournament to public/banzuke/

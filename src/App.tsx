@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useBanzuke } from './hooks/useBanzuke'
 import { loadProfiles } from './hooks/useProfiles'
+import { loadStables, useStableState } from './hooks/useStables'
+import { rosterFor } from './utils/stables'
 import { useArchiveIndex, useArchivedBanzuke } from './hooks/useArchive'
 import { useResults } from './hooks/useResults'
 import { previousEntry } from './data/archive'
@@ -9,7 +11,7 @@ import { buildGuide } from './utils/guide'
 import { getTournamentStatus } from './utils/dates'
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
-import { clearUrlParam, setUrlParam, useUrlParam } from './hooks/useUrlState'
+import { clearUrlParam, setUrlParam, setUrlParams, useUrlParam } from './hooks/useUrlState'
 import { useStrings } from './i18n/useStrings'
 import { buildSearchIndex, matchingIds } from './utils/search'
 import { formatYearMonth } from './utils/profile'
@@ -27,6 +29,7 @@ import { Guide, GuideLink } from './components/Guide/Guide'
 import { Departed } from './components/Departed/Departed'
 import { Bouts } from './components/Bouts/Bouts'
 import { WrestlerModal } from './components/WrestlerModal/WrestlerModal'
+import { StableModal } from './components/StableModal/StableModal'
 import { Footer } from './components/Footer/Footer'
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary'
 import { ScrollToTop } from './components/ScrollToTop/ScrollToTop'
@@ -64,6 +67,7 @@ function AppContent() {
   const [diffParam, setDiffParam] = useUrlParam('diff')
   const [resultsParam, setResultsParam] = useUrlParam('results')
   const [guideParam, setGuideParam] = useUrlParam('guide')
+  const [heyaParam] = useUrlParam('heya', 'push')
   const [boutsDay, setBoutsDay] = useState<number | null>(null)
   const [helpOpen, setHelpOpen] = useState(false)
   // Entrance animations play once, on the first sheet; later renders (tab
@@ -143,6 +147,47 @@ function AppContent() {
   const handleStep = useCallback(
     (rikishi: Rikishi) => setUrlParam('rikishi', String(rikishi.id), 'replace'),
     []
+  )
+
+  // The stable dialog. One dialog at a time: the wrestler wins when a URL
+  // carries both. Membership is read off the loaded set; the master comes from
+  // the optional stables file.
+  const selectedHeyaId = useMemo(() => {
+    if (selectedRikishi || !data) return null
+    const id = Number(heyaParam)
+    return Number.isInteger(id) && id > 0 ? id : null
+  }, [data, heyaParam, selectedRikishi])
+  const roster = useMemo(
+    () => (data && selectedHeyaId != null ? rosterFor(data, selectedHeyaId) : null),
+    [data, selectedHeyaId]
+  )
+  const { loading: stableLoading, stable } = useStableState(selectedHeyaId)
+
+  // A link to a stable neither the banzuke nor the file knows: nothing to show.
+  useEffect(() => {
+    if (selectedHeyaId != null && !roster && !stableLoading && !stable) clearUrlParam('heya')
+  }, [selectedHeyaId, roster, stableLoading, stable])
+
+  // Opening a stable from a wrestler (or a wrestler from a stable) swaps the
+  // dialog and pushes an entry, so Back returns to where the chain came from.
+  const handleSelectStable = useCallback(
+    (heyaId: number) => setUrlParams({ rikishi: null, heya: String(heyaId) }, 'push'),
+    []
+  )
+  const handleSelectMember = useCallback(
+    (rikishi: Rikishi) => setUrlParams({ heya: null, rikishi: String(rikishi.id) }, 'push'),
+    []
+  )
+  const handleCloseStable = useCallback(() => clearUrlParam('heya'), [])
+  // The way out to the sheet: the search filters to the stable's members and
+  // the dialog's entry becomes the filtered sheet, so one Back undoes both.
+  const handleShowOnBanzuke = useCallback(
+    (name: string) => setUrlParams({ heya: null, q: name }, 'replace'),
+    []
+  )
+  const championIds = useMemo(
+    () => (champions ? new Set(Object.values(champions).filter((id) => id != null)) : null),
+    [champions]
   )
 
   const counts = useMemo(
@@ -269,10 +314,10 @@ function AppContent() {
 
   const handleEscape = useCallback(() => {
     // The native <dialog> closes itself on Escape and reports through onClose.
-    if (selectedRikishi) return
+    if (selectedRikishi || selectedHeyaId != null) return
     if (helpOpen) setHelpOpen(false)
     else if (query) setSearchQuery(null)
-  }, [selectedRikishi, helpOpen, query, setSearchQuery])
+  }, [selectedRikishi, selectedHeyaId, helpOpen, query, setSearchQuery])
 
   const handleToggleHelp = useCallback(() => setHelpOpen((open) => !open), [])
 
@@ -280,6 +325,7 @@ function AppContent() {
   // dialog almost always opens with the profile already there.
   const prefetchProfiles = useCallback(() => {
     void loadProfiles()
+    void loadStables()
   }, [])
 
   useKeyboardShortcuts({
@@ -393,6 +439,7 @@ function AppContent() {
                   records={records}
                   champions={champions}
                   onSelectRikishi={handleSelectRikishi}
+                  onSelectStable={handleSelectStable}
                   emptyReason={isFiltering ? 'no-matches' : 'no-data'}
                   query={query}
                   otherMatches={otherMatches}
@@ -440,6 +487,19 @@ function AppContent() {
         record={selectedRikishi ? (records?.[String(selectedRikishi.id)] ?? null) : null}
         neighbours={neighbours}
         onStep={handleStep}
+        onSelectStable={handleSelectStable}
+      />
+      <StableModal
+        heyaId={selectedHeyaId}
+        roster={roster}
+        stable={stable}
+        stableLoading={stableLoading}
+        movements={movements}
+        records={records}
+        championIds={championIds}
+        onClose={handleCloseStable}
+        onSelectRikishi={handleSelectMember}
+        onShowOnBanzuke={handleShowOnBanzuke}
       />
     </>
   )

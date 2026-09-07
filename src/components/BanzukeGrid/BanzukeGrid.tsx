@@ -22,6 +22,8 @@ interface BanzukeGridProps {
   /** Wrestlers in banzuke order. */
   rows: Rikishi[]
   onSelectRikishi?: (rikishi: Rikishi) => void
+  /** Opens a stable from a cell's detail line. */
+  onSelectStable?: (heyaId: number) => void
   /**
    * Ids matching the current search. Rows with a match stay whole (the
    * partner is dimmed, not dropped); rows without one are left out.
@@ -178,6 +180,7 @@ function visibleGroups(groups: RankGroup[], highlight?: Set<number> | null): Ran
 export function BanzukeGrid({
   rows,
   onSelectRikishi,
+  onSelectStable,
   highlight,
   emptyReason = 'no-data',
   query,
@@ -231,6 +234,7 @@ export function BanzukeGrid({
               group={group}
               index={rowIndex++}
               onSelectRikishi={onSelectRikishi}
+              onSelectStable={onSelectStable}
               highlight={highlight}
               movements={movements}
               records={records}

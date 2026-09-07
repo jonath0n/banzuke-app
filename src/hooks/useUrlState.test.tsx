@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { clearUrlParam, setUrlParam, useUrlParam } from './useUrlState'
+import { clearUrlParam, setUrlParam, setUrlParams, useUrlParam } from './useUrlState'
 
 describe('useUrlParam', () => {
   beforeEach(() => {
@@ -76,6 +76,38 @@ describe('useUrlParam', () => {
     expect(back).toHaveBeenCalledTimes(1)
     expect(window.location.search).toBe('?lang=jp')
     expect(result.current[0]).toBeNull()
+    back.mockRestore()
+  })
+
+  it('swaps several parameters in one history entry, owned by the key being set', () => {
+    const back = vi.spyOn(window.history, 'back').mockImplementation(() => undefined)
+    const rikishi = renderHook(() => useUrlParam('rikishi', 'push'))
+    const heya = renderHook(() => useUrlParam('heya', 'push'))
+    act(() => rikishi.result.current[1]('4227'))
+    const depth = window.history.length
+
+    // Wrestler dialog → stable dialog: one new entry, the wrestler gone from the URL.
+    act(() => setUrlParams({ rikishi: null, heya: '1' }, 'push'))
+    expect(window.location.search).toBe('?heya=1')
+    expect(rikishi.result.current[0]).toBeNull()
+    expect(heya.result.current[0]).toBe('1')
+    expect(window.history.length).toBe(depth + 1)
+    expect(window.history.state).toEqual({ urlParam: 'heya' })
+
+    // Closing the stable undoes that entry; closing the (absent) wrestler is a no-op.
+    act(() => clearUrlParam('rikishi'))
+    expect(back).not.toHaveBeenCalled()
+    act(() => clearUrlParam('heya'))
+    expect(back).toHaveBeenCalledTimes(1)
+    act(() => {
+      window.history.replaceState(null, '', '/')
+      window.dispatchEvent(new PopStateEvent('popstate'))
+    })
+
+    // A replace keeps the entry: showing a stable on the banzuke writes q and drops heya.
+    act(() => setUrlParams({ heya: null, q: 'Tatsunami' }))
+    expect(window.location.search).toBe('?q=Tatsunami')
+    expect(window.history.length).toBe(depth + 1)
     back.mockRestore()
   })
 })

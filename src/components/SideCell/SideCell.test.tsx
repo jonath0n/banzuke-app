@@ -130,4 +130,45 @@ describe('SideCell', () => {
       /8 wins, 3 losses, 1 absence\. Kachi-koshi\. Yusho\./
     )
   })
+
+  it('makes the stable a button of its own, out of the Tab order, when given somewhere to go', async () => {
+    const user = userEvent.setup()
+    const onSelect = vi.fn()
+    const onSelectStable = vi.fn()
+    render(
+      <LanguageProvider>
+        <SideCell
+          rikishi={rikishi}
+          side="east"
+          rankLevel="yokozuna"
+          onSelect={onSelect}
+          onSelectStable={onSelectStable}
+          pairKey="100-1-1"
+        />
+      </LanguageProvider>
+    )
+    const wrestler = screen.getByRole('button', { name: 'Test, East. View details' })
+    const stable = screen.getByRole('button', { name: 'Test stable', hidden: true })
+    expect(wrestler).toHaveAttribute('data-pair', '100-1-1')
+    expect(wrestler).toHaveAttribute('data-id', '3842')
+    expect(stable).toHaveAttribute('tabindex', '-1')
+    expect(stable).not.toHaveAttribute('data-pair')
+    expect(stable.closest('span')).toHaveTextContent('Test · Mongolia')
+    // The stable button sits beside the wrestler button, never inside it
+    expect(wrestler.contains(stable)).toBe(false)
+    await user.click(stable)
+    expect(onSelectStable).toHaveBeenCalledWith(1)
+    expect(onSelect).not.toHaveBeenCalled()
+  })
+
+  it('keeps the stable as plain text for a vacant seat or an unselectable cell', () => {
+    render(
+      <LanguageProvider>
+        <SideCell rikishi={rikishi} side="east" rankLevel="yokozuna" onSelectStable={vi.fn()} />
+        <SideCell rikishi={null} side="west" rankLevel="yokozuna" onSelectStable={vi.fn()} />
+      </LanguageProvider>
+    )
+    expect(screen.getByRole('button', { name: 'Test stable', hidden: true })).toBeInTheDocument()
+    expect(screen.getAllByRole('button', { hidden: true })).toHaveLength(1)
+  })
 })

@@ -14,6 +14,8 @@ interface RankRowProps {
   index?: number
   /** Callback when a wrestler is selected */
   onSelectRikishi?: (rikishi: Rikishi) => void
+  /** Callback when a stable on a detail line is selected */
+  onSelectStable?: (heyaId: number) => void
   /** Ids matching the current search; wrestlers outside it are dimmed. */
   highlight?: Set<number> | null
   /** Movement since the previous banzuke, keyed by wrestler id. */
@@ -32,6 +34,7 @@ export const RankRow = memo(function RankRow({
   group,
   index = 0,
   onSelectRikishi,
+  onSelectStable,
   highlight,
   movements,
   records,
@@ -58,6 +61,7 @@ export const RankRow = memo(function RankRow({
           side="east"
           rankLevel={group.rankLevel}
           onSelect={onSelectRikishi}
+          onSelectStable={onSelectStable}
           dimmed={isDimmed(group.east, highlight)}
           movement={group.east ? (movements?.get(group.east.id) ?? null) : null}
           record={group.east ? (records?.[String(group.east.id)] ?? null) : null}
@@ -86,6 +90,7 @@ export const RankRow = memo(function RankRow({
           side="west"
           rankLevel={group.rankLevel}
           onSelect={onSelectRikishi}
+          onSelectStable={onSelectStable}
           dimmed={isDimmed(group.west, highlight)}
           movement={group.west ? (movements?.get(group.west.id) ?? null) : null}
           record={group.west ? (records?.[String(group.west.id)] ?? null) : null}

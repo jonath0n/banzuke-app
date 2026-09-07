@@ -5,6 +5,7 @@
  * `jp` is typed as `Strings` (derived from `en`), so a missing key is a type
  * error, and `strings.test.ts` checks the two tables stay in step.
  */
+import { toKanjiNumber } from '../data/kanji'
 import type { CareerStep } from '../data/profiles'
 import type { GuideKey } from '../utils/guide'
 import type { Division, Language, Side } from '../types/banzuke'
@@ -118,6 +119,19 @@ const en = {
   officialProfile: 'Official profile',
   previousWrestler: (name: string) => `Previous: ${name}`,
   nextWrestler: (name: string) => `Next: ${name}`,
+
+  // Stable dialog
+  openStable: (name: string) => `${name} stable`,
+  closeStable: 'Close stable details',
+  sekitoriCount: (n: number) => `${n} sekitori`,
+  inMakuuchi: (n: number) => `${n} Makuuchi`,
+  inJuryo: (n: number) => `${n} Juryo`,
+  stablemaster: (name: string, rank: string, shikona: string) =>
+    `Stablemaster ${name}, former ${rank} ${shikona}`,
+  stablemasterUnranked: (name: string) => `Stablemaster ${name}`,
+  members: 'On this banzuke',
+  noSekitori: 'No sekitori on this banzuke',
+  showOnBanzuke: 'Show on the banzuke',
   realName: 'Real name',
   born: 'Born',
   age: (years: number) => `(${years})`,
@@ -261,6 +275,18 @@ const jp: Strings = {
   officialProfile: '公式プロフィール',
   previousWrestler: (name: string) => `前へ: ${name}`,
   nextWrestler: (name: string) => `次へ: ${name}`,
+
+  openStable: (name: string) => `${name}部屋`,
+  closeStable: '部屋の詳細を閉じる',
+  sekitoriCount: (n: number) => `関取${toKanjiNumber(n)}人`,
+  inMakuuchi: (n: number) => `幕内${toKanjiNumber(n)}人`,
+  inJuryo: (n: number) => `十両${toKanjiNumber(n)}人`,
+  stablemaster: (name: string, rank: string, shikona: string) =>
+    `師匠 ${name}（元${rank} ${shikona}）`,
+  stablemasterUnranked: (name: string) => `師匠 ${name}`,
+  members: 'この番付の関取',
+  noSekitori: 'この番付に関取はいません',
+  showOnBanzuke: '番付で見る',
   realName: '本名',
   born: '生年月日',
   age: (years: number) => `（${years}歳）`,

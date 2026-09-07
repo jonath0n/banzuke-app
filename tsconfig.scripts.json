@@ -23,6 +23,7 @@
     "src/data/archive.ts",
     "src/data/normalize.ts",
     "src/data/results.ts",
+    "src/data/stables.ts",
     "src/constants/ranks.ts",
     "src/types/banzuke.ts",
     "src/utils/dates.ts"

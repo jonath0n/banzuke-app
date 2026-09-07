@@ -14,6 +14,7 @@ import type {
 import type { Banzuke, BanzukeSet, Basho, Rikishi } from '../types/banzuke'
 import type { ArchivedBanzuke, ArchivedRikishi, ArchiveIndex } from '../data/archive'
 import type { Bout, RikishiRecord, ResultsFile } from '../data/results'
+import type { Stable, StablesFile } from '../data/stables'
 
 const NAMES: Record<Division, Record<Lang, string[]>> = {
   makuuchi: {
@@ -481,6 +482,31 @@ export function makeResultsFile(overrides: Partial<ResultsFile> = {}): ResultsFi
       ],
     },
     yusho: {},
+    ...overrides,
+  }
+}
+
+/** Tatsunami as the stables file holds it: master Tatsunami, the former Komusubi Asahiyutaka. */
+export function makeStable(overrides: Partial<Stable> = {}): Stable {
+  return {
+    id: 1,
+    name: { en: 'Tatsunami', jp: '立浪' },
+    master: {
+      name: { en: 'Tatsunami Taiji', jp: '立浪 耐治' },
+      formerShikona: { en: 'Asahiyutaka', jp: '旭豊' },
+      highestRank: { en: 'Komusubi', jp: '小結' },
+    },
+    address: '〒111-0023 東京都台東区橋場1-16-5',
+    bashoId: 637,
+    ...overrides,
+  }
+}
+
+export function makeStablesFile(overrides: Partial<StablesFile> = {}): StablesFile {
+  return {
+    version: 1,
+    fetchedAt: '2026-09-04T00:00:00Z',
+    stables: { '1': makeStable() },
     ...overrides,
   }
 }

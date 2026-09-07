@@ -24,6 +24,8 @@ interface WrestlerModalProps {
   neighbours?: { previous: Rikishi | null; next: Rikishi | null }
   /** Step to a neighbouring wrestler, replacing the current one. */
   onStep?: (rikishi: Rikishi) => void
+  /** Open the wrestler's stable; without it the Stable row is plain text. */
+  onSelectStable?: (heyaId: number) => void
 }
 
 /**
@@ -38,12 +40,16 @@ export function WrestlerModal({
   record,
   neighbours,
   onStep,
+  onSelectStable,
 }: WrestlerModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
   const openerRef = useRef<Element | null>(null)
   const currentIdRef = useRef<number | null>(null)
   const openedIdRef = useRef<number | null>(null)
+  // Set when the stable is opened from here: the stable dialog takes over, so
+  // this dialog's close must not pull focus back out to the sheet.
+  const handingOverRef = useRef(false)
   const { language } = useLanguage()
   const strings = useStrings()
   const nameId = useId()
@@ -57,6 +63,7 @@ export function WrestlerModal({
       if (!dialog.open) {
         openerRef.current = document.activeElement
         openedIdRef.current = rikishi.id
+        handingOverRef.current = false
         dialog.showModal()
       } else if (currentIdRef.current !== rikishi.id) {
         // Stepped to a neighbour while already open: move focus to the new name.
@@ -77,6 +84,7 @@ export function WrestlerModal({
     const id = currentIdRef.current
     const stepped = currentIdRef.current !== openedIdRef.current
     openedIdRef.current = null
+    if (handingOverRef.current) return
     const current =
       id === null ? null : document.querySelector<HTMLElement>(`button[data-id="${id}"]`)
     const target = stepped ? (current ?? opener) : (opener ?? current)
@@ -260,7 +268,26 @@ export function WrestlerModal({
               {rikishi.heya.en && (
                 <div className={styles.metaItem}>
                   <dt className={styles.metaLabel}>{strings.stable}</dt>
-                  <dd className={styles.metaValue}>{rikishi.heya[language]}</dd>
+                  <dd className={styles.metaValue}>
+                    {onSelectStable && rikishi.heya.id > 0 ? (
+                      <button
+                        type="button"
+                        className={styles.stableButton}
+                        aria-label={strings.openStable(rikishi.heya[language])}
+                        onClick={() => {
+                          handingOverRef.current = true
+                          onSelectStable(rikishi.heya.id)
+                        }}
+                      >
+                        {rikishi.heya[language]}
+                        <span className={styles.chevron} aria-hidden="true">
+                          ›
+                        </span>
+                      </button>
+                    ) : (
+                      rikishi.heya[language]
+                    )}
+                  </dd>
                 </div>
               )}
               {rikishi.pref.en && (

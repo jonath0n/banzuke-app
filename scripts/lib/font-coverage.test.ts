@@ -44,6 +44,12 @@ describe('NotoSerifJP subset', () => {
     expect(missingGlyphs(manifest.glyphs, texts)).toEqual([])
   })
 
+  it('covers every Japanese character in the stables file', () => {
+    // Stablemasters' names render in the serif in the stable dialog.
+    const stables = readFileSync(resolve(root, 'public/stables.json'), 'utf8')
+    expect(missingGlyphs(manifest.glyphs, [stables])).toEqual([])
+  })
+
   it('covers every Japanese character in the bundled sample', () => {
     const sample = readFileSync(resolve(root, 'public/sample-data.json'), 'utf8')
     expect(missingGlyphs(manifest.glyphs, [sample])).toEqual([])

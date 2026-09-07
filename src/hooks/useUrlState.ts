@@ -33,17 +33,34 @@ function notify() {
   for (const listener of listeners) listener()
 }
 
-/** Writes a parameter to the current URL without reloading. */
-export function setUrlParam(name: string, value: string | null, mode: HistoryMode = 'replace') {
+/**
+ * Writes several parameters to the current URL in one history entry, without
+ * reloading. A pushed entry is owned by the first key being set (not removed),
+ * which is the key `clearUrlParam` later undoes — swapping one dialog for
+ * another writes `{ rikishi: null, heya: id }` and Back returns to the first.
+ */
+export function setUrlParams(params: Record<string, string | null>, mode: HistoryMode = 'replace') {
   const url = new URL(window.location.href)
-  if (value == null || value === '') url.searchParams.delete(name)
-  else url.searchParams.set(name, value)
+  for (const [name, value] of Object.entries(params)) {
+    if (value == null || value === '') url.searchParams.delete(name)
+    else url.searchParams.set(name, value)
+  }
   const next = `${url.pathname}${url.search}${url.hash}`
   const current = `${window.location.pathname}${window.location.search}${window.location.hash}`
   if (next === current) return
-  if (mode === 'push') window.history.pushState({ urlParam: name }, '', next)
-  else window.history.replaceState(window.history.state, '', next)
+  if (mode === 'push') {
+    const names = Object.keys(params)
+    const owner = names.find((name) => params[name] != null && params[name] !== '') ?? names[0]
+    window.history.pushState({ urlParam: owner }, '', next)
+  } else {
+    window.history.replaceState(window.history.state, '', next)
+  }
   notify()
+}
+
+/** Writes a parameter to the current URL without reloading. */
+export function setUrlParam(name: string, value: string | null, mode: HistoryMode = 'replace') {
+  setUrlParams({ [name]: value }, mode)
 }
 
 /**
