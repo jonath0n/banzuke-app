@@ -4,12 +4,17 @@ import { describe, expect, it } from 'vitest'
 import {
   archiveFromSumoApi,
   cleanShikonaJp,
+  parseOutcome,
   parseRank,
+  resultsFromSumoApi,
   shusshinRegion,
   type SumoApiBanzuke,
+  type SumoApiBasho,
   type SumoApiRikishi,
+  type SumoApiTorikumi,
 } from './sumo-api.ts'
 import { validateArchive } from '../../src/data/archive.ts'
+import { validateResults } from '../../src/data/results.ts'
 
 const fixtures = resolve(__dirname, '__fixtures__')
 const load = <T>(name: string): T => JSON.parse(readFileSync(resolve(fixtures, name), 'utf8')) as T
@@ -200,5 +205,180 @@ describe('against the JSA snapshot for the same tournament', () => {
 
     const jsaNames = new Map(expected.rikishi.map((r) => [r.id, r.shikona.jp]))
     for (const r of archive.rikishi) expect(r.shikona.jp, r.shikona.en).toBe(jsaNames.get(r.id))
+  })
+})
+
+describe('parseOutcome', () => {
+  it.each([
+    ['win', 'win'],
+    ['loss', 'loss'],
+    ['fusen win', 'fusen-win'],
+    ['fusen loss', 'fusen-loss'],
+    ['absent', 'absent'],
+  ])('maps %s', (raw, outcome) => {
+    expect(parseOutcome(raw)).toBe(outcome)
+  })
+  it('rejects anything else, including the empty result of an unfought day', () => {
+    expect(parseOutcome('')).toBeNull()
+    expect(parseOutcome('draw')).toBeNull()
+  })
+})
+
+describe('resultsFromSumoApi (July 2026)', () => {
+  const rikishi = new Map(
+    load<SumoApiRikishi[]>('sumo-api-202609-rikishis.json').map((r) => [r.id, r])
+  )
+  const banzuke = [
+    load<SumoApiBanzuke>('sumo-api-202607-makuuchi-results.json'),
+    load<SumoApiBanzuke>('sumo-api-202607-juryo-results.json'),
+  ]
+  const torikumi = new Map<number, SumoApiTorikumi>([
+    [1, load<SumoApiTorikumi>('sumo-api-202607-torikumi-makuuchi-1.json')],
+    [15, load<SumoApiTorikumi>('sumo-api-202607-torikumi-makuuchi-15.json')],
+  ])
+  const basho = load<SumoApiBasho>('sumo-api-202607-basho.json')
+  const { results, problems } = resultsFromSumoApi({
+    bashoId: 636,
+    fetchedAt: '2026-09-07T00:00:00.000Z',
+    basho,
+    banzuke,
+    torikumi,
+    rikishi,
+  })
+
+  it('maps every wrestler to a JSA id and validates', () => {
+    expect(problems).toEqual([])
+    expect(validateResults(results).ok).toBe(true)
+    expect(results.bashoId).toBe(636)
+    expect(results.divisions).toEqual(['makuuchi', 'juryo'])
+    expect(Object.keys(results.records)).toHaveLength(
+      banzuke[0].east.length +
+        banzuke[0].west.length +
+        banzuke[1].east.length +
+        banzuke[1].west.length
+    )
+  })
+
+  it('agrees with the archived July banzuke on who was there', () => {
+    const archive = validateArchive(
+      JSON.parse(readFileSync(resolve(__dirname, '../../public/banzuke/636.json'), 'utf8'))
+    )
+    if (!archive.ok) throw new Error(archive.error)
+    const archivedIds = archive.archive.rikishi.map((r) => String(r.id)).sort()
+    expect(Object.keys(results.records).sort()).toEqual(archivedIds)
+  })
+
+  it('keeps fifteen decided bouts per wrestler that add up to the totals', () => {
+    for (const [id, record] of Object.entries(results.records)) {
+      expect(record.bouts, id).toHaveLength(15)
+      expect(record.wins + record.losses + record.absences, id).toBe(15)
+      expect(record.bouts.filter((b) => b.outcome === 'absent').length, id).toBe(record.absences)
+      expect(
+        record.bouts.every((b, i) => b.day === i + 1),
+        id
+      ).toBe(true)
+      expect(
+        record.bouts.every((b) => (b.outcome === 'absent') === (b.opponent === null)),
+        id
+      ).toBe(true)
+    }
+  })
+
+  it('reads Onosato as 12 wins and Hoshoryu with one fusen loss and one absence', () => {
+    // JSA ids: Onosato 4227, Hoshoryu 3842 — the probe on 2026-09-07 showed 7-7-1 for Hoshoryu.
+    const hoshoryu = results.records['3842']
+    expect(hoshoryu.absences).toBe(1)
+    expect(hoshoryu.bouts.some((b) => b.outcome === 'fusen-loss' && b.kimarite === 'fusen')).toBe(
+      true
+    )
+    expect(results.records['4227'].wins + results.records['4227'].losses).toBe(15)
+  })
+
+  it('maps the day 15 torikumi to JSA ids with the winner among the two fighters', () => {
+    const day15 = results.torikumi['15']
+    expect(day15.length).toBeGreaterThan(15)
+    for (const match of day15) {
+      expect(match.division).toBe('makuuchi')
+      expect(match.winnerId).not.toBeNull()
+      expect([match.east.id, match.west.id]).toContain(match.winnerId)
+      expect(match.kimarite).not.toBe('')
+    }
+    expect(day15.map((m) => m.matchNo)).toEqual(day15.map((_, i) => i + 1))
+    expect(results.torikumi['1']).toBeDefined()
+    expect(results.torikumi['2']).toBeUndefined()
+    expect(results.day).toBe(15)
+  })
+
+  it('names the Makuuchi and Juryo champions by JSA id and ignores lower divisions', () => {
+    expect(Object.keys(results.yusho).sort()).toEqual(['juryo', 'makuuchi'])
+    expect(results.records[String(results.yusho.makuuchi)].wins).toBeGreaterThanOrEqual(12)
+  })
+
+  it('tolerates an unpublished torikumi and a partial record', () => {
+    const partial: SumoApiBanzuke = {
+      ...banzuke[0],
+      east: [
+        {
+          ...banzuke[0].east[0],
+          record: banzuke[0].east[0].record!.slice(0, 3).concat([
+            {
+              result: '',
+              opponentShikonaEn: '',
+              opponentShikonaJp: '',
+              opponentID: 0,
+              kimarite: '',
+            },
+          ]),
+          wins: undefined,
+          losses: undefined,
+          absences: undefined,
+        },
+      ],
+      west: [],
+    }
+    const out = resultsFromSumoApi({
+      bashoId: 636,
+      fetchedAt: 'x',
+      basho: { date: '202607', startDate: '', endDate: '' },
+      banzuke: [partial],
+      torikumi: new Map([[4, { date: '202607' }]]),
+      rikishi,
+    })
+    const only = Object.values(out.results.records)[0]
+    expect(only.bouts).toHaveLength(3)
+    expect(only.wins + only.losses + only.absences).toBe(3)
+    expect(out.results.day).toBe(3)
+    expect(out.results.torikumi).toEqual({})
+    expect(out.results.yusho).toEqual({})
+  })
+
+  it('reports a wrestler without a JSA id instead of guessing', () => {
+    const stranger: SumoApiBanzuke = {
+      bashoId: '202607',
+      division: 'Juryo',
+      east: [
+        {
+          side: 'East',
+          rikishiID: 999999,
+          shikonaEn: 'Nobody',
+          rank: 'Juryo 1 East',
+          record: [],
+          wins: 0,
+          losses: 0,
+          absences: 0,
+        },
+      ],
+      west: [],
+    }
+    const out = resultsFromSumoApi({
+      bashoId: 636,
+      fetchedAt: 'x',
+      basho,
+      banzuke: [stranger],
+      torikumi: new Map(),
+      rikishi,
+    })
+    expect(out.problems).toEqual(['Juryo: Nobody (sumo-api 999999) has no JSA id'])
+    expect(out.results.records).toEqual({})
   })
 })
