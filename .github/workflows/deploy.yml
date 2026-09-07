@@ -136,7 +136,7 @@ jobs:
         if: steps.fetch.outputs.changed == 'true' || steps.profiles.outputs.changed == 'true' || steps.results.outputs.changed == 'true'
         run: |
           cp .data/latest-banzuke.json public/latest-banzuke.json
-          [ -f .data/rikishi-profiles.json ] && cp .data/rikishi-profiles.json public/rikishi-profiles.json
+          [ -f .data/rikishi-profiles.json ] && cp .data/rikishi-profiles.json public/rikishi-profiles.json || true
           if [ -d .data/assets/fonts ]; then cp .data/assets/fonts/* public/assets/fonts/; fi
           if [ -d .data/banzuke ]; then cp .data/banzuke/*.json public/banzuke/; fi
           if [ -d .data/results ]; then mkdir -p public/results && cp .data/results/*.json public/results/ 2>/dev/null || true; fi
@@ -148,8 +148,18 @@ jobs:
             echo "Nothing to commit."
             exit 0
           fi
+          subject="data: refresh"
+          if [ "${{ steps.fetch.outputs.changed }}" = "true" ]; then
+            subject="data: banzuke ${{ steps.fetch.outputs.basho_id }} (${{ steps.fetch.outputs.start_date }})"
+          fi
+          if [ "${{ steps.results.outputs.changed }}" = "true" ]; then
+            subject="$subject, results"
+          fi
+          if [ "${{ steps.profiles.outputs.changed }}" = "true" ]; then
+            subject="$subject, profiles"
+          fi
           # [skip ci]: this push goes over the deploy key, which (unlike GITHUB_TOKEN) triggers the push workflow — without it every data commit would start a redundant second run.
-          git commit -m "data: banzuke ${{ steps.fetch.outputs.basho_id }} (${{ steps.fetch.outputs.start_date }}) [skip ci]"
+          git commit -m "$subject [skip ci]"
           git pull --rebase origin main
           git push origin HEAD:main
 

@@ -97,8 +97,9 @@ A single workflow (`.github/workflows/deploy.yml`) runs on every push to `main`,
    run and re-scraped only for wrestlers whose stored profile predates the current tournament.
 3. During a tournament, fetches every wrestler's record, each day's bouts and the yusho from
    sumo-api.com into `public/results/`.
-4. Commits `public/latest-banzuke.json`, `public/rikishi-profiles.json` and the font files to
-   `main` when any of them changed (a fresh fetch timestamp alone is not a change).
+4. Commits `public/latest-banzuke.json`, `public/rikishi-profiles.json`, the font files,
+   `public/banzuke/` and `public/results/` to `main` when any of them changed (a fresh fetch
+   timestamp alone is not a change).
 5. Validates, tests and builds the site with the freshest valid data and deploys it to
    GitHub Pages.
 
@@ -140,7 +141,7 @@ npm run fetch-profiles   # scrape wrestler profiles into public/rikishi-profiles
 npm run make-sample      # derive the labelled Makuuchi-only fallback from the live snapshot
 npm run validate-data    # validate the committed snapshot
 npm run archive-banzuke  # add the current snapshot's tournament to public/banzuke/
-npm run fetch-results    # in season: refresh public/results/{bashoId}.json (--basho 202607 for a past one)
+npm run fetch-results    # in season: refresh public/results/{bashoId}.json (-- --basho 202607 for a past one)
 ```
 
 Live site: https://jonath0n.github.io/banzuke-app/
