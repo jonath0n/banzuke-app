@@ -1,4 +1,4 @@
-import type { RankGroup, Rikishi, Side } from '../../types/banzuke'
+import type { Division, RankGroup, Rikishi, Side } from '../../types/banzuke'
 import { groupRowsByRank } from '../../utils/formatting'
 import { shortPrefecture, SIDE_KANJI, toKanjiNumber } from '../../data/kanji'
 import { RANK_CODES, RANK_LEVEL_KANJI } from '../../constants/ranks'
@@ -7,6 +7,8 @@ import { useStrings } from '../../i18n/useStrings'
 import { langAttr } from '../../i18n/strings'
 import { describeMovement, type Movement } from '../../utils/diff'
 import { MovementBadge } from '../MovementBadge/MovementBadge'
+import { describeRecord, type RikishiRecord } from '../../data/results'
+import { Hoshitori } from '../Hoshitori/Hoshitori'
 import styles from './BanzukeSheet.module.css'
 
 interface BanzukeSheetProps {
@@ -17,6 +19,10 @@ interface BanzukeSheetProps {
   highlight?: Set<number> | null
   /** Movement since the previous banzuke, keyed by wrestler id. */
   movements?: Map<number, Movement> | null
+  /** This tournament's records, keyed by wrestler id. */
+  records?: Record<string, RikishiRecord> | null
+  /** Tournament champion per division, once decided. */
+  champions?: Partial<Record<Division, number>>
 }
 
 /**
@@ -57,12 +63,16 @@ function Column({
   onSelect,
   dimmed,
   movement,
+  record,
+  champion,
 }: {
   rikishi: Rikishi
   scale: number
   onSelect?: (rikishi: Rikishi) => void
   dimmed: boolean
   movement: Movement | null
+  record: RikishiRecord | null
+  champion: boolean
 }) {
   const { language } = useLanguage()
   const strings = useStrings()
@@ -77,9 +87,12 @@ function Column({
   // The full rank goes into the accessible name: a screen reader cannot see how
   // large the characters are, or how far along the band the column sits.
   const movementText = movement ? describeMovement(movement, language) : ''
+  const recordText = record ? describeRecord(record, language) : ''
   const label = `${name}, ${strings.side[rikishi.side]}. ${rikishi.rankName[language]}.${
     movementText ? ` ${movementText}.` : ''
-  } ${strings.viewDetails}`
+  }${recordText ? ` ${recordText}` : ''}${champion ? ` ${strings.yusho}.` : ''} ${
+    strings.viewDetails
+  }`
 
   const content = (
     <>
@@ -102,6 +115,7 @@ function Column({
           {name}
         </span>
         {movement && <MovementBadge movement={movement} variant="sheet" />}
+        {record && <Hoshitori record={record} variant="sheet" champion={champion} />}
       </span>
     </>
   )
@@ -150,10 +164,18 @@ function Column({
  * is `direction: rtl`, so the highest rank sits at the right where reading
  * starts, and DOM order, focus order and reading order all agree.
  */
-export function BanzukeSheet({ rows, onSelectRikishi, highlight, movements }: BanzukeSheetProps) {
+export function BanzukeSheet({
+  rows,
+  onSelectRikishi,
+  highlight,
+  movements,
+  records,
+  champions,
+}: BanzukeSheetProps) {
   const strings = useStrings()
   const { language } = useLanguage()
   const groups = visibleGroups(groupRowsByRank(rows), highlight)
+  const championIds = new Set(Object.values(champions ?? {}))
 
   // The lowest numbered rank on this sheet sets the bottom of the size ladder.
   const lowestNumber = rows.reduce(
@@ -185,6 +207,8 @@ export function BanzukeSheet({ rows, onSelectRikishi, highlight, movements }: Ba
               onSelect={onSelectRikishi}
               dimmed={isDimmed(rikishi)}
               movement={movements?.get(rikishi.id) ?? null}
+              record={records?.[String(rikishi.id)] ?? null}
+              champion={championIds.has(rikishi.id)}
             />
           ))}
         </div>

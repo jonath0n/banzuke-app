@@ -116,6 +116,13 @@ requests. There is no separate refresh workflow.
   per-division departures. Badges show the **rank a wrestler came from** (`▲M5`), never a step
   count — steps are undefined across sanyaku and the Juryo line. Arrows are ink/muted; "new" borrows
   the promotion pill's vermilion. Movement is also spoken in each button's accessible name.
+- **Results** (`?results=0` to hide; on by default in season) is the second overlay: `useResults`
+  loads `results/{bashoId}.json` when the basho is live, a day before it starts, or finished —
+  until the next banzuke replaces it — `Hoshitori` shows the score on the Sheet and the ○●休 strip
+  on the List, `Bouts` lists the day's card, selected by who is fighting (cross-division bouts are
+  published on the Makuuchi card only). An absence counts
+  as a loss for make-koshi. The yusho mark is an ink seal — `--gold` is still the Yokozuna's alone.
+  Kimarite are stored as sumo-api romaji; `src/data/kimarite.ts` supplies the kanji.
 - `public/results/` holds **tournament results** (`src/data/results.ts`): one file per basho of
   per-wrestler records, per-day cards and the yusho, from sumo-api.com joined by `nskId`. The script
   fetches only in season (a day before day 1 to three days after senshuraku) and the bot commit ends

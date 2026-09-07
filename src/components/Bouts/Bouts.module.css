@@ -1,0 +1,144 @@
+.bouts {
+  border-top: 1px solid var(--rule);
+  padding-top: var(--space-2);
+  margin-top: var(--space-5);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.heading {
+  font-size: var(--text-base);
+  font-weight: var(--label-weight);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0;
+}
+
+.heading:lang(ja) {
+  text-transform: none;
+  letter-spacing: 0.1em;
+}
+
+.step {
+  font: inherit;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  min-width: 32px;
+  min-height: 32px;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.step:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.step:hover:not(:disabled) {
+  color: var(--text);
+}
+
+.leaders {
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--muted);
+  margin: var(--space-2) 0;
+}
+
+.leadersLabel {
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+  font-weight: var(--label-weight);
+}
+
+.leadersLabel:lang(ja) {
+  text-transform: none;
+  letter-spacing: 0.1em;
+}
+
+.tier {
+  color: var(--text);
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: normal;
+}
+
+.list {
+  list-style: none;
+  display: grid;
+  gap: var(--space-1);
+}
+
+.match {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: var(--space-1) 0;
+  border-top: 1px solid var(--rule);
+}
+
+.east {
+  text-align: end;
+}
+
+.west {
+  text-align: start;
+}
+
+.result {
+  font-size: var(--text-sm);
+  color: var(--muted);
+  text-align: center;
+  min-width: 6ch;
+}
+
+.result:lang(ja) {
+  font-family: var(--font-jp-serif);
+}
+
+.fighter {
+  font: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font-family: var(--font-names);
+  font-weight: 600;
+}
+
+.fighter:lang(ja) {
+  font-family: var(--font-jp-serif);
+  font-weight: 700;
+}
+
+.fighter strong {
+  font-weight: 800;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.none {
+  color: var(--muted);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .match {
+    gap: var(--space-2);
+  }
+
+  .result {
+    min-width: 4ch;
+  }
+}

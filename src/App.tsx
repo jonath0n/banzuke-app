@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useBanzuke } from './hooks/useBanzuke'
 import { useArchiveIndex, useArchivedBanzuke } from './hooks/useArchive'
+import { useResults } from './hooks/useResults'
 import { previousEntry } from './data/archive'
 import { diffBanzuke, type CurrentRow } from './utils/diff'
+import { getTournamentStatus } from './utils/dates'
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { clearUrlParam, useUrlParam } from './hooks/useUrlState'
@@ -18,7 +20,9 @@ import { BanzukeGrid, BanzukeGridSkeleton } from './components/BanzukeGrid/Banzu
 import { BanzukeSheet } from './components/BanzukeSheet/BanzukeSheet'
 import { ViewToggle, type View } from './components/ViewToggle/ViewToggle'
 import { ChangesToggle } from './components/ChangesToggle/ChangesToggle'
+import { ResultsToggle } from './components/ResultsToggle/ResultsToggle'
 import { Departed } from './components/Departed/Departed'
+import { Bouts } from './components/Bouts/Bouts'
 import { WrestlerModal } from './components/WrestlerModal/WrestlerModal'
 import { Footer } from './components/Footer/Footer'
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary'
@@ -55,6 +59,8 @@ function AppContent() {
   const [viewParam, setViewParam] = useUrlParam('view')
   const [selectedId, setSelectedId] = useUrlParam('rikishi', 'push')
   const [diffParam, setDiffParam] = useUrlParam('diff')
+  const [resultsParam, setResultsParam] = useUrlParam('results')
+  const [boutsDay, setBoutsDay] = useState<number | null>(null)
   const [helpOpen, setHelpOpen] = useState(false)
   // Entrance animations play once, on the first sheet; later renders (tab
   // switches, search) must not replay the cascade.
@@ -72,6 +78,23 @@ function AppContent() {
   const banzuke = data ? (division === 'juryo' ? data.juryo : data.makuuchi) : null
   const allRows = banzuke?.rikishi ?? EMPTY
   const query = searchQuery ?? ''
+
+  // Results only make sense while the tournament is running or has just
+  // finished (until the next banzuke replaces it) or is about to start.
+  const tournamentStatus = banzuke ? getTournamentStatus(banzuke.basho) : null
+  const inSeason =
+    tournamentStatus != null &&
+    (tournamentStatus.kind === 'live' ||
+      tournamentStatus.kind === 'finished' ||
+      (tournamentStatus.kind === 'upcoming' && tournamentStatus.daysUntil <= 1))
+  const results = useResults(inSeason && banzuke ? banzuke.basho.id : null)
+  const resultsOn = resultsParam !== '0'
+  const file = resultsOn ? results.results : null
+  const records = file?.records ?? null
+  const champions = file?.yusho
+  // Defaults to the latest fought day; the stepper's › reaches a later
+  // published card via lastSteppableDay inside Bouts.
+  const day = boutsDay ?? (results.results ? Math.max(1, results.results.day) : 1)
 
   // The search runs over both divisions so the tabs can say where the matches are.
   const indexes = useMemo(
@@ -161,7 +184,10 @@ function AppContent() {
   const handleClearSearch = useCallback(() => setSearchQuery(null), [setSearchQuery])
 
   const handleChangeDivision = useCallback(
-    (next: Division) => setDivisionParam(next === 'makuuchi' ? null : next),
+    (next: Division) => {
+      setDivisionParam(next === 'makuuchi' ? null : next)
+      setBoutsDay(null)
+    },
     [setDivisionParam]
   )
 
@@ -267,6 +293,13 @@ function AppContent() {
                 sinceLabel={sinceLabel}
               />
             )}
+            {results.results && (
+              <ResultsToggle
+                on={resultsOn}
+                onChange={(on) => setResultsParam(on ? null : '0')}
+                day={results.results.day}
+              />
+            )}
           </div>
         )}
         {banzuke && (
@@ -284,6 +317,8 @@ function AppContent() {
                   rows={allRows}
                   highlight={highlight}
                   movements={movements}
+                  records={records}
+                  champions={champions}
                   onSelectRikishi={handleSelectRikishi}
                 />
               ) : (
@@ -292,6 +327,8 @@ function AppContent() {
                   rows={allRows}
                   highlight={highlight}
                   movements={movements}
+                  records={records}
+                  champions={champions}
                   onSelectRikishi={handleSelectRikishi}
                   emptyReason={isFiltering ? 'no-matches' : 'no-data'}
                   query={query}
@@ -317,13 +354,27 @@ function AppContent() {
                   onSelectRikishi={handleSelectRikishi}
                 />
               )}
+              {file && !isFiltering && (
+                <Bouts
+                  results={file}
+                  division={division}
+                  rows={allRows}
+                  day={day}
+                  onChangeDay={setBoutsDay}
+                  onSelectRikishi={handleSelectRikishi}
+                />
+              )}
             </div>
           </ErrorBoundary>
         )}
       </main>
       <Footer helpOpen={helpOpen} onToggleHelp={setHelpOpen} />
       <ScrollToTop />
-      <WrestlerModal rikishi={selectedRikishi} onClose={handleCloseModal} />
+      <WrestlerModal
+        rikishi={selectedRikishi}
+        onClose={handleCloseModal}
+        record={selectedRikishi ? (records?.[String(selectedRikishi.id)] ?? null) : null}
+      />
     </>
   )
 }

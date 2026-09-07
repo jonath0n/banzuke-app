@@ -1,0 +1,103 @@
+/* The star chart: ○ won, ● lost, 休 absent, · not yet fought. Weight and
+   ink carry the state — kachi-koshi bold, make-koshi muted — no new hue. */
+.badge {
+  font-family: var(--font-names);
+  font-weight: 600;
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  color: var(--text);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.badge[data-state='kachikoshi'] {
+  font-weight: 700;
+}
+
+.badge[data-state='makekoshi'] {
+  color: var(--muted);
+}
+
+/* Under the name on the sheet: horizontal, tiny — digits have no vertical form */
+.sheet {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2em;
+  margin-top: var(--space-1);
+  font-size: 0.6rem;
+  writing-mode: horizontal-tb;
+}
+
+/* Under the name on a row: strip, score, state */
+.row {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  margin-top: 0.15rem;
+}
+
+.strip {
+  font-family: var(--font-jp-serif);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text);
+}
+
+.cell {
+  display: inline-block;
+  width: 1em;
+  text-align: center;
+}
+
+.cell[data-outcome='loss'],
+.cell[data-outcome='fusen-loss'] {
+  color: var(--muted);
+}
+
+.cell:not([data-outcome]) {
+  color: var(--border);
+}
+
+.score {
+  font-weight: 700;
+}
+
+.state {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+}
+
+.state:lang(ja) {
+  font-family: var(--font-jp-serif);
+  text-transform: none;
+  letter-spacing: 0.1em;
+}
+
+/* The champion's mark: a hairline seal in ink */
+.seal {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.2em;
+  min-height: 1.2em;
+  padding-inline: 0.15em;
+  font-family: var(--font-names);
+  font-weight: 700;
+  color: var(--text);
+  border: 1px solid var(--text);
+  border-radius: var(--radius-sm);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.seal:lang(ja) {
+  font-family: var(--font-jp-serif);
+}
+
+@media (max-width: 600px) {
+  .strip {
+    letter-spacing: 0.02em;
+  }
+}

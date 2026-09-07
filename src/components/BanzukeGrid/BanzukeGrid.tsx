@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import type { Division, RankGroup, RankLevel, Rikishi } from '../../types/banzuke'
 import { groupRowsByRank } from '../../utils/formatting'
 import { RANK_LEVEL_NAMES, RANK_LEVEL_KANJI } from '../../constants/ranks'
@@ -6,6 +7,7 @@ import { langAttr } from '../../i18n/strings'
 import { RankRow } from '../RankRow/RankRow'
 import { useStrings } from '../../i18n/useStrings'
 import type { Movement } from '../../utils/diff'
+import type { RikishiRecord } from '../../data/results'
 import styles from './BanzukeGrid.module.css'
 
 /** Matches in the other division, offered when this one has none. */
@@ -34,6 +36,10 @@ interface BanzukeGridProps {
   onClearSearch?: () => void
   /** Movement since the previous banzuke, keyed by wrestler id. */
   movements?: Map<number, Movement> | null
+  /** This tournament's records, keyed by wrestler id. */
+  records?: Record<string, RikishiRecord> | null
+  /** Tournament champion per division, once decided. */
+  champions?: Partial<Record<Division, number>>
 }
 
 /** Tiers whose single row already stamps the rank on its rail need no band. */
@@ -177,8 +183,11 @@ export function BanzukeGrid({
   otherMatches,
   onClearSearch,
   movements,
+  records,
+  champions,
 }: BanzukeGridProps) {
   const grouped = visibleGroups(groupRowsByRank(rows), highlight)
+  const championIds = useMemo(() => new Set(Object.values(champions ?? {})), [champions])
 
   if (grouped.length === 0) {
     return (
@@ -221,6 +230,8 @@ export function BanzukeGrid({
               onSelectRikishi={onSelectRikishi}
               highlight={highlight}
               movements={movements}
+              records={records}
+              championIds={championIds}
             />
           ))}
         </section>
