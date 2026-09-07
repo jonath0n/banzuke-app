@@ -18,7 +18,7 @@
   position: absolute;
   top: -100%;
   left: 1rem;
-  z-index: 1100;
+  z-index: var(--z-skip-link);
   padding: 0.6rem 1rem;
   background: var(--accent);
   color: var(--on-accent);

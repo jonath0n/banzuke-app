@@ -16,8 +16,8 @@ describe('SideCell', () => {
     window.history.replaceState({}, '', '/')
   })
 
-  it('renders rikishi name, avatar and promotion pill', () => {
-    render(
+  it('renders the ring name, its detail line and the promotion pill', () => {
+    const { container } = render(
       <LanguageProvider>
         <SideCell rikishi={rikishi} side="east" rankLevel="yokozuna" />
       </LanguageProvider>
@@ -26,10 +26,8 @@ describe('SideCell', () => {
     expect(screen.getByText('Test')).toBeInTheDocument()
     expect(screen.getByText('Test · Mongolia')).toHaveAttribute('lang', 'en')
     expect(screen.getByText('New')).toHaveAttribute('title', 'New to Makuuchi')
-    const img = screen.getByRole('presentation', { hidden: true })
-    expect(img).toHaveAttribute('src', expect.stringMatching(/60x60\/20170096\.jpg$/))
-    expect(img).toHaveAttribute('referrerpolicy', 'no-referrer')
-    expect(img).toHaveAttribute('width', '48')
+    // The sheet carries no portraits: rank is told by the size of the name.
+    expect(container.querySelector('img')).toBeNull()
     // Not selectable without an onSelect handler
     expect(screen.queryByRole('button')).toBeNull()
   })

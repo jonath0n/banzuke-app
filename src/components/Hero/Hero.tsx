@@ -6,6 +6,7 @@ import {
   getTournamentStatus,
 } from '../../utils/dates'
 import { getVenue } from '../../constants/venues'
+import { jpBashoName } from '../../data/kanji'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { useStrings } from '../../i18n/useStrings'
 import { langAttr } from '../../i18n/strings'
@@ -24,7 +25,6 @@ function TournamentStatus({ data }: { data: Banzuke }) {
     case 'live':
       return (
         <span className={styles.statusBadge} data-status="live">
-          <span className={styles.liveDot} aria-hidden="true" />
           {status.day === status.totalDays
             ? strings.statusSenshuraku
             : strings.statusLive(status.day)}
@@ -52,9 +52,9 @@ function TournamentStatus({ data }: { data: Banzuke }) {
 const SEPARATOR = ' · '
 
 /**
- * The title deck: wordmark and language toggle, then the tournament as one
- * line (name · venue), its status beside the dates, and a muted line for
- * provenance (announcement, data source, freshness).
+ * The head of the sheet, not a title card above it: the wordmark and seal on
+ * one side, the banzuke's own printed masthead (令和八年九月場所, set
+ * vertically in mincho) on the other, then the tournament in a single line.
  */
 export function Hero({ data }: HeroProps) {
   const { language, setLanguage } = useLanguage()
@@ -64,6 +64,8 @@ export function Hero({ data }: HeroProps) {
   const venue = basho ? getVenue(basho.month) : null
   const dates = basho ? formatDateRange(basho.startDate, basho.endDate, language) : ''
   const announced = basho?.announcedAt ? formatDateTime(basho.announcedAt, language) : ''
+  // The masthead as the sheet prints it: era year over month-tournament.
+  const masthead = basho ? `${basho.yearJp}${jpBashoName(basho.month)}` : ''
 
   const provenance: string[] = []
   if (announced) provenance.push(strings.announcedOn(announced))
@@ -77,10 +79,17 @@ export function Hero({ data }: HeroProps) {
   return (
     <header className={styles.hero} lang={langAttr(language)}>
       <div className={styles.titleRow}>
-        <h1 lang="en">Grand Sumo Banzuke</h1>
-        <span className={styles.seal} lang="ja" aria-hidden="true">
-          番付
-        </span>
+        <div className={styles.title}>
+          <h1 lang="en">Grand Sumo Banzuke</h1>
+          <span className={styles.seal} lang="ja" aria-hidden="true">
+            番付
+          </span>
+        </div>
+        {masthead && (
+          <span className={styles.masthead} lang="ja" aria-hidden="true">
+            {masthead}
+          </span>
+        )}
         <div className={styles.toggle}>
           <LanguageToggle language={language} onLanguageChange={setLanguage} />
         </div>
@@ -91,18 +100,13 @@ export function Hero({ data }: HeroProps) {
           <>
             <strong>{bashoName}</strong>
             {venue ? `${SEPARATOR}${venue[language]}` : ''}
+            {dates ? `${SEPARATOR}${dates}` : ''}
+            <TournamentStatus data={data} />
           </>
         ) : (
           '—'
         )}
       </p>
-
-      {data && (
-        <p className={styles.statusRow}>
-          <TournamentStatus data={data} />
-          {dates && <span className={styles.dates}>{dates}</span>}
-        </p>
-      )}
 
       {provenance.length > 0 && <p className={styles.provenance}>{provenance.join(SEPARATOR)}</p>}
     </header>

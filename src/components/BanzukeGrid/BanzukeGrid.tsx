@@ -47,15 +47,13 @@ function SkeletonRow({ index }: { index: number }) {
   const westNameClass = nameClasses[(index + 1) % 3]
 
   return (
-    <div className={styles['skeleton-row']} style={{ '--row-index': index } as React.CSSProperties}>
+    <div className={styles['skeleton-row']}>
       <div className={styles['skeleton-inner']}>
         <div className={styles['skeleton-cell']} data-side="east">
           <div className={`${styles['skeleton-name']} ${styles[eastNameClass]}`} />
-          <div className={styles['skeleton-avatar']} />
         </div>
         <div className={styles['skeleton-label']} />
         <div className={styles['skeleton-cell']} data-side="west">
-          <div className={styles['skeleton-avatar']} />
           <div className={`${styles['skeleton-name']} ${styles[westNameClass]}`} />
         </div>
       </div>
@@ -70,7 +68,7 @@ export function BanzukeGridSkeleton() {
     <div className={styles['skeleton-grid']} role="status" aria-busy="true">
       <span className="visually-hidden">{strings.loading}</span>
       {Array.from({ length: SKELETON_ROW_COUNT }, (_, i) => (
-        <SkeletonRow key={i} index={i} aria-hidden="true" />
+        <SkeletonRow key={i} index={i} />
       ))}
     </div>
   )

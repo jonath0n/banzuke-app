@@ -6,6 +6,9 @@
  * Identity: a banzuke is sumi ink on kinari (unbleached) paper with a
  * vermilion seal. Light mode is paper; dark mode is ink on aged indigo.
  * Rank hierarchy is expressed by type size, not by hue.
+ *
+ * The palette is six values plus one rank hue. If a new colour seems needed,
+ * the answer is almost always a size or a rule instead.
  */
 :root {
   color-scheme: light dark;
@@ -23,19 +26,14 @@
   --accent-hover: #8f2617;
   --accent-rgb: 179 48 31;
   --on-accent: #ffffff;
-  --on-tier: #221c18;
   /* Ink tint for tier headings and hover states */
   --ink-rgb: 34 28 24;
 
-  /* Tier colours: used sparingly (rules, rings), never as fills behind small text */
-  --tier-yokozuna: #c9a227;
-  --tier-yokozuna-bg: rgba(201, 162, 39, 0.1);
-  --tier-ozeki: #b8934f;
-  --tier-ozeki-bg: rgba(184, 147, 79, 0.08);
-  --tier-sekiwake: #c9853a;
-  --tier-sekiwake-bg: rgba(201, 133, 58, 0.06);
-  --tier-komusubi: #a8553a;
-  --tier-komusubi-bg: rgba(168, 85, 58, 0.06);
+  /* The one rank hue. Yokozuna only, as an edge — never a fill behind small
+     text. Every other rank is told apart by size, which is the whole thesis.
+     Deep ochre rather than bright kin: the old #c9a227 was 2.2:1 on paper and
+     did not actually read as a rule. */
+  --gold: #9a7615;
 
   /* Problem colours for data warnings (AA on --bg at small sizes) */
   --danger: #b91c1c;
@@ -45,9 +43,10 @@
 
   /* Typography ----------------------------------------------------------- */
   /* The wordmark only: FranSans is a poster face whose M and A blur at text sizes */
-  --font-wordmark: 'FranSans Solid', 'Instrument Sans', system-ui, sans-serif;
-  /* Names voice: ring names, rank badges, tabs, chips (self-hosted, OFL) */
-  --font-names: 'Instrument Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-wordmark: 'FranSans Solid', 'Archivo', system-ui, sans-serif;
+  /* Names voice: ring names, rank badges, tabs, chips (self-hosted, OFL).
+     Variable to 900, which the Sheet uses at full weight. */
+  --font-names: 'Archivo', 'Segoe UI', system-ui, -apple-system, sans-serif;
   /* Reading text and every small label: hero facts, search, modal details, footer */
   --font-body:
     system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
@@ -65,19 +64,20 @@
   --text-base: 0.875rem;
   --text-md: 1rem;
   --text-lg: 1.15rem;
-  --text-xl: 1.4rem;
   --text-2xl: 1.75rem;
   --text-display: clamp(1.9rem, 5.5vw, 2.6rem);
   --tracking-caps: 0.08em;
   /* Small caps labels (dt, tier labels, counts): body face, never the display faces */
   --label-weight: 600;
 
-  /* Rank name sizes: the size ladder carries the hierarchy */
-  --name-yokozuna: 1.65rem;
-  --name-ozeki: 1.4rem;
-  --name-sekiwake: 1.25rem;
-  --name-komusubi: 1.15rem;
-  --name-maegashira: 1.05rem;
+  /* Rank name sizes: the size ladder carries the hierarchy, so it has to be
+     wide enough to read as a ladder — a shade over 2x top to bottom. The
+     clamps hold that ratio on a phone instead of flattening it. */
+  --name-yokozuna: clamp(1.5rem, 5.5vw, 2.1rem);
+  --name-ozeki: clamp(1.3rem, 4.6vw, 1.75rem);
+  --name-sekiwake: clamp(1.15rem, 4vw, 1.45rem);
+  --name-komusubi: clamp(1.1rem, 3.6vw, 1.3rem);
+  --name-maegashira: clamp(0.95rem, 3vw, 1.05rem);
 
   /* Spacing (4px base) --------------------------------------------------- */
   --space-1: 0.25rem;
@@ -90,13 +90,11 @@
 
   /* Layout --------------------------------------------------------------- */
   --sheet-max: 840px;
-  --avatar-size: 48px;
   --rail-width: 5rem;
 
-  /* Radii: seals and sheets are square-cornered; only portraits are round */
+  /* Radii: seals and sheets are square-cornered. Nothing here is round. */
   --radius-sm: 2px;
   --radius: 4px;
-  --radius-pill: 999px;
 
   /* Motion --------------------------------------------------------------- */
   --dur-fast: 150ms;
@@ -115,13 +113,11 @@
   --shadow-md: 0 2px 8px rgba(34, 28, 24, 0.08), 0 1px 2px rgba(34, 28, 24, 0.06);
   --shadow-lg: 0 12px 32px rgba(34, 28, 24, 0.18), 0 2px 6px rgba(34, 28, 24, 0.08);
   --shadow-glow: 0 0 0 3px rgb(var(--accent-rgb) / 0.15);
-  --shadow-glow-gold: 0 0 0 3px rgba(201, 162, 39, 0.25);
 }
 
 @media (min-width: 1024px) {
   :root {
     --sheet-max: 960px;
-    --avatar-size: 56px;
     --rail-width: 5.5rem;
   }
 }
@@ -139,17 +135,9 @@
     --accent-rgb: 232 102 79;
     /* The dark accent is light enough that ink reads better on it */
     --on-accent: #15181d;
-    --on-tier: #15181d;
     --ink-rgb: 236 230 218;
 
-    --tier-yokozuna: #e8c547;
-    --tier-yokozuna-bg: rgba(232, 197, 71, 0.1);
-    --tier-ozeki: #dbb668;
-    --tier-ozeki-bg: rgba(219, 182, 104, 0.08);
-    --tier-sekiwake: #daa06d;
-    --tier-sekiwake-bg: rgba(218, 160, 109, 0.08);
-    --tier-komusubi: #d4785a;
-    --tier-komusubi-bg: rgba(212, 120, 90, 0.08);
+    --gold: #e8c547;
 
     --danger: #fca5a5;
     --warning: #fcd34d;
@@ -158,6 +146,5 @@
     --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.3);
     --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.35);
     --shadow-glow: 0 0 0 3px rgb(var(--accent-rgb) / 0.25);
-    --shadow-glow-gold: 0 0 0 3px rgba(232, 197, 71, 0.3);
   }
 }

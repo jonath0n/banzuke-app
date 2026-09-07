@@ -10,6 +10,8 @@ import { SearchBar } from './components/SearchBar/SearchBar'
 import { DivisionTabs } from './components/DivisionTabs/DivisionTabs'
 import { PANEL_ID, tabId } from './components/DivisionTabs/ids'
 import { BanzukeGrid, BanzukeGridSkeleton } from './components/BanzukeGrid/BanzukeGrid'
+import { BanzukeSheet } from './components/BanzukeSheet/BanzukeSheet'
+import { ViewToggle, type View } from './components/ViewToggle/ViewToggle'
 import { WrestlerModal } from './components/WrestlerModal/WrestlerModal'
 import { Footer } from './components/Footer/Footer'
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary'
@@ -43,6 +45,7 @@ function AppContent() {
   const strings = useStrings()
   const [searchQuery, setSearchQuery] = useUrlParam('q')
   const [divisionParam, setDivisionParam] = useUrlParam('div')
+  const [viewParam, setViewParam] = useUrlParam('view')
   const [selectedId, setSelectedId] = useUrlParam('rikishi', 'push')
   const [helpOpen, setHelpOpen] = useState(false)
   // Entrance animations play once, on the first sheet; later renders (tab
@@ -55,6 +58,8 @@ function AppContent() {
     return () => window.clearTimeout(timer)
   }, [data, entered])
 
+  // The sheet is the default: the first thing to see is the artifact itself.
+  const view: View = viewParam === 'list' ? 'list' : 'sheet'
   const division = resolveDivision(divisionParam, data)
   const banzuke = data ? (division === 'juryo' ? data.juryo : data.makuuchi) : null
   const allRows = banzuke?.rikishi ?? EMPTY
@@ -99,6 +104,8 @@ function AppContent() {
     ? { makuuchi: matches.makuuchi?.size, juryo: matches.juryo?.size }
     : undefined
   const showTabs = data?.juryo != null
+  // Nothing on the sheet: no data at all, or a search this division cannot answer.
+  const nothingToShow = allRows.length === 0 || (highlight !== null && highlight.size === 0)
 
   const handleSelectRikishi = useCallback(
     (rikishi: Rikishi) => setSelectedId(String(rikishi.id)),
@@ -113,6 +120,12 @@ function AppContent() {
   const handleChangeDivision = useCallback(
     (next: Division) => setDivisionParam(next === 'makuuchi' ? null : next),
     [setDivisionParam]
+  )
+
+  // 'sheet' is the default, so it stays out of the URL.
+  const handleChangeView = useCallback(
+    (next: View) => setViewParam(next === 'sheet' ? null : next),
+    [setViewParam]
   )
 
   const otherMatches = useMemo(
@@ -193,13 +206,18 @@ function AppContent() {
             {problemMessage}
           </div>
         )}
-        {showTabs && (
-          <DivisionTabs
-            value={division}
-            onChange={handleChangeDivision}
-            counts={counts}
-            matched={matchedByDivision}
-          />
+        {banzuke && (
+          <div className={styles.controls}>
+            {showTabs && (
+              <DivisionTabs
+                value={division}
+                onChange={handleChangeDivision}
+                counts={counts}
+                matched={matchedByDivision}
+              />
+            )}
+            <ViewToggle view={view} onViewChange={handleChangeView} />
+          </div>
         )}
         {banzuke && (
           <ErrorBoundary>
@@ -208,16 +226,27 @@ function AppContent() {
               role={showTabs ? 'tabpanel' : undefined}
               aria-labelledby={showTabs ? tabId(division) : undefined}
             >
-              <BanzukeGrid
-                key={division}
-                rows={allRows}
-                highlight={highlight}
-                onSelectRikishi={handleSelectRikishi}
-                emptyReason={isFiltering ? 'no-matches' : 'no-data'}
-                query={query}
-                otherMatches={otherMatches}
-                onClearSearch={handleClearSearch}
-              />
+              {/* Both views share the grid's empty state, so the copy and the
+                  "show N in Juryo" offer stay identical whichever is showing. */}
+              {view === 'sheet' && !nothingToShow ? (
+                <BanzukeSheet
+                  key={division}
+                  rows={allRows}
+                  highlight={highlight}
+                  onSelectRikishi={handleSelectRikishi}
+                />
+              ) : (
+                <BanzukeGrid
+                  key={division}
+                  rows={allRows}
+                  highlight={highlight}
+                  onSelectRikishi={handleSelectRikishi}
+                  emptyReason={isFiltering ? 'no-matches' : 'no-data'}
+                  query={query}
+                  otherMatches={otherMatches}
+                  onClearSearch={handleClearSearch}
+                />
+              )}
             </div>
           </ErrorBoundary>
         )}

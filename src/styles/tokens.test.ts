@@ -52,11 +52,18 @@ const TEXT_PAIRS: Array<[string, string]> = [
   ['accent', 'bg'],
   ['accent', 'card-bg'],
   ['on-accent', 'accent'],
-  ['on-tier', 'tier-yokozuna'],
-  ['on-tier', 'tier-ozeki'],
-  ['on-tier', 'tier-sekiwake'],
   ['danger', 'bg'],
   ['warning', 'bg'],
+]
+
+/**
+ * [token, background] pairs drawn as rules and rings rather than text. WCAG
+ * gives non-text elements a 3:1 floor; --gold marks the Yokozuna edge and has
+ * to stay visible on both the page and the sheet.
+ */
+const EDGE_PAIRS: Array<[string, string]> = [
+  ['gold', 'bg'],
+  ['gold', 'card-bg'],
 ]
 
 describe.each([
@@ -64,7 +71,7 @@ describe.each([
   ['dark', dark],
 ])('%s tokens', (_scheme, tokens) => {
   it('defines every token used in the contrast pairs as a hex colour', () => {
-    for (const pair of TEXT_PAIRS) {
+    for (const pair of [...TEXT_PAIRS, ...EDGE_PAIRS]) {
       for (const name of pair) {
         expect(tokens[name], name).toMatch(/^#[0-9a-f]{3,6}$/i)
       }
@@ -73,6 +80,10 @@ describe.each([
 
   it.each(TEXT_PAIRS)('%s on %s meets WCAG AA (4.5:1)', (fg, bg) => {
     expect(contrast(tokens[fg], tokens[bg])).toBeGreaterThanOrEqual(4.5)
+  })
+
+  it.each(EDGE_PAIRS)('%s on %s meets the 3:1 non-text floor', (fg, bg) => {
+    expect(contrast(tokens[fg], tokens[bg])).toBeGreaterThanOrEqual(3)
   })
 
   it('keeps --accent-rgb in sync with --accent', () => {

@@ -2,7 +2,7 @@ import { memo } from 'react'
 import type { RankGroup, Rikishi } from '../../types/banzuke'
 import { formatRankLabel } from '../../utils/formatting'
 import { isSanyaku, RANK_LEVEL_NAMES } from '../../constants/ranks'
-import { jpRankShort } from '../../data/kanji'
+import { jpRankName, jpRankShort } from '../../data/kanji'
 import { SideCell } from '../SideCell/SideCell'
 import styles from './RankRow.module.css'
 
@@ -26,7 +26,11 @@ export const RankRow = memo(function RankRow({
   onSelectRikishi,
   highlight,
 }: RankRowProps) {
-  const kanji = jpRankShort(group.rankCode, group.rankNumber) || group.name.jp
+  const short = jpRankShort(group.rankCode, group.rankNumber) || group.name.jp
+  // The full printed rank on a wide sheet, the short form on a narrow one.
+  // Both are rendered and CSS picks one, so the rail never reflows on resize.
+  // The sanyaku ranks are written the same either way, so they render once.
+  const long = jpRankName(group.rankCode, group.rankNumber) || short
   const romaji = isSanyaku(group.rankCode)
     ? RANK_LEVEL_NAMES[group.rankLevel].toUpperCase()
     : formatRankLabel(group)
@@ -42,21 +46,30 @@ export const RankRow = memo(function RankRow({
           rikishi={group.east}
           side="east"
           rankLevel={group.rankLevel}
-          rowIndex={index}
           onSelect={onSelectRikishi}
           dimmed={isDimmed(group.east, highlight)}
         />
         <div className={styles.rail}>
-          <span className={styles.kanji} lang="ja">
-            {kanji}
-          </span>
+          {long === short ? (
+            <span className={styles.kanji} lang="ja">
+              {short}
+            </span>
+          ) : (
+            <>
+              <span className={`${styles.kanji} ${styles.kanjiLong}`} lang="ja">
+                {long}
+              </span>
+              <span className={`${styles.kanji} ${styles.kanjiShort}`} lang="ja" aria-hidden="true">
+                {short}
+              </span>
+            </>
+          )}
           <span className={styles.romaji}>{romaji}</span>
         </div>
         <SideCell
           rikishi={group.west}
           side="west"
           rankLevel={group.rankLevel}
-          rowIndex={index}
           onSelect={onSelectRikishi}
           dimmed={isDimmed(group.west, highlight)}
         />

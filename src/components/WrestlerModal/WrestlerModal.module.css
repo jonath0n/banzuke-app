@@ -18,42 +18,6 @@
   }
 }
 
-@keyframes photoReveal {
-  from {
-    opacity: 0;
-    transform: scale(0.85);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes badgePop {
-  0% {
-    opacity: 0;
-    transform: translateX(-50%) scale(0.5);
-  }
-  70% {
-    transform: translateX(-50%) scale(1.1);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(-50%) scale(1);
-  }
-}
-
-@keyframes detailsFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 /* The <dialog> itself. showModal() places it in the top layer and centres it. */
 .modal {
   width: min(100% - 2rem, 400px);
@@ -102,19 +66,13 @@
   color: var(--muted);
   cursor: pointer;
   transition:
-    background 150ms ease,
-    color 150ms ease,
-    transform 150ms var(--ease-spring);
+    background var(--dur-fast) ease,
+    color var(--dur-fast) ease;
 }
 
 .close:hover {
   background: rgb(var(--ink-rgb) / 0.12);
   color: var(--text);
-  transform: scale(1.1);
-}
-
-.close:active {
-  transform: scale(0.95);
 }
 
 /* Photo section */
@@ -136,10 +94,11 @@
   overflow: hidden;
   background: var(--border);
   box-shadow: var(--shadow-md);
-  animation: photoReveal 400ms var(--ease-out-expo) 100ms backwards;
   position: relative;
 }
 
+/* The mat around the print. Only the Yokozuna gets gold; every other rank is
+   told apart by the seal below and by where it sat on the sheet. */
 .photoWrapper::after {
   content: '';
   position: absolute;
@@ -150,19 +109,7 @@
 }
 
 .photoWrapper[data-rank-level='yokozuna']::after {
-  box-shadow: inset 0 0 0 3px var(--tier-yokozuna);
-}
-
-.photoWrapper[data-rank-level='ozeki']::after {
-  box-shadow: inset 0 0 0 3px var(--tier-ozeki);
-}
-
-.photoWrapper[data-rank-level='sekiwake']::after {
-  box-shadow: inset 0 0 0 3px var(--tier-sekiwake);
-}
-
-.photoWrapper[data-rank-level='komusubi']::after {
-  box-shadow: inset 0 0 0 3px var(--tier-komusubi);
+  box-shadow: inset 0 0 0 3px var(--gold);
 }
 
 .photoWrapper img {
@@ -199,14 +146,12 @@
   box-shadow:
     inset 0 0 0 1.5px var(--on-accent),
     inset 0 0 0 2.5px var(--accent);
-  animation: badgePop 350ms var(--ease-spring) 200ms backwards;
 }
 
 /* Details section */
 .details {
   padding: var(--space-4) var(--space-5) var(--space-5);
   text-align: center;
-  animation: detailsFadeIn 400ms var(--ease-out-expo) 250ms backwards;
 }
 
 .primaryName {
@@ -246,11 +191,11 @@
   text-align: left;
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius);
-  transition: background 150ms ease;
+  transition: background var(--dur-fast) ease;
 }
 
 .metaItem:hover {
-  background: rgba(0, 0, 0, 0.02);
+  background: rgb(var(--ink-rgb) / 0.03);
 }
 
 .metaLabel {
@@ -325,10 +270,6 @@
   .modal::backdrop {
     background: rgba(0, 0, 0, 0.7);
   }
-
-  .metaItem:hover {
-    background: rgba(255, 255, 255, 0.03);
-  }
 }
 
 /* Mobile: bottom sheet */
@@ -350,10 +291,7 @@
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .modal[open],
-  .modal::backdrop,
-  .photoWrapper,
-  .rankBadge,
-  .details {
+  .modal::backdrop {
     animation: none;
   }
 }
