@@ -22,6 +22,7 @@ npm run fetch-profiles # scrape wrestler profiles into public/rikishi-profiles.j
 npm run subset-fonts   # rebuild public/assets/fonts/NotoSerifJP-700-subset.woff2 + manifest
 npm run make-sample    # derive public/sample-data.json (Makuuchi only, labelled) from the live file
 npm run validate-data  # validate the committed snapshot
+npm run archive-banzuke # write public/banzuke/{id}.json + index from the snapshot
 ```
 
 Every change must pass `npm run validate && npm run test:run && npm run build` before commit.
@@ -41,10 +42,10 @@ Dates from upstream are naive JST strings; always go through `src/utils/dates.ts
 and formats in `Asia/Tokyo`.
 
 The deploy workflow (`.github/workflows/deploy.yml`) refreshes data on every push to `main`,
-daily at 07:00 JST, and on demand. When the tournament data changed it also regenerates the
-mincho subset; profiles are re-scraped only when stale; whatever changed is committed to `main`
-before building. `ci.yml` runs the checks on pull requests. There is no separate refresh
-workflow.
+daily at 07:00 JST, and on demand. When the tournament data changed it also archives the banzuke
+under `public/banzuke/`, regenerates the mincho subset; profiles are re-scraped only when stale;
+whatever changed is committed to `main` before building. `ci.yml` runs the checks on pull
+requests. There is no separate refresh workflow.
 
 ## Conventions
 
@@ -102,3 +103,9 @@ workflow.
   data or source gains a character the subset lacks — the fix is `npm run subset-fonts`, which
   the deploy job also runs whenever the banzuke changes. `'Noto Serif JP'` is first in
   `--font-jp-serif` on purpose, so Windows and Android render the Sheet the same as macOS.
+- `public/banzuke/` is the **archive**: one small validated file per tournament
+  (`src/data/archive.ts`), keyed by JSA rikishi id, plus `index.json`. JSA-sourced files come
+  from `scripts/archive-banzuke.ts`; 2025-11 → 2026-07 came from sumo-api.com via `nskId` (its
+  `heya`/`pref` have `jp: ''`). `src/data/archive-files.test.ts` insists the index matches the
+  files, is contiguous, and ends at the live tournament; the font subset includes these files
+  because departed names render in mincho.

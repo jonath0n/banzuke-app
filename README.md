@@ -34,6 +34,7 @@ src/
 public/
   latest-banzuke.json          # Static data snapshot, both divisions (auto-updated)
   sample-data.json             # Fallback: Makuuchi only, labelled (npm run make-sample)
+  banzuke/                   # One file per tournament + index.json (npm run archive-banzuke)
   assets/
     FranSans-Solid.otf         # Wordmark font
     fonts/
@@ -46,10 +47,14 @@ scripts/
   fetch-profiles.ts            # Scrapes wrestler profiles (height, weight, debut …)
   subset-fonts.ts              # Builds the mincho subset from the snapshot + source
   make-sample.ts               # Derives sample-data.json from the live snapshot
+  archive-banzuke.ts           # Adds the snapshot's tournament to public/banzuke/
+  backfill-archive.ts          # One-off: earlier tournaments from sumo-api.com, joined by JSA id
   lib/charset.ts               # Collects the Japanese glyph set
   lib/http.ts                  # fetch with timeout, retries and a User-Agent
   lib/jp-search-page.ts        # Parses the Japanese rikishi list page
   lib/jp-payload.ts            # Builds the Japanese payload from EN data + that page
+  lib/sumo-api.ts              # sumo-api shapes → archive format
+  lib/archive-io.ts            # Read/write the archive directory
 .github/
   workflows/
     deploy.yml                 # Refresh data, regenerate the font subset, build, deploy
@@ -83,9 +88,9 @@ A single workflow (`.github/workflows/deploy.yml`) runs on every push to `main`,
 
 1. Fetches the English and Japanese banzuke for both divisions from sumo.or.jp and validates
    them (both languages present, same tournament, same wrestlers, sane row counts).
-2. When the tournament data changed, regenerates the mincho subset (new wrestlers can bring
-   new kanji). Wrestler profiles are checked on every run and re-scraped only for wrestlers
-   whose stored profile predates the current tournament.
+2. When the tournament data changed, archives it under `public/banzuke/` and regenerates the
+   mincho subset (new wrestlers can bring new kanji). Wrestler profiles are checked on every
+   run and re-scraped only for wrestlers whose stored profile predates the current tournament.
 3. Commits `public/latest-banzuke.json`, `public/rikishi-profiles.json` and the font files to
    `main` when any of them changed (a fresh fetch timestamp alone is not a change).
 4. Validates, tests and builds the site with the freshest valid data and deploys it to
@@ -104,6 +109,14 @@ breaks a deploy.
   Japanese JSON endpoints only answer browser sessions, so the Japanese payload is assembled
   from this page plus the language-independent fields of the English payload.
 
+### Archive
+
+`public/banzuke/{bashoId}.json` holds every tournament the site has shown (ring names, ranks,
+sides, stable and region for Makuuchi and Juryo), written by `npm run archive-banzuke` from the
+JSA snapshot. Tournaments before this site kept copies (2025-11 → 2026-07) were filled once from
+[sumo-api.com](https://www.sumo-api.com/), whose rikishi records carry the JSA id (`nskId`), by
+`npm run backfill-archive -- 202511 202601 202603 202605 202607`. `index.json` lists them all.
+
 ### Manual (local)
 
 ```sh
@@ -112,6 +125,7 @@ npm run subset-fonts     # rebuild the mincho subset after the data (or source) 
 npm run fetch-profiles   # scrape wrestler profiles into public/rikishi-profiles.json
 npm run make-sample      # derive the labelled Makuuchi-only fallback from the live snapshot
 npm run validate-data    # validate the committed snapshot
+npm run archive-banzuke   # add the current snapshot's tournament to public/banzuke/
 ```
 
 Live site: https://jonath0n.github.io/banzuke-app/

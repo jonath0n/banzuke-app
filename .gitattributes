@@ -1,0 +1,5 @@
+# Prettier requires LF; keep checkouts identical on every platform.
+* text=auto eol=lf
+*.woff2 binary
+*.otf binary
+*.png binary
