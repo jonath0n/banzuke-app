@@ -134,7 +134,9 @@ requests. There is no separate refresh workflow.
   lower rank because each half is `direction: rtl`) and ↑ ↓ cross to the East/West partner; on the
   List ↑ ↓ walk ranks and ← → cross the row. One `keyTarget()` in `src/utils/rovingFocus.ts` serves
   both from the `data-side`/`data-pair` attributes on every wrestler button. The dialog's ‹ › and
-  ← → follow canonical order (`banzuke.rikishi`) and **replace** the URL entry so Back still closes.
+  ← → follow canonical order (`banzuke.rikishi`) laid out right to left like the sheet — ‹ and ←
+  go to the next (lower) rank, › and → to the previous — and **replace** the URL entry so Back
+  still closes.
   The Sheet tracks hover and keyboard focus as two separate states and lets pointer hover win over
   focus when both are present; whichever wins lights the East/West *partner* of the active column
   via `data-lit` on its button, never the hovered/focused column itself. Hover is cleared whenever

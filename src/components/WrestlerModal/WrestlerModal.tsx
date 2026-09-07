@@ -90,11 +90,13 @@ export function WrestlerModal({
     if (e.target === dialogRef.current) onClose()
   }
 
-  // Arrow keys step to the neighbouring wrestler; Tab keeps roving inside the dialog.
+  // Arrow keys step to the neighbouring wrestler, the way the sheet reads: the
+  // banzuke runs right to left, so ← is the next (lower) rank and → the previous.
+  // Tab keeps roving inside the dialog.
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDialogElement>) => {
     if (!neighbours || !onStep) return
     const step =
-      e.key === 'ArrowLeft' ? neighbours.previous : e.key === 'ArrowRight' ? neighbours.next : null
+      e.key === 'ArrowLeft' ? neighbours.next : e.key === 'ArrowRight' ? neighbours.previous : null
     if (step) {
       e.preventDefault()
       onStep(step)
@@ -200,24 +202,25 @@ export function WrestlerModal({
           <div className={styles.details}>
             {neighbours && onStep && (
               <div className={styles.stepper}>
-                {neighbours.previous ? (
-                  <button
-                    type="button"
-                    className={styles.stepButton}
-                    onClick={() => onStep(neighbours.previous!)}
-                    aria-label={strings.previousWrestler(nameOf(neighbours.previous))}
-                  >
-                    ‹
-                  </button>
-                ) : (
-                  <span className={styles.stepGap} aria-hidden="true" />
-                )}
+                {/* Right to left, as the sheet reads: next (lower rank) on the left */}
                 {neighbours.next ? (
                   <button
                     type="button"
                     className={styles.stepButton}
                     onClick={() => onStep(neighbours.next!)}
                     aria-label={strings.nextWrestler(nameOf(neighbours.next))}
+                  >
+                    ‹
+                  </button>
+                ) : (
+                  <span className={styles.stepGap} aria-hidden="true" />
+                )}
+                {neighbours.previous ? (
+                  <button
+                    type="button"
+                    className={styles.stepButton}
+                    onClick={() => onStep(neighbours.previous!)}
+                    aria-label={strings.previousWrestler(nameOf(neighbours.previous))}
                   >
                     ›
                   </button>
