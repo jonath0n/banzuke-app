@@ -80,11 +80,11 @@ const en = {
     numeral:
       'The small numeral beneath the tier is added here, because a screen has no fixed sheet to count along: 十七 is Maegashira 17.',
     origin:
-      'Between the rank and the name is the wrestler\u{2019}s home: a prefecture, or a country for wrestlers born abroad.',
-    name: 'The ring name, the shikona, reads top to bottom. A wrestler takes one on joining a stable, and it often shares a character with the stablemaster or the stable\u{2019}s tradition.',
-    gold: 'The gold rule at the head of a column marks a Yokozuna, the one rank the sheet gives a colour of its own.',
+      'Between the rank and the name is the wrestler’s home: a prefecture, or a country for wrestlers born abroad.',
+    name: 'The ring name, the shikona, reads top to bottom. A wrestler takes one on joining a stable, and it often shares a character with the stablemaster or the stable’s tradition.',
+    gold: 'The gold rule at the head of a column marks a Yokozuna, the one rank this sheet gives a colour of its own.',
     changes:
-      'With Changes on, the small mark under a name is the rank the wrestler held on the previous banzuke: ▲ for a rise, ▼ for a fall, 新 for a newcomer to the division.',
+      'With Changes on, the small mark under a name is the rank the wrestler held on the previous banzuke: ▲ for a rise, ▼ for a fall, New for a newcomer to the division.',
     results:
       'With Results on during a tournament, the score under each name is wins and losses so far. Eight wins is kachi-koshi, a winning record; a hairline 優 marks the champion.',
   } satisfies Record<GuideKey, string>,
@@ -220,16 +220,16 @@ const jp: Strings = {
   guideIntro:
     '番付は、年六回の本場所ごとに日本相撲協会が発表する力士の序列表です。字の大きさ、東西、そして段の中の位置が、そのまま力士の地位を表します。',
   guideItem: {
-    size: '地位は字の大きさで表されます。上位ほど大きく、下に行くほど小さくなり、実際の番付では下位の力士の名は虫眼鏡がいるほどの細字になります。',
+    size: '地位は字の大きさで表されます。上位ほど大きく、下に行くほど小さくなり、実際の番付では下位の力士の名は虫眼鏡が要るほどの細字になります。',
     east: '右が東、左が西。番付は右から左へ読み、同じ地位では東がわずかに上位です。',
     tier: '各列の上にある太い文字が地位です（横綱・大関・関脇・小結・前頭・十両）。実際の番付には枚数は書かれず、段の中の位置で何枚目かがわかります。',
     numeral:
       '地位の下の小さな数字はこのサイトが添えたものです。画面では位置を数えにくいため、十七なら前頭十七枚目と読めるようにしています。',
     origin: '地位と四股名の間には出身地が入ります。都道府県、外国出身の力士なら国名です。',
-    name: '四股名は上から下へ読みます。入門時に師匠や部屋の伝統にちなんだ字を受けることが多く、部屋ごとの字が見て取れます。',
-    gold: '列の頭の金の線は横綱の印です。番付でただひとつ色を持つ地位です。',
+    name: '四股名は上から下へ読みます。入門時に師匠や部屋の伝統にちなんだ字を受け継ぐことが多く、部屋ごとの字が見て取れます。',
+    gold: '列の頭の金の線は横綱の印です。この番付表でただひとつ色を持つ地位です。',
     changes:
-      '「変動」をつけると、四股名の下に前の番付での地位が出ます。▲は昇進、▼は降下、新は新入幕・新十両です。',
+      '「変動」をつけると、四股名の下に前の番付での地位が出ます。▲は昇進、▼は降格、新は新入幕・新十両です。',
     results:
       '場所中に「星取」をつけると、四股名の下にこれまでの勝敗が出ます。八勝で勝ち越し、優の印は優勝力士です。',
   },

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useBanzuke } from './hooks/useBanzuke'
 import { loadProfiles } from './hooks/useProfiles'
 import { useArchiveIndex, useArchivedBanzuke } from './hooks/useArchive'
@@ -196,8 +196,10 @@ function AppContent() {
   )
   const movements = diffWanted && diff ? diff.movements : null
 
-  // The guide annotates the paper, so it exists only on the Sheet with something on it.
-  const guideOn = guideParam === '1' && view === 'sheet' && !nothingToShow
+  // The guide annotates the paper, so it exists only on the Sheet with
+  // something on it; a search that drops rank groups also drops the marks
+  // the legend numbers, so filtering hides it too.
+  const guideOn = guideParam === '1' && view === 'sheet' && !nothingToShow && !isFiltering
   const guide = useMemo(
     () =>
       guideOn
@@ -209,6 +211,15 @@ function AppContent() {
     (on: boolean) => setGuideParam(on ? '1' : null),
     [setGuideParam]
   )
+
+  // Closing the guide from the legend unmounts its own Close link; return
+  // focus to the controls-row link that reopens it rather than dropping it.
+  const guideLinkRef = useRef<HTMLAnchorElement>(null)
+  const wasGuideOn = useRef(guideOn)
+  useEffect(() => {
+    if (wasGuideOn.current && !guideOn) guideLinkRef.current?.focus()
+    wasGuideOn.current = guideOn
+  }, [guideOn])
 
   const handleSelectRikishi = useCallback(
     (rikishi: Rikishi) => setSelectedId(String(rikishi.id)),
@@ -346,8 +357,8 @@ function AppContent() {
             {/* Read once, not left on: once open, the legend beneath the paper
                 carries its own close link, so this one steps aside rather than
                 doubling it. */}
-            {view === 'sheet' && !nothingToShow && !guideOn && (
-              <GuideLink on={guideOn} onToggle={handleToggleGuide} />
+            {view === 'sheet' && !nothingToShow && !isFiltering && !guideOn && (
+              <GuideLink ref={guideLinkRef} on={false} onToggle={handleToggleGuide} />
             )}
           </div>
         )}

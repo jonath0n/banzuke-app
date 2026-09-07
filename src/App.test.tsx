@@ -314,4 +314,27 @@ describe('App', () => {
     expect(screen.queryByRole('link', { name: /How to read a banzuke|Hide the guide/ })).toBeNull()
     expect(screen.queryByRole('region', { name: 'How to read a banzuke' })).toBeNull()
   })
+
+  it('hides the guide while a search is filtering the sheet, and restores it when cleared', async () => {
+    const user = userEvent.setup()
+    window.history.replaceState(null, '', '/?guide=1&q=onosato')
+    render(<App />)
+    await screen.findByRole('button', { name: /Onosato, West/ })
+    expect(screen.queryByRole('region', { name: 'How to read a banzuke' })).toBeNull()
+    expect(screen.queryByRole('link', { name: /How to read a banzuke|Hide the guide/ })).toBeNull()
+
+    await user.click(screen.getByRole('button', { name: 'Clear search' }))
+    await screen.findByRole('button', { name: /Hoshoryu, East/ })
+    expect(screen.getByRole('region', { name: 'How to read a banzuke' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Hide the guide' })).toBeInTheDocument()
+  })
+
+  it('returns focus to the guide link when the guide is closed from the legend', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await screen.findByRole('button', { name: /Hoshoryu, East/ })
+    await user.click(screen.getByRole('link', { name: 'How to read a banzuke' }))
+    await user.click(screen.getByRole('link', { name: 'Hide the guide' }))
+    expect(screen.getByRole('link', { name: 'How to read a banzuke' })).toHaveFocus()
+  })
 })

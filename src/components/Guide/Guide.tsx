@@ -1,4 +1,4 @@
-import { useId, type MouseEvent } from 'react'
+import { forwardRef, useId, type MouseEvent } from 'react'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { useStrings } from '../../i18n/useStrings'
 import { langAttr } from '../../i18n/strings'
@@ -24,11 +24,15 @@ interface GuideLinkProps {
 }
 
 /** The way in: a quiet link beside the controls, read once rather than left on. */
-export function GuideLink({ on, onToggle }: GuideLinkProps) {
+export const GuideLink = forwardRef<HTMLAnchorElement, GuideLinkProps>(function GuideLink(
+  { on, onToggle },
+  ref
+) {
   const { language } = useLanguage()
   const strings = useStrings()
   return (
     <a
+      ref={ref}
       className={styles.link}
       href={guideHref(!on)}
       lang={langAttr(language)}
@@ -42,7 +46,7 @@ export function GuideLink({ on, onToggle }: GuideLinkProps) {
       {on ? strings.guideClose : strings.guideOpen}
     </a>
   )
-}
+})
 
 interface GuideProps {
   /** Legend items in mark order: item i carries mark i + 1. */
