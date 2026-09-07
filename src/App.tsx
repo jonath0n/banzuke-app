@@ -89,9 +89,9 @@ function AppContent() {
       (tournamentStatus.kind === 'upcoming' && tournamentStatus.daysUntil <= 1))
   const results = useResults(inSeason && banzuke ? banzuke.basho.id : null)
   const resultsOn = resultsParam !== '0'
-  const resultsShown = resultsOn && results.results != null
-  const records = resultsShown ? results.results!.records : null
-  const champions = resultsShown ? results.results!.yusho : undefined
+  const file = resultsOn ? results.results : null
+  const records = file?.records ?? null
+  const champions = file?.yusho
   // Defaults to the latest fought day; the stepper's › reaches a later
   // published card via lastSteppableDay inside Bouts.
   const day = boutsDay ?? (results.results ? Math.max(1, results.results.day) : 1)
@@ -354,9 +354,9 @@ function AppContent() {
                   onSelectRikishi={handleSelectRikishi}
                 />
               )}
-              {resultsShown && !isFiltering && (
+              {file && !isFiltering && (
                 <Bouts
-                  results={results.results!}
+                  results={file}
                   division={division}
                   rows={allRows}
                   day={day}
@@ -373,7 +373,7 @@ function AppContent() {
       <WrestlerModal
         rikishi={selectedRikishi}
         onClose={handleCloseModal}
-        record={selectedRikishi && records ? (records[String(selectedRikishi.id)] ?? null) : null}
+        record={selectedRikishi ? (records?.[String(selectedRikishi.id)] ?? null) : null}
       />
     </>
   )

@@ -90,7 +90,9 @@ function Column({
   const recordText = record ? describeRecord(record, language) : ''
   const label = `${name}, ${strings.side[rikishi.side]}. ${rikishi.rankName[language]}.${
     movementText ? ` ${movementText}.` : ''
-  }${recordText ? ` ${recordText}` : ''} ${strings.viewDetails}`
+  }${recordText ? ` ${recordText}` : ''}${champion ? ` ${strings.yusho}.` : ''} ${
+    strings.viewDetails
+  }`
 
   const content = (
     <>
@@ -173,6 +175,7 @@ export function BanzukeSheet({
   const strings = useStrings()
   const { language } = useLanguage()
   const groups = visibleGroups(groupRowsByRank(rows), highlight)
+  const championIds = new Set(Object.values(champions ?? {}))
 
   // The lowest numbered rank on this sheet sets the bottom of the size ladder.
   const lowestNumber = rows.reduce(
@@ -205,7 +208,7 @@ export function BanzukeSheet({
               dimmed={isDimmed(rikishi)}
               movement={movements?.get(rikishi.id) ?? null}
               record={records?.[String(rikishi.id)] ?? null}
-              champion={Object.values(champions ?? {}).includes(rikishi.id)}
+              champion={championIds.has(rikishi.id)}
             />
           ))}
         </div>

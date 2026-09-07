@@ -146,6 +146,7 @@ describe('BanzukeSheet', () => {
     })
     const onosato = screen.getByRole('button', { name: /Onosato/ })
     expect(onosato).toHaveAccessibleName(/10 wins, 2 losses. Kachi-koshi/)
+    expect(onosato).toHaveAccessibleName(/Yusho/)
     expect(onosato).toHaveTextContent('10–2')
     expect(onosato).toHaveTextContent('優')
     expect(screen.getByRole('button', { name: /Hoshoryu/ })).not.toHaveAccessibleName(/wins/)

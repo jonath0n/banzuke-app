@@ -103,7 +103,9 @@ function SideCellInner({
     const recordText = record ? describeRecord(record, language) : ''
     const label = `${displayName}, ${strings.side[side]}.${
       movementText ? ` ${movementText}.` : ''
-    }${recordText ? ` ${recordText}` : ''} ${strings.viewDetails}`
+    }${recordText ? ` ${recordText}` : ''}${champion ? ` ${strings.yusho}.` : ''} ${
+      strings.viewDetails
+    }`
     return (
       <button
         type="button"

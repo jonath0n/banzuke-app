@@ -3,8 +3,15 @@ import type { Division, Rikishi } from '../../types/banzuke'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { useStrings } from '../../i18n/useStrings'
 import { langAttr } from '../../i18n/strings'
-import { kimariteLabel } from '../../data/kimarite'
-import { leaders, MAX_DAYS, scoreLabel, type Fighter, type ResultsFile } from '../../data/results'
+import { kimariteGloss, kimariteLabel } from '../../data/kimarite'
+import {
+  leaders,
+  MAX_DAYS,
+  scoreLabel,
+  type Fighter,
+  type Match,
+  type ResultsFile,
+} from '../../data/results'
 import styles from './Bouts.module.css'
 
 interface BoutsProps {
@@ -18,8 +25,7 @@ interface BoutsProps {
 }
 
 /** The last day worth stepping to: the latest published card or the latest fought day. */
-// eslint-disable-next-line react-refresh/only-export-components
-export function lastSteppableDay(results: ResultsFile): number {
+function lastSteppableDay(results: ResultsFile): number {
   const published = Object.keys(results.torikumi).map(Number)
   return Math.min(MAX_DAYS, Math.max(results.day, ...published, 1))
 }
@@ -29,7 +35,7 @@ export function lastSteppableDay(results: ResultsFile): number {
  * whom, who won and how. Above it, the leaders — the one narrative every
  * basho carries — as a single line, never a table.
  */
-export function Bouts({ results, rows, day, onChangeDay, onSelectRikishi }: BoutsProps) {
+export function Bouts({ results, division, rows, day, onChangeDay, onSelectRikishi }: BoutsProps) {
   const { language } = useLanguage()
   const strings = useStrings()
   const headingId = useId()
@@ -37,10 +43,17 @@ export function Bouts({ results, rows, day, onChangeDay, onSelectRikishi }: Bout
   const byId = new Map(rows.map((r) => [r.id, r]))
   // Cross-division bouts are published on the Makuuchi card only, so select by
   // who is fighting, not by the card the match came from.
-  const matches = (results.torikumi[String(day)] ?? []).filter(
-    (m) =>
-      (m.east.id !== null && byId.has(m.east.id)) || (m.west.id !== null && byId.has(m.west.id))
-  )
+  // This division's own card comes first, in matchNo order; cross bouts
+  // published on the other division's card come last.
+  const matches = (results.torikumi[String(day)] ?? [])
+    .filter(
+      (m) =>
+        (m.east.id !== null && byId.has(m.east.id)) || (m.west.id !== null && byId.has(m.west.id))
+    )
+    .sort((a, b) => {
+      const own = (m: Match) => (m.division === division ? 0 : 1)
+      return own(a) - own(b) || a.matchNo - b.matchNo
+    })
   const last = lastSteppableDay(results)
   const tiers = results.day >= 1 ? leaders(results.records, rows) : []
 
@@ -74,7 +87,7 @@ export function Bouts({ results, rows, day, onChangeDay, onSelectRikishi }: Bout
         >
           ‹
         </button>
-        <h2 id={headingId} className={styles.heading}>
+        <h2 id={headingId} className={styles.heading} aria-live="polite">
           {strings.boutsHeading(day)}
         </h2>
         <button
@@ -104,15 +117,11 @@ export function Bouts({ results, rows, day, onChangeDay, onSelectRikishi }: Bout
       ) : (
         <ol className={styles.list}>
           {matches.map((m) => (
-            <li
-              key={m.matchNo}
-              className={styles.match}
-              data-decided={m.winnerId !== null || undefined}
-            >
+            <li key={`${m.division}-${m.matchNo}`} className={styles.match}>
               <span className={styles.east}>
                 {fighter(m.east, m.winnerId !== null && m.winnerId === m.east.id)}
               </span>
-              <span className={styles.result}>
+              <span className={styles.result} title={kimariteGloss(m.kimarite) ?? undefined}>
                 {m.winnerId === null ? strings.undecided : kimariteLabel(m.kimarite, language)}
               </span>
               <span className={styles.west}>

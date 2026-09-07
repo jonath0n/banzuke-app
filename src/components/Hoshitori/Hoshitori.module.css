@@ -81,15 +81,19 @@
   display: inline-grid;
   place-items: center;
   min-width: 1.2em;
-  height: 1.2em;
+  min-height: 1.2em;
   padding-inline: 0.15em;
-  font-family: var(--font-jp-serif);
+  font-family: var(--font-names);
   font-weight: 700;
   color: var(--text);
   border: 1px solid var(--text);
   border-radius: var(--radius-sm);
   text-transform: none;
   letter-spacing: 0;
+}
+
+.seal:lang(ja) {
+  font-family: var(--font-jp-serif);
 }
 
 @media (max-width: 600px) {

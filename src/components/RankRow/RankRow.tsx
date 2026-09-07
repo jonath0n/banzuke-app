@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import type { Division, RankGroup, Rikishi } from '../../types/banzuke'
+import type { RankGroup, Rikishi } from '../../types/banzuke'
 import { formatRankLabel } from '../../utils/formatting'
 import { isSanyaku, RANK_LEVEL_NAMES } from '../../constants/ranks'
 import { jpRankName, jpRankShort } from '../../data/kanji'
@@ -20,8 +20,8 @@ interface RankRowProps {
   movements?: Map<number, Movement> | null
   /** This tournament's records, keyed by wrestler id. */
   records?: Record<string, RikishiRecord> | null
-  /** Tournament champion per division, once decided. */
-  champions?: Partial<Record<Division, number>>
+  /** Ids of the tournament champions, across every division. */
+  championIds?: ReadonlySet<number>
 }
 
 function isDimmed(rikishi: Rikishi | null, highlight: Set<number> | null | undefined): boolean {
@@ -35,7 +35,7 @@ export const RankRow = memo(function RankRow({
   highlight,
   movements,
   records,
-  champions,
+  championIds,
 }: RankRowProps) {
   const short = jpRankShort(group.rankCode, group.rankNumber) || group.name.jp
   // The full printed rank on a wide sheet, the short form on a narrow one.
@@ -61,7 +61,7 @@ export const RankRow = memo(function RankRow({
           dimmed={isDimmed(group.east, highlight)}
           movement={group.east ? (movements?.get(group.east.id) ?? null) : null}
           record={group.east ? (records?.[String(group.east.id)] ?? null) : null}
-          champion={!!group.east && Object.values(champions ?? {}).includes(group.east.id)}
+          champion={!!group.east && !!championIds?.has(group.east.id)}
         />
         <div className={styles.rail}>
           {long === short ? (
@@ -88,7 +88,7 @@ export const RankRow = memo(function RankRow({
           dimmed={isDimmed(group.west, highlight)}
           movement={group.west ? (movements?.get(group.west.id) ?? null) : null}
           record={group.west ? (records?.[String(group.west.id)] ?? null) : null}
-          champion={!!group.west && Object.values(champions ?? {}).includes(group.west.id)}
+          champion={!!group.west && !!championIds?.has(group.west.id)}
         />
       </div>
     </div>

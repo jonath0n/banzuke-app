@@ -186,6 +186,7 @@ export function BanzukeGrid({
   champions,
 }: BanzukeGridProps) {
   const grouped = visibleGroups(groupRowsByRank(rows), highlight)
+  const championIds = new Set(Object.values(champions ?? {}))
 
   if (grouped.length === 0) {
     return (
@@ -229,7 +230,7 @@ export function BanzukeGrid({
               highlight={highlight}
               movements={movements}
               records={records}
-              champions={champions}
+              championIds={championIds}
             />
           ))}
         </section>

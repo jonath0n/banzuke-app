@@ -24,6 +24,13 @@ describe('App', () => {
     window.history.replaceState(null, '', '/')
     resetArchiveCache()
     resetResultsCache()
+    // From 2026-09-12 the fixture basho (637: 2026-09-13…27) is in season for
+    // every un-faked test, which makes the shared stub's Hoshoryu ambiguous
+    // with the Bouts card's fighter button of the same name. Pin the clock
+    // before day 1 so results stay off unless a test opts in with its own
+    // vi.setSystemTime.
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+    vi.setSystemTime(new Date('2026-09-04T12:00:00+09:00'))
     vi.stubGlobal(
       'fetch',
       vi.fn((url: RequestInfo | URL) =>
@@ -201,7 +208,6 @@ describe('App', () => {
   })
 
   it('shows results by default during the tournament and hides them with ?results=0', async () => {
-    vi.useFakeTimers({ shouldAdvanceTime: true })
     vi.setSystemTime(new Date('2026-09-24T12:00:00+09:00'))
     const user = userEvent.setup()
     render(<App />)
@@ -218,8 +224,6 @@ describe('App', () => {
   })
 
   it('offers no results toggle out of season or when the file is missing', async () => {
-    vi.useFakeTimers({ shouldAdvanceTime: true })
-    vi.setSystemTime(new Date('2026-09-04T12:00:00+09:00'))
     render(<App />)
     await screen.findByRole('button', { name: /Hoshoryu, East/ })
     expect(screen.queryByRole('button', { name: /Results/ })).toBeNull()
