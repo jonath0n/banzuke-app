@@ -62,6 +62,7 @@ export const RankRow = memo(function RankRow({
           movement={group.east ? (movements?.get(group.east.id) ?? null) : null}
           record={group.east ? (records?.[String(group.east.id)] ?? null) : null}
           champion={!!group.east && !!championIds?.has(group.east.id)}
+          pairKey={group.key}
         />
         <div className={styles.rail}>
           {long === short ? (
@@ -89,6 +90,7 @@ export const RankRow = memo(function RankRow({
           movement={group.west ? (movements?.get(group.west.id) ?? null) : null}
           record={group.west ? (records?.[String(group.west.id)] ?? null) : null}
           champion={!!group.west && !!championIds?.has(group.west.id)}
+          pairKey={group.key}
         />
       </div>
     </div>

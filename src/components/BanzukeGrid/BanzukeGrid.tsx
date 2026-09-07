@@ -6,6 +6,7 @@ import { useLanguage } from '../../contexts/LanguageContext'
 import { langAttr } from '../../i18n/strings'
 import { RankRow } from '../RankRow/RankRow'
 import { useStrings } from '../../i18n/useStrings'
+import { handleRovingKey } from '../../utils/rovingFocus'
 import type { Movement } from '../../utils/diff'
 import type { RikishiRecord } from '../../data/results'
 import styles from './BanzukeGrid.module.css'
@@ -203,7 +204,9 @@ export function BanzukeGrid({
   let rowIndex = 0
 
   return (
-    <div className={styles.grid}>
+    /* eslint-disable-next-line jsx-a11y/no-static-element-interactions --
+       keyboard delegation for the buttons inside; not itself interactive */
+    <div className={styles.grid} onKeyDown={(e) => handleRovingKey(e.currentTarget, e, 'list')}>
       {splitIntoTiers(grouped).map((tier) => (
         <section
           key={tier.level}

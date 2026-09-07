@@ -7,7 +7,8 @@ printed — vertical, read right to left, East on the right, ranked by character
 which marks each name with the rank it held at the previous tournament and lists who left each
 division. During a tournament **Results** lays the hoshitori over both views — each name's
 record, ○● on the List, kachi-koshi and the yusho — with the day's bouts and the leaders beneath
-the paper. Bilingual English/Japanese.
+the paper. Arrow keys move between wrestlers on the Sheet and the List; the wrestler dialog steps
+along the banzuke with ‹ › or ← →. Bilingual English/Japanese.
 
 ## Project structure
 
@@ -40,6 +41,7 @@ src/
     banzuke.ts                 # TypeScript interfaces
   utils/
     formatting.ts              # Date, rank, and URL helpers
+    rovingFocus.ts             # Arrow-key travel between wrestlers (sheet and list)
 public/
   latest-banzuke.json          # Static data snapshot, both divisions (auto-updated)
   sample-data.json             # Fallback: Makuuchi only, labelled (npm run make-sample)

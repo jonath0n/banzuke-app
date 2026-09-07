@@ -154,6 +154,40 @@
   text-align: center;
 }
 
+/* Previous / next along the banzuke, either side of the name */
+.stepper {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 var(--space-2);
+}
+
+.stepButton,
+.stepGap {
+  min-width: 40px;
+  min-height: 40px;
+}
+
+.stepButton {
+  display: inline-grid;
+  place-items: center;
+  font: inherit;
+  font-size: var(--text-lg);
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.stepButton:hover {
+  color: var(--text);
+  border-color: var(--border);
+}
+
+/* .stepGap: .stepper is a flex row, so this holds the step button's box as a
+   flex item at the end of the banzuke, and the shared min-width/min-height
+   rule above sizes it — so the name stays centred. */
+
 .primaryName {
   margin: 0;
   font-family: var(--font-names);
@@ -166,6 +200,12 @@
 .primaryName:lang(ja) {
   font-family: var(--font-jp-serif);
   font-weight: 600;
+}
+
+/* Focused programmatically after a step; :focus-visible from base.css still
+   applies when a keyboard user tabs to it directly. */
+.primaryName:focus:not(:focus-visible) {
+  outline: none;
 }
 
 .secondaryName {

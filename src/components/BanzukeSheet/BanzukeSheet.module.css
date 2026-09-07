@@ -113,6 +113,11 @@
   background: rgb(var(--ink-rgb) / 0.06);
 }
 
+/* The East/West partner of the hovered or focused column, across the halves */
+.column[data-lit] {
+  background: rgb(var(--ink-rgb) / 0.06);
+}
+
 /* Gold at the head of the Yokozuna column, the sheet's one rank hue */
 .column[data-rank-level='yokozuna'] {
   border-top: 2px solid var(--gold);

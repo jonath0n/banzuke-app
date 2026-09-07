@@ -1,6 +1,7 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import type { ComponentProps } from 'react'
 import { LanguageProvider } from '../../contexts/LanguageContext'
 import { makeRikishi, makeRecord } from '../../test/fixtures'
 import { onosatoProfile } from '../../data/profiles.test'
@@ -27,13 +28,14 @@ function renderModal(
   rikishi = onosato,
   onClose = vi.fn(),
   lang: 'en' | 'jp' = 'en',
-  record: RikishiRecord | null = null
+  record: RikishiRecord | null = null,
+  extra: Partial<ComponentProps<typeof WrestlerModal>> = {}
 ) {
   window.history.replaceState({}, '', `/?lang=${lang}`)
   const utils = render(
     <LanguageProvider>
       <button type="button">opener</button>
-      <WrestlerModal rikishi={rikishi} onClose={onClose} record={record} />
+      <WrestlerModal rikishi={rikishi} onClose={onClose} record={record} {...extra} />
     </LanguageProvider>
   )
   return { ...utils, onClose }
@@ -196,5 +198,103 @@ describe('WrestlerModal', () => {
     expect(bouts[0]).toHaveTextContent('vs Wakatakakage')
     expect(bouts[0]).toHaveTextContent('yorikiri')
     expect(bouts[7]).toHaveTextContent('Absent')
+  })
+
+  it('steps to the neighbours by button and by arrow key, and hides an absent side', async () => {
+    const user = userEvent.setup()
+    const onStep = vi.fn()
+    const next = makeRikishi({ id: 1, shikona: { en: 'Hoshoryu', jp: '豊昇龍' } })
+    renderModal(onosato, vi.fn(), 'en', null, { neighbours: { previous: null, next }, onStep })
+    expect(screen.queryByRole('button', { name: /Previous/ })).toBeNull()
+    await user.click(screen.getByRole('button', { name: 'Next: Hoshoryu' }))
+    expect(onStep).toHaveBeenCalledWith(next)
+    await user.keyboard('{ArrowRight}')
+    expect(onStep).toHaveBeenCalledTimes(2)
+    await user.keyboard('{ArrowLeft}')
+    expect(onStep).toHaveBeenCalledTimes(2)
+  })
+
+  it('returns focus to the current wrestler’s button on close after stepping', async () => {
+    const user = userEvent.setup()
+    const onClose = vi.fn()
+    const { rerender } = render(
+      <LanguageProvider>
+        <button type="button" data-id="4227" data-pair="100-1-1" data-side="east">
+          Onosato
+        </button>
+        <button type="button" data-id="1" data-pair="100-1-1" data-side="west">
+          Hoshoryu
+        </button>
+        <WrestlerModal rikishi={onosato} onClose={onClose} />
+      </LanguageProvider>
+    )
+    const hoshoryu = makeRikishi({ id: 1, shikona: { en: 'Hoshoryu', jp: '豊昇龍' } })
+    rerender(
+      <LanguageProvider>
+        <button type="button" data-id="4227" data-pair="100-1-1" data-side="east">
+          Onosato
+        </button>
+        <button type="button" data-id="1" data-pair="100-1-1" data-side="west">
+          Hoshoryu
+        </button>
+        <WrestlerModal rikishi={hoshoryu} onClose={onClose} />
+      </LanguageProvider>
+    )
+    await user.click(screen.getByRole('button', { name: 'Close wrestler details' }))
+    // The native dialog's close event drives focus return
+    screen.getByRole('dialog', { hidden: true }).dispatchEvent(new Event('close'))
+    expect(screen.getByRole('button', { name: 'Hoshoryu' })).toHaveFocus()
+  })
+
+  it('moves focus to the wrestler name after stepping to a neighbour', async () => {
+    const user = userEvent.setup()
+    const onStep = vi.fn()
+    const next = makeRikishi({ id: 1, shikona: { en: 'Hoshoryu', jp: '豊昇龍' } })
+    const { rerender } = renderModal(onosato, vi.fn(), 'en', null, {
+      neighbours: { previous: null, next },
+      onStep,
+    })
+    await user.click(screen.getByRole('button', { name: 'Next: Hoshoryu' }))
+    expect(onStep).toHaveBeenCalledWith(next)
+    rerender(
+      <LanguageProvider>
+        <button type="button">opener</button>
+        <WrestlerModal
+          rikishi={next}
+          onClose={vi.fn()}
+          neighbours={{ previous: onosato, next: null }}
+          onStep={onStep}
+        />
+      </LanguageProvider>
+    )
+    expect(screen.getByRole('heading', { name: 'Hoshoryu' })).toHaveFocus()
+  })
+
+  it('returns focus to the opener, not a same-wrestler button elsewhere, when closed without stepping', async () => {
+    const user = userEvent.setup()
+    const onClose = vi.fn()
+    const { rerender } = render(
+      <LanguageProvider>
+        <button type="button">opener</button>
+        <button type="button" data-id="4227" data-pair="100-1-1" data-side="east">
+          Onosato
+        </button>
+        <WrestlerModal rikishi={null} onClose={onClose} />
+      </LanguageProvider>
+    )
+    const opener = screen.getByRole('button', { name: 'opener' })
+    opener.focus()
+    rerender(
+      <LanguageProvider>
+        <button type="button">opener</button>
+        <button type="button" data-id="4227" data-pair="100-1-1" data-side="east">
+          Onosato
+        </button>
+        <WrestlerModal rikishi={onosato} onClose={onClose} />
+      </LanguageProvider>
+    )
+    await user.click(screen.getByRole('button', { name: 'Close wrestler details' }))
+    screen.getByRole('dialog', { hidden: true }).dispatchEvent(new Event('close'))
+    expect(opener).toHaveFocus()
   })
 })
