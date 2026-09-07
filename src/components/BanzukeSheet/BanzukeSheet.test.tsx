@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { BanzukeSheet } from './BanzukeSheet'
@@ -161,7 +161,7 @@ describe('BanzukeSheet', () => {
     expect(onosato).toHaveAttribute('data-pair', '100-1-1')
     expect(onosato).toHaveAttribute('data-id', '1')
 
-    onosato.focus()
+    act(() => onosato.focus())
     // Focus lights the partner across the halves, never the focused column itself
     expect(hoshoryu).toHaveAttribute('data-lit')
     expect(onosato).not.toHaveAttribute('data-lit')

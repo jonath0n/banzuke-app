@@ -1,5 +1,4 @@
 import { memo, useCallback, useState } from 'react'
-import { flushSync } from 'react-dom'
 import type { Division, RankGroup, Rikishi, Side } from '../../types/banzuke'
 import { groupRowsByRank } from '../../utils/formatting'
 import { shortPrefecture, SIDE_KANJI, toKanjiNumber } from '../../data/kanji'
@@ -260,11 +259,11 @@ export function BanzukeSheet({
         className={styles.paper}
         role="group"
         aria-label={strings.sheetLabel}
-        onPointerOver={(e) => flushSync(() => setHover(refOf(e.target)))}
-        onPointerOut={(e) => flushSync(() => setHover(refOf(e.relatedTarget)))}
-        onPointerLeave={() => flushSync(() => setHover(null))}
-        onFocus={(e) => flushSync(() => setFocus(refOf(e.target)))}
-        onBlur={(e) => flushSync(() => setFocus(refOf(e.relatedTarget)))}
+        onPointerOver={(e) => setHover(refOf(e.target))}
+        onPointerOut={(e) => setHover(refOf(e.relatedTarget))}
+        onPointerLeave={() => setHover(null)}
+        onFocus={(e) => setFocus(refOf(e.target))}
+        onBlur={(e) => setFocus(refOf(e.relatedTarget))}
         onKeyDown={handleKeyDown}
       >
         {half('east')}
