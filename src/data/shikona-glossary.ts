@@ -15,6 +15,8 @@ export interface Gloss {
   en: string
   /** A stable's mark, a reading, or a piece of context worth a line. */
   note?: string
+  /** The kana or character that links the parts of a name; never the part worth a note. */
+  joining?: true
 }
 
 export const COMPOUNDS: Record<string, Gloss> = {
@@ -32,22 +34,16 @@ export const COMPOUNDS: Record<string, Gloss> = {
   疾風: { en: 'a gale; hayate' },
   不動: { en: 'immovable' },
   凌駕: { en: 'to surpass' },
-  阿武: {
-    en: 'Abu, a district in Yamaguchi; read O- in the stable name Onomatsu',
-    note: 'the Onomatsu stable’s mark',
-  },
+  阿武: { en: 'Abu, a district in Yamaguchi', note: 'the Onomatsu stable’s mark, read O-' },
   佐田: { en: 'Sada, a place and family name' },
 }
 
 export const GLOSSARY: Record<string, Gloss> = {
   // Joining kana
-  の: {
-    en: 'of',
-    note: 'the kana that links the parts of a name, as in Onosato, “Great Village”',
-  },
-  ノ: { en: 'of', note: 'the katakana form of the joining kana' },
-  乃: { en: 'of', note: 'a classical character read no, used as “of”' },
-  之: { en: 'of', note: 'a classical character read no, used as “of”' },
+  の: { en: 'of', joining: true },
+  ノ: { en: 'of', note: 'the katakana form of the joining kana', joining: true },
+  乃: { en: 'of', note: 'a classical character read no, used as “of”', joining: true },
+  之: { en: 'of', note: 'a classical character read no, used as “of”', joining: true },
   // Numbers and size
   一: { en: 'one' },
   三: { en: 'three' },

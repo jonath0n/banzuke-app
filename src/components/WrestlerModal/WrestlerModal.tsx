@@ -334,9 +334,9 @@ function NameSection({ rikishi }: { rikishi: Rikishi }) {
   }
   const segments = explainShikona(rikishi.shikona.jp)
   if (!segments.some((s) => s.gloss)) return null
-  const isJoiningKana = (text: string) => ['の', 'ノ', '乃', '之'].includes(text)
+  // A stable's mark beats a note on the joining kana, which every の-name would repeat.
   const note =
-    segments.find((s) => !isJoiningKana(s.text) && s.gloss?.note)?.gloss?.note ??
+    segments.find((s) => !s.gloss?.joining && s.gloss?.note)?.gloss?.note ??
     segments.find((s) => s.gloss?.note)?.gloss?.note
   return (
     <section className={styles.nameSection} aria-labelledby={headingId}>
