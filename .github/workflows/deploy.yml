@@ -139,7 +139,7 @@ jobs:
           [ -f .data/rikishi-profiles.json ] && cp .data/rikishi-profiles.json public/rikishi-profiles.json
           if [ -d .data/assets/fonts ]; then cp .data/assets/fonts/* public/assets/fonts/; fi
           if [ -d .data/banzuke ]; then cp .data/banzuke/*.json public/banzuke/; fi
-          if [ -d .data/results ]; then mkdir -p public/results && cp .data/results/*.json public/results/; fi
+          if [ -d .data/results ]; then mkdir -p public/results && cp .data/results/*.json public/results/ 2>/dev/null || true; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add public/latest-banzuke.json public/assets/fonts public/banzuke public/results
