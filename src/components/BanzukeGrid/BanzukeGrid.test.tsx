@@ -146,6 +146,7 @@ describe('BanzukeGrid', () => {
     const onosato = screen.getByRole('button', { name: /Onosato, West/ })
     const wakatakakage = screen.getByRole('button', { name: /Wakatakakage, East/ })
     expect(hoshoryu).toHaveAttribute('data-pair', '100-1-1')
+    expect(hoshoryu).toHaveAttribute('data-id', '3842')
     hoshoryu.focus()
     await user.keyboard('{ArrowLeft}')
     expect(onosato).toHaveFocus()

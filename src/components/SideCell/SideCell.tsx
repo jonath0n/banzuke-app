@@ -132,6 +132,7 @@ function SideCellInner({
       data-side={side}
       data-rank-level={rankLevel}
       data-dimmed={dimmed || undefined}
+      data-id={rikishi?.id}
       data-pair={pairKey}
     >
       {content}
