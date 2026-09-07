@@ -353,8 +353,17 @@ export function validateSnapshot(input: unknown): ValidationResult {
 }
 
 /**
- * Deep-compares two snapshots by their data only, ignoring `fetchedAt` and
- * `sources`. Used to decide whether a refreshed snapshot is worth committing.
+ * BashoInfo fields the JSA server rewrites daily (its own date, the day-of-tournament
+ * counter) that say nothing about the banzuke. Ignored when deciding whether a fetch
+ * is worth committing, or the pipeline would commit a "change" every morning.
+ */
+const VOLATILE_BASHO_INFO_KEYS = ['today', 'JpDate', 'BattleNow', 'day'] as const
+
+/**
+ * Deep-compares two snapshots by their data only, ignoring `fetchedAt`, `sources`,
+ * and the BashoInfo fields the JSA rewrites daily regardless of the banzuke
+ * (`today`, `JpDate`, `BattleNow`, `day`). Used to decide whether a refreshed
+ * snapshot is worth committing.
  */
 export function snapshotsEqualIgnoringFetchedAt(a: RawSnapshot, b: RawSnapshot): boolean {
   return stableStringify(comparable(a)) === stableStringify(comparable(b))
@@ -364,7 +373,14 @@ function comparable(snapshot: RawSnapshot): unknown {
   return Object.fromEntries(
     snapshotDivisions(snapshot).map((division) => {
       const { payloads, readings } = snapshot.divisions[division] as RawDivisionSnapshot
-      return [division, { payloads, readings: readings ?? {} }]
+      const stablePayloads = Object.fromEntries(
+        (Object.entries(payloads) as [Lang, RawPayload][]).map(([lang, payload]) => {
+          const bashoInfo = { ...payload.BashoInfo }
+          for (const key of VOLATILE_BASHO_INFO_KEYS) delete bashoInfo[key]
+          return [lang, { ...payload, BashoInfo: bashoInfo }]
+        })
+      ) as Record<Lang, RawPayload>
+      return [division, { payloads: stablePayloads, readings: readings ?? {} }]
     })
   )
 }
