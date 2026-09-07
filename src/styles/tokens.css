@@ -55,9 +55,11 @@
   --font-jp:
     'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'YuGothic', 'Meiryo', 'Noto Sans JP',
     'Noto Sans CJK JP', system-ui, sans-serif;
-  /* Japanese mincho for ring names and rank kanji, the calligraphic voice */
+  /* Japanese mincho for ring names and rank kanji, the calligraphic voice.
+     The self-hosted subset (base.css) leads, so Windows and Android — which
+     usually ship no mincho at all — render the Sheet the way macOS does. */
   --font-jp-serif:
-    'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', 'YuMincho', 'Noto Serif JP',
+    'Noto Serif JP', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', 'YuMincho',
     'Noto Serif CJK JP', 'MS PMincho', serif;
   --text-xs: 0.65rem;
   --text-sm: 0.75rem;

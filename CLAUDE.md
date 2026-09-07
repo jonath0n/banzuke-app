@@ -19,6 +19,8 @@ npm run test:tz        # date tests under non-JST time zones
 npm run build          # tsc -b && vite build → dist/
 npm run fetch-remote   # fetch + validate the latest banzuke into public/latest-banzuke.json
 npm run fetch-profiles # scrape wrestler profiles into public/rikishi-profiles.json (optional)
+npm run subset-fonts   # rebuild public/assets/fonts/NotoSerifJP-700-subset.woff2 + manifest
+npm run make-sample    # derive public/sample-data.json (Makuuchi only, labelled) from the live file
 npm run validate-data  # validate the committed snapshot
 ```
 
@@ -39,7 +41,10 @@ Dates from upstream are naive JST strings; always go through `src/utils/dates.ts
 and formats in `Asia/Tokyo`.
 
 The deploy workflow (`.github/workflows/deploy.yml`) refreshes data on every push to `main`,
-daily, and on demand, committing `public/latest-banzuke.json` only when tournament data changed.
+daily at 07:00 JST, and on demand. When the tournament data changed it also regenerates the
+mincho subset; profiles are re-scraped only when stale; whatever changed is committed to `main`
+before building. `ci.yml` runs the checks on pull requests. There is no separate refresh
+workflow.
 
 ## Conventions
 
@@ -61,7 +66,10 @@ daily, and on demand, committing `public/latest-banzuke.json` only when tourname
 
 ## Things that look odd but are intentional
 
-- `public/sample-data.json` is a full snapshot used only when the live file fails validation.
+- `public/sample-data.json` is the fallback when the live file fails validation and nothing is
+  cached. It is **Makuuchi only** and its `sources` say "Bundled sample …" — derived by
+  `npm run make-sample`, never copied by hand; `src/data/sample.test.ts` enforces all three
+  properties. Do not make it a copy of `latest-banzuke.json` again.
 - `readings` in the snapshot are hiragana readings of ring names, used for search and shown in
   the modal. They are deliberately **not** on the Sheet: a printed banzuke carries no furigana.
 - The Sheet's column follows the printed sheet exactly — rank band, home province, ring name.
@@ -87,3 +95,10 @@ daily, and on demand, committing `public/latest-banzuke.json` only when tourname
   modal open; the app must work without it.
 - Photos are hot-linked from the JSA CDN with `referrerPolicy="no-referrer"`; only the `60x60`
   and `270x474` sizes exist upstream.
+- The Sheet's mincho is a **self-hosted subset**: `public/assets/fonts/NotoSerifJP-700-subset.woff2`
+  carries only the Japanese characters found in the snapshot and the source, plus the kana
+  blocks, at weight 700 (the only weight shipped; 600 requests resolve to it).
+  `NotoSerifJP-subset.json` lists the glyphs and `scripts/lib/font-coverage.test.ts` fails when
+  data or source gains a character the subset lacks — the fix is `npm run subset-fonts`, which
+  the deploy job also runs whenever the banzuke changes. `'Noto Serif JP'` is first in
+  `--font-jp-serif` on purpose, so Windows and Android render the Sheet the same as macOS.
