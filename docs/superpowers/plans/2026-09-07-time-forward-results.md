@@ -1991,7 +1991,7 @@ describe('Bouts', () => {
   })
 })
 ```
-Note: the second test passes `day={13}`, which is beyond the last published card (12); the stepper's upper bound is `max(published days, results.day + 1)` capped at 15, so 13 is reachable and empty.
+Note: the second test passes `day={13}` directly, beyond the last published card (12): the component renders any day it is given (the stepper itself stops at `lastSteppableDay`, the latest card or fought day), and an unpublished day shows `boutsNone`.
 
 - [ ] **Step 2:** FAIL. **Step 3: Implement**
 ```tsx
@@ -2014,10 +2014,10 @@ interface BoutsProps {
   onSelectRikishi?: (rikishi: Rikishi) => void
 }
 
-/** The last day worth stepping to: the latest card, or the day after the last fought one. */
+/** The last day worth stepping to: the latest published card or the latest fought day. */
 export function lastSteppableDay(results: ResultsFile): number {
   const published = Object.keys(results.torikumi).map(Number)
-  return Math.min(MAX_DAYS, Math.max(results.day + 1, ...published, 1))
+  return Math.min(MAX_DAYS, Math.max(results.day, ...published, 1))
 }
 
 /**
@@ -2244,7 +2244,7 @@ Imports: `boutMark, scoreLabel, type Bout, type RikishiRecord` from `../../data/
   - `const [resultsParam, setResultsParam] = useUrlParam('results')`; `const [boutsDay, setBoutsDay] = useState<number | null>(null)`.
   - season gate: `const status = banzuke ? getTournamentStatus(banzuke.basho) : null; const inSeason = status != null && (status.kind === 'live' || status.kind === 'finished' || (status.kind === 'upcoming' && status.daysUntil <= 1))` — a `finished` tournament stays in season until the next banzuke replaces it, which is when the file no longer matches.
   - `const results = useResults(inSeason && banzuke ? banzuke.basho.id : null)`; `const resultsOn = resultsParam !== '0'`; `const resultsShown = resultsOn && results.results != null`; `const records = resultsShown ? results.results!.records : null`; `const champions = resultsShown ? results.results!.yusho : undefined`.
-  - `const day = boutsDay ?? (results.results ? Math.max(1, Math.min(lastSteppableDay(results.results), results.results.day || 1)) : 1)` — defaults to the latest fought day; when nothing is fought yet, day 1 (the card for day 1 may be out).
+  - `const day = boutsDay ?? (results.results ? Math.max(1, results.results.day) : 1)` — defaults to the latest fought day (day 1 before the first bout; the card for day 1 may be out); the stepper's › reaches a published later card via `lastSteppableDay`.
   - controls: after `ChangesToggle`: `{results.results && <ResultsToggle on={resultsOn} onChange={(on) => setResultsParam(on ? null : '0')} day={results.results.day} />}`.
   - pass `records={records} champions={champions}` to `BanzukeSheet` and `BanzukeGrid`; `record={selectedRikishi && records ? (records[String(selectedRikishi.id)] ?? null) : null}` to `WrestlerModal`.
   - after `Departed`: `{resultsShown && !isFiltering && <Bouts results={results.results!} division={division} rows={allRows} day={day} onChangeDay={setBoutsDay} onSelectRikishi={handleSelectRikishi} />}`.
