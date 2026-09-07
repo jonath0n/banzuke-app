@@ -138,3 +138,9 @@ requests. There is no separate refresh workflow.
   focus when both are present; whichever wins lights the East/West *partner* of the active column
   via `data-lit` on its button, never the hovered/focused column itself. Hover is cleared whenever
   focus leaves the paper, so nothing stays lit behind the wrestler dialog.
+- **The guide** (`?guide=1`) is Sheet-only: `buildGuide` (`src/utils/guide.ts`) chooses which
+  columns carry which numbered mark from the rows on screen (highest rank present; the two ends of
+  the Maegashira ladder), the marks are CSS circles placed as grid children over the band they
+  annotate (no flow content, band heights untouched, no new glyphs), and `Guide` beneath the paper
+  lists the same numbers with bilingual text. The way in is a link beside the controls, not a
+  third seal — a guide is read once — and the legend carries the way out.
