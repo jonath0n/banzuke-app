@@ -41,6 +41,11 @@ export interface RikishiRecord {
 }
 
 export interface Match {
+  /**
+   * The card this match was published on. Cross-division bouts appear on the
+   * Makuuchi card only; select a division's bouts by fighter id, not by this
+   * field.
+   */
   division: Division
   matchNo: number
   east: Fighter
@@ -146,7 +151,9 @@ export function validateResults(
   }
   if (!isRecord(input.torikumi)) return { ok: false, error: 'torikumi must be an object' }
   for (const [key, matches] of Object.entries(input.torikumi)) {
-    if (!isDay(Number(key))) return { ok: false, error: `torikumi: key ${key} is not a day` }
+    if (!/^\d+$/.test(key) || String(Number(key)) !== key || !isDay(Number(key))) {
+      return { ok: false, error: `torikumi: key ${key} is not a day` }
+    }
     if (!Array.isArray(matches)) return { ok: false, error: `torikumi[${key}] must be an array` }
     for (const [i, match] of matches.entries()) {
       const problem = matchProblem(match)

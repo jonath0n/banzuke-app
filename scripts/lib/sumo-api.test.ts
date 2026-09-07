@@ -352,6 +352,97 @@ describe('resultsFromSumoApi (July 2026)', () => {
     expect(out.results.yusho).toEqual({})
   })
 
+  it('warns (rather than fails) when a torikumi winner has no JSA id', () => {
+    const cardWithUnmappedWinner: SumoApiTorikumi = {
+      date: '202607',
+      torikumi: [
+        {
+          division: 'Makuuchi',
+          day: 4,
+          matchNo: 1,
+          eastId: 999999,
+          eastShikona: 'Visitor',
+          eastRank: 'Maegashira 17 East',
+          westId: 19,
+          westShikona: 'Hoshoryu',
+          westRank: 'Yokozuna 1 West',
+          kimarite: 'yorikiri',
+          winnerId: 999999,
+          winnerEn: 'Visitor',
+          winnerJp: '',
+        },
+      ],
+    }
+    const out = resultsFromSumoApi({
+      bashoId: 636,
+      fetchedAt: 'x',
+      basho,
+      banzuke: [],
+      torikumi: new Map([[4, cardWithUnmappedWinner]]),
+      rikishi,
+    })
+    expect(out.problems).toEqual([])
+    expect(out.warnings).toEqual(['day 4 match 1: winner Visitor (sumo-api 999999) has no JSA id'])
+    expect(out.results.torikumi['4']).toHaveLength(1)
+    expect(out.results.torikumi['4'][0].winnerId).toBeNull()
+  })
+
+  it('reads day 0 (before day 1) as an empty tournament', () => {
+    const dayZeroBanzuke = banzuke.map((table) => ({
+      ...table,
+      east: table.east.map((e) => ({ ...e, record: [], wins: 0, losses: 0, absences: 0 })),
+      west: table.west.map((e) => ({ ...e, record: [], wins: 0, losses: 0, absences: 0 })),
+    }))
+    const { date, startDate, endDate } = basho
+    const out = resultsFromSumoApi({
+      bashoId: 636,
+      fetchedAt: 'x',
+      basho: { date, startDate, endDate },
+      banzuke: dayZeroBanzuke,
+      torikumi: new Map(),
+      rikishi,
+    })
+    expect(out.problems).toEqual([])
+    expect(out.results.day).toBe(0)
+    expect(out.results.torikumi).toEqual({})
+    expect(out.results.yusho).toEqual({})
+    expect(validateResults(out.results).ok).toBe(true)
+  })
+
+  it('warns and skips a match from an unknown division instead of defaulting to Makuuchi', () => {
+    const cardWithUnknownDivision: SumoApiTorikumi = {
+      date: '202607',
+      torikumi: [
+        {
+          division: 'Makushita',
+          day: 4,
+          matchNo: 1,
+          eastId: 19,
+          eastShikona: 'Hoshoryu',
+          eastRank: 'Yokozuna 1 East',
+          westId: 8850,
+          westShikona: 'Onosato',
+          westRank: 'Yokozuna 1 West',
+          kimarite: 'yorikiri',
+          winnerId: 19,
+          winnerEn: 'Hoshoryu',
+          winnerJp: '',
+        },
+      ],
+    }
+    const out = resultsFromSumoApi({
+      bashoId: 636,
+      fetchedAt: 'x',
+      basho,
+      banzuke: [],
+      torikumi: new Map([[4, cardWithUnknownDivision]]),
+      rikishi,
+    })
+    expect(out.problems).toEqual([])
+    expect(out.warnings).toEqual(['day 4 match 1: unknown division "Makushita"'])
+    expect(out.results.torikumi['4']).toEqual([])
+  })
+
   it('reports a wrestler without a JSA id instead of guessing', () => {
     const stranger: SumoApiBanzuke = {
       bashoId: '202607',

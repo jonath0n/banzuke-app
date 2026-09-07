@@ -261,8 +261,9 @@ export function resultsFromSumoApi(input: {
   banzuke: SumoApiBanzuke[]
   torikumi: Map<number, SumoApiTorikumi>
   rikishi: Map<number, SumoApiRikishi>
-}): { results: ResultsFile; problems: string[] } {
+}): { results: ResultsFile; problems: string[]; warnings: string[] } {
   const problems: string[] = []
+  const warnings: string[] = []
   const records: ResultsFile['records'] = {}
   let day = 0
 
@@ -285,31 +286,35 @@ export function resultsFromSumoApi(input: {
   for (const [dayNumber, card] of [...input.torikumi.entries()].sort((a, b) => a[0] - b[0])) {
     const matches = card.torikumi ?? []
     if (matches.length === 0) continue
-    const mapped: Match[] = [...matches]
-      .sort((a, b) => a.matchNo - b.matchNo)
-      .map((m) => {
-        const east = fighter(m.eastId, m.eastShikona, undefined, input.rikishi)
-        const west = fighter(m.westId, m.westShikona, undefined, input.rikishi)
-        let winnerId: number | null = null
-        if (m.winnerId) {
-          winnerId = m.winnerId === m.eastId ? east.id : m.winnerId === m.westId ? west.id : null
-          if (winnerId === null) {
-            problems.push(
-              `day ${dayNumber} match ${m.matchNo}: winner ${m.winnerEn} (sumo-api ${m.winnerId}) has no JSA id`
-            )
-          } else {
-            day = Math.max(day, dayNumber)
-          }
+    const mapped: Match[] = []
+    for (const m of [...matches].sort((a, b) => a.matchNo - b.matchNo)) {
+      const division = DIVISION_OF[m.division as SumoApiBanzuke['division']]
+      if (!division) {
+        warnings.push(`day ${dayNumber} match ${m.matchNo}: unknown division "${m.division}"`)
+        continue
+      }
+      const east = fighter(m.eastId, m.eastShikona, undefined, input.rikishi)
+      const west = fighter(m.westId, m.westShikona, undefined, input.rikishi)
+      let winnerId: number | null = null
+      if (m.winnerId) {
+        winnerId = m.winnerId === m.eastId ? east.id : m.winnerId === m.westId ? west.id : null
+        if (winnerId === null) {
+          warnings.push(
+            `day ${dayNumber} match ${m.matchNo}: winner ${m.winnerEn} (sumo-api ${m.winnerId}) has no JSA id`
+          )
+        } else {
+          day = Math.max(day, dayNumber)
         }
-        return {
-          division: DIVISION_OF[m.division as SumoApiBanzuke['division']] ?? 'makuuchi',
-          matchNo: m.matchNo,
-          east,
-          west,
-          winnerId,
-          kimarite: m.kimarite ?? '',
-        }
+      }
+      mapped.push({
+        division,
+        matchNo: m.matchNo,
+        east,
+        west,
+        winnerId,
+        kimarite: m.kimarite ?? '',
       })
+    }
     torikumi[String(dayNumber)] = mapped
   }
 
@@ -333,5 +338,6 @@ export function resultsFromSumoApi(input: {
       yusho,
     },
     problems,
+    warnings,
   }
 }

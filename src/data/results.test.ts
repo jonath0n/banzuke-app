@@ -48,6 +48,7 @@ describe('validateResults', () => {
       },
     ],
     ['torikumi key not a day', { ...makeResultsFile(), torikumi: { x: [] } }],
+    ['torikumi key with leading zero', { ...makeResultsFile(), torikumi: { '01': [] } }],
     [
       'match without fighters',
       { ...makeResultsFile(), torikumi: { '1': [{ division: 'makuuchi', matchNo: 1 }] } },
