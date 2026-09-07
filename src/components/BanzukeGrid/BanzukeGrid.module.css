@@ -1,12 +1,3 @@
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 /* The sheet: one continuous piece of paper holding every rank. Square-
    cornered and barely shadowed, because paper lies flat. `overflow: clip`
    trims the edges without becoming a scroll container, so the sticky tier
@@ -18,7 +9,7 @@
   box-shadow: var(--shadow-sm);
   overflow: clip;
   /* A new sheet (tab switch) fades in as one piece rather than row by row */
-  animation: fadeIn var(--dur-base) ease;
+  animation: global(fadeIn) var(--dur-base) ease;
 }
 
 /* A rank tier: heading band (numbered tiers only) followed by its rows */

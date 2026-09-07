@@ -39,6 +39,18 @@
   font-display: swap;
 }
 
+/* The one fade, shared by the header and the list's arrival. CSS Modules scope
+   keyframes per file, so the single declaration lives here and modules refer to
+   it as global(fadeIn). Four effects in all: fadeIn, riseIn, backdropIn, modalSlideUp. */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 :root {
   font-family: var(--font-body);
 }
