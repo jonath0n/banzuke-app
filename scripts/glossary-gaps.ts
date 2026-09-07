@@ -59,6 +59,11 @@ function main() {
     }
   }
 
+  if (names.size === 0) {
+    console.log('No names read; nothing to check.')
+    return
+  }
+
   const gaps = glossaryGaps(names.keys())
   if (gaps.length === 0) {
     console.log('Shikona glossary covers every character in the snapshot and the archive.')

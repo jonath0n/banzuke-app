@@ -107,7 +107,7 @@ const en = {
   side: { east: 'East', west: 'West' } satisfies Record<Side, string>,
   viewDetails: 'View details',
   closeDetails: 'Close wrestler details',
-  nameMeaning: 'Name',
+  nameMeaning: 'Ring name',
   rank: 'Rank',
   sideLabel: 'Side',
   stable: 'Stable',

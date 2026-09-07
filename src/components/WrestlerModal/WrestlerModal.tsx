@@ -334,13 +334,18 @@ function NameSection({ rikishi }: { rikishi: Rikishi }) {
   }
   const segments = explainShikona(rikishi.shikona.jp)
   if (!segments.some((s) => s.gloss)) return null
-  const note = segments.find((s) => s.gloss?.note)?.gloss?.note
+  const isJoiningKana = (text: string) => ['の', 'ノ', '乃', '之'].includes(text)
+  const note =
+    segments.find((s) => !isJoiningKana(s.text) && s.gloss?.note)?.gloss?.note ??
+    segments.find((s) => s.gloss?.note)?.gloss?.note
   return (
     <section className={styles.nameSection} aria-labelledby={headingId}>
       <h3 id={headingId} className={styles.careerTitle}>
         {strings.nameMeaning}
       </h3>
-      <ul className={styles.segments}>
+      {/* list-style: none loses list semantics in Safari; role restores it. */}
+      {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
+      <ul className={styles.segments} role="list">
         {segments.map((s, i) => (
           <li key={`${s.text}-${i}`} className={styles.segment} data-segment={s.text}>
             <span className={styles.segmentText} lang="ja">
