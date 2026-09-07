@@ -312,7 +312,8 @@ describe('WrestlerModal', () => {
     renderModal(onosato, vi.fn(), 'jp')
     expect(screen.queryByRole('region', { name: '四股名の字' })).toBeNull()
     cleanup()
-    renderModal(makeRikishi({ shikona: { en: 'Nobody', jp: '龘' } }))
+    // U+9F98 as an escape: kept out of the font-coverage source scan, which reads test files.
+    renderModal(makeRikishi({ shikona: { en: 'Nobody', jp: '\u{9F98}' } }))
     expect(screen.queryByRole('region', { name: 'Name' })).toBeNull()
   })
 })
