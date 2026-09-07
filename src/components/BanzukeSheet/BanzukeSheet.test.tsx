@@ -40,6 +40,15 @@ function renderSheet(props: Partial<Parameters<typeof BanzukeSheet>[0]> = {}) {
   )
 }
 
+function renderSheetWithTrailingButton(props: Partial<Parameters<typeof BanzukeSheet>[0]> = {}) {
+  return render(
+    <LanguageProvider>
+      <BanzukeSheet rows={rows} {...props} />
+      <button type="button">after</button>
+    </LanguageProvider>
+  )
+}
+
 describe('BanzukeSheet', () => {
   it('reads each half from its highest rank down, East half first', () => {
     const { container } = renderSheet({ onSelectRikishi: vi.fn() })
@@ -154,7 +163,7 @@ describe('BanzukeSheet', () => {
 
   it('moves focus with the arrow keys and lights the partner', async () => {
     const user = userEvent.setup()
-    const { container } = renderSheet({ onSelectRikishi: vi.fn() })
+    const { container } = renderSheetWithTrailingButton({ onSelectRikishi: vi.fn() })
     const onosato = screen.getByRole('button', { name: /Onosato/ })
     const hoshoryu = screen.getByRole('button', { name: /Hoshoryu/ })
     const atamifuji = screen.getByRole('button', { name: /Atamifuji/ })
@@ -177,5 +186,12 @@ describe('BanzukeSheet', () => {
     expect(screen.getByRole('button', { name: /Takayasu/ })).toHaveAttribute('data-lit')
     await user.unhover(atamifuji)
     expect(container.querySelectorAll('[data-lit]')).toHaveLength(1) // focus still on Hoshoryu → Onosato lit
+
+    // Ura is the last focusable column in DOM order; tabbing from it leaves the paper.
+    await user.keyboard('{End}')
+    expect(screen.getByRole('button', { name: /Ura/ })).toHaveFocus()
+    await user.tab()
+    expect(screen.getByRole('button', { name: 'after' })).toHaveFocus()
+    expect(container.querySelectorAll('[data-lit]')).toHaveLength(0)
   })
 })

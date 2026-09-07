@@ -95,4 +95,40 @@ describe('handleRovingKey', () => {
 
     expect(preventDefaultMock).not.toHaveBeenCalled()
   })
+
+  it('swallows End at the last wrestler even though there is nowhere to move', () => {
+    const current = at('500-1-1-west')
+    const focusMock = vi.spyOn(current, 'focus')
+    const preventDefaultMock = vi.fn()
+
+    handleRovingKey(
+      root,
+      {
+        key: 'End',
+        target: current,
+        preventDefault: preventDefaultMock,
+      },
+      'sheet'
+    )
+
+    expect(preventDefaultMock).toHaveBeenCalled()
+    expect(focusMock).not.toHaveBeenCalled()
+  })
+
+  it('leaves Tab untouched', () => {
+    const current = at('100-1-1-east')
+    const preventDefaultMock = vi.fn()
+
+    handleRovingKey(
+      root,
+      {
+        key: 'Tab',
+        target: current,
+        preventDefault: preventDefaultMock,
+      },
+      'sheet'
+    )
+
+    expect(preventDefaultMock).not.toHaveBeenCalled()
+  })
 })

@@ -32,6 +32,13 @@ const MOVES: Record<Layout, Record<string, Move | ((side: string) => Move | null
   },
 }
 
+/** Which move (if any) this key resolves to for a button on the given side. */
+function resolveMove(side: string, key: string, layout: Layout): Move | null {
+  const rule = MOVES[layout][key]
+  if (!rule) return null
+  return typeof rule === 'function' ? rule(side) : rule
+}
+
 export function keyTarget(
   root: HTMLElement,
   current: HTMLElement,
@@ -41,8 +48,7 @@ export function keyTarget(
   const side = current.dataset.side
   const pair = current.dataset.pair
   if (!side || !pair) return null
-  const rule = MOVES[layout][key]
-  const move = typeof rule === 'function' ? rule(side) : rule
+  const move = resolveMove(side, key, layout)
   if (!move) return null
 
   if (move === 'partner') {
@@ -53,12 +59,18 @@ export function keyTarget(
   const inSide = [...root.querySelectorAll<HTMLElement>(`button[data-side="${side}"][data-pair]`)]
   const index = inSide.indexOf(current)
   if (index === -1) return null
+  const last = inSide[inSide.length - 1]
   if (move === 'first') return inSide[0] === current ? null : inSide[0]
-  if (move === 'last') return inSide.at(-1) === current ? null : (inSide.at(-1) ?? null)
+  if (move === 'last') return last === current ? null : last
   return inSide[move === 'prev' ? index - 1 : index + 1] ?? null
 }
 
-/** Handles one keydown over a set of wrestler buttons: moves focus when a target exists. */
+/**
+ * Handles one keydown over a set of wrestler buttons. Any key this layout
+ * assigns a move to is ours to swallow — Home/End at an end of the side, or
+ * an arrow with no partner, still calls preventDefault, just with no target
+ * to focus. A key the layout doesn't touch (Tab included) passes through.
+ */
 export function handleRovingKey(
   root: HTMLElement,
   event: { key: string; target: EventTarget | null; preventDefault(): void },
@@ -66,9 +78,11 @@ export function handleRovingKey(
 ): void {
   const current = (event.target as HTMLElement | null)?.closest<HTMLElement>('button[data-pair]')
   if (!current) return
+  const side = current.dataset.side
+  if (!side) return
+  const move = resolveMove(side, event.key, layout)
+  if (!move) return
+  event.preventDefault()
   const target = keyTarget(root, current, event.key, layout)
-  if (target) {
-    event.preventDefault()
-    target.focus()
-  }
+  target?.focus()
 }

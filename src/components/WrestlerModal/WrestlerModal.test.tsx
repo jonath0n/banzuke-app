@@ -245,4 +245,56 @@ describe('WrestlerModal', () => {
     screen.getByRole('dialog', { hidden: true }).dispatchEvent(new Event('close'))
     expect(screen.getByRole('button', { name: 'Hoshoryu' })).toHaveFocus()
   })
+
+  it('moves focus to the wrestler name after stepping to a neighbour', async () => {
+    const user = userEvent.setup()
+    const onStep = vi.fn()
+    const next = makeRikishi({ id: 1, shikona: { en: 'Hoshoryu', jp: '豊昇龍' } })
+    const { rerender } = renderModal(onosato, vi.fn(), 'en', null, {
+      neighbours: { previous: null, next },
+      onStep,
+    })
+    await user.click(screen.getByRole('button', { name: 'Next: Hoshoryu' }))
+    expect(onStep).toHaveBeenCalledWith(next)
+    rerender(
+      <LanguageProvider>
+        <button type="button">opener</button>
+        <WrestlerModal
+          rikishi={next}
+          onClose={vi.fn()}
+          neighbours={{ previous: onosato, next: null }}
+          onStep={onStep}
+        />
+      </LanguageProvider>
+    )
+    expect(screen.getByRole('heading', { name: 'Hoshoryu' })).toHaveFocus()
+  })
+
+  it('returns focus to the opener, not a same-wrestler button elsewhere, when closed without stepping', async () => {
+    const user = userEvent.setup()
+    const onClose = vi.fn()
+    const { rerender } = render(
+      <LanguageProvider>
+        <button type="button">opener</button>
+        <button type="button" data-id="4227" data-pair="100-1-1" data-side="east">
+          Onosato
+        </button>
+        <WrestlerModal rikishi={null} onClose={onClose} />
+      </LanguageProvider>
+    )
+    const opener = screen.getByRole('button', { name: 'opener' })
+    opener.focus()
+    rerender(
+      <LanguageProvider>
+        <button type="button">opener</button>
+        <button type="button" data-id="4227" data-pair="100-1-1" data-side="east">
+          Onosato
+        </button>
+        <WrestlerModal rikishi={onosato} onClose={onClose} />
+      </LanguageProvider>
+    )
+    await user.click(screen.getByRole('button', { name: 'Close wrestler details' }))
+    screen.getByRole('dialog', { hidden: true }).dispatchEvent(new Event('close'))
+    expect(opener).toHaveFocus()
+  })
 })

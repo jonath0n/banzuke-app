@@ -204,7 +204,8 @@ export function BanzukeGrid({
   let rowIndex = 0
 
   return (
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions -- keyboard delegation for the buttons inside; not itself interactive
+    /* eslint-disable-next-line jsx-a11y/no-static-element-interactions --
+       keyboard delegation for the buttons inside; not itself interactive */
     <div className={styles.grid} onKeyDown={(e) => handleRovingKey(e.currentTarget, e, 'list')}>
       {splitIntoTiers(grouped).map((tier) => (
         <section

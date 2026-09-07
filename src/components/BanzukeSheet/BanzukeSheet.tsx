@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react'
+import { memo, useCallback, useMemo, useState } from 'react'
 import type { Division, RankGroup, Rikishi, Side } from '../../types/banzuke'
 import { groupRowsByRank } from '../../utils/formatting'
 import { shortPrefecture, SIDE_KANJI, toKanjiNumber } from '../../data/kanji'
@@ -51,6 +51,18 @@ const refOf = (target: EventTarget | null): PairRef | null => {
   return el?.dataset.pair && el.dataset.side
     ? { pair: el.dataset.pair, side: el.dataset.side }
     : null
+}
+
+const samePair = (a: PairRef | null, b: PairRef | null) =>
+  a === b || (a?.pair === b?.pair && a?.side === b?.side)
+
+/** Commits a hover/focus update only when the pair actually changed, so a
+ * pointer wandering within one column doesn't retrigger a render. */
+function setPairIfChanged(
+  setter: React.Dispatch<React.SetStateAction<PairRef | null>>,
+  next: PairRef | null
+) {
+  setter((prev) => (samePair(prev, next) ? prev : next))
 }
 
 function columnScale(rikishi: Rikishi, lowestNumber: number): number {
@@ -199,8 +211,8 @@ export function BanzukeSheet({
 }: BanzukeSheetProps) {
   const strings = useStrings()
   const { language } = useLanguage()
-  const groups = visibleGroups(groupRowsByRank(rows), highlight)
-  const championIds = new Set(Object.values(champions ?? {}))
+  const groups = useMemo(() => visibleGroups(groupRowsByRank(rows), highlight), [rows, highlight])
+  const championIds = useMemo(() => new Set(Object.values(champions ?? {})), [champions])
   const [hover, setHover] = useState<PairRef | null>(null)
   const [focus, setFocus] = useState<PairRef | null>(null)
   const handleKeyDown = useCallback(
@@ -209,9 +221,13 @@ export function BanzukeSheet({
   )
 
   // The lowest numbered rank on this sheet sets the bottom of the size ladder.
-  const lowestNumber = rows.reduce(
-    (low, rikishi) => (rikishi.rankCode >= 500 ? Math.max(low, rikishi.rankNumber) : low),
-    1
+  const lowestNumber = useMemo(
+    () =>
+      rows.reduce(
+        (low, rikishi) => (rikishi.rankCode >= 500 ? Math.max(low, rikishi.rankNumber) : low),
+        1
+      ),
+    [rows]
   )
 
   const isDimmed = (rikishi: Rikishi) => Boolean(highlight && !highlight.has(rikishi.id))
@@ -259,11 +275,18 @@ export function BanzukeSheet({
         className={styles.paper}
         role="group"
         aria-label={strings.sheetLabel}
-        onPointerOver={(e) => setHover(refOf(e.target))}
-        onPointerOut={(e) => setHover(refOf(e.relatedTarget))}
-        onPointerLeave={() => setHover(null)}
-        onFocus={(e) => setFocus(refOf(e.target))}
-        onBlur={(e) => setFocus(refOf(e.relatedTarget))}
+        onPointerOver={(e) => setPairIfChanged(setHover, refOf(e.target))}
+        onPointerOut={(e) => setPairIfChanged(setHover, refOf(e.relatedTarget))}
+        onPointerLeave={() => setPairIfChanged(setHover, null)}
+        onFocus={(e) => setPairIfChanged(setFocus, refOf(e.target))}
+        onBlur={(e) => {
+          setPairIfChanged(setFocus, refOf(e.relatedTarget))
+          // Dialog opened on this wrestler: clear the stale hover state left
+          // behind so nothing on the paper stays lit behind the dialog.
+          if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+            setPairIfChanged(setHover, null)
+          }
+        }}
         onKeyDown={handleKeyDown}
       >
         {half('east')}

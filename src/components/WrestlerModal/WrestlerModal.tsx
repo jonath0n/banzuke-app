@@ -39,8 +39,10 @@ export function WrestlerModal({
   onStep,
 }: WrestlerModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
+  const headingRef = useRef<HTMLHeadingElement>(null)
   const openerRef = useRef<Element | null>(null)
   const currentIdRef = useRef<number | null>(null)
+  const openedIdRef = useRef<number | null>(null)
   const { language } = useLanguage()
   const strings = useStrings()
   const nameId = useId()
@@ -53,7 +55,11 @@ export function WrestlerModal({
     if (rikishi) {
       if (!dialog.open) {
         openerRef.current = document.activeElement
+        openedIdRef.current = rikishi.id
         dialog.showModal()
+      } else if (currentIdRef.current !== rikishi.id) {
+        // Stepped to a neighbour while already open: move focus to the new name.
+        headingRef.current?.focus()
       }
       currentIdRef.current = rikishi.id
     } else if (dialog.open) {
@@ -68,9 +74,11 @@ export function WrestlerModal({
     openerRef.current = null
     onClose()
     const id = currentIdRef.current
+    const stepped = currentIdRef.current !== openedIdRef.current
+    openedIdRef.current = null
     const current =
       id === null ? null : document.querySelector<HTMLElement>(`button[data-id="${id}"]`)
-    const target = current ?? opener
+    const target = stepped ? (current ?? opener) : (opener ?? current)
     if (target instanceof HTMLElement && document.contains(target)) {
       target.focus()
     }
@@ -217,7 +225,13 @@ export function WrestlerModal({
                 )}
               </div>
             )}
-            <h2 id={nameId} className={styles.primaryName} lang={lang}>
+            <h2
+              id={nameId}
+              ref={headingRef}
+              tabIndex={-1}
+              className={styles.primaryName}
+              lang={lang}
+            >
               {rikishi.shikona[language] || rikishi.shikona.en}
             </h2>
             <SecondaryName rikishi={rikishi} />

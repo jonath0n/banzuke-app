@@ -288,6 +288,7 @@ describe('App', () => {
     await waitFor(() => expect(dialog).toHaveAccessibleName('Onosato'))
     expect(window.location.search).toBe('?rikishi=1001')
     expect(window.history.length).toBe(depth)
+    expect(window.history.state?.urlParam).toBe('rikishi')
     expect(screen.queryByRole('button', { name: /Previous: Hoshoryu/ })).toBeInTheDocument()
   })
 })
