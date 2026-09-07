@@ -82,10 +82,12 @@ jobs:
           cp public/assets/fonts/NotoSerifJP-OFL.txt .data/assets/fonts/
           npx tsx scripts/subset-fonts.ts \
             --snapshot .data/latest-banzuke.json \
-            --out-dir .data/assets/fonts
+            --out-dir .data/assets/fonts \
+            --cache "$RUNNER_TEMP/NotoSerifJP-wght.ttf"
 
-      # Profiles are refreshed once per tournament; a scraping failure keeps
-      # the previous file and never blocks the deploy.
+      # Profiles are re-scraped only when stale (the script skips any profile
+      # already carrying the current basho id); a scraping failure keeps the
+      # previous file and never blocks the deploy.
       - name: Refresh wrestler profiles
         id: profiles
         continue-on-error: true
@@ -104,7 +106,8 @@ jobs:
           if [ -d .data/assets/fonts ]; then cp .data/assets/fonts/* public/assets/fonts/; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add public/latest-banzuke.json public/rikishi-profiles.json public/assets/fonts
+          git add public/latest-banzuke.json public/assets/fonts
+          [ -f public/rikishi-profiles.json ] && git add public/rikishi-profiles.json
           if git diff --cached --quiet; then
             echo "Nothing to commit."
             exit 0

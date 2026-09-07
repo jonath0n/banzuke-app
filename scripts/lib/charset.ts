@@ -7,6 +7,11 @@
  * actually render: everything Japanese in the current snapshot and in the
  * source code, plus the kana blocks in full so a reading or a katakana
  * birthplace never falls back to a different face mid-word.
+ *
+ * The ranges deliberately omit CJK radicals (U+2E80-2EFF), enclosed and
+ * compatibility blocks (U+3200-33FF) and the astral extensions (Extension
+ * B onward); Noto Serif JP does not cover those either, so a name using one
+ * would fall back regardless.
  */
 
 /** One character in the CJK punctuation, kana, kanji, compatibility or fullwidth ranges. */

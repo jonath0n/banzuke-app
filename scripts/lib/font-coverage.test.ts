@@ -43,4 +43,9 @@ describe('NotoSerifJP subset', () => {
     const texts = sourceFiles(resolve(root, 'src')).map((path) => readFileSync(path, 'utf8'))
     expect(missingGlyphs(manifest.glyphs, texts)).toEqual([])
   })
+
+  it('covers every Japanese character in the bundled sample', () => {
+    const sample = readFileSync(resolve(root, 'public/sample-data.json'), 'utf8')
+    expect(missingGlyphs(manifest.glyphs, [sample])).toEqual([])
+  })
 })

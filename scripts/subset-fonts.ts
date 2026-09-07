@@ -70,6 +70,11 @@ async function sourceFiles(dir: string): Promise<string[]> {
 /** Everything Japanese the app can show: the snapshot plus every source literal. */
 async function gatherTexts(snapshotPath: string): Promise<string[]> {
   const texts = [await readFile(snapshotPath, 'utf8')]
+  // The fallback sheet must render in the same face, and it is frozen at an
+  // older basho than the live file.
+  texts.push(await readFile(resolve(rootDir, 'public/sample-data.json'), 'utf8'))
+  // Test files are deliberately included (~5% of glyphs) so this script and
+  // the coverage test scan identical file sets.
   for (const path of await sourceFiles(resolve(rootDir, 'src'))) {
     texts.push(await readFile(path, 'utf8'))
   }

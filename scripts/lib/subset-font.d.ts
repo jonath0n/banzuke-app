@@ -6,8 +6,10 @@ declare module 'subset-font' {
     variationAxes?: Record<string, number | { min: number; max: number }>
     preserveNameIds?: number[]
   }
+  // fontverter sniffs the format with `Buffer#toString`, so a plain
+  // Uint8Array fails at runtime; require the type the runtime actually needs.
   export default function subsetFont(
-    font: Uint8Array,
+    font: Buffer,
     text: string,
     options?: SubsetFontOptions
   ): Promise<Uint8Array>
