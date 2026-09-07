@@ -5,6 +5,7 @@ import { useArchiveIndex, useArchivedBanzuke } from './hooks/useArchive'
 import { useResults } from './hooks/useResults'
 import { previousEntry } from './data/archive'
 import { diffBanzuke, type CurrentRow } from './utils/diff'
+import { buildGuide } from './utils/guide'
 import { getTournamentStatus } from './utils/dates'
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
@@ -22,6 +23,7 @@ import { BanzukeSheet } from './components/BanzukeSheet/BanzukeSheet'
 import { ViewToggle, type View } from './components/ViewToggle/ViewToggle'
 import { ChangesToggle } from './components/ChangesToggle/ChangesToggle'
 import { ResultsToggle } from './components/ResultsToggle/ResultsToggle'
+import { Guide, GuideLink } from './components/Guide/Guide'
 import { Departed } from './components/Departed/Departed'
 import { Bouts } from './components/Bouts/Bouts'
 import { WrestlerModal } from './components/WrestlerModal/WrestlerModal'
@@ -61,6 +63,7 @@ function AppContent() {
   const [selectedId, setSelectedId] = useUrlParam('rikishi', 'push')
   const [diffParam, setDiffParam] = useUrlParam('diff')
   const [resultsParam, setResultsParam] = useUrlParam('results')
+  const [guideParam, setGuideParam] = useUrlParam('guide')
   const [boutsDay, setBoutsDay] = useState<number | null>(null)
   const [helpOpen, setHelpOpen] = useState(false)
   // Entrance animations play once, on the first sheet; later renders (tab
@@ -192,6 +195,20 @@ function AppContent() {
     [currentRows, previous.archive]
   )
   const movements = diffWanted && diff ? diff.movements : null
+
+  // The guide annotates the paper, so it exists only on the Sheet with something on it.
+  const guideOn = guideParam === '1' && view === 'sheet' && !nothingToShow
+  const guide = useMemo(
+    () =>
+      guideOn
+        ? buildGuide(allRows, { movements: movements != null, records: records != null })
+        : null,
+    [guideOn, allRows, movements, records]
+  )
+  const handleToggleGuide = useCallback(
+    (on: boolean) => setGuideParam(on ? '1' : null),
+    [setGuideParam]
+  )
 
   const handleSelectRikishi = useCallback(
     (rikishi: Rikishi) => setSelectedId(String(rikishi.id)),
@@ -326,6 +343,12 @@ function AppContent() {
                 day={results.results.day}
               />
             )}
+            {/* Read once, not left on: once open, the legend beneath the paper
+                carries its own close link, so this one steps aside rather than
+                doubling it. */}
+            {view === 'sheet' && !nothingToShow && !guideOn && (
+              <GuideLink on={guideOn} onToggle={handleToggleGuide} />
+            )}
           </div>
         )}
         {banzuke && (
@@ -347,6 +370,7 @@ function AppContent() {
                   movements={movements}
                   records={records}
                   champions={champions}
+                  guide={guide}
                   onSelectRikishi={handleSelectRikishi}
                 />
               ) : (
@@ -364,6 +388,7 @@ function AppContent() {
                   onClearSearch={handleClearSearch}
                 />
               )}
+              {guide && <Guide items={guide.items} onClose={() => handleToggleGuide(false)} />}
               {diffWanted && previous.status === 'loading' && (
                 <div role="status" className="visually-hidden">
                   {strings.loading}

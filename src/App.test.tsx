@@ -291,4 +291,27 @@ describe('App', () => {
     expect(window.history.state?.urlParam).toBe('rikishi')
     expect(screen.queryByRole('button', { name: /Previous: Hoshoryu/ })).toBeInTheDocument()
   })
+
+  it('opens the guide from its link, marks the sheet, and closes it from the legend', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await screen.findByRole('button', { name: /Hoshoryu, East/ })
+    await user.click(screen.getByRole('link', { name: 'How to read a banzuke' }))
+    expect(window.location.search).toBe('?guide=1')
+    expect(screen.getByRole('region', { name: 'How to read a banzuke' })).toBeInTheDocument()
+    expect(document.querySelectorAll('[data-zone]').length).toBeGreaterThan(5)
+    await user.click(screen.getByRole('link', { name: 'Hide the guide' }))
+    expect(window.location.search).toBe('')
+    expect(screen.queryByRole('region', { name: 'How to read a banzuke' })).toBeNull()
+  })
+
+  it('offers no guide on the list view', async () => {
+    window.history.replaceState(null, '', '/?view=list&guide=1')
+    render(<App />)
+    await screen.findByRole('button', { name: /Hoshoryu, East/ })
+    // The skip-link's "Skip to the banzuke" would false-match a bare /banzuke/
+    // regex, so this narrows to the guide's own link names.
+    expect(screen.queryByRole('link', { name: /How to read a banzuke|Hide the guide/ })).toBeNull()
+    expect(screen.queryByRole('region', { name: 'How to read a banzuke' })).toBeNull()
+  })
 })
