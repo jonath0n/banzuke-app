@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { COMPOUNDS, explainShikona, GLOSSARY, glossaryGaps } from './shikona-glossary'
-import { makeBanzuke } from '../test/fixtures'
+import { makeBanzukeSet, makeRawSnapshot, makeThirdOzekiRow } from '../test/fixtures'
+import { ringName } from './normalize'
 
 describe('shikona glossary', () => {
   it('has an English meaning for every entry, and no stray whitespace', () => {
@@ -26,20 +27,27 @@ describe('shikona glossary', () => {
   })
 
   it('covers every character in the fixture names', () => {
+    // Every Japanese ring name the fixtures carry: the raw snapshot's tables
+    // (name then given name, as sumo.or.jp prints them), the extra Ozeki row,
+    // and the normalized banzuke set.
+    const set = makeBanzukeSet()
+    const snapshot = makeRawSnapshot()
     const names = [
-      '豊昇龍',
-      '大の里',
-      '霧島',
-      '琴櫻',
-      '出羽ノ龍',
-      '旭海雄',
-      '大青山',
-      '錦木',
-      '若隆景',
-      '安青錦',
-      ...makeBanzuke().rikishi.map((r) => r.shikona.jp),
+      ...Object.values(snapshot.divisions).flatMap((d) =>
+        (d?.payloads.jp.BanzukeTable ?? []).map((row) => ringName(row.shikona))
+      ),
+      ringName(makeThirdOzekiRow('jp').shikona),
+      ...[...set.makuuchi.rikishi, ...(set.juryo?.rikishi ?? [])].map((r) => r.shikona.jp),
     ]
-    expect(glossaryGaps(names)).toEqual([])
+    // Rows past the named ones carry ASCII placeholders; only real names count.
+    const japanese = names.filter((name) => /[\u{3040}-\u{9FFF}]/u.test(name))
+    expect(japanese.length).toBeGreaterThan(8)
+    expect(glossaryGaps(japanese)).toEqual([])
+  })
+
+  it('flags the joining kana so the dialog can prefer another note', () => {
+    for (const ch of ['の', 'ノ', '乃', '之']) expect(GLOSSARY[ch].joining, ch).toBe(true)
+    expect(GLOSSARY['大'].joining).toBeUndefined()
   })
 
   it('segments a name: compounds first, then single characters, unknown ones kept', () => {
