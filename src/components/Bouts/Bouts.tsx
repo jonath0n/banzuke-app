@@ -17,11 +17,11 @@ interface BoutsProps {
   onSelectRikishi?: (rikishi: Rikishi) => void
 }
 
-/** The last day worth stepping to: the latest card, or the day after the last fought one. */
+/** The last day worth stepping to: the latest published card or the latest fought day. */
 // eslint-disable-next-line react-refresh/only-export-components
 export function lastSteppableDay(results: ResultsFile): number {
   const published = Object.keys(results.torikumi).map(Number)
-  return Math.min(MAX_DAYS, Math.max(results.day + 1, ...published, 1))
+  return Math.min(MAX_DAYS, Math.max(results.day, ...published, 1))
 }
 
 /**
@@ -41,12 +41,7 @@ export function Bouts({ results, rows, day, onChangeDay, onSelectRikishi }: Bout
     (m) =>
       (m.east.id !== null && byId.has(m.east.id)) || (m.west.id !== null && byId.has(m.west.id))
   )
-  // The Next button stops at the latest day this card actually knows
-  // about — the last published torikumi, or the last decided day, whichever
-  // is later. lastSteppableDay() (below) additionally allows one day beyond
-  // that, for callers that want to default to "today's" as-yet-empty card.
-  const published = Object.keys(results.torikumi).map(Number)
-  const lastKnownDay = Math.min(MAX_DAYS, Math.max(results.day, ...published, 1))
+  const last = lastSteppableDay(results)
   const tiers = results.day >= 1 ? leaders(results.records, rows) : []
 
   const name = (f: Fighter) => f.shikona[language] || f.shikona.en
@@ -86,7 +81,7 @@ export function Bouts({ results, rows, day, onChangeDay, onSelectRikishi }: Bout
           type="button"
           className={styles.step}
           onClick={() => onChangeDay(day + 1)}
-          disabled={day >= lastKnownDay}
+          disabled={day >= last}
           aria-label={strings.nextDay}
         >
           ›
