@@ -12,6 +12,7 @@ import type {
   RawSnapshotV1,
 } from '../data/schema'
 import type { Banzuke, BanzukeSet, Basho, Rikishi } from '../types/banzuke'
+import type { ArchivedBanzuke, ArchivedRikishi, ArchiveIndex } from '../data/archive'
 
 const NAMES: Record<Division, Record<Lang, string[]>> = {
   makuuchi: {
@@ -307,4 +308,89 @@ export function makeJuryoBanzuke(overrides: Partial<Banzuke> = {}): Banzuke {
 
 export function makeBanzukeSet(overrides: Partial<BanzukeSet> = {}): BanzukeSet {
   return { makuuchi: makeBanzuke(), juryo: makeJuryoBanzuke(), ...overrides }
+}
+
+export function makeArchivedRikishi(overrides: Partial<ArchivedRikishi> = {}): ArchivedRikishi {
+  return {
+    id: 3842,
+    shikona: { en: 'Hoshoryu', jp: '豊昇龍' },
+    division: 'makuuchi',
+    rankCode: 100,
+    rankNumber: 1,
+    seat: 1,
+    side: 'east',
+    heya: { en: 'Tatsunami', jp: '立浪' },
+    pref: { en: 'Mongolia', jp: 'モンゴル' },
+    ...overrides,
+  }
+}
+
+/** July 2026 as the archive would hold it: two Yokozuna, one Maegashira, one Juryo. */
+export function makeArchivedBanzuke(overrides: Partial<ArchivedBanzuke> = {}): ArchivedBanzuke {
+  return {
+    version: 1,
+    bashoId: 636,
+    year: 2026,
+    month: 7,
+    startDate: '2026-07-12',
+    endDate: '2026-07-26',
+    source: 'sumo-api',
+    divisions: ['makuuchi', 'juryo'],
+    rikishi: [
+      makeArchivedRikishi(),
+      makeArchivedRikishi({
+        id: 4227,
+        side: 'west',
+        shikona: { en: 'Onosato', jp: '大の里' },
+        heya: { en: 'Nishonoseki', jp: '二所ノ関' },
+        pref: { en: 'Ishikawa', jp: '石川県' },
+      }),
+      makeArchivedRikishi({
+        id: 4055,
+        rankCode: 500,
+        rankNumber: 3,
+        shikona: { en: 'Wakatakakage', jp: '若隆景' },
+        heya: { en: 'Arashio', jp: '荒汐' },
+        pref: { en: 'Fukushima', jp: '福島県' },
+      }),
+      makeArchivedRikishi({
+        id: 3983,
+        division: 'juryo',
+        rankCode: 600,
+        rankNumber: 1,
+        shikona: { en: 'Dewanoryu', jp: '出羽ノ龍' },
+        heya: { en: 'Dewanoumi', jp: '出羽海' },
+        pref: { en: 'Tokyo', jp: '東京都' },
+      }),
+    ],
+    ...overrides,
+  }
+}
+
+export function makeArchiveIndex(overrides: Partial<ArchiveIndex> = {}): ArchiveIndex {
+  return {
+    version: 1,
+    generatedAt: '2026-09-06T00:00:00.000Z',
+    basho: [
+      {
+        bashoId: 634,
+        year: 2026,
+        month: 3,
+        startDate: '2026-03-08',
+        file: '634.json',
+        source: 'sumo-api',
+        divisions: ['makuuchi', 'juryo'],
+      },
+      {
+        bashoId: 636,
+        year: 2026,
+        month: 7,
+        startDate: '2026-07-12',
+        file: '636.json',
+        source: 'sumo-api',
+        divisions: ['makuuchi', 'juryo'],
+      },
+    ],
+    ...overrides,
+  }
 }

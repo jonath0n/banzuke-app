@@ -10,11 +10,12 @@
  * scripts/lib/font-coverage.test.ts checks against the current data.
  *
  * Usage:
- *   tsx scripts/subset-fonts.ts [--snapshot <path>] [--out-dir <dir>] [--cache <path>]
+ *   tsx scripts/subset-fonts.ts [--snapshot <path>] [--archive-dir <dir>] [--out-dir <dir>] [--cache <path>]
  *
- * --snapshot  Banzuke snapshot to draw glyphs from (default: public/latest-banzuke.json).
- * --out-dir   Where to write the woff2, manifest and licence (default: public/assets/fonts).
- * --cache     Where to keep the downloaded variable TTF (default: .data/NotoSerifJP[wght].ttf).
+ * --snapshot    Banzuke snapshot to draw glyphs from (default: public/latest-banzuke.json).
+ * --archive-dir Directory of archived banzuke JSON files (default: public/banzuke).
+ * --out-dir     Where to write the woff2, manifest and licence (default: public/assets/fonts).
+ * --cache       Where to keep the downloaded variable TTF (default: .data/NotoSerifJP[wght].ttf).
  *
  * Exit codes: 0 success, 1 download failure, 2 subsetting failure.
  */
@@ -41,6 +42,7 @@ const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const { values: args } = parseArgs({
   options: {
     snapshot: { type: 'string', default: resolve(rootDir, 'public/latest-banzuke.json') },
+    'archive-dir': { type: 'string', default: resolve(rootDir, 'public/banzuke') },
     'out-dir': { type: 'string', default: resolve(rootDir, 'public/assets/fonts') },
     cache: { type: 'string', default: resolve(rootDir, '.data/NotoSerifJP[wght].ttf') },
   },
@@ -68,11 +70,19 @@ async function sourceFiles(dir: string): Promise<string[]> {
 }
 
 /** Everything Japanese the app can show: the snapshot plus every source literal. */
-async function gatherTexts(snapshotPath: string): Promise<string[]> {
+async function gatherTexts(snapshotPath: string, archiveDir: string): Promise<string[]> {
   const texts = [await readFile(snapshotPath, 'utf8')]
   // The fallback sheet must render in the same face, and it is frozen at an
   // older basho than the live file.
   texts.push(await readFile(resolve(rootDir, 'public/sample-data.json'), 'utf8'))
+  // Archived tournaments: departed wrestlers' names render in the serif too.
+  try {
+    for (const name of await readdir(archiveDir)) {
+      if (name.endsWith('.json')) texts.push(await readFile(join(archiveDir, name), 'utf8'))
+    }
+  } catch {
+    // No archive yet: nothing to add.
+  }
   // Test files are deliberately included (~5% of glyphs) so this script and
   // the coverage test scan identical file sets.
   for (const path of await sourceFiles(resolve(rootDir, 'src'))) {
@@ -98,7 +108,9 @@ async function loadSourceFont(cachePath: string): Promise<Uint8Array> {
 
 async function main(): Promise<number> {
   const outDir = resolve(args['out-dir'] as string)
-  const glyphs = collectGlyphs(await gatherTexts(resolve(args.snapshot as string)))
+  const glyphs = collectGlyphs(
+    await gatherTexts(resolve(args.snapshot as string), resolve(args['archive-dir'] as string))
+  )
   const glyphCount = [...glyphs].length
   console.log(`Glyph set: ${glyphCount} characters`)
 

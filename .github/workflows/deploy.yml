@@ -73,6 +73,17 @@ jobs:
       - name: Validate the snapshot that will ship
         run: npx tsx scripts/validate-banzuke.ts .data/latest-banzuke.json
 
+      # Every tournament the site has shown stays available under
+      # public/banzuke/, which is what "changes since last basho" reads.
+      - name: Archive the banzuke
+        if: steps.fetch.outputs.changed == 'true'
+        run: |
+          mkdir -p .data/banzuke
+          cp public/banzuke/*.json .data/banzuke/
+          npx tsx scripts/archive-banzuke.ts \
+            --snapshot .data/latest-banzuke.json \
+            --out-dir .data/banzuke
+
       # New wrestlers can bring new kanji; keep the self-hosted mincho in step
       # with the data so the coverage test passes in the build job.
       - name: Regenerate the mincho subset
@@ -83,6 +94,7 @@ jobs:
           npx tsx scripts/subset-fonts.ts \
             --snapshot .data/latest-banzuke.json \
             --out-dir .data/assets/fonts \
+            --archive-dir .data/banzuke \
             --cache "$RUNNER_TEMP/NotoSerifJP-wght.ttf"
 
       # Profiles are re-scraped only when stale (the script skips any profile
@@ -104,9 +116,10 @@ jobs:
           cp .data/latest-banzuke.json public/latest-banzuke.json
           [ -f .data/rikishi-profiles.json ] && cp .data/rikishi-profiles.json public/rikishi-profiles.json
           if [ -d .data/assets/fonts ]; then cp .data/assets/fonts/* public/assets/fonts/; fi
+          if [ -d .data/banzuke ]; then cp .data/banzuke/*.json public/banzuke/; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add public/latest-banzuke.json public/assets/fonts
+          git add public/latest-banzuke.json public/assets/fonts public/banzuke
           [ -f public/rikishi-profiles.json ] && git add public/rikishi-profiles.json
           if git diff --cached --quiet; then
             echo "Nothing to commit."

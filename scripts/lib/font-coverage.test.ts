@@ -48,4 +48,13 @@ describe('NotoSerifJP subset', () => {
     const sample = readFileSync(resolve(root, 'public/sample-data.json'), 'utf8')
     expect(missingGlyphs(manifest.glyphs, [sample])).toEqual([])
   })
+
+  it('covers every Japanese character in the banzuke archive', () => {
+    const dir = resolve(root, 'public/banzuke')
+    const texts = readdirSync(dir)
+      .filter((name) => name.endsWith('.json'))
+      .map((name) => readFileSync(join(dir, name), 'utf8'))
+    expect(texts.length).toBeGreaterThan(0)
+    expect(missingGlyphs(manifest.glyphs, texts)).toEqual([])
+  })
 })

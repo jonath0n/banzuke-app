@@ -1,0 +1,1415 @@
+{
+ "version": 1,
+ "bashoId": 637,
+ "year": 2026,
+ "month": 9,
+ "startDate": "2026-09-13",
+ "endDate": "2026-09-27",
+ "source": "jsa",
+ "divisions": [
+  "makuuchi",
+  "juryo"
+ ],
+ "rikishi": [
+  {
+   "id": 4227,
+   "shikona": {
+    "en": "Onosato",
+    "jp": "大の里"
+   },
+   "division": "makuuchi",
+   "rankCode": 100,
+   "rankNumber": 1,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Nishonoseki",
+    "jp": "二所ノ関"
+   },
+   "pref": {
+    "en": "Ishikawa",
+    "jp": "石川県"
+   }
+  },
+  {
+   "id": 3842,
+   "shikona": {
+    "en": "Hoshoryu",
+    "jp": "豊昇龍"
+   },
+   "division": "makuuchi",
+   "rankCode": 100,
+   "rankNumber": 1,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tatsunami",
+    "jp": "立浪"
+   },
+   "pref": {
+    "en": "Mongolia",
+    "jp": "モンゴル"
+   }
+  },
+  {
+   "id": 3622,
+   "shikona": {
+    "en": "Kirishima",
+    "jp": "霧島"
+   },
+   "division": "makuuchi",
+   "rankCode": 200,
+   "rankNumber": 1,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Otowayama",
+    "jp": "音羽山"
+   },
+   "pref": {
+    "en": "Mongolia",
+    "jp": "モンゴル"
+   }
+  },
+  {
+   "id": 3661,
+   "shikona": {
+    "en": "Kotozakura",
+    "jp": "琴櫻"
+   },
+   "division": "makuuchi",
+   "rankCode": 200,
+   "rankNumber": 1,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sadogatake",
+    "jp": "佐渡ヶ嶽"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 4230,
+   "shikona": {
+    "en": "Aonishiki",
+    "jp": "安青錦"
+   },
+   "division": "makuuchi",
+   "rankCode": 200,
+   "rankNumber": 1,
+   "seat": 2,
+   "side": "east",
+   "heya": {
+    "en": "Ajigawa",
+    "jp": "安治川"
+   },
+   "pref": {
+    "en": "Ukraine",
+    "jp": "ウクライナ"
+   }
+  },
+  {
+   "id": 4055,
+   "shikona": {
+    "en": "Atamifuji",
+    "jp": "熱海富士"
+   },
+   "division": "makuuchi",
+   "rankCode": 300,
+   "rankNumber": 1,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Shizuoka",
+    "jp": "静岡県"
+   }
+  },
+  {
+   "id": 4191,
+   "shikona": {
+    "en": "Fujinokawa",
+    "jp": "藤ノ川"
+   },
+   "division": "makuuchi",
+   "rankCode": 300,
+   "rankNumber": 1,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isenoumi",
+    "jp": "伊勢ノ海"
+   },
+   "pref": {
+    "en": "Kyoto",
+    "jp": "京都府"
+   }
+  },
+  {
+   "id": 4187,
+   "shikona": {
+    "en": "Hakunofuji",
+    "jp": "伯乃富士"
+   },
+   "division": "makuuchi",
+   "rankCode": 400,
+   "rankNumber": 1,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Tottori",
+    "jp": "鳥取県"
+   }
+  },
+  {
+   "id": 3376,
+   "shikona": {
+    "en": "Daieisho",
+    "jp": "大栄翔"
+   },
+   "division": "makuuchi",
+   "rankCode": 400,
+   "rankNumber": 1,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Oitekaze",
+    "jp": "追手風"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 3840,
+   "shikona": {
+    "en": "Kotoshoho",
+    "jp": "琴勝峰"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 1,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Sadogatake",
+    "jp": "佐渡ヶ嶽"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 4120,
+   "shikona": {
+    "en": "Kotoeiho",
+    "jp": "琴栄峰"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 1,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sadogatake",
+    "jp": "佐渡ヶ嶽"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 2775,
+   "shikona": {
+    "en": "Takayasu",
+    "jp": "高安"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 2,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tagonoura",
+    "jp": "田子ノ浦"
+   },
+   "pref": {
+    "en": "Ibaraki",
+    "jp": "茨城県"
+   }
+  },
+  {
+   "id": 4279,
+   "shikona": {
+    "en": "Yoshinofuji",
+    "jp": "義ノ富士"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 2,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  },
+  {
+   "id": 4079,
+   "shikona": {
+    "en": "Gonoyama",
+    "jp": "豪ノ山"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 3,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takekuma",
+    "jp": "武隈"
+   },
+   "pref": {
+    "en": "Osaka",
+    "jp": "大阪府"
+   }
+  },
+  {
+   "id": 3711,
+   "shikona": {
+    "en": "Churanoumi",
+    "jp": "美ノ海"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 3,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kise",
+    "jp": "木瀬"
+   },
+   "pref": {
+    "en": "Okinawa",
+    "jp": "沖縄県"
+   }
+  },
+  {
+   "id": 3265,
+   "shikona": {
+    "en": "Takanosho",
+    "jp": "隆の勝"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 4,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Minatogawa",
+    "jp": "湊川"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 4336,
+   "shikona": {
+    "en": "Fujiryoga",
+    "jp": "藤凌駕"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 4,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Fujishima",
+    "jp": "藤島"
+   },
+   "pref": {
+    "en": "Aichi",
+    "jp": "愛知県"
+   }
+  },
+  {
+   "id": 3907,
+   "shikona": {
+    "en": "Roga",
+    "jp": "狼雅"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 5,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Futagoyama",
+    "jp": "二子山"
+   },
+   "pref": {
+    "en": "Russia",
+    "jp": "ロシア"
+   }
+  },
+  {
+   "id": 4108,
+   "shikona": {
+    "en": "Oshoma",
+    "jp": "欧勝馬"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 5,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Naruto",
+    "jp": "鳴戸"
+   },
+   "pref": {
+    "en": "Mongolia",
+    "jp": "モンゴル"
+   }
+  },
+  {
+   "id": 3682,
+   "shikona": {
+    "en": "Asanoyama",
+    "jp": "朝乃山"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 6,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takasago",
+    "jp": "高砂"
+   },
+   "pref": {
+    "en": "Toyama",
+    "jp": "富山県"
+   }
+  },
+  {
+   "id": 3753,
+   "shikona": {
+    "en": "Ichiyamamoto",
+    "jp": "一山本"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 6,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Hanaregoma",
+    "jp": "放駒"
+   },
+   "pref": {
+    "en": "Hokkaido",
+    "jp": "北海道"
+   }
+  },
+  {
+   "id": 4093,
+   "shikona": {
+    "en": "Fujiseiun",
+    "jp": "藤青雲"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 7,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Fujishima",
+    "jp": "藤島"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  },
+  {
+   "id": 3742,
+   "shikona": {
+    "en": "Nishikifuji",
+    "jp": "錦富士"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 7,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Aomori",
+    "jp": "青森県"
+   }
+  },
+  {
+   "id": 4171,
+   "shikona": {
+    "en": "Takerufuji",
+    "jp": "尊富士"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 8,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Aomori",
+    "jp": "青森県"
+   }
+  },
+  {
+   "id": 3705,
+   "shikona": {
+    "en": "Hiradoumi",
+    "jp": "平戸海"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 8,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sakaigawa",
+    "jp": "境川"
+   },
+   "pref": {
+    "en": "Nagasaki",
+    "jp": "長崎県"
+   }
+  },
+  {
+   "id": 3616,
+   "shikona": {
+    "en": "Ura",
+    "jp": "宇良"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 9,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kise",
+    "jp": "木瀬"
+   },
+   "pref": {
+    "en": "Osaka",
+    "jp": "大阪府"
+   }
+  },
+  {
+   "id": 3990,
+   "shikona": {
+    "en": "Shishi",
+    "jp": "獅司"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 9,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Ikazuchi",
+    "jp": "雷"
+   },
+   "pref": {
+    "en": "Ukraine",
+    "jp": "ウクライナ"
+   }
+  },
+  {
+   "id": 3844,
+   "shikona": {
+    "en": "Oho",
+    "jp": "王鵬"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 10,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Otake",
+    "jp": "大嶽"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4112,
+   "shikona": {
+    "en": "Kinbozan",
+    "jp": "金峰山"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 10,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kise",
+    "jp": "木瀬"
+   },
+   "pref": {
+    "en": "Kazakhstan",
+    "jp": "カザフスタン"
+   }
+  },
+  {
+   "id": 3371,
+   "shikona": {
+    "en": "Wakamotoharu",
+    "jp": "若元春"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 11,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Arashio",
+    "jp": "荒汐"
+   },
+   "pref": {
+    "en": "Fukushima",
+    "jp": "福島県"
+   }
+  },
+  {
+   "id": 3521,
+   "shikona": {
+    "en": "Shodai",
+    "jp": "正代"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 11,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tokitsukaze",
+    "jp": "時津風"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  },
+  {
+   "id": 3761,
+   "shikona": {
+    "en": "Wakatakakage",
+    "jp": "若隆景"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 12,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Arashio",
+    "jp": "荒汐"
+   },
+   "pref": {
+    "en": "Fukushima",
+    "jp": "福島県"
+   }
+  },
+  {
+   "id": 4175,
+   "shikona": {
+    "en": "Asahakuryu",
+    "jp": "朝白龍"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 12,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Takasago",
+    "jp": "高砂"
+   },
+   "pref": {
+    "en": "Mongolia",
+    "jp": "モンゴル"
+   }
+  },
+  {
+   "id": 4101,
+   "shikona": {
+    "en": "Asakoryu",
+    "jp": "朝紅龍"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 13,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takasago",
+    "jp": "高砂"
+   },
+   "pref": {
+    "en": "Osaka",
+    "jp": "大阪府"
+   }
+  },
+  {
+   "id": 3485,
+   "shikona": {
+    "en": "Abi",
+    "jp": "阿炎"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 13,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Shikoroyama",
+    "jp": "錣山"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 3594,
+   "shikona": {
+    "en": "Tobizaru",
+    "jp": "翔猿"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 14,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Oitekaze",
+    "jp": "追手風"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 3207,
+   "shikona": {
+    "en": "Chiyoshoma",
+    "jp": "千代翔馬"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 14,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kokonoe",
+    "jp": "九重"
+   },
+   "pref": {
+    "en": "Mongolia",
+    "jp": "モンゴル"
+   }
+  },
+  {
+   "id": 4285,
+   "shikona": {
+    "en": "Asasuiryu",
+    "jp": "朝翠龍"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 15,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takasago",
+    "jp": "高砂"
+   },
+   "pref": {
+    "en": "Osaka",
+    "jp": "大阪府"
+   }
+  },
+  {
+   "id": 3933,
+   "shikona": {
+    "en": "Tokihayate",
+    "jp": "時疾風"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 15,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tokitsukaze",
+    "jp": "時津風"
+   },
+   "pref": {
+    "en": "Miyagi",
+    "jp": "宮城県"
+   }
+  },
+  {
+   "id": 4121,
+   "shikona": {
+    "en": "Wakanosho",
+    "jp": "若ノ勝"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 16,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Minatogawa",
+    "jp": "湊川"
+   },
+   "pref": {
+    "en": "Tochigi",
+    "jp": "栃木県"
+   }
+  },
+  {
+   "id": 4243,
+   "shikona": {
+    "en": "Toshinofuji",
+    "jp": "寿之富士"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 16,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Mongolia",
+    "jp": "モンゴル"
+   }
+  },
+  {
+   "id": 3553,
+   "shikona": {
+    "en": "Shonannoumi",
+    "jp": "湘南乃海"
+   },
+   "division": "makuuchi",
+   "rankCode": 500,
+   "rankNumber": 17,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takadagawa",
+    "jp": "高田川"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 3983,
+   "shikona": {
+    "en": "Dewanoryu",
+    "jp": "出羽ノ龍"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 1,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Dewanoumi",
+    "jp": "出羽海"
+   },
+   "pref": {
+    "en": "Mongolia",
+    "jp": "モンゴル"
+   }
+  },
+  {
+   "id": 4232,
+   "shikona": {
+    "en": "Kyokukaiyu",
+    "jp": "旭海雄"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 1,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Oshima",
+    "jp": "大島"
+   },
+   "pref": {
+    "en": "Mongolia",
+    "jp": "モンゴル"
+   }
+  },
+  {
+   "id": 4116,
+   "shikona": {
+    "en": "Daiseizan",
+    "jp": "大青山"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 2,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Arashio",
+    "jp": "荒汐"
+   },
+   "pref": {
+    "en": "China",
+    "jp": "中国"
+   }
+  },
+  {
+   "id": 4287,
+   "shikona": {
+    "en": "Kazuma",
+    "jp": "一意"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 2,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kise",
+    "jp": "木瀬"
+   },
+   "pref": {
+    "en": "Osaka",
+    "jp": "大阪府"
+   }
+  },
+  {
+   "id": 2629,
+   "shikona": {
+    "en": "Tamawashi",
+    "jp": "玉鷲"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 3,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kataonami",
+    "jp": "片男波"
+   },
+   "pref": {
+    "en": "Mongolia",
+    "jp": "モンゴル"
+   }
+  },
+  {
+   "id": 4231,
+   "shikona": {
+    "en": "Onokatsu",
+    "jp": "阿武剋"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 3,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Onomatsu",
+    "jp": "阿武松"
+   },
+   "pref": {
+    "en": "Mongolia",
+    "jp": "モンゴル"
+   }
+  },
+  {
+   "id": 4158,
+   "shikona": {
+    "en": "Kazekeno",
+    "jp": "風賢央"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 4,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Oshiogawa",
+    "jp": "押尾川"
+   },
+   "pref": {
+    "en": "Ehime",
+    "jp": "愛媛県"
+   }
+  },
+  {
+   "id": 3620,
+   "shikona": {
+    "en": "Mitakeumi",
+    "jp": "御嶽海"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 4,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Dewanoumi",
+    "jp": "出羽海"
+   },
+   "pref": {
+    "en": "Nagano",
+    "jp": "長野県"
+   }
+  },
+  {
+   "id": 2565,
+   "shikona": {
+    "en": "Sadanoumi",
+    "jp": "佐田の海"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 5,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Sakaigawa",
+    "jp": "境川"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  },
+  {
+   "id": 4267,
+   "shikona": {
+    "en": "Arashifuji",
+    "jp": "嵐富士"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 5,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Fukuoka",
+    "jp": "福岡県"
+   }
+  },
+  {
+   "id": 3939,
+   "shikona": {
+    "en": "Kitanowaka",
+    "jp": "北の若"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 6,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Hakkaku",
+    "jp": "八角"
+   },
+   "pref": {
+    "en": "Yamagata",
+    "jp": "山形県"
+   }
+  },
+  {
+   "id": 4164,
+   "shikona": {
+    "en": "Shirokuma",
+    "jp": "白熊"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 6,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Nishonoseki",
+    "jp": "二所ノ関"
+   },
+   "pref": {
+    "en": "Fukushima",
+    "jp": "福島県"
+   }
+  },
+  {
+   "id": 3743,
+   "shikona": {
+    "en": "Midorifuji",
+    "jp": "翠富士"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 7,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Shizuoka",
+    "jp": "静岡県"
+   }
+  },
+  {
+   "id": 3818,
+   "shikona": {
+    "en": "Tomokaze",
+    "jp": "友風"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 7,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Nakamura",
+    "jp": "中村"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 2890,
+   "shikona": {
+    "en": "Ryuden",
+    "jp": "竜電"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 8,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takadagawa",
+    "jp": "高田川"
+   },
+   "pref": {
+    "en": "Yamanashi",
+    "jp": "山梨県"
+   }
+  },
+  {
+   "id": 4124,
+   "shikona": {
+    "en": "Hatsuyama",
+    "jp": "羽出山"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 8,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tamanoi",
+    "jp": "玉ノ井"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 3803,
+   "shikona": {
+    "en": "Enho",
+    "jp": "炎鵬"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 9,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Ishikawa",
+    "jp": "石川県"
+   }
+  },
+  {
+   "id": 3969,
+   "shikona": {
+    "en": "Tohakuryu",
+    "jp": "東白龍"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 9,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tamanoi",
+    "jp": "玉ノ井"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 3988,
+   "shikona": {
+    "en": "Nabatame",
+    "jp": "生田目"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 10,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Futagoyama",
+    "jp": "二子山"
+   },
+   "pref": {
+    "en": "Tochigi",
+    "jp": "栃木県"
+   }
+  },
+  {
+   "id": 4142,
+   "shikona": {
+    "en": "Tanji",
+    "jp": "丹治"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 10,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Arashio",
+    "jp": "荒汐"
+   },
+   "pref": {
+    "en": "Fukushima",
+    "jp": "福島県"
+   }
+  },
+  {
+   "id": 3255,
+   "shikona": {
+    "en": "Kagayaki",
+    "jp": "輝"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 11,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takadagawa",
+    "jp": "高田川"
+   },
+   "pref": {
+    "en": "Ishikawa",
+    "jp": "石川県"
+   }
+  },
+  {
+   "id": 4095,
+   "shikona": {
+    "en": "Hitoshi",
+    "jp": "日翔志"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 11,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Oitekaze",
+    "jp": "追手風"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 3367,
+   "shikona": {
+    "en": "Tamashoho",
+    "jp": "玉正鳳"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 12,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kataonami",
+    "jp": "片男波"
+   },
+   "pref": {
+    "en": "Mongolia",
+    "jp": "モンゴル"
+   }
+  },
+  {
+   "id": 4165,
+   "shikona": {
+    "en": "Kayo",
+    "jp": "嘉陽"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 12,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Nakamura",
+    "jp": "中村"
+   },
+   "pref": {
+    "en": "Okinawa",
+    "jp": "沖縄県"
+   }
+  },
+  {
+   "id": 3337,
+   "shikona": {
+    "en": "Meisei",
+    "jp": "明生"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 13,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tatsunami",
+    "jp": "立浪"
+   },
+   "pref": {
+    "en": "Kagoshima",
+    "jp": "鹿児島県"
+   }
+  },
+  {
+   "id": 3927,
+   "shikona": {
+    "en": "Tokifudo",
+    "jp": "時不動"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 13,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tokitsukaze",
+    "jp": "時津風"
+   },
+   "pref": {
+    "en": "Shizuoka",
+    "jp": "静岡県"
+   }
+  },
+  {
+   "id": 3839,
+   "shikona": {
+    "en": "Tochitaikai",
+    "jp": "栃大海"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 14,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kasugano",
+    "jp": "春日野"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 2892,
+   "shikona": {
+    "en": "Nishikigi",
+    "jp": "錦木"
+   },
+   "division": "juryo",
+   "rankCode": 600,
+   "rankNumber": 14,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isenoumi",
+    "jp": "伊勢ノ海"
+   },
+   "pref": {
+    "en": "Iwate",
+    "jp": "岩手県"
+   }
+  }
+ ]
+}
