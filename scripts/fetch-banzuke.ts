@@ -20,13 +20,14 @@
  * In GitHub Actions the script appends `changed`, `basho_id` and `start_date`
  * to $GITHUB_OUTPUT.
  */
-import { mkdir, readFile, writeFile, appendFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { parseArgs } from 'node:util'
 import { fetchJson, fetchText } from './lib/http.ts'
 import { parseJpSearchPage } from './lib/jp-search-page.ts'
 import { buildJpPayload } from './lib/jp-payload.ts'
+import { setOutput } from './lib/run-io.ts'
 import {
   DIVISIONS,
   DIVISION_IDS,
@@ -75,13 +76,6 @@ async function readSnapshot(path: string): Promise<RawSnapshot | null> {
     return result.snapshot
   } catch {
     return null
-  }
-}
-
-async function setOutput(name: string, value: string): Promise<void> {
-  console.log(`${name}=${value}`)
-  if (process.env.GITHUB_OUTPUT) {
-    await appendFile(process.env.GITHUB_OUTPUT, `${name}=${value}\n`)
   }
 }
 

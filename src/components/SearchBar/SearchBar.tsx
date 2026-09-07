@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useStrings } from '../../i18n/useStrings'
+import { CloseIcon } from '../CloseIcon/CloseIcon'
 import styles from './SearchBar.module.css'
 
 interface SearchBarProps {
@@ -74,14 +75,7 @@ export function SearchBar({ value, onChange, totalCount, matchedCount }: SearchB
             type="button"
             aria-label={strings.searchClear}
           >
-            <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <path
-                d="M15 5L5 15M5 5l10 10"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
+            <CloseIcon size={14} />
           </button>
         ) : (
           <kbd className={styles.kbd} aria-hidden="true">

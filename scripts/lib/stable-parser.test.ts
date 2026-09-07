@@ -24,6 +24,35 @@ describe('parseEnStable', () => {
       masterShikona: '',
     })
   })
+
+  it('reads no master from a page whose Master section is missing, not the Gyoji', () => {
+    // Cut the Master section out of the real page: the Gyoji and Yobidashi
+    // cards below it have the same shape and must not be mistaken for it.
+    const html = fixture('stable-en-1.html').replace(
+      /<h3 class="mdTtl4 mb10">Master<\/h3>[\s\S]*?(?=<h3 class="mdTtl4 mb10">)/,
+      ''
+    )
+    expect(html).toContain('Gyoji')
+    expect(parseEnStable(html)).toEqual({
+      name: 'Tatsunami',
+      masterName: '',
+      masterRank: '',
+      masterShikona: '',
+    })
+  })
+})
+
+describe('parseJpStable without a master', () => {
+  it('reads no master when the 師匠 section is missing', () => {
+    const html = fixture('stable-jp-1.html').replace(
+      /<h3 class="mdTtl4 mb10">師匠<\/h3>[\s\S]*?(?=<h3 class="mdTtl4 mb10">)/,
+      ''
+    )
+    const jp = parseJpStable(html)
+    expect(jp.name).toBe('立浪')
+    expect(jp.masterName).toBe('')
+    expect(jp.masterShikona).toBe('')
+  })
 })
 
 describe('parseJpStable', () => {

@@ -13,6 +13,7 @@ import { ageOn, formatBirthDate, formatMeasure, formatYearMonth } from '../../ut
 import { boutMark, scoreLabel, type Bout, type RikishiRecord } from '../../data/results'
 import { kimariteLabel } from '../../data/kimarite'
 import { explainShikona } from '../../data/shikona-glossary'
+import { CloseIcon } from '../CloseIcon/CloseIcon'
 import styles from './WrestlerModal.module.css'
 
 interface WrestlerModalProps {
@@ -153,14 +154,7 @@ export function WrestlerModal({
             type="button"
             aria-label={strings.closeDetails}
           >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <path
-                d="M15 5L5 15M5 5l10 10"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
+            <CloseIcon />
           </button>
 
           <div className={styles.photoSection}>

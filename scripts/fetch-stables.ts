@@ -14,12 +14,13 @@
  *
  * In GitHub Actions the script appends `changed` to $GITHUB_OUTPUT.
  */
-import { mkdir, readFile, writeFile, appendFile } from 'node:fs/promises'
+import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { parseArgs } from 'node:util'
 import { fetchText } from './lib/http.ts'
 import { buildStable, parseEnStable, parseJpStable } from './lib/stable-parser.ts'
+import { readJson, setOutput, sleep } from './lib/run-io.ts'
 import {
   isPlaceholderRow,
   snapshotBashoId,
@@ -47,25 +48,6 @@ export function stablePageUrls(id: number): { en: string; jp: string } {
     en: `https://www.sumo.or.jp/EnSumoDataSumoBeya/detail/${id}/`,
     jp: `https://www.sumo.or.jp/ResultRikishiDataSumoBeya/detail/${id}/`,
   }
-}
-
-async function setOutput(name: string, value: string): Promise<void> {
-  console.log(`${name}=${value}`)
-  if (process.env.GITHUB_OUTPUT) {
-    await appendFile(process.env.GITHUB_OUTPUT, `${name}=${value}\n`)
-  }
-}
-
-async function readJson(path: string): Promise<unknown | null> {
-  try {
-    return JSON.parse(await readFile(path, 'utf8')) as unknown
-  } catch {
-    return null
-  }
-}
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((done) => setTimeout(done, ms))
 }
 
 async function fetchStable(id: number, bashoId: number): Promise<Stable> {

@@ -185,10 +185,6 @@ function AppContent() {
     (name: string) => setUrlParams({ heya: null, q: name }, 'replace'),
     []
   )
-  const championIds = useMemo(
-    () => (champions ? new Set(Object.values(champions).filter((id) => id != null)) : null),
-    [champions]
-  )
 
   const counts = useMemo(
     () => ({
@@ -496,7 +492,7 @@ function AppContent() {
         stableLoading={stableLoading}
         movements={movements}
         records={records}
-        championIds={championIds}
+        champions={champions}
         onClose={handleCloseStable}
         onSelectRikishi={handleSelectMember}
         onShowOnBanzuke={handleShowOnBanzuke}

@@ -1,6 +1,6 @@
-import { useEffect, useId, useRef } from 'react'
+import { useEffect, useId, useMemo, useRef } from 'react'
 import { createPortal } from 'react-dom'
-import type { Rikishi } from '../../types/banzuke'
+import type { Division, Rikishi } from '../../types/banzuke'
 import type { Stable } from '../../data/stables'
 import type { StableRoster } from '../../utils/stables'
 import { SIDE_KANJI } from '../../data/kanji'
@@ -11,6 +11,7 @@ import { describeMovement, type Movement } from '../../utils/diff'
 import { describeRecord, type RikishiRecord } from '../../data/results'
 import { MovementBadge } from '../MovementBadge/MovementBadge'
 import { Hoshitori } from '../Hoshitori/Hoshitori'
+import { CloseIcon } from '../CloseIcon/CloseIcon'
 import styles from './StableModal.module.css'
 
 interface StableModalProps {
@@ -24,7 +25,8 @@ interface StableModalProps {
   stableLoading: boolean
   movements?: Map<number, Movement> | null
   records?: Record<string, RikishiRecord> | null
-  championIds?: Set<number> | null
+  /** Tournament champion per division, once decided. */
+  champions?: Partial<Record<Division, number>>
   onClose: () => void
   onSelectRikishi: (rikishi: Rikishi) => void
   /** Leave the dialog with the sheet filtered to this stable's members. */
@@ -44,11 +46,12 @@ export function StableModal({
   stableLoading,
   movements,
   records,
-  championIds,
+  champions,
   onClose,
   onSelectRikishi,
   onShowOnBanzuke,
 }: StableModalProps) {
+  const championIds = useMemo(() => new Set(Object.values(champions ?? {})), [champions])
   const dialogRef = useRef<HTMLDialogElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
   const openerRef = useRef<Element | null>(null)
@@ -133,14 +136,7 @@ export function StableModal({
             type="button"
             aria-label={strings.closeStable}
           >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <path
-                d="M15 5L5 15M5 5l10 10"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
+            <CloseIcon />
           </button>
 
           <div className={styles.head}>
@@ -173,7 +169,7 @@ export function StableModal({
                     rikishi={rikishi}
                     movement={movements?.get(rikishi.id) ?? null}
                     record={records?.[String(rikishi.id)] ?? null}
-                    champion={!!championIds?.has(rikishi.id)}
+                    champion={championIds.has(rikishi.id)}
                     onSelect={handleSelect}
                   />
                 ))}

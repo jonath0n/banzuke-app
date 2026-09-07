@@ -43,22 +43,41 @@ function withoutParenthetical(value: string): string {
   return value.replace(/[（(][^()（）]*[)）]/g, '').trim()
 }
 
-/** Label → value for the master's table, the first `table.mdTable2` on the page. */
-function masterInfo(root: HTMLElement): Map<string, string> {
-  const rows = new Map<string, string>()
-  const table = root.querySelector('table.mdTable2')
-  if (!table) return rows
-  for (const tr of table.querySelectorAll('tr')) {
-    const th = tr.querySelector('th')
-    const td = tr.querySelector('td')
-    if (th && td) rows.set(text(th), withoutParenthetical(text(td)))
+/**
+ * The elements of the Master section: everything after the "Master" / 師匠
+ * heading up to the next section heading. The page lists the Gyoji,
+ * Yobidashi and Tokoyama in the same shape further down, so a stable with no
+ * master listed must yield nothing rather than the referee.
+ */
+function masterSection(root: HTMLElement, heading: string): HTMLElement[] {
+  const all = root.querySelectorAll('*')
+  const start = all.findIndex((el) => el.tagName === 'H3' && text(el) === heading)
+  if (start === -1) return []
+  const section: HTMLElement[] = []
+  for (const el of all.slice(start + 1)) {
+    if (el.tagName === 'H3') break
+    section.push(el)
   }
-  return rows
+  return section
 }
 
-/** The master's name from the card header, absent when the stable has no master listed. */
-function masterName(root: HTMLElement): string {
-  return withoutParenthetical(text(root.querySelector('h4.mdTtl5 .txt2')))
+interface MasterCard {
+  name: string
+  info: Map<string, string>
+}
+
+/** The master's name from the card header and the label → value rows of his table. */
+function masterCard(root: HTMLElement, heading: string): MasterCard {
+  const section = masterSection(root, heading)
+  const nameEl = section.find((el) => el.tagName === 'H4')?.querySelector('.txt2')
+  const info = new Map<string, string>()
+  const table = section.find((el) => el.tagName === 'TABLE' && el.classList.contains('mdTable2'))
+  for (const tr of table?.querySelectorAll('tr') ?? []) {
+    const th = tr.querySelector('th')
+    const td = tr.querySelector('td')
+    if (th && td) info.set(text(th), withoutParenthetical(text(td)))
+  }
+  return { name: withoutParenthetical(text(nameEl)), info }
 }
 
 /** 'Komusubi Asahiyutaka' → ['Komusubi', 'Asahiyutaka']; '小結 旭豊' likewise. */
@@ -70,10 +89,11 @@ function splitRankAndName(value: string): [string, string] {
 export function parseEnStable(html: string): EnStable {
   const root = parse(html)
   const heading = text(root.querySelector('h2.mdTtl2.type2'))
-  const [masterRank, masterShikona] = splitRankAndName(masterInfo(root).get('Ring Name') ?? '')
+  const master = masterCard(root, 'Master')
+  const [masterRank, masterShikona] = splitRankAndName(master.info.get('Ring Name') ?? '')
   return {
     name: heading.replace(/\s+Stable$/i, ''),
-    masterName: masterName(root),
+    masterName: master.name,
     masterRank,
     masterShikona,
   }
@@ -89,11 +109,12 @@ export function parseJpStable(html: string): JpStable {
       address = text(parse(tr.querySelector('td')?.innerHTML.replace(/<br\s*\/?>/gi, ' ') ?? ''))
     }
   }
-  const [masterRank, masterShikona] = splitRankAndName(masterInfo(root).get('しこ名') ?? '')
+  const master = masterCard(root, '師匠')
+  const [masterRank, masterShikona] = splitRankAndName(master.info.get('しこ名') ?? '')
   return {
     name: heading.replace(/部屋$/, ''),
     address,
-    masterName: masterName(root),
+    masterName: master.name,
     masterRank,
     masterShikona,
   }
