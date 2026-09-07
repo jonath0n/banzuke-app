@@ -23,6 +23,7 @@ npm run subset-fonts   # rebuild public/assets/fonts/NotoSerifJP-700-subset.woff
 npm run make-sample    # derive public/sample-data.json (Makuuchi only, labelled) from the live file
 npm run validate-data  # validate the committed snapshot
 npm run archive-banzuke # write public/banzuke/{id}.json + index from the snapshot
+npm run fetch-results  # in season, write public/results/{id}.json from sumo-api
 ```
 
 Every change must pass `npm run validate && npm run test:run && npm run build` before commit.
@@ -42,9 +43,10 @@ Dates from upstream are naive JST strings; always go through `src/utils/dates.ts
 and formats in `Asia/Tokyo`.
 
 The deploy workflow (`.github/workflows/deploy.yml`) refreshes data on every push to `main`,
-daily at 07:00 JST, and on demand. When the tournament data changed it also archives the banzuke
-under `public/banzuke/`, regenerates the mincho subset; profiles are re-scraped only when stale;
-whatever changed is committed to `main` before building. `ci.yml` runs the checks on pull
+twice daily (07:00 and 19:00 JST), and on demand. When the tournament data changed it also
+archives the banzuke under `public/banzuke/`, regenerates the mincho subset; profiles are
+re-scraped only when stale; whatever changed is committed to `main` before building. During a
+tournament it also fetches results into `public/results/`. `ci.yml` runs the checks on pull
 requests. There is no separate refresh workflow.
 
 ## Conventions
@@ -114,3 +116,8 @@ requests. There is no separate refresh workflow.
   per-division departures. Badges show the **rank a wrestler came from** (`▲M5`), never a step
   count — steps are undefined across sanyaku and the Juryo line. Arrows are ink/muted; "new" borrows
   the promotion pill's vermilion. Movement is also spoken in each button's accessible name.
+- `public/results/` holds **tournament results** (`src/data/results.ts`): one file per basho of
+  per-wrestler records, per-day cards and the yusho, from sumo-api.com joined by `nskId`. The script
+  fetches only in season (a day before day 1 to three days after senshuraku) and the bot commit ends
+  with `[skip ci]` because deploy-key pushes trigger the push workflow. Results are **not** in the font
+  subset's file set: kimarite are romaji and a visiting Makushita name may fall back.
