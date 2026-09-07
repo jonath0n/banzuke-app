@@ -83,7 +83,6 @@ export function WrestlerModal({
 
   // Arrow keys step to the neighbouring wrestler; Tab keeps roving inside the dialog.
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDialogElement>) => {
-    if (e.target instanceof HTMLInputElement) return
     if (!neighbours || !onStep) return
     const step =
       e.key === 'ArrowLeft' ? neighbours.previous : e.key === 'ArrowRight' ? neighbours.next : null
