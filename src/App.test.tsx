@@ -1,7 +1,8 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { makeRawSnapshot } from './test/fixtures'
+import { makeArchiveIndex, makeArchivedBanzuke, makeRawSnapshot } from './test/fixtures'
+import { resetArchiveCache } from './hooks/useArchive'
 import App from './App'
 
 function jsonResponse(body: unknown): Response {
@@ -12,13 +13,18 @@ describe('App', () => {
   beforeEach(() => {
     localStorage.clear()
     window.history.replaceState(null, '', '/')
+    resetArchiveCache()
     vi.stubGlobal(
       'fetch',
       vi.fn((url: RequestInfo | URL) =>
         Promise.resolve(
-          String(url).includes('rikishi-profiles')
-            ? jsonResponse({ version: 1, fetchedAt: '2026-09-04T00:00:00Z', profiles: {} })
-            : jsonResponse(makeRawSnapshot())
+          String(url).includes('banzuke/index.json')
+            ? jsonResponse(makeArchiveIndex())
+            : String(url).includes('banzuke/636.json')
+              ? jsonResponse(makeArchivedBanzuke())
+              : String(url).includes('rikishi-profiles')
+                ? jsonResponse({ version: 1, fetchedAt: '2026-09-04T00:00:00Z', profiles: {} })
+                : jsonResponse(makeRawSnapshot())
         )
       )
     )
@@ -128,5 +134,40 @@ describe('App', () => {
     render(<App />)
     expect(await screen.findByRole('dialog')).toHaveAccessibleName('Kyokukaiyu')
     expect(screen.getByRole('tab', { name: /Juryo/ })).toHaveAttribute('aria-selected', 'true')
+  })
+
+  it('offers Changes when the archive has a previous tournament, and annotates the sheet with ?diff=1', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    const toggle = await screen.findByRole('button', { name: /Changes since July 2026/ })
+    expect(toggle).toHaveAttribute('aria-pressed', 'false')
+    await user.click(toggle)
+    expect(window.location.search).toBe('?diff=1')
+    // Hoshoryu (id 1000 in the raw fixture) is not in the archive fixture → new.
+    expect(
+      await screen.findByRole('button', { name: /Hoshoryu, East.*New to the sheet/ })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('region', { name: /Left Makuuchi since July 2026/ })
+    ).toBeInTheDocument()
+  })
+
+  it('hides the toggle when there is no archive', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn((url: RequestInfo | URL) =>
+        Promise.resolve(
+          String(url).includes('banzuke/')
+            ? ({ ok: false, status: 404 } as Response)
+            : String(url).includes('rikishi-profiles')
+              ? jsonResponse({ version: 1, fetchedAt: '2026-09-04T00:00:00Z', profiles: {} })
+              : jsonResponse(makeRawSnapshot())
+        )
+      )
+    )
+    vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    render(<App />)
+    await screen.findByRole('button', { name: /Hoshoryu, East/ })
+    expect(screen.queryByRole('button', { name: /Changes/ })).toBeNull()
   })
 })
