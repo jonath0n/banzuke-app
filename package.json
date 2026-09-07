@@ -55,7 +55,7 @@
     "prettier": "^3.9.6",
     "subset-font": "^2.7.0",
     "tsx": "^4.23.13",
-    "typescript": "~5.9.0",
+    "typescript": "~7.0.2",
     "typescript-eslint": "^8.69.0",
     "vite": "^7.3.6",
     "vitest": "^3.2.7"
