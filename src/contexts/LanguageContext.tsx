@@ -42,6 +42,10 @@ function getInitialLanguage(): Language {
     // localStorage may be unavailable (private browsing, etc.)
   }
 
+  // Then the browser: a Japanese visitor should not have to find the toggle.
+  const preferred = navigator.languages?.[0] ?? navigator.language ?? ''
+  if (/^ja\b/i.test(preferred)) return 'jp'
+
   return DEFAULT_LANGUAGE
 }
 

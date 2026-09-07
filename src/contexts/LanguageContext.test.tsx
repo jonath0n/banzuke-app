@@ -1,7 +1,12 @@
-import { act, renderHook } from '@testing-library/react'
+import { act, render, renderHook, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ReactNode } from 'react'
 import { LanguageProvider, useLanguage } from './LanguageContext'
+
+function Probe() {
+  const { language } = useLanguage()
+  return <span data-testid="lang">{language}</span>
+}
 
 const wrapper = ({ children }: { children: ReactNode }) => (
   <LanguageProvider>{children}</LanguageProvider>
@@ -82,5 +87,28 @@ describe('LanguageContext', () => {
   it('throws when used outside the provider', () => {
     vi.spyOn(console, 'error').mockImplementation(() => undefined)
     expect(() => renderHook(() => useLanguage())).toThrow(/within a LanguageProvider/)
+  })
+
+  it('follows the browser language when nothing is stored and the URL says nothing', () => {
+    vi.stubGlobal('navigator', { ...navigator, language: 'ja-JP', languages: ['ja-JP', 'en'] })
+    render(
+      <LanguageProvider>
+        <Probe />
+      </LanguageProvider>
+    )
+    expect(screen.getByTestId('lang')).toHaveTextContent('jp')
+    vi.unstubAllGlobals()
+  })
+
+  it('lets a stored preference beat the browser language', () => {
+    localStorage.setItem('banzuke-language', 'en')
+    vi.stubGlobal('navigator', { ...navigator, language: 'ja', languages: ['ja'] })
+    render(
+      <LanguageProvider>
+        <Probe />
+      </LanguageProvider>
+    )
+    expect(screen.getByTestId('lang')).toHaveTextContent('en')
+    vi.unstubAllGlobals()
   })
 })
