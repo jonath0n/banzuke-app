@@ -92,6 +92,8 @@ const en = {
   copyLink: 'Copy link',
   linkCopied: 'Link copied',
   officialProfile: 'Official profile',
+  previousWrestler: (name: string) => `Previous: ${name}`,
+  nextWrestler: (name: string) => `Next: ${name}`,
   realName: 'Real name',
   born: 'Born',
   age: (years: number) => `(${years})`,
@@ -120,6 +122,7 @@ const en = {
   shortcutLanguage: 'Switch language',
   shortcutEscape: 'Close the dialog or clear the search',
   shortcutHelp: 'Show or hide this help',
+  shortcutArrows: 'Move between wrestlers; ← → in the dialog',
 
   // Footer
   footerMadeBy: 'Made by',
@@ -211,6 +214,8 @@ const jp: Strings = {
   copyLink: 'リンクをコピー',
   linkCopied: 'コピーしました',
   officialProfile: '公式プロフィール',
+  previousWrestler: (name: string) => `前へ: ${name}`,
+  nextWrestler: (name: string) => `次へ: ${name}`,
   realName: '本名',
   born: '生年月日',
   age: (years: number) => `（${years}歳）`,
@@ -237,6 +242,7 @@ const jp: Strings = {
   shortcutLanguage: '言語を切り替え',
   shortcutEscape: 'ダイアログを閉じる / 検索をクリア',
   shortcutHelp: 'このヘルプの表示・非表示',
+  shortcutArrows: '力士の間を移動（ダイアログ内は ← →）',
 
   footerMadeBy: '制作:',
   footerDataSource: 'データ提供:',

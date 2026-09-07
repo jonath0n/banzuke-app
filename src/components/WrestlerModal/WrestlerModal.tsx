@@ -19,6 +19,10 @@ interface WrestlerModalProps {
   onClose: () => void
   /** This tournament's record, when the wrestler has fought. */
   record?: RikishiRecord | null
+  /** The wrestlers immediately before and after this one on the banzuke. */
+  neighbours?: { previous: Rikishi | null; next: Rikishi | null }
+  /** Step to a neighbouring wrestler, replacing the current one. */
+  onStep?: (rikishi: Rikishi) => void
 }
 
 /**
@@ -27,9 +31,16 @@ interface WrestlerModalProps {
  * handles Escape. The element stays mounted so open/close transitions work;
  * its content renders only while a wrestler is selected.
  */
-export function WrestlerModal({ rikishi, onClose, record }: WrestlerModalProps) {
+export function WrestlerModal({
+  rikishi,
+  onClose,
+  record,
+  neighbours,
+  onStep,
+}: WrestlerModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const openerRef = useRef<Element | null>(null)
+  const currentIdRef = useRef<number | null>(null)
   const { language } = useLanguage()
   const strings = useStrings()
   const nameId = useId()
@@ -44,6 +55,7 @@ export function WrestlerModal({ rikishi, onClose, record }: WrestlerModalProps) 
         openerRef.current = document.activeElement
         dialog.showModal()
       }
+      currentIdRef.current = rikishi.id
     } else if (dialog.open) {
       dialog.close()
     }
@@ -55,8 +67,12 @@ export function WrestlerModal({ rikishi, onClose, record }: WrestlerModalProps) 
     const opener = openerRef.current
     openerRef.current = null
     onClose()
-    if (opener instanceof HTMLElement && document.contains(opener)) {
-      opener.focus()
+    const id = currentIdRef.current
+    const current =
+      id === null ? null : document.querySelector<HTMLElement>(`button[data-id="${id}"]`)
+    const target = current ?? opener
+    if (target instanceof HTMLElement && document.contains(target)) {
+      target.focus()
     }
   }
 
@@ -64,6 +80,20 @@ export function WrestlerModal({ rikishi, onClose, record }: WrestlerModalProps) 
   const handleClick = (e: React.MouseEvent<HTMLDialogElement>) => {
     if (e.target === dialogRef.current) onClose()
   }
+
+  // Arrow keys step to the neighbouring wrestler; Tab keeps roving inside the dialog.
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDialogElement>) => {
+    if (e.target instanceof HTMLInputElement) return
+    if (!neighbours || !onStep) return
+    const step =
+      e.key === 'ArrowLeft' ? neighbours.previous : e.key === 'ArrowRight' ? neighbours.next : null
+    if (step) {
+      e.preventDefault()
+      onStep(step)
+    }
+  }
+
+  const nameOf = (r: Rikishi) => r.shikona[language] || r.shikona.en
 
   const handleCopyLink = async () => {
     const url = window.location.href
@@ -85,8 +115,8 @@ export function WrestlerModal({ rikishi, onClose, record }: WrestlerModalProps) 
   return createPortal(
     // The click handler only implements "click the backdrop to dismiss", a
     // pointer convenience; keyboard users close the dialog with Escape (native)
-    // or the Close button, so no key handler is needed here.
-    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
+    // or the Close button.
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <dialog
       ref={dialogRef}
       className={styles.modal}
@@ -94,6 +124,7 @@ export function WrestlerModal({ rikishi, onClose, record }: WrestlerModalProps) 
       aria-labelledby={nameId}
       onClose={handleClose}
       onClick={handleClick}
+      onKeyDown={handleKeyDown}
       lang={lang}
     >
       {rikishi && (
@@ -159,6 +190,34 @@ export function WrestlerModal({ rikishi, onClose, record }: WrestlerModalProps) 
           </div>
 
           <div className={styles.details}>
+            {neighbours && onStep && (
+              <div className={styles.stepper}>
+                {neighbours.previous ? (
+                  <button
+                    type="button"
+                    className={styles.stepButton}
+                    onClick={() => onStep(neighbours.previous!)}
+                    aria-label={strings.previousWrestler(nameOf(neighbours.previous))}
+                  >
+                    ‹
+                  </button>
+                ) : (
+                  <span className={styles.stepGap} aria-hidden="true" />
+                )}
+                {neighbours.next ? (
+                  <button
+                    type="button"
+                    className={styles.stepButton}
+                    onClick={() => onStep(neighbours.next!)}
+                    aria-label={strings.nextWrestler(nameOf(neighbours.next))}
+                  >
+                    ›
+                  </button>
+                ) : (
+                  <span className={styles.stepGap} aria-hidden="true" />
+                )}
+              </div>
+            )}
             <h2 id={nameId} className={styles.primaryName} lang={lang}>
               {rikishi.shikona[language] || rikishi.shikona.en}
             </h2>

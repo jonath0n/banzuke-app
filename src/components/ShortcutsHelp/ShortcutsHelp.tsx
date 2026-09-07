@@ -11,6 +11,7 @@ export function ShortcutsHelp({ open, onToggle }: ShortcutsHelpProps) {
   const strings = useStrings()
   const rows: Array<[string, string]> = [
     ['/', strings.shortcutSearch],
+    ['← → ↑ ↓', strings.shortcutArrows],
     ['L', strings.shortcutLanguage],
     ['Esc', strings.shortcutEscape],
     ['?', strings.shortcutHelp],

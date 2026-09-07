@@ -154,6 +154,36 @@
   text-align: center;
 }
 
+/* Previous / next along the banzuke, either side of the name */
+.stepper {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 var(--space-2);
+}
+
+.stepButton,
+.stepGap {
+  min-width: 40px;
+  min-height: 40px;
+}
+
+.stepButton {
+  display: inline-grid;
+  place-items: center;
+  font: inherit;
+  font-size: var(--text-lg);
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.stepButton:hover {
+  color: var(--text);
+  border-color: var(--border);
+}
+
 .primaryName {
   margin: 0;
   font-family: var(--font-names);
