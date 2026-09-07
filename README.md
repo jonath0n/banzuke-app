@@ -34,7 +34,7 @@ src/
 public/
   latest-banzuke.json          # Static data snapshot, both divisions (auto-updated)
   sample-data.json             # Fallback: Makuuchi only, labelled (npm run make-sample)
-  banzuke/                   # One file per tournament + index.json (npm run archive-banzuke)
+  banzuke/                     # One file per tournament + index.json (npm run archive-banzuke)
   assets/
     FranSans-Solid.otf         # Wordmark font
     fonts/
@@ -125,7 +125,7 @@ npm run subset-fonts     # rebuild the mincho subset after the data (or source) 
 npm run fetch-profiles   # scrape wrestler profiles into public/rikishi-profiles.json
 npm run make-sample      # derive the labelled Makuuchi-only fallback from the live snapshot
 npm run validate-data    # validate the committed snapshot
-npm run archive-banzuke   # add the current snapshot's tournament to public/banzuke/
+npm run archive-banzuke  # add the current snapshot's tournament to public/banzuke/
 ```
 
 Live site: https://jonath0n.github.io/banzuke-app/
