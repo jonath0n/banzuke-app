@@ -12,6 +12,7 @@ import { useProfileState } from '../../hooks/useProfiles'
 import { ageOn, formatBirthDate, formatMeasure, formatYearMonth } from '../../utils/profile'
 import { boutMark, scoreLabel, type Bout, type RikishiRecord } from '../../data/results'
 import { kimariteLabel } from '../../data/kimarite'
+import { explainShikona } from '../../data/shikona-glossary'
 import styles from './WrestlerModal.module.css'
 
 interface WrestlerModalProps {
@@ -235,6 +236,7 @@ export function WrestlerModal({
               {rikishi.shikona[language] || rikishi.shikona.en}
             </h2>
             <SecondaryName rikishi={rikishi} />
+            <NameSection rikishi={rikishi} />
 
             <dl className={styles.meta}>
               <div className={styles.metaItem}>
@@ -315,6 +317,41 @@ function SecondaryName({ rikishi }: { rikishi: Rikishi }) {
     <p className={styles.secondaryName} lang={isJapanese ? 'ja' : 'en'}>
       {secondary}
     </p>
+  )
+}
+
+/**
+ * The ring name, character by character, with what each means. English only:
+ * a Japanese reader does not need 海 explained. Shown when at least one part
+ * of the name is in the glossary.
+ */
+function NameSection({ rikishi }: { rikishi: Rikishi }) {
+  const { language } = useLanguage()
+  const strings = useStrings()
+  const headingId = useId()
+  if (language !== 'en' || !rikishi.shikona.jp || rikishi.shikona.jp === rikishi.shikona.en) {
+    return null
+  }
+  const segments = explainShikona(rikishi.shikona.jp)
+  if (!segments.some((s) => s.gloss)) return null
+  const note = segments.find((s) => s.gloss?.note)?.gloss?.note
+  return (
+    <section className={styles.nameSection} aria-labelledby={headingId}>
+      <h3 id={headingId} className={styles.careerTitle}>
+        {strings.nameMeaning}
+      </h3>
+      <ul className={styles.segments}>
+        {segments.map((s, i) => (
+          <li key={`${s.text}-${i}`} className={styles.segment} data-segment={s.text}>
+            <span className={styles.segmentText} lang="ja">
+              {s.text}
+            </span>
+            {s.gloss && <span className={styles.segmentGloss}>{s.gloss.en}</span>}
+          </li>
+        ))}
+      </ul>
+      {note && <p className={styles.segmentNote}>{note}</p>}
+    </section>
   )
 }
 

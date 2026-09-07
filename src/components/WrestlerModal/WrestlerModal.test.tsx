@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ComponentProps } from 'react'
@@ -296,5 +296,23 @@ describe('WrestlerModal', () => {
     await user.click(screen.getByRole('button', { name: 'Close wrestler details' }))
     screen.getByRole('dialog', { hidden: true }).dispatchEvent(new Event('close'))
     expect(opener).toHaveFocus()
+  })
+
+  it('spells out the ring name’s characters with their meanings, in English', () => {
+    renderModal(onosato)
+    const section = screen.getByRole('region', { name: 'Name' })
+    const parts = [...section.querySelectorAll('[data-segment]')]
+    expect(parts.map((p) => p.getAttribute('data-segment'))).toEqual(['大', 'の', '里'])
+    expect(section).toHaveTextContent('great')
+    expect(section).toHaveTextContent('village; home')
+    expect(section.querySelector('[lang="ja"]')).not.toBeNull()
+  })
+
+  it('shows no name section in Japanese, or when the name has no known characters', () => {
+    renderModal(onosato, vi.fn(), 'jp')
+    expect(screen.queryByRole('region', { name: '四股名の字' })).toBeNull()
+    cleanup()
+    renderModal(makeRikishi({ shikona: { en: 'Nobody', jp: '龘' } }))
+    expect(screen.queryByRole('region', { name: 'Name' })).toBeNull()
   })
 })
