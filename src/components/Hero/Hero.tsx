@@ -80,7 +80,7 @@ export function Hero({ data }: HeroProps) {
     <header className={styles.hero} lang={langAttr(language)}>
       <div className={styles.titleRow}>
         <div className={styles.title}>
-          <h1 lang="en">Grand Sumo Banzuke</h1>
+          <h1 lang={langAttr(language)}>{strings.appTitle}</h1>
           <span className={styles.seal} lang="ja" aria-hidden="true">
             番付
           </span>

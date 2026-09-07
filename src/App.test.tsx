@@ -188,6 +188,46 @@ describe('App', () => {
     ).toBeInTheDocument()
   })
 
+  it('names the previous tournament with its year in Japanese when the year differs', async () => {
+    window.history.replaceState(null, '', '/?lang=jp')
+    vi.stubGlobal(
+      'fetch',
+      vi.fn((url: RequestInfo | URL) =>
+        Promise.resolve(
+          String(url).includes('banzuke/index.json')
+            ? jsonResponse(
+                makeArchiveIndex({
+                  basho: [
+                    {
+                      bashoId: 632,
+                      year: 2025,
+                      month: 11,
+                      startDate: '2025-11-09',
+                      file: '632.json',
+                      source: 'sumo-api',
+                      divisions: ['makuuchi', 'juryo'],
+                    },
+                    {
+                      bashoId: 637,
+                      year: 2026,
+                      month: 9,
+                      startDate: '2026-09-13',
+                      file: '637.json',
+                      source: 'sumo-api',
+                      divisions: ['makuuchi', 'juryo'],
+                    },
+                  ],
+                })
+              )
+            : jsonResponse(makeRawSnapshot())
+        )
+      )
+    )
+    render(<App />)
+    const toggle = await screen.findByRole('button', { name: /変動/ })
+    expect(toggle).toHaveAttribute('title', '令和七年十一月場所からの変動')
+  })
+
   it('hides the toggle when there is no archive', async () => {
     vi.stubGlobal(
       'fetch',

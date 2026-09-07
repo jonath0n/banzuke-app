@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
+import { useStrings } from '../../i18n/useStrings'
 import styles from './ScrollToTop.module.css'
 
 const SCROLL_THRESHOLD = 300
 
 export function ScrollToTop() {
+  const strings = useStrings()
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -26,7 +28,7 @@ export function ScrollToTop() {
       className={`${styles.button} ${visible ? styles.visible : ''}`}
       onClick={scrollToTop}
       type="button"
-      aria-label="Scroll to top"
+      aria-label={strings.scrollToTop}
       data-print="hide"
     >
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">

@@ -11,7 +11,7 @@ import { clearUrlParam, useUrlParam } from './hooks/useUrlState'
 import { useStrings } from './i18n/useStrings'
 import { buildSearchIndex, matchingIds } from './utils/search'
 import { formatYearMonth } from './utils/profile'
-import { jpBashoName } from './data/kanji'
+import { jpBashoName, jpEraYear } from './data/kanji'
 import { Hero } from './components/Hero/Hero'
 import { SearchBar } from './components/SearchBar/SearchBar'
 import { DivisionTabs } from './components/DivisionTabs/DivisionTabs'
@@ -146,7 +146,7 @@ function AppContent() {
   const previous = useArchivedBanzuke(diffWanted ? prevEntry : null)
   const sinceLabel = prevEntry
     ? language === 'jp'
-      ? jpBashoName(prevEntry.month)
+      ? `${prevEntry.year !== banzuke?.basho.year ? jpEraYear(prevEntry.year) : ''}${jpBashoName(prevEntry.month)}`
       : formatYearMonth(
           `${prevEntry.year}-${String(prevEntry.month).padStart(2, '0')}`,
           'en',
