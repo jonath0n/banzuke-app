@@ -14,7 +14,7 @@ export const KIMARITE: Record<string, { jp: string; en: string }> = {
   oshitaoshi: { jp: '押し倒し', en: 'frontal push down' },
   yorikiri: { jp: '寄り切り', en: 'frontal force out' },
   yoritaoshi: { jp: '寄り倒し', en: 'frontal crush out' },
-  abisetaoshi: { jp: '浴せ倒し', en: 'backward force down' },
+  abisetaoshi: { jp: '浴びせ倒し', en: 'backward force down' },
   // 投げ手 — throws
   uwatenage: { jp: '上手投げ', en: 'overarm throw' },
   shitatenage: { jp: '下手投げ', en: 'underarm throw' },
@@ -63,7 +63,7 @@ export const KIMARITE: Record<string, { jp: string; en: string }> = {
   katasukashi: { jp: '肩透かし', en: 'under shoulder swing down' },
   sotomuso: { jp: '外無双', en: 'outer thigh propping twist down' },
   uchimuso: { jp: '内無双', en: 'inner thigh propping twist down' },
-  zubuneri: { jp: '頭捻り', en: 'head pivot throw' },
+  zubuneri: { jp: 'ずぶねり', en: 'head pivot throw' },
   uwatehineri: { jp: '上手捻り', en: 'twisting overarm throw' },
   shitatehineri: { jp: '下手捻り', en: 'twisting underarm throw' },
   amiuchi: { jp: '網打ち', en: 'fisherman’s throw' },
