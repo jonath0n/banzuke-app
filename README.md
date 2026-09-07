@@ -37,6 +37,7 @@ public/
   latest-banzuke.json          # Static data snapshot, both divisions (auto-updated)
   sample-data.json             # Fallback: Makuuchi only, labelled (npm run make-sample)
   banzuke/                     # One file per tournament + index.json (npm run archive-banzuke)
+  results/                     # One file per tournament of records, cards and yusho (npm run fetch-results)
   assets/
     FranSans-Solid.otf         # Wordmark font
     fonts/
@@ -51,6 +52,7 @@ scripts/
   make-sample.ts               # Derives sample-data.json from the live snapshot
   archive-banzuke.ts           # Adds the snapshot's tournament to public/banzuke/
   backfill-archive.ts          # One-off: earlier tournaments from sumo-api.com, joined by JSA id
+  fetch-results.ts             # Tournament results from sumo-api.com, joined by JSA id
   lib/charset.ts               # Collects the Japanese glyph set
   lib/http.ts                  # fetch with timeout, retries and a User-Agent
   lib/jp-search-page.ts        # Parses the Japanese rikishi list page
@@ -86,16 +88,19 @@ This outputs to `dist/`. Deploy this folder to any static host (GitHub Pages, Ne
 ## Data refresh and deployment
 
 A single workflow (`.github/workflows/deploy.yml`) runs on every push to `main`, once a day at
-07:00 JST, and on demand from the Actions tab. It:
+07:00 JST and again at 19:00 JST, and on demand from the Actions tab. It:
 
 1. Fetches the English and Japanese banzuke for both divisions from sumo.or.jp and validates
    them (both languages present, same tournament, same wrestlers, sane row counts).
 2. When the tournament data changed, archives it under `public/banzuke/` and regenerates the
    mincho subset (new wrestlers can bring new kanji). Wrestler profiles are checked on every
    run and re-scraped only for wrestlers whose stored profile predates the current tournament.
-3. Commits `public/latest-banzuke.json`, `public/rikishi-profiles.json` and the font files to
-   `main` when any of them changed (a fresh fetch timestamp alone is not a change).
-4. Validates, tests and builds the site with the freshest valid data and deploys it to
+3. During a tournament, fetches every wrestler's record, each day's bouts and the yusho from
+   sumo-api.com into `public/results/`.
+4. Commits `public/latest-banzuke.json`, `public/rikishi-profiles.json`, the font files,
+   `public/banzuke/` and `public/results/` to `main` when any of them changed (a fresh fetch
+   timestamp alone is not a change).
+5. Validates, tests and builds the site with the freshest valid data and deploys it to
    GitHub Pages.
 
 If sumo.or.jp is unreachable the committed snapshot is deployed instead, so a data hiccup never
@@ -119,6 +124,14 @@ JSA snapshot. Tournaments before this site kept copies (2025-11 → 2026-07) wer
 [sumo-api.com](https://www.sumo-api.com/), whose rikishi records carry the JSA id (`nskId`), by
 `npm run backfill-archive -- 202511 202601 202603 202605 202607`. `index.json` lists them all.
 
+### Results
+
+`public/results/{bashoId}.json` holds one file per basho: every wrestler's record (with ○●休
+bouts and kimarite as sumo-api romaji), each day's card, and the yusho. It is written by
+`npm run fetch-results` from [sumo-api.com](https://www.sumo-api.com/) only while a tournament
+is in season — from the day before day 1 to three days after senshuraku — and joined to JSA ids
+by `nskId`. The browser never calls sumo-api.com; it reads only this file.
+
 ### Manual (local)
 
 ```sh
@@ -128,6 +141,7 @@ npm run fetch-profiles   # scrape wrestler profiles into public/rikishi-profiles
 npm run make-sample      # derive the labelled Makuuchi-only fallback from the live snapshot
 npm run validate-data    # validate the committed snapshot
 npm run archive-banzuke  # add the current snapshot's tournament to public/banzuke/
+npm run fetch-results    # in season: refresh public/results/{bashoId}.json (-- --basho 202607 for a past one)
 ```
 
 Live site: https://jonath0n.github.io/banzuke-app/

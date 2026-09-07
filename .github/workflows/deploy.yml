@@ -7,9 +7,10 @@ name: Build & Deploy
 #   deploy – publish to GitHub Pages
 #
 # It runs on every push to main, once a day (the JSA publishes a new banzuke
-# on a Monday morning JST roughly two weeks before each tournament), and on
-# demand. If sumo.or.jp is unreachable the committed snapshot is deployed
-# instead, so a data hiccup never breaks a deploy.
+# on a Monday morning JST roughly two weeks before each tournament) and twice
+# a day during a tournament (to also pick up results), and on demand. If
+# sumo.or.jp is unreachable the committed snapshot is deployed instead, so a
+# data hiccup never breaks a deploy.
 
 on:
   push:
@@ -17,6 +18,8 @@ on:
   schedule:
     # 22:00 UTC = 07:00 JST, an hour after the banzuke is published
     - cron: '0 22 * * *'
+    # 10:00 UTC = 19:00 JST, after the day's last bout
+    - cron: '0 10 * * *'
   workflow_dispatch:
 
 permissions:
@@ -115,22 +118,48 @@ jobs:
             --previous public/rikishi-profiles.json \
             --out .data/rikishi-profiles.json
 
+      # During a tournament, every wrestler's record and each day's card; out
+      # of season the script exits without fetching. A failure keeps the
+      # previous file and never blocks the deploy.
+      - name: Fetch tournament results
+        id: results
+        continue-on-error: true
+        run: |
+          mkdir -p .data/results
+          if [ -d public/results ]; then cp public/results/*.json .data/results/ 2>/dev/null || true; fi
+          npx tsx scripts/fetch-results.ts \
+            --snapshot .data/latest-banzuke.json \
+            --out-dir .data/results \
+            --previous-dir public/results
+
       - name: Commit refreshed data to main
-        if: steps.fetch.outputs.changed == 'true' || steps.profiles.outputs.changed == 'true'
+        if: steps.fetch.outputs.changed == 'true' || steps.profiles.outputs.changed == 'true' || steps.results.outputs.changed == 'true'
         run: |
           cp .data/latest-banzuke.json public/latest-banzuke.json
-          [ -f .data/rikishi-profiles.json ] && cp .data/rikishi-profiles.json public/rikishi-profiles.json
+          [ -f .data/rikishi-profiles.json ] && cp .data/rikishi-profiles.json public/rikishi-profiles.json || true
           if [ -d .data/assets/fonts ]; then cp .data/assets/fonts/* public/assets/fonts/; fi
           if [ -d .data/banzuke ]; then cp .data/banzuke/*.json public/banzuke/; fi
+          if [ -d .data/results ]; then mkdir -p public/results && cp .data/results/*.json public/results/ 2>/dev/null || true; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add public/latest-banzuke.json public/assets/fonts public/banzuke
+          git add public/latest-banzuke.json public/assets/fonts public/banzuke public/results
           [ -f public/rikishi-profiles.json ] && git add public/rikishi-profiles.json
           if git diff --cached --quiet; then
             echo "Nothing to commit."
             exit 0
           fi
-          git commit -m "data: banzuke ${{ steps.fetch.outputs.basho_id }} (${{ steps.fetch.outputs.start_date }})"
+          subject="data: refresh"
+          if [ "${{ steps.fetch.outputs.changed }}" = "true" ]; then
+            subject="data: banzuke ${{ steps.fetch.outputs.basho_id }} (${{ steps.fetch.outputs.start_date }})"
+          fi
+          if [ "${{ steps.results.outputs.changed }}" = "true" ]; then
+            subject="$subject, results"
+          fi
+          if [ "${{ steps.profiles.outputs.changed }}" = "true" ]; then
+            subject="$subject, profiles"
+          fi
+          # [skip ci]: this push goes over the deploy key, which (unlike GITHUB_TOKEN) triggers the push workflow — without it every data commit would start a redundant second run.
+          git commit -m "$subject [skip ci]"
           git pull --rebase origin main
           git push origin HEAD:main
 
