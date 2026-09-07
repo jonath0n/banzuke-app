@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it, vi } from 'vitest'
-import { HttpError, USER_AGENT, fetchJson, fetchText } from './http'
+import { HttpError, USER_AGENT, fetchJson, fetchText, fetchBytes } from './http'
 
 function jsonResponse(body: unknown, init: ResponseInit = {}): Response {
   return new Response(JSON.stringify(body), {
@@ -124,5 +124,24 @@ describe('fetchJson', () => {
       sleep: noSleep,
     })
     expect(result).toEqual({ ok: true })
+  })
+})
+
+describe('fetchBytes', () => {
+  it('returns the response body as bytes and retries a 503 once', async () => {
+    const body = new Uint8Array([0x77, 0x4f, 0x46, 0x32]) // "wOF2"
+    const fetchImpl = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(new Response(null, { status: 503, statusText: 'Unavailable' }))
+      .mockResolvedValueOnce(new Response(body, { status: 200 }))
+    const sleep = vi.fn(async () => undefined)
+
+    const bytes = await fetchBytes('https://example.test/font.ttf', { fetchImpl, sleep })
+
+    expect(Array.from(bytes)).toEqual([0x77, 0x4f, 0x46, 0x32])
+    expect(fetchImpl).toHaveBeenCalledTimes(2)
+    expect(sleep).toHaveBeenCalledTimes(1)
+    const init = fetchImpl.mock.calls[0][1] as RequestInit
+    expect((init.headers as Record<string, string>).Accept).toBe('*/*')
   })
 })

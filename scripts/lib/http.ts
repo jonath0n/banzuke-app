@@ -70,6 +70,15 @@ export async function fetchText(url: string, options: FetchJsonOptions = {}): Pr
   return response.text()
 }
 
+/** Fetches a URL and returns the body as bytes, with the same retry policy. */
+export async function fetchBytes(url: string, options: FetchJsonOptions = {}): Promise<Uint8Array> {
+  const response = await fetchWithRetry(url, {
+    ...options,
+    headers: { Accept: '*/*', ...options.headers },
+  })
+  return new Uint8Array(await response.arrayBuffer())
+}
+
 async function fetchWithRetry(url: string, options: FetchJsonOptions): Promise<Response> {
   const {
     form,
