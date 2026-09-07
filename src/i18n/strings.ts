@@ -141,7 +141,7 @@ const jp: Strings = {
   departedHeading: (division: string, basho: string) => `${basho}から${division}を離れた力士`,
   departedMovedTo: (division: string) => `${division}へ`,
   departedGone: '番付外へ',
-  departedWas: (rank: string) => `前 ${rank}`,
+  departedWas: (rank: string) => `旧 ${rank}`,
   departedNow: (rank: string) => `現 ${rank}`,
   departedNone: '該当なし',
 
