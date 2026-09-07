@@ -73,6 +73,17 @@ jobs:
       - name: Validate the snapshot that will ship
         run: npx tsx scripts/validate-banzuke.ts .data/latest-banzuke.json
 
+      # New wrestlers can bring new kanji; keep the self-hosted mincho in step
+      # with the data so the coverage test passes in the build job.
+      - name: Regenerate the mincho subset
+        if: steps.fetch.outputs.changed == 'true'
+        run: |
+          mkdir -p .data/assets/fonts
+          cp public/assets/fonts/NotoSerifJP-OFL.txt .data/assets/fonts/
+          npx tsx scripts/subset-fonts.ts \
+            --snapshot .data/latest-banzuke.json \
+            --out-dir .data/assets/fonts
+
       # Profiles are refreshed once per tournament; a scraping failure keeps
       # the previous file and never blocks the deploy.
       - name: Refresh wrestler profiles
@@ -90,9 +101,14 @@ jobs:
         run: |
           cp .data/latest-banzuke.json public/latest-banzuke.json
           [ -f .data/rikishi-profiles.json ] && cp .data/rikishi-profiles.json public/rikishi-profiles.json
+          if [ -d .data/assets/fonts ]; then cp .data/assets/fonts/* public/assets/fonts/; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add public/latest-banzuke.json public/rikishi-profiles.json
+          git add public/latest-banzuke.json public/rikishi-profiles.json public/assets/fonts
+          if git diff --cached --quiet; then
+            echo "Nothing to commit."
+            exit 0
+          fi
           git commit -m "data: banzuke ${{ steps.fetch.outputs.basho_id }} (${{ steps.fetch.outputs.start_date }})"
           git pull --rebase origin main
           git push origin HEAD:main
