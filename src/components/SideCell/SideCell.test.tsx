@@ -112,4 +112,22 @@ describe('SideCell', () => {
     expect(screen.getByText('—')).toBeInTheDocument()
     expect(screen.queryByRole('button')).toBeNull()
   })
+
+  it('speaks the record and the championship in its accessible name', () => {
+    render(
+      <LanguageProvider>
+        <SideCell
+          rikishi={rikishi}
+          side="east"
+          rankLevel="yokozuna"
+          onSelect={vi.fn()}
+          record={makeRecord()}
+          champion
+        />
+      </LanguageProvider>
+    )
+    expect(screen.getByRole('button')).toHaveAccessibleName(
+      /8 wins, 3 losses, 1 absence\. Kachi-koshi\. Yusho\./
+    )
+  })
 })
