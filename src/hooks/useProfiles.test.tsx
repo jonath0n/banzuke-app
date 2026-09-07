@@ -1,7 +1,7 @@
 import { renderHook, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { onosatoProfile } from '../data/profiles.test'
-import { loadProfiles, resetProfilesCache, useProfile } from './useProfiles'
+import { loadProfiles, resetProfilesCache, useProfile, useProfileState } from './useProfiles'
 
 function jsonResponse(body: unknown, ok = true): Response {
   return {
@@ -56,5 +56,13 @@ describe('useProfile', () => {
     resetProfilesCache()
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse({ version: 3 })))
     await expect(loadProfiles()).resolves.toEqual({})
+  })
+
+  it('reports loading until the file settles, then not, even when the wrestler is unknown', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse(file)))
+    const { result } = renderHook(() => useProfileState(1))
+    expect(result.current).toEqual({ loading: true, profile: null })
+    await waitFor(() => expect(result.current.loading).toBe(false))
+    expect(result.current.profile).toBeNull()
   })
 })

@@ -8,7 +8,7 @@ import { describePromotion } from '../../utils/promotion'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { useStrings } from '../../i18n/useStrings'
 import { langAttr } from '../../i18n/strings'
-import { useProfile } from '../../hooks/useProfiles'
+import { useProfileState } from '../../hooks/useProfiles'
 import { ageOn, formatBirthDate, formatMeasure, formatYearMonth } from '../../utils/profile'
 import { boutMark, scoreLabel, type Bout, type RikishiRecord } from '../../data/results'
 import { kimariteLabel } from '../../data/kimarite'
@@ -34,7 +34,7 @@ export function WrestlerModal({ rikishi, onClose, record }: WrestlerModalProps) 
   const strings = useStrings()
   const nameId = useId()
   const [copied, setCopied] = useState(false)
-  const profile = useProfile(rikishi?.id ?? null)
+  const { loading: profileLoading, profile } = useProfileState(rikishi?.id ?? null)
 
   useEffect(() => {
     const dialog = dialogRef.current
@@ -204,6 +204,7 @@ export function WrestlerModal({ rikishi, onClose, record }: WrestlerModalProps) 
               )}
             </dl>
 
+            {profileLoading && <div className={styles.profilePending} aria-busy="true" />}
             {profile && <ProfileRows profile={profile} />}
             {record && <RecordSection record={record} />}
 

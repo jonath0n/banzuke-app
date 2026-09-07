@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useBanzuke } from './hooks/useBanzuke'
+import { loadProfiles } from './hooks/useProfiles'
 import { useArchiveIndex, useArchivedBanzuke } from './hooks/useArchive'
 import { useResults } from './hooks/useResults'
 import { previousEntry } from './data/archive'
@@ -228,6 +229,12 @@ function AppContent() {
 
   const handleToggleHelp = useCallback(() => setHelpOpen((open) => !open), [])
 
+  // Warm the profiles file on the first sign of interest in a wrestler, so the
+  // dialog almost always opens with the profile already there.
+  const prefetchProfiles = useCallback(() => {
+    void loadProfiles()
+  }, [])
+
   useKeyboardShortcuts({
     onToggleLanguage: handleToggleLanguage,
     onFocusSearch: handleFocusSearch,
@@ -308,6 +315,8 @@ function AppContent() {
               id={PANEL_ID}
               role={showTabs ? 'tabpanel' : undefined}
               aria-labelledby={showTabs ? tabId(division) : undefined}
+              onPointerEnter={prefetchProfiles}
+              onFocus={prefetchProfiles}
             >
               {/* Both views share the grid's empty state, so the copy and the
                   "show N in Juryo" offer stay identical whichever is showing. */}
