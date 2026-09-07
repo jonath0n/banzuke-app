@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import type { Division, RankGroup, RankLevel, Rikishi } from '../../types/banzuke'
 import { groupRowsByRank } from '../../utils/formatting'
 import { RANK_LEVEL_NAMES, RANK_LEVEL_KANJI } from '../../constants/ranks'
@@ -186,7 +187,7 @@ export function BanzukeGrid({
   champions,
 }: BanzukeGridProps) {
   const grouped = visibleGroups(groupRowsByRank(rows), highlight)
-  const championIds = new Set(Object.values(champions ?? {}))
+  const championIds = useMemo(() => new Set(Object.values(champions ?? {})), [champions])
 
   if (grouped.length === 0) {
     return (
