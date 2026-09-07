@@ -11,6 +11,7 @@ import type { Division, Language, Side } from '../types/banzuke'
 const en = {
   appTitle: 'Grand Sumo Banzuke',
   skipLink: 'Skip to the banzuke',
+  scrollToTop: 'Scroll to top',
   languageGroup: 'Language selection',
 
   // Hero
@@ -136,6 +137,7 @@ export type Strings = typeof en
 const jp: Strings = {
   appTitle: '大相撲 番付表',
   skipLink: '番付表へ移動',
+  scrollToTop: 'ページの先頭へ',
   languageGroup: '言語の選択',
 
   announcedOn: (date: string) => `番付発表 ${date}`,

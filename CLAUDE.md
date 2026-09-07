@@ -89,9 +89,10 @@ requests. There is no separate refresh workflow.
   order stay in agreement; `RankRow` mirrors the same trick on its grid.
 - **The Sheet never scrolls sideways: it wraps.** A printed banzuke is ruled into horizontal
   bands that stack down the paper, which is how every division fits on one sheet; each half here
-  does the same via `flex-wrap` and fills as many bands as the viewport allows. Columns take up
-  the slack in their band (`flex: 1 1 auto` with a `max-width` cap) so they distribute across the
-  sheet instead of packing to one edge. Do not reintroduce a horizontal scroller.
+  does the same via `flex-wrap` and fills as many bands as the viewport allows. Columns are
+  packed, not spread (`flex: 0 0 auto` with a `min-width` floor of 1.5rem, the 24px target size):
+  a column is as wide as its characters, which is what makes the sheet read as one dense block.
+  Do not reintroduce a horizontal scroller.
 - The Sheet carries no portraits. Rank is legible from the size ladder alone, which is the point;
   photos live in `WrestlerModal`.
 - `public/rikishi-profiles.json` (`src/data/profiles.ts`) is optional enrichment loaded on the first

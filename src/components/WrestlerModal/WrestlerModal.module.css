@@ -303,6 +303,16 @@
   border-top: 1px solid var(--border);
 }
 
+/* Space held for the profile while the file is on its way, to reduce the jump
+   when it lands. Roughly the height of the facts grid (the real block also
+   includes the career ladder). */
+.profilePending {
+  min-height: 7.5rem;
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+}
+
 /* Long values (signature moves) take the full row */
 .wide {
   grid-column: 1 / -1;

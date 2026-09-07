@@ -170,6 +170,23 @@ describe('WrestlerModal', () => {
     expect(screen.queryByText('Real name')).toBeNull()
   })
 
+  it('holds the profile space while the file loads, then fills it', async () => {
+    let resolveFetch: (value: Response) => void = () => undefined
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockReturnValue(
+        new Promise<Response>((resolve) => {
+          resolveFetch = resolve
+        })
+      )
+    )
+    renderModal()
+    expect(screen.getByRole('dialog').querySelector('[aria-busy="true"]')).not.toBeNull()
+    resolveFetch({ ok: true, status: 200, json: () => Promise.resolve(profilesFile) } as Response)
+    await screen.findByText('190 cm')
+    expect(screen.getByRole('dialog').querySelector('[aria-busy="true"]')).toBeNull()
+  })
+
   it('lists the bouts when a record is given', () => {
     renderModal(onosato, vi.fn(), 'en', makeRecord())
     expect(screen.getByRole('heading', { name: 'Record' })).toBeInTheDocument()

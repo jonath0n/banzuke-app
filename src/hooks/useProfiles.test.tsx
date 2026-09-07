@@ -1,7 +1,7 @@
 import { renderHook, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { onosatoProfile } from '../data/profiles.test'
-import { loadProfiles, resetProfilesCache, useProfile } from './useProfiles'
+import { loadProfiles, resetProfilesCache, useProfileState } from './useProfiles'
 
 function jsonResponse(body: unknown, ok = true): Response {
   return {
@@ -27,9 +27,12 @@ describe('useProfile', () => {
     const fetchSpy = vi.fn().mockResolvedValue(jsonResponse(file))
     vi.stubGlobal('fetch', fetchSpy)
 
-    const { result, rerender } = renderHook(({ id }: { id: number | null }) => useProfile(id), {
-      initialProps: { id: 4227 },
-    })
+    const { result, rerender } = renderHook(
+      ({ id }: { id: number | null }) => useProfileState(id).profile,
+      {
+        initialProps: { id: 4227 },
+      }
+    )
     expect(result.current).toBeNull()
     await waitFor(() => expect(result.current?.heightCm).toBe(190))
 
@@ -42,7 +45,7 @@ describe('useProfile', () => {
   it('returns nothing for a null id without fetching', () => {
     const fetchSpy = vi.fn()
     vi.stubGlobal('fetch', fetchSpy)
-    const { result } = renderHook(() => useProfile(null))
+    const { result } = renderHook(() => useProfileState(null).profile)
     expect(result.current).toBeNull()
     expect(fetchSpy).not.toHaveBeenCalled()
   })
@@ -56,5 +59,13 @@ describe('useProfile', () => {
     resetProfilesCache()
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse({ version: 3 })))
     await expect(loadProfiles()).resolves.toEqual({})
+  })
+
+  it('reports loading until the file settles, then not, even when the wrestler is unknown', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse(file)))
+    const { result } = renderHook(() => useProfileState(1))
+    expect(result.current).toEqual({ loading: true, profile: null })
+    await waitFor(() => expect(result.current.loading).toBe(false))
+    expect(result.current.profile).toBeNull()
   })
 })

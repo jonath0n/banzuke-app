@@ -112,7 +112,7 @@ jobs:
         id: profiles
         continue-on-error: true
         run: |
-          [ -f public/rikishi-profiles.json ] && cp public/rikishi-profiles.json .data/rikishi-profiles.json
+          if [ -f public/rikishi-profiles.json ]; then cp public/rikishi-profiles.json .data/rikishi-profiles.json; fi
           npx tsx scripts/fetch-profiles.ts \
             --snapshot .data/latest-banzuke.json \
             --previous public/rikishi-profiles.json \
@@ -136,14 +136,14 @@ jobs:
         if: steps.fetch.outputs.changed == 'true' || steps.profiles.outputs.changed == 'true' || steps.results.outputs.changed == 'true'
         run: |
           cp .data/latest-banzuke.json public/latest-banzuke.json
-          [ -f .data/rikishi-profiles.json ] && cp .data/rikishi-profiles.json public/rikishi-profiles.json || true
+          if [ -f .data/rikishi-profiles.json ]; then cp .data/rikishi-profiles.json public/rikishi-profiles.json; fi
           if [ -d .data/assets/fonts ]; then cp .data/assets/fonts/* public/assets/fonts/; fi
           if [ -d .data/banzuke ]; then cp .data/banzuke/*.json public/banzuke/; fi
           if [ -d .data/results ]; then mkdir -p public/results && cp .data/results/*.json public/results/ 2>/dev/null || true; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add public/latest-banzuke.json public/assets/fonts public/banzuke public/results
-          [ -f public/rikishi-profiles.json ] && git add public/rikishi-profiles.json
+          if [ -f public/rikishi-profiles.json ]; then git add public/rikishi-profiles.json; fi
           if git diff --cached --quiet; then
             echo "Nothing to commit."
             exit 0

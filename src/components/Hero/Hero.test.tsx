@@ -71,6 +71,13 @@ describe('Hero', () => {
     expect(screen.queryByText(/checked/)).toBeNull()
   })
 
+  it('titles the page in Japanese when the UI is Japanese', () => {
+    renderHero('2026-09-01T12:00:00Z', 'jp')
+    const heading = screen.getByRole('heading', { level: 1 })
+    expect(heading).toHaveTextContent('大相撲 番付表')
+    expect(heading).toHaveAttribute('lang', 'ja')
+  })
+
   it('renders a placeholder deck without data', () => {
     render(
       <LanguageProvider>

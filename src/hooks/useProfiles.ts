@@ -39,8 +39,14 @@ export function resetProfilesCache(): void {
   pending = null
 }
 
-/** The profile for a wrestler, once the file has loaded; null until then or if unknown. */
-export function useProfile(id: number | null): RikishiProfile | null {
+export interface ProfileState {
+  /** True until the shared file has settled (even to an empty map). */
+  loading: boolean
+  profile: RikishiProfile | null
+}
+
+/** The profile for a wrestler, and whether the file is still on its way. */
+export function useProfileState(id: number | null): ProfileState {
   const [profiles, setProfiles] = useState<ProfileMap | null>(null)
 
   useEffect(() => {
@@ -54,6 +60,7 @@ export function useProfile(id: number | null): RikishiProfile | null {
     }
   }, [id])
 
-  if (id == null || !profiles) return null
-  return profiles[String(id)] ?? null
+  if (id == null) return { loading: false, profile: null }
+  if (!profiles) return { loading: true, profile: null }
+  return { loading: false, profile: profiles[String(id)] ?? null }
 }
