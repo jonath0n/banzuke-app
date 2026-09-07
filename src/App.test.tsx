@@ -1,19 +1,29 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { makeArchiveIndex, makeArchivedBanzuke, makeRawSnapshot } from './test/fixtures'
+import {
+  makeArchiveIndex,
+  makeArchivedBanzuke,
+  makeRawSnapshot,
+  makeRecord,
+  makeResultsFile,
+} from './test/fixtures'
 import { resetArchiveCache } from './hooks/useArchive'
+import { resetResultsCache } from './hooks/useResults'
 import App from './App'
 
 function jsonResponse(body: unknown): Response {
   return { ok: true, status: 200, json: vi.fn().mockResolvedValue(body) } as unknown as Response
 }
 
+const recordOf10 = { wins: 10, losses: 2, absences: 0, bouts: [] }
+
 describe('App', () => {
   beforeEach(() => {
     localStorage.clear()
     window.history.replaceState(null, '', '/')
     resetArchiveCache()
+    resetResultsCache()
     vi.stubGlobal(
       'fetch',
       vi.fn((url: RequestInfo | URL) =>
@@ -24,7 +34,25 @@ describe('App', () => {
               ? jsonResponse(makeArchivedBanzuke())
               : String(url).includes('rikishi-profiles')
                 ? jsonResponse({ version: 1, fetchedAt: '2026-09-04T00:00:00Z', profiles: {} })
-                : jsonResponse(makeRawSnapshot())
+                : String(url).includes('results/637.json')
+                  ? jsonResponse(
+                      makeResultsFile({
+                        records: { '1000': makeRecord(), '1001': recordOf10 },
+                        torikumi: {
+                          '12': [
+                            {
+                              division: 'makuuchi',
+                              matchNo: 1,
+                              east: { id: 1000, shikona: { en: 'Hoshoryu', jp: '豊昇龍' } },
+                              west: { id: 1001, shikona: { en: 'Onosato', jp: '大の里' } },
+                              winnerId: 1001,
+                              kimarite: 'yorikiri',
+                            },
+                          ],
+                        },
+                      })
+                    )
+                  : jsonResponse(makeRawSnapshot())
         )
       )
     )
@@ -33,6 +61,7 @@ describe('App', () => {
   afterEach(() => {
     vi.unstubAllGlobals()
     window.history.replaceState(null, '', '/')
+    vi.useRealTimers()
   })
 
   it('renders the banzuke and sets the document title', async () => {
@@ -169,5 +198,31 @@ describe('App', () => {
     render(<App />)
     await screen.findByRole('button', { name: /Hoshoryu, East/ })
     expect(screen.queryByRole('button', { name: /Changes/ })).toBeNull()
+  })
+
+  it('shows results by default during the tournament and hides them with ?results=0', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+    vi.setSystemTime(new Date('2026-09-24T12:00:00+09:00'))
+    const user = userEvent.setup()
+    render(<App />)
+    const toggle = await screen.findByRole('button', { name: /Results.*through day 12/ })
+    expect(toggle).toHaveAttribute('aria-pressed', 'true')
+    expect(
+      await screen.findByRole('button', { name: /Onosato, West.*10 wins, 2 losses/ })
+    ).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: 'Day 12' })).toBeInTheDocument()
+    await user.click(toggle)
+    expect(window.location.search).toBe('?results=0')
+    expect(screen.queryByRole('region', { name: 'Day 12' })).toBeNull()
+    expect(screen.getByRole('button', { name: /Onosato, West/ })).not.toHaveAccessibleName(/wins/)
+  })
+
+  it('offers no results toggle out of season or when the file is missing', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+    vi.setSystemTime(new Date('2026-09-04T12:00:00+09:00'))
+    render(<App />)
+    await screen.findByRole('button', { name: /Hoshoryu, East/ })
+    expect(screen.queryByRole('button', { name: /Results/ })).toBeNull()
+    expect(fetch).not.toHaveBeenCalledWith(expect.stringContaining('results/'))
   })
 })
