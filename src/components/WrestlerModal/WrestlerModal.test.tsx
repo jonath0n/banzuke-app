@@ -2,10 +2,11 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { LanguageProvider } from '../../contexts/LanguageContext'
-import { makeRikishi } from '../../test/fixtures'
+import { makeRikishi, makeRecord } from '../../test/fixtures'
 import { onosatoProfile } from '../../data/profiles.test'
 import { resetProfilesCache } from '../../hooks/useProfiles'
 import { WrestlerModal } from './WrestlerModal'
+import type { RikishiRecord } from '../../data/results'
 
 const profilesFile = {
   version: 1,
@@ -22,12 +23,17 @@ const onosato = makeRikishi({
   promotion: { kind: 'new-rank', raw: '新横綱' },
 })
 
-function renderModal(rikishi = onosato, onClose = vi.fn(), lang: 'en' | 'jp' = 'en') {
+function renderModal(
+  rikishi = onosato,
+  onClose = vi.fn(),
+  lang: 'en' | 'jp' = 'en',
+  record: RikishiRecord | null = null
+) {
   window.history.replaceState({}, '', `/?lang=${lang}`)
   const utils = render(
     <LanguageProvider>
       <button type="button">opener</button>
-      <WrestlerModal rikishi={rikishi} onClose={onClose} />
+      <WrestlerModal rikishi={rikishi} onClose={onClose} record={record} />
     </LanguageProvider>
   )
   return { ...utils, onClose }
@@ -162,5 +168,16 @@ describe('WrestlerModal', () => {
     expect(screen.getByText('Ishikawa')).toBeInTheDocument()
     await vi.waitFor(() => expect(console.warn).toHaveBeenCalled())
     expect(screen.queryByText('Real name')).toBeNull()
+  })
+
+  it('lists the bouts when a record is given', () => {
+    renderModal(onosato, vi.fn(), 'en', makeRecord())
+    expect(screen.getByRole('heading', { name: 'Record' })).toBeInTheDocument()
+    expect(screen.getByText('8–3–1')).toBeInTheDocument()
+    const bouts = screen.getAllByRole('listitem').filter((li) => li.hasAttribute('data-day'))
+    expect(bouts).toHaveLength(12)
+    expect(bouts[0]).toHaveTextContent('vs Wakatakakage')
+    expect(bouts[0]).toHaveTextContent('yorikiri')
+    expect(bouts[7]).toHaveTextContent('Absent')
   })
 })

@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { LanguageProvider } from '../../contexts/LanguageContext'
-import { makeRikishi } from '../../test/fixtures'
+import { makeRikishi, makeRecord } from '../../test/fixtures'
 import { SideCell } from './SideCell'
 
 const rikishi = makeRikishi({
@@ -83,6 +83,23 @@ describe('SideCell', () => {
     const button = screen.getByRole('button')
     expect(button).toHaveAccessibleName(/Down from Y/)
     expect(button).toHaveTextContent('▼Y')
+  })
+
+  it('draws the hoshitori under the name and describes the record', () => {
+    render(
+      <LanguageProvider>
+        <SideCell
+          rikishi={makeRikishi()}
+          side="east"
+          rankLevel="yokozuna"
+          onSelect={vi.fn()}
+          record={makeRecord()}
+        />
+      </LanguageProvider>
+    )
+    const button = screen.getByRole('button')
+    expect(button).toHaveAccessibleName(/8 wins, 3 losses, 1 absence. Kachi-koshi/)
+    expect(button.querySelectorAll('[data-day]')).toHaveLength(15)
   })
 
   it('renders a dash for a vacant slot', () => {

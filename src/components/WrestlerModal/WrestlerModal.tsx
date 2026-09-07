@@ -10,11 +10,15 @@ import { useStrings } from '../../i18n/useStrings'
 import { langAttr } from '../../i18n/strings'
 import { useProfile } from '../../hooks/useProfiles'
 import { ageOn, formatBirthDate, formatMeasure, formatYearMonth } from '../../utils/profile'
+import { boutMark, scoreLabel, type Bout, type RikishiRecord } from '../../data/results'
+import { kimariteLabel } from '../../data/kimarite'
 import styles from './WrestlerModal.module.css'
 
 interface WrestlerModalProps {
   rikishi: Rikishi | null
   onClose: () => void
+  /** This tournament's record, when the wrestler has fought. */
+  record?: RikishiRecord | null
 }
 
 /**
@@ -23,7 +27,7 @@ interface WrestlerModalProps {
  * handles Escape. The element stays mounted so open/close transitions work;
  * its content renders only while a wrestler is selected.
  */
-export function WrestlerModal({ rikishi, onClose }: WrestlerModalProps) {
+export function WrestlerModal({ rikishi, onClose, record }: WrestlerModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const openerRef = useRef<Element | null>(null)
   const { language } = useLanguage()
@@ -201,6 +205,7 @@ export function WrestlerModal({ rikishi, onClose }: WrestlerModalProps) {
             </dl>
 
             {profile && <ProfileRows profile={profile} />}
+            {record && <RecordSection record={record} />}
 
             <div className={styles.actions}>
               <a
@@ -303,6 +308,50 @@ function CareerLadder({ profile }: { profile: RikishiProfile }) {
             <time dateTime={date} className={styles.stepDate}>
               {formatYearMonth(date, language, 'short')}
             </time>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}
+
+/** The tournament so far: score, then every bout as a line. */
+function RecordSection({ record }: { record: RikishiRecord }) {
+  const { language } = useLanguage()
+  const strings = useStrings()
+  const headingId = useId()
+  const outcomeText = (bout: Bout) =>
+    bout.outcome === 'absent'
+      ? strings.absentDay
+      : bout.outcome === 'fusen-win'
+        ? strings.fusenWin
+        : bout.outcome === 'fusen-loss'
+          ? strings.fusenLoss
+          : kimariteLabel(bout.kimarite, language)
+  return (
+    <section className={styles.career} aria-labelledby={headingId}>
+      <h3 id={headingId} className={styles.careerTitle}>
+        {strings.record}
+      </h3>
+      <p className={styles.score}>{scoreLabel(record, language)}</p>
+      <ol className={styles.bouts}>
+        {record.bouts.map((bout) => (
+          <li
+            key={bout.day}
+            className={styles.bout}
+            data-day={bout.day}
+            data-outcome={bout.outcome}
+          >
+            <span className={styles.boutDay}>{bout.day}</span>
+            <span className={styles.boutMark} lang="ja" aria-hidden="true">
+              {boutMark(bout.outcome)}
+            </span>
+            <span className={styles.boutOpponent}>
+              {bout.opponent
+                ? strings.boutAgainst(bout.opponent.shikona[language] || bout.opponent.shikona.en)
+                : ''}
+            </span>
+            <span className={styles.boutHow}>{outcomeText(bout)}</span>
           </li>
         ))}
       </ol>

@@ -6,6 +6,8 @@ import { SIDE_KANJI } from '../../data/kanji'
 import { useStrings } from '../../i18n/useStrings'
 import { describeMovement, type Movement } from '../../utils/diff'
 import { MovementBadge } from '../MovementBadge/MovementBadge'
+import { describeRecord, type RikishiRecord } from '../../data/results'
+import { Hoshitori } from '../Hoshitori/Hoshitori'
 import styles from './SideCell.module.css'
 
 interface SideCellProps {
@@ -18,6 +20,10 @@ interface SideCellProps {
   dimmed?: boolean
   /** Movement since the previous banzuke. */
   movement?: Movement | null
+  /** This tournament's record. */
+  record?: RikishiRecord | null
+  /** Tournament champion, once decided. */
+  champion?: boolean
 }
 
 /** Gets the display name for a rikishi based on current language */
@@ -39,6 +45,8 @@ function SideCellInner({
   onSelect,
   dimmed = false,
   movement = null,
+  record = null,
+  champion = false,
 }: SideCellProps) {
   const { language } = useLanguage()
   const strings = useStrings()
@@ -77,6 +85,7 @@ function SideCellInner({
             {detail}
           </span>
         )}
+        {record && <Hoshitori record={record} variant="row" champion={champion} />}
       </span>
       {badge}
       {movement && <MovementBadge movement={movement} variant="row" />}
@@ -91,9 +100,10 @@ function SideCellInner({
 
   if (rikishi && onSelect) {
     const movementText = movement ? describeMovement(movement, language) : ''
+    const recordText = record ? describeRecord(record, language) : ''
     const label = `${displayName}, ${strings.side[side]}.${
       movementText ? ` ${movementText}.` : ''
-    } ${strings.viewDetails}`
+    }${recordText ? ` ${recordText}` : ''} ${strings.viewDetails}`
     return (
       <button
         type="button"

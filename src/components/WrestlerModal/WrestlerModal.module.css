@@ -386,3 +386,55 @@
   color: var(--muted);
   white-space: nowrap;
 }
+
+/* Record section: this tournament's score and every bout as a line */
+.score {
+  font-weight: 700;
+  font-size: var(--text-lg);
+  margin: 0 0 var(--space-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.bouts {
+  list-style: none;
+  display: grid;
+  gap: 0.15rem;
+  font-size: var(--text-sm);
+}
+
+.bout {
+  display: grid;
+  grid-template-columns: 2ch 1.2em minmax(0, 1fr) auto;
+  gap: var(--space-2);
+  align-items: baseline;
+}
+
+.boutDay {
+  color: var(--muted);
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.boutMark {
+  font-family: var(--font-jp-serif);
+  font-weight: 700;
+}
+
+.bout[data-outcome='loss'] .boutMark,
+.bout[data-outcome='fusen-loss'] .boutMark {
+  color: var(--muted);
+}
+
+.boutOpponent {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.boutHow {
+  color: var(--muted);
+}
+
+.boutHow:lang(ja) {
+  font-family: var(--font-jp-serif);
+}

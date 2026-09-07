@@ -1,10 +1,11 @@
 import { memo } from 'react'
-import type { RankGroup, Rikishi } from '../../types/banzuke'
+import type { Division, RankGroup, Rikishi } from '../../types/banzuke'
 import { formatRankLabel } from '../../utils/formatting'
 import { isSanyaku, RANK_LEVEL_NAMES } from '../../constants/ranks'
 import { jpRankName, jpRankShort } from '../../data/kanji'
 import { SideCell } from '../SideCell/SideCell'
 import type { Movement } from '../../utils/diff'
+import type { RikishiRecord } from '../../data/results'
 import styles from './RankRow.module.css'
 
 interface RankRowProps {
@@ -17,6 +18,10 @@ interface RankRowProps {
   highlight?: Set<number> | null
   /** Movement since the previous banzuke, keyed by wrestler id. */
   movements?: Map<number, Movement> | null
+  /** This tournament's records, keyed by wrestler id. */
+  records?: Record<string, RikishiRecord> | null
+  /** Tournament champion per division, once decided. */
+  champions?: Partial<Record<Division, number>>
 }
 
 function isDimmed(rikishi: Rikishi | null, highlight: Set<number> | null | undefined): boolean {
@@ -29,6 +34,8 @@ export const RankRow = memo(function RankRow({
   onSelectRikishi,
   highlight,
   movements,
+  records,
+  champions,
 }: RankRowProps) {
   const short = jpRankShort(group.rankCode, group.rankNumber) || group.name.jp
   // The full printed rank on a wide sheet, the short form on a narrow one.
@@ -53,6 +60,8 @@ export const RankRow = memo(function RankRow({
           onSelect={onSelectRikishi}
           dimmed={isDimmed(group.east, highlight)}
           movement={group.east ? (movements?.get(group.east.id) ?? null) : null}
+          record={group.east ? (records?.[String(group.east.id)] ?? null) : null}
+          champion={!!group.east && Object.values(champions ?? {}).includes(group.east.id)}
         />
         <div className={styles.rail}>
           {long === short ? (
@@ -78,6 +87,8 @@ export const RankRow = memo(function RankRow({
           onSelect={onSelectRikishi}
           dimmed={isDimmed(group.west, highlight)}
           movement={group.west ? (movements?.get(group.west.id) ?? null) : null}
+          record={group.west ? (records?.[String(group.west.id)] ?? null) : null}
+          champion={!!group.west && Object.values(champions ?? {}).includes(group.west.id)}
         />
       </div>
     </div>

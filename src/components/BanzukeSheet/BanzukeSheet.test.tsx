@@ -137,4 +137,17 @@ describe('BanzukeSheet', () => {
       /from|New|Unchanged/
     )
   })
+
+  it("carries each wrestler's record under the name and in the accessible name", () => {
+    renderSheet({
+      onSelectRikishi: vi.fn(),
+      records: { '1': { wins: 10, losses: 2, absences: 0, bouts: [] } },
+      champions: { makuuchi: 1 },
+    })
+    const onosato = screen.getByRole('button', { name: /Onosato/ })
+    expect(onosato).toHaveAccessibleName(/10 wins, 2 losses. Kachi-koshi/)
+    expect(onosato).toHaveTextContent('10–2')
+    expect(onosato).toHaveTextContent('優')
+    expect(screen.getByRole('button', { name: /Hoshoryu/ })).not.toHaveAccessibleName(/wins/)
+  })
 })
