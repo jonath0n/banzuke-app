@@ -5,7 +5,9 @@ Renders the current Makuuchi and Juryo divisions two ways: **Sheet**, the banzuk
 printed — vertical, read right to left, East on the right, ranked by character size — and
 **List**, a searchable row per rank. Either view can be overlaid with **Changes** (`?diff=1`),
 which marks each name with the rank it held at the previous tournament and lists who left each
-division. Bilingual English/Japanese.
+division. During a tournament **Results** lays the hoshitori over both views — each name's
+record, ○● on the List, kachi-koshi and the yusho — with the day's bouts and the leaders beneath
+the paper. Bilingual English/Japanese.
 
 ## Project structure
 
@@ -24,11 +26,16 @@ src/
     BanzukeGrid/               # The list: container for rank rows
     RankRow/                   # Single rank row (West | Rank | East)
     SideCell/                  # Wrestler cell on a list row
+    Hoshitori/                 # The star chart: score on the Sheet, ○●休 strip on the List
+    ResultsToggle/             # Results on/off (on by default in season)
+    Bouts/                     # The day's card and the leaders, under the paper
     Footer/                    # Attribution
   data/
     schema.ts                  # Raw upstream types + snapshot validation (shared with scripts)
+    kimarite.ts                # Kimarite romaji → kanji + gloss
   hooks/
     useBanzuke.ts              # Data fetching hook
+    useResults.ts              # Loads results/{bashoId}.json in season
   types/
     banzuke.ts                 # TypeScript interfaces
   utils/
