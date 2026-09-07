@@ -40,7 +40,7 @@ jobs:
       # push to main past the "changes via pull request" ruleset, which the
       # default GITHUB_TOKEN cannot (deploy keys are the only bypass actor a
       # personal repo allows).
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
           ssh-key: ${{ secrets.DEPLOY_KEY }}
@@ -148,7 +148,7 @@ jobs:
     needs: data
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
 
