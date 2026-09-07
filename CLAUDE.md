@@ -129,3 +129,8 @@ requests. There is no separate refresh workflow.
   fetches only in season (a day before day 1 to three days after senshuraku) and the bot commit ends
   with `[skip ci]` because deploy-key pushes trigger the push workflow. Results are **not** in the font
   subset's file set: kimarite are romaji and a visiting Makushita name may fall back.
+- **Arrow keys are spatial**, not canonical: on the Sheet ← → walk a half's rank ladder (← is the
+  lower rank because each half is `direction: rtl`) and ↑ ↓ cross to the East/West partner; on the
+  List ↑ ↓ walk ranks and ← → cross the row. One `keyTarget()` in `src/utils/rovingFocus.ts` serves
+  both from the `data-side`/`data-pair` attributes on every wrestler button. The dialog's ‹ › and
+  ← → follow canonical order (`banzuke.rikishi`) and **replace** the URL entry so Back still closes.
