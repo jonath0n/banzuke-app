@@ -84,7 +84,8 @@ A single workflow (`.github/workflows/deploy.yml`) runs on every push to `main`,
 1. Fetches the English and Japanese banzuke for both divisions from sumo.or.jp and validates
    them (both languages present, same tournament, same wrestlers, sane row counts).
 2. When the tournament data changed, regenerates the mincho subset (new wrestlers can bring
-   new kanji) and refreshes wrestler profiles.
+   new kanji). Wrestler profiles are checked on every run and re-scraped only for wrestlers
+   whose stored profile predates the current tournament.
 3. Commits `public/latest-banzuke.json`, `public/rikishi-profiles.json` and the font files to
    `main` when any of them changed (a fresh fetch timestamp alone is not a change).
 4. Validates, tests and builds the site with the freshest valid data and deploys it to

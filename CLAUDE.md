@@ -42,8 +42,9 @@ and formats in `Asia/Tokyo`.
 
 The deploy workflow (`.github/workflows/deploy.yml`) refreshes data on every push to `main`,
 daily at 07:00 JST, and on demand. When the tournament data changed it also regenerates the
-mincho subset and the profiles, and commits all of them to `main` before building. `ci.yml`
-runs the checks on pull requests. There is no separate refresh workflow.
+mincho subset; profiles are re-scraped only when stale; whatever changed is committed to `main`
+before building. `ci.yml` runs the checks on pull requests. There is no separate refresh
+workflow.
 
 ## Conventions
 
@@ -96,8 +97,8 @@ runs the checks on pull requests. There is no separate refresh workflow.
   and `270x474` sizes exist upstream.
 - The Sheet's mincho is a **self-hosted subset**: `public/assets/fonts/NotoSerifJP-700-subset.woff2`
   carries only the Japanese characters found in the snapshot and the source, plus the kana
-  blocks, at weight 700 (the only weight the app sets mincho at). `NotoSerifJP-subset.json`
-  lists the glyphs and `scripts/lib/font-coverage.test.ts` fails when data or source gains a
-  character the subset lacks — the fix is `npm run subset-fonts`, which the deploy job also runs
-  whenever the banzuke changes. `'Noto Serif JP'` is first in `--font-jp-serif` on purpose, so
-  Windows and Android render the Sheet the same as macOS.
+  blocks, at weight 700 (the only weight shipped; 600 requests resolve to it).
+  `NotoSerifJP-subset.json` lists the glyphs and `scripts/lib/font-coverage.test.ts` fails when
+  data or source gains a character the subset lacks — the fix is `npm run subset-fonts`, which
+  the deploy job also runs whenever the banzuke changes. `'Noto Serif JP'` is first in
+  `--font-jp-serif` on purpose, so Windows and Android render the Sheet the same as macOS.

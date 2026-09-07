@@ -26,10 +26,11 @@
 
 /* Noto Serif JP (SIL OFL 1.1, see public/assets/fonts/NotoSerifJP-OFL.txt):
    instanced at 700 and subset to the glyphs the snapshot and source use, by
-   scripts/subset-fonts.ts. One weight, because that is the only weight the
-   app sets mincho at. Named as the upstream family so it slots into the
-   stack where the system copy would have been, ahead of Hiragino and Yu
-   Mincho, so every platform sees the same face on the Sheet. */
+   scripts/subset-fonts.ts. One weight: the Sheet sets mincho at 700, and the
+   two places that ask for 600 resolve to this face without synthesis. Named
+   as the upstream family so it slots into the stack where the system copy
+   would have been, ahead of Hiragino and Yu Mincho, so every platform sees
+   the same face on the Sheet. */
 @font-face {
   font-family: 'Noto Serif JP';
   src: url('/assets/fonts/NotoSerifJP-700-subset.woff2') format('woff2');
