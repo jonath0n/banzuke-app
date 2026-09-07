@@ -40,7 +40,7 @@ describe('Hoshitori', () => {
 
   it('on a row names the champion instead of the state', () => {
     const el = wrap(<Hoshitori record={makeRecord()} variant="row" champion />).firstElementChild!
-    expect(el).toHaveTextContent('優勝')
+    expect(el).toHaveTextContent('Yusho')
     expect(el).not.toHaveTextContent('Kachi-koshi')
   })
 })
