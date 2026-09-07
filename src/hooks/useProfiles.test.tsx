@@ -1,7 +1,7 @@
 import { renderHook, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { onosatoProfile } from '../data/profiles.test'
-import { loadProfiles, resetProfilesCache, useProfile, useProfileState } from './useProfiles'
+import { loadProfiles, resetProfilesCache, useProfileState } from './useProfiles'
 
 function jsonResponse(body: unknown, ok = true): Response {
   return {
@@ -27,9 +27,12 @@ describe('useProfile', () => {
     const fetchSpy = vi.fn().mockResolvedValue(jsonResponse(file))
     vi.stubGlobal('fetch', fetchSpy)
 
-    const { result, rerender } = renderHook(({ id }: { id: number | null }) => useProfile(id), {
-      initialProps: { id: 4227 },
-    })
+    const { result, rerender } = renderHook(
+      ({ id }: { id: number | null }) => useProfileState(id).profile,
+      {
+        initialProps: { id: 4227 },
+      }
+    )
     expect(result.current).toBeNull()
     await waitFor(() => expect(result.current?.heightCm).toBe(190))
 
@@ -42,7 +45,7 @@ describe('useProfile', () => {
   it('returns nothing for a null id without fetching', () => {
     const fetchSpy = vi.fn()
     vi.stubGlobal('fetch', fetchSpy)
-    const { result } = renderHook(() => useProfile(null))
+    const { result } = renderHook(() => useProfileState(null).profile)
     expect(result.current).toBeNull()
     expect(fetchSpy).not.toHaveBeenCalled()
   })

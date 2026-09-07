@@ -228,6 +228,13 @@ describe('App', () => {
     expect(toggle).toHaveAttribute('title', '令和七年十一月場所からの変動')
   })
 
+  it('names the previous tournament without a year in Japanese when the year is the same', async () => {
+    window.history.replaceState(null, '', '/?lang=jp')
+    render(<App />)
+    const toggle = await screen.findByRole('button', { name: /変動/ })
+    expect(toggle).toHaveAttribute('title', '七月場所からの変動')
+  })
+
   it('hides the toggle when there is no archive', async () => {
     vi.stubGlobal(
       'fetch',

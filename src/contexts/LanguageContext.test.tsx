@@ -22,6 +22,7 @@ describe('LanguageContext', () => {
 
   afterEach(() => {
     vi.restoreAllMocks()
+    vi.unstubAllGlobals()
   })
 
   it('defaults to English and updates the document language', () => {
@@ -97,7 +98,6 @@ describe('LanguageContext', () => {
       </LanguageProvider>
     )
     expect(screen.getByTestId('lang')).toHaveTextContent('jp')
-    vi.unstubAllGlobals()
   })
 
   it('lets a stored preference beat the browser language', () => {

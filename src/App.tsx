@@ -145,9 +145,11 @@ function AppContent() {
   const prevEntry = banzuke && index ? previousEntry(index, banzuke.basho.id) : null
   const diffWanted = diffParam === '1' && prevEntry != null
   const previous = useArchivedBanzuke(diffWanted ? prevEntry : null)
+  const jpEra =
+    prevEntry && banzuke && prevEntry.year !== banzuke.basho.year ? jpEraYear(prevEntry.year) : ''
   const sinceLabel = prevEntry
     ? language === 'jp'
-      ? `${prevEntry.year !== banzuke?.basho.year ? jpEraYear(prevEntry.year) : ''}${jpBashoName(prevEntry.month)}`
+      ? `${jpEra}${jpBashoName(prevEntry.month)}`
       : formatYearMonth(
           `${prevEntry.year}-${String(prevEntry.month).padStart(2, '0')}`,
           'en',

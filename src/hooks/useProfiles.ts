@@ -64,8 +64,3 @@ export function useProfileState(id: number | null): ProfileState {
   if (!profiles) return { loading: true, profile: null }
   return { loading: false, profile: profiles[String(id)] ?? null }
 }
-
-/** The profile alone; null until loaded or when unknown. */
-export function useProfile(id: number | null): RikishiProfile | null {
-  return useProfileState(id).profile
-}
