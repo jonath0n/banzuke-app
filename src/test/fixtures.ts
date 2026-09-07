@@ -13,6 +13,7 @@ import type {
 } from '../data/schema'
 import type { Banzuke, BanzukeSet, Basho, Rikishi } from '../types/banzuke'
 import type { ArchivedBanzuke, ArchivedRikishi, ArchiveIndex } from '../data/archive'
+import type { Bout, RikishiRecord, ResultsFile } from '../data/results'
 
 const NAMES: Record<Division, Record<Lang, string[]>> = {
   makuuchi: {
@@ -391,6 +392,95 @@ export function makeArchiveIndex(overrides: Partial<ArchiveIndex> = {}): Archive
         divisions: ['makuuchi', 'juryo'],
       },
     ],
+    ...overrides,
+  }
+}
+
+export function makeBout(overrides: Partial<Bout> = {}): Bout {
+  return {
+    day: 1,
+    outcome: 'win',
+    opponent: { id: 4055, shikona: { en: 'Wakatakakage', jp: '若隆景' } },
+    kimarite: 'yorikiri',
+    ...overrides,
+  }
+}
+
+/** 8–3 with one absence over twelve days: kachi-koshi already. */
+export function makeRecord(overrides: Partial<RikishiRecord> = {}): RikishiRecord {
+  const outcomes: Bout['outcome'][] = [
+    'win',
+    'win',
+    'loss',
+    'win',
+    'win',
+    'loss',
+    'win',
+    'absent',
+    'win',
+    'win',
+    'loss',
+    'win',
+  ]
+  return {
+    wins: 8,
+    losses: 3,
+    absences: 1,
+    bouts: outcomes.map((outcome, i) =>
+      makeBout({
+        day: i + 1,
+        outcome,
+        opponent: outcome === 'absent' ? null : makeBout().opponent,
+        kimarite: outcome === 'absent' ? '' : 'yorikiri',
+      })
+    ),
+    ...overrides,
+  }
+}
+
+function recordOf(wins: number, losses: number): RikishiRecord {
+  const bouts: Bout[] = []
+  for (let i = 0; i < wins + losses; i++) {
+    bouts.push(makeBout({ day: i + 1, outcome: i < wins ? 'win' : 'loss' }))
+  }
+  return { wins, losses, absences: 0, bouts }
+}
+
+/** Day 12 of September 2026: two Yokozuna, a struggling Maegashira, one Juryo. */
+export function makeResultsFile(overrides: Partial<ResultsFile> = {}): ResultsFile {
+  return {
+    version: 1,
+    bashoId: 637,
+    fetchedAt: '2026-09-24T10:00:00.000Z',
+    day: 12,
+    divisions: ['makuuchi', 'juryo'],
+    records: {
+      '3842': makeRecord(),
+      '4227': recordOf(10, 2),
+      '4055': recordOf(3, 9),
+      '3983': recordOf(7, 5),
+    },
+    torikumi: {
+      '12': [
+        {
+          division: 'makuuchi',
+          matchNo: 1,
+          east: { id: 4055, shikona: { en: 'Wakatakakage', jp: '若隆景' } },
+          west: { id: null, shikona: { en: 'Visitor', jp: '来客' } },
+          winnerId: null,
+          kimarite: '',
+        },
+        {
+          division: 'makuuchi',
+          matchNo: 2,
+          east: { id: 3842, shikona: { en: 'Hoshoryu', jp: '豊昇龍' } },
+          west: { id: 4227, shikona: { en: 'Onosato', jp: '大の里' } },
+          winnerId: 4227,
+          kimarite: 'yorikiri',
+        },
+      ],
+    },
+    yusho: {},
     ...overrides,
   }
 }

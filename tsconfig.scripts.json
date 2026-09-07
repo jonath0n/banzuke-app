@@ -22,8 +22,10 @@
     "src/data/bashoIds.ts",
     "src/data/archive.ts",
     "src/data/normalize.ts",
+    "src/data/results.ts",
     "src/constants/ranks.ts",
-    "src/types/banzuke.ts"
+    "src/types/banzuke.ts",
+    "src/utils/dates.ts"
   ],
   "exclude": ["scripts/**/*.test.ts"]
 }
