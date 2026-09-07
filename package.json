@@ -10,6 +10,7 @@
     "fetch-remote": "tsx scripts/fetch-banzuke.ts",
     "fetch-profiles": "tsx scripts/fetch-profiles.ts",
     "subset-fonts": "tsx scripts/subset-fonts.ts",
+    "make-sample": "tsx scripts/make-sample.ts",
     "validate-data": "tsx scripts/validate-banzuke.ts public/latest-banzuke.json",
     "test": "vitest",
     "test:run": "vitest run",
