@@ -92,6 +92,13 @@ jobs:
             --snapshot .data/latest-banzuke.json \
             --out-dir .data/banzuke
 
+      # A new wrestler can bring a kanji the shikona glossary lacks. Never a
+      # failure — the dialog shows the bare character — but worth a warning on
+      # the run summary so the table gets written.
+      - name: Report shikona glossary gaps
+        continue-on-error: true
+        run: npx tsx scripts/glossary-gaps.ts --snapshot .data/latest-banzuke.json
+
       # New wrestlers can bring new kanji; keep the self-hosted mincho in step
       # with the data so the coverage test passes in the build job.
       - name: Regenerate the mincho subset
