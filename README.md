@@ -1,7 +1,9 @@
 # banzuke-app
 
 React + TypeScript viewer for the official Japan Sumo Association banzuke endpoint.
-Renders the current Makuuchi and Juryo divisions with a modern, responsive UI.
+Renders the current Makuuchi and Juryo divisions two ways: **Sheet**, the banzuke as it is
+printed — vertical, read right to left, East on the right, ranked by character size — and
+**List**, a searchable row per rank. Bilingual English/Japanese.
 
 ## Project structure
 
@@ -9,12 +11,17 @@ Renders the current Makuuchi and Juryo divisions with a modern, responsive UI.
 src/
   main.tsx                     # React entry point
   App.tsx                      # Main app component
-  index.css                    # Global styles & CSS variables
+  styles/
+    tokens.css                 # Design tokens (colour, type, spacing, motion)
+    base.css                   # Reset, page frame, fonts, print
+    a11y.css                   # Skip link and visually-hidden
   components/
-    Hero/                      # Header with basho info
-    BanzukeGrid/               # Container for rank rows
-    RankRow/                   # Single rank row (East | Label | West)
-    SideCell/                  # Wrestler cell with photo & name
+    Hero/                      # Wordmark, seal, masthead, basho info
+    ViewToggle/                # Sheet or List
+    BanzukeSheet/              # The printed sheet: vertical, right to left
+    BanzukeGrid/               # The list: container for rank rows
+    RankRow/                   # Single rank row (West | Rank | East)
+    SideCell/                  # Wrestler cell on a list row
     Footer/                    # Attribution
   data/
     schema.ts                  # Raw upstream types + snapshot validation (shared with scripts)
@@ -97,7 +104,7 @@ Live site: https://jonath0n.github.io/banzuke-app/
 
 ## Tech stack
 
-- **React 18** with TypeScript
+- **React 19** with TypeScript
 - **Vite** for development and builds
 - **CSS Modules** for scoped component styles
 - **GitHub Actions** for automated data refresh and deployment

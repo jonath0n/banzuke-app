@@ -25,7 +25,7 @@ describe('Footer', () => {
       'https://sumo.or.jp/'
     )
     expect(screen.getByRole('link', { name: 'Emily Sneddon' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Instrument' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Omnibus-Type' })).toBeInTheDocument()
     expect(
       screen.getByText(new RegExp(`© ${new Date().getFullYear()} Jon Allen`))
     ).toBeInTheDocument()

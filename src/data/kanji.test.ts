@@ -8,8 +8,25 @@ import {
   jpRankShort,
   parseJpBasho,
   parseJpDate,
+  shortPrefecture,
   toKanjiNumber,
 } from './kanji'
+
+describe('shortPrefecture', () => {
+  it('drops the administrative suffix the banzuke leaves off', () => {
+    expect(shortPrefecture('石川県')).toBe('石川')
+    expect(shortPrefecture('大阪府')).toBe('大阪')
+    expect(shortPrefecture('東京都')).toBe('東京')
+  })
+
+  it('leaves countries and two-character names alone', () => {
+    expect(shortPrefecture('モンゴル')).toBe('モンゴル')
+    expect(shortPrefecture('カザフスタン')).toBe('カザフスタン')
+    // 京都 and 兵庫 are already short; trimming would leave a single character
+    expect(shortPrefecture('京都')).toBe('京都')
+    expect(shortPrefecture('')).toBe('')
+  })
+})
 
 describe('toKanjiNumber', () => {
   it('handles units, tens and compounds', () => {

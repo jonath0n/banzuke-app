@@ -1,28 +1,17 @@
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes fadeSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Division tabs on the sheet's top edge, the layout toggle opposite them */
+.controls {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-top: var(--space-4);
 }
 
 .status {
   text-align: center;
   padding: var(--space-7) var(--space-4);
   color: var(--muted);
-  animation: fadeIn 300ms var(--ease-out-expo);
 }
 
 .error {
@@ -32,7 +21,6 @@
   margin: var(--space-4) 0;
   padding: var(--space-4);
   border: 1px solid rgb(var(--danger-rgb) / 0.2);
-  animation: fadeSlideIn var(--dur-slow) var(--ease-out-expo);
 }
 
 .warning {
@@ -43,5 +31,4 @@
   padding: var(--space-3) var(--space-4);
   font-size: var(--text-base);
   border: 1px solid rgb(var(--warning-rgb) / 0.2);
-  animation: fadeSlideIn var(--dur-slow) var(--ease-out-expo);
 }

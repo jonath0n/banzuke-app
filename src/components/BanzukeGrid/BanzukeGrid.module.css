@@ -7,33 +7,15 @@
   }
 }
 
-@keyframes skeletonFadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-/* The sheet: one continuous piece of paper holding every rank.
-   `overflow: clip` rounds the corners without becoming a scroll container,
-   so the sticky tier bands inside can still pin to the viewport. */
+/* The sheet: one continuous piece of paper holding every rank. Square-
+   cornered and barely shadowed, because paper lies flat. `overflow: clip`
+   trims the edges without becoming a scroll container, so the sticky tier
+   bands inside can still pin to the viewport. */
 .grid {
   margin-top: var(--space-4);
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm);
   overflow: clip;
   /* A new sheet (tab switch) fades in as one piece rather than row by row */
   animation: fadeIn var(--dur-base) ease;
@@ -51,7 +33,7 @@
 
 /* Gold ink along the top of the sheet, where the Yokozuna sit */
 .tier[data-rank-level='yokozuna'] {
-  border-top: 2px solid var(--tier-yokozuna);
+  border-top: 2px solid var(--gold);
 }
 
 /* Tier heading band (an <h2>) stays in view while its rows scroll past */
@@ -91,22 +73,20 @@
   white-space: nowrap;
 }
 
-/* Loading skeleton styles */
+/* Loading: a blank sheet, ruled but not yet printed. Nothing pulses — an
+   empty banzuke already reads as "not out yet". */
 .skeleton-grid {
   display: flex;
   flex-direction: column;
   margin-top: var(--space-4);
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
 
 .skeleton-row {
   padding: var(--space-3) var(--space-3);
-  opacity: 0;
-  animation: skeletonFadeIn var(--dur-slow) var(--ease-out-expo) forwards;
-  animation-delay: calc(var(--row-index, 0) * 50ms);
 }
 
 .skeleton-row + .skeleton-row {
@@ -115,6 +95,7 @@
 
 .skeleton-inner {
   display: grid;
+  direction: rtl;
   grid-template-columns: 1fr var(--rail-width) 1fr;
   align-items: center;
   gap: var(--space-3);
@@ -127,25 +108,12 @@
 }
 
 .skeleton-cell[data-side='east'] {
-  justify-content: flex-end;
+  direction: ltr;
 }
 
-.skeleton-cell[data-side='west'] {
-  justify-content: flex-start;
-}
-
-.skeleton-avatar,
 .skeleton-name,
 .skeleton-label {
-  background: linear-gradient(90deg, var(--border) 0%, var(--bg) 50%, var(--border) 100%);
-  background-size: 300% 100%;
-  animation: shimmer 2s ease-in-out infinite;
-}
-
-.skeleton-avatar {
-  width: var(--avatar-size);
-  height: var(--avatar-size);
-  border-radius: 50%;
+  background: rgb(var(--ink-rgb) / 0.06);
 }
 
 .skeleton-name {
@@ -247,24 +215,13 @@
 
 @media (max-width: 600px) {
   .skeleton-inner {
-    grid-template-columns: minmax(0, 1fr) 2.5rem minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 2.25rem minmax(0, 1fr);
     gap: var(--space-2);
-  }
-
-  .skeleton-avatar {
-    width: 36px;
-    height: 36px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .skeleton-row {
-    animation: fadeIn 200ms ease forwards;
-  }
-
-  .skeleton-avatar,
-  .skeleton-name,
-  .skeleton-label {
+  .grid {
     animation: none;
   }
 }

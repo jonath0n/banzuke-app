@@ -26,6 +26,12 @@ const en = {
   division: { makuuchi: 'Makuuchi', juryo: 'Juryo' } satisfies Record<Division, string>,
   divisionGroup: 'Division',
 
+  // View
+  viewGroup: 'Layout',
+  viewSheet: 'Sheet',
+  viewList: 'List',
+  sheetLabel: 'The banzuke as printed: East on the right, West on the left, ranked by size.',
+
   // Search
   searchPlaceholder: 'Search wrestlers, stables, regions, or ranks…',
   searchLabel: 'Search wrestlers',
@@ -110,6 +116,11 @@ const jp: Strings = {
   sampleData: 'サンプルデータを表示中',
   division: { makuuchi: '幕内', juryo: '十両' },
   divisionGroup: '階級',
+
+  viewGroup: '表示',
+  viewSheet: '番付表',
+  viewList: '一覧',
+  sheetLabel: '実際の番付の形式。右が東、左が西、番付順に字が大きくなります。',
 
   searchPlaceholder: '四股名・部屋・出身地・番付で検索…',
   searchLabel: '力士を検索',

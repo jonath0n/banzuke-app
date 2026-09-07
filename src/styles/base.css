@@ -8,12 +8,15 @@
   font-display: swap;
 }
 
-/* Instrument Sans (SIL OFL 1.1, see public/assets/fonts/InstrumentSans-OFL.txt):
-   variable weight, Latin subset, for ring names and labels. */
+/* Archivo (SIL OFL 1.1, see public/assets/fonts/Archivo-OFL.txt): variable
+   weight, Latin subset, for ring names and labels. The weight axis runs to
+   900, which is what the Sheet's Latin names need to hold their own beside
+   mincho kanji — the width axis is left out because it costs 55 kB and bought
+   only 5% of sheet height. */
 @font-face {
-  font-family: 'Instrument Sans';
-  src: url('/assets/fonts/InstrumentSans-latin.woff2') format('woff2');
-  font-weight: 400 700;
+  font-family: 'Archivo';
+  src: url('/assets/fonts/Archivo-latin.woff2') format('woff2');
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
   unicode-range:

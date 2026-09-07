@@ -67,6 +67,15 @@ export function jpEraYear(year: number): string {
 
 export const SIDE_KANJI = { east: '東', west: '西' } as const
 
+/**
+ * Prefecture as the banzuke prints it, without its administrative suffix:
+ * 石川県 → 石川, 大阪府 → 大阪, 東京都 → 東京. Countries are left alone.
+ * The sheet has one short band for this, so every character saved counts.
+ */
+export function shortPrefecture(name: string): string {
+  return name.length > 2 ? name.replace(/[県府都]$/, '') : name
+}
+
 const KANJI_DIGITS: Record<string, number> = {
   一: 1,
   二: 2,

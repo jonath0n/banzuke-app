@@ -1,48 +1,14 @@
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-@keyframes avatarReveal {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes nameSwapFromLeft {
-  0% {
-    opacity: 0;
-    transform: translateX(-8px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes nameSwapFromRight {
-  0% {
-    opacity: 0;
-    transform: translateX(8px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
+/*
+ * One wrestler on the sheet. The row (RankRow .inner) is `direction: rtl` so
+ * East, which comes first in the DOM, lands on the right as it does on the
+ * printed banzuke. East flips back to ltr here; West inherits rtl. That single
+ * pair of declarations mirrors the whole cell — seal nearest the rail, name
+ * ranged against it — with no [data-side] overrides, and keeps reading order,
+ * focus order and visual order in agreement.
+ */
 .cell {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: var(--space-2);
   min-width: 0;
   width: 100%;
@@ -53,6 +19,10 @@
   background: none;
   border: 0;
   padding: 0;
+}
+
+.cell[data-side='east'] {
+  direction: ltr;
 }
 
 .clickable {
@@ -68,15 +38,7 @@
   outline-offset: 0;
 }
 
-.cell[data-side='east'] {
-  justify-content: flex-end;
-}
-
-.cell[data-side='west'] {
-  justify-content: flex-start;
-}
-
-/* 東 / 西 side seal */
+/* 東 / 西 side seal, always the character nearest the rail */
 .side-seal {
   flex-shrink: 0;
   display: inline-grid;
@@ -100,25 +62,14 @@
   border-color: var(--accent);
 }
 
-.info {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  min-width: 0;
-}
-
-/* Name over its detail line; East text is ranged against the rail */
+/* Name over its detail line, ranged against the rail on both sides */
 .text {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  text-align: start;
   min-width: 0;
   gap: 0.1rem;
-}
-
-.cell[data-side='east'] .text {
-  align-items: flex-end;
-  text-align: right;
 }
 
 /* Stable · region: only where the sheet is wide enough to carry a second line */
@@ -157,73 +108,6 @@
   font-size: var(--text-md);
 }
 
-/* Portrait */
-.avatar-wrapper {
-  position: relative;
-  width: var(--avatar-size);
-  height: var(--avatar-size);
-  flex-shrink: 0;
-  border-radius: 50%;
-  background: var(--border);
-  overflow: hidden;
-  transition: box-shadow var(--dur-base) ease;
-}
-
-.avatar-wrapper::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.25) 50%,
-    transparent 100%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-.avatar-wrapper.loaded::before {
-  display: none;
-}
-
-.info img {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-  flex-shrink: 0;
-  opacity: 0;
-  animation: avatarReveal var(--dur-slow) var(--ease-out-expo) forwards;
-  animation-play-state: paused;
-  position: relative;
-  z-index: 1;
-}
-
-.info img.visible {
-  animation-play-state: running;
-}
-
-/* Ink ring around the portrait; vermilion on hover */
-.avatar-wrapper::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 1.5px var(--rule);
-  pointer-events: none;
-  z-index: 2;
-  transition: box-shadow var(--dur-fast) ease;
-}
-
-.cell:hover .avatar-wrapper::after {
-  box-shadow: inset 0 0 0 2px var(--accent);
-}
-
-.cell[data-rank-level='yokozuna'] .avatar-wrapper::after {
-  box-shadow: inset 0 0 0 2px var(--tier-yokozuna);
-}
-
 /* Ring name: the size ladder is the hierarchy */
 .name {
   max-width: 100%;
@@ -235,8 +119,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  position: relative;
-  transition: color var(--dur-fast) ease;
+  text-underline-offset: 0.15em;
+  text-decoration-thickness: 2px;
 }
 
 .name:lang(ja) {
@@ -245,34 +129,10 @@
   letter-spacing: 0.02em;
 }
 
-.name-en {
-  animation: nameSwapFromLeft 320ms var(--ease-out-expo) backwards;
-}
-
-.name-jp {
-  animation: nameSwapFromRight 320ms var(--ease-out-expo) backwards;
-}
-
-/* Vermilion underline drawn on hover */
-.name::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 2px;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--dur-base) var(--ease-out-expo);
-}
-
-.cell[data-side='east'] .name::after {
-  transform-origin: right;
-}
-
-.cell:hover .name::after {
-  transform: scaleX(1);
+/* Vermilion rule under the name, struck rather than drawn */
+.cell:hover .name {
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
 }
 
 .cell[data-rank-level='yokozuna'] .name {
@@ -315,89 +175,26 @@
 }
 
 @media (max-width: 600px) {
-  /* Portrait above name, like a poster column; the rail carries the rank */
-  .cell,
-  .cell[data-side='east'],
-  .cell[data-side='west'] {
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 0.3rem;
-    text-align: center;
-  }
-
   .clickable {
     padding: var(--space-1);
     margin: calc(-1 * var(--space-1));
     width: calc(100% + 2 * var(--space-1));
   }
 
-  .info {
-    flex-direction: column;
-    gap: 0.3rem;
-    width: 100%;
+  .cell {
+    gap: var(--space-1);
   }
 
-  .cell[data-side='east'] .info {
-    flex-direction: column-reverse;
-  }
-
-  .text,
-  .cell[data-side='east'] .text {
-    align-items: center;
-    text-align: center;
-    width: 100%;
-  }
-
-  .avatar-wrapper {
-    width: 40px;
-    height: 40px;
+  /* Names wrap rather than shrink: the ladder is clamped in tokens.css and
+     must survive the phone, since it is the only thing carrying rank here. */
+  .name {
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .side-seal {
-    display: none;
-  }
-
-  /* Nothing below --text-xs on a phone: names and chips must stay readable */
-  .name,
-  .cell[data-side='east'] .name {
-    width: 100%;
-    white-space: normal;
-    overflow-wrap: anywhere;
-    text-align: center;
-    font-size: var(--text-base);
-    line-height: 1.2;
-  }
-
-  .cell[data-rank-level='yokozuna'] .name {
-    font-size: var(--text-lg);
-  }
-
-  .cell[data-rank-level='ozeki'] .name,
-  .cell[data-rank-level='sekiwake'] .name,
-  .cell[data-rank-level='komusubi'] .name {
-    font-size: var(--text-md);
-  }
-
-  .pill {
-    font-size: var(--text-xs);
-    padding: 0.15rem 0.35rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .avatar-wrapper::before,
-  .name-en,
-  .name-jp {
-    animation: none;
-  }
-
-  .info img {
-    animation: none;
-    opacity: 1;
-  }
-
-  .name::after {
-    transition: none;
+    width: 1.1rem;
+    height: 1.1rem;
+    font-size: 0.7rem;
   }
 }

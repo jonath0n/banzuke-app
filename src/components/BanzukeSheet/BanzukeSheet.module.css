@@ -1,0 +1,262 @@
+/*
+ * The printed sheet, built from what the real banzuke does.
+ *
+ * Four things carry it. Rank is a band, not a caption: the tier characters run
+ * uniformly bold and black across the top of every half, and the numeral goes
+ * beneath because on paper the position along the band already says it. The
+ * home province sits small between rank and ring name, where the sheet prints
+ * it. The characters are crowded rather than spaced — a packed banzuke means a
+ * full house, and the density is the message. And the whole thing is framed in
+ * heavy ink, thick outside and thin within, with a black bar dividing East
+ * from West.
+ *
+ * It never scrolls sideways: a banzuke wraps into horizontal bands that stack
+ * down the paper, and each half here fills as many as the screen allows.
+ */
+
+/*
+ * Packed columns make the sheet narrower than the reading column, so it no
+ * longer needs to break out of it — and staying in the column keeps the
+ * division tabs tucked into the paper's top edge, as they are in the list.
+ */
+.sheet {
+  /* Shared band heights, so rank, province and ring name line up across every
+     column whatever their content length. Sized for the worst case each band
+     holds — 前頭 over 十七, and カザフスタン / Kazakhstan — because a band that
+     overflows spills its characters into the one below. */
+  --rank-band: 4.3rem;
+  --origin-band: 3.9rem;
+  margin-block: var(--space-4) 0;
+}
+
+/*
+ * The paper, framed heavy outside and thin within. `fit-content` is the whole
+ * trick: the sheet takes the width its columns actually occupy and no more, so
+ * the columns stay packed instead of being spread to fill a container. Where
+ * the content is wider than the room, it falls back to the available width and
+ * the halves wrap into bands.
+ */
+.paper {
+  width: fit-content;
+  max-width: 100%;
+  padding: var(--space-5) var(--space-4);
+  background: var(--card-bg);
+  border: 4px solid var(--text);
+  box-shadow:
+    inset 0 0 0 6px var(--card-bg),
+    inset 0 0 0 7px var(--text),
+    var(--shadow-sm);
+}
+
+/* The black bar between the halves */
+.half + .half {
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 3px solid var(--text);
+}
+
+.sideMark {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-jp-serif);
+  font-size: var(--text-md);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  text-align: center;
+  color: var(--text);
+}
+
+/*
+ * Right to left, wrapping into bands. Columns hang from each band's top rule,
+ * so a band is as tall as its largest rank — ragged the way the sheet is,
+ * where a Yokozuna and a Maegashira 17 share one band.
+ */
+.bands {
+  display: flex;
+  flex-wrap: wrap;
+  direction: rtl;
+  align-items: flex-start;
+  column-gap: var(--space-1);
+  row-gap: var(--space-5);
+}
+
+/* One wrestler: rank band, province, ring name — three aligned rows */
+.column {
+  direction: ltr;
+  display: grid;
+  grid-template-rows: var(--rank-band) var(--origin-band) auto;
+  justify-items: center;
+  align-items: start;
+  padding: 0 0.1rem var(--space-2);
+  /* Packed, not spread: a column is as wide as its characters and no wider,
+     which is what makes the sheet read as one dense block. The 1.5rem floor is
+     the 24px minimum target size, which the smallest Maegashira would miss. */
+  flex: 0 0 auto;
+  min-width: max(calc(var(--col-scale, 1) * 1rem), 1.5rem);
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.column:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 0;
+}
+
+.clickable:hover {
+  background: rgb(var(--ink-rgb) / 0.06);
+}
+
+/* Gold at the head of the Yokozuna column, the sheet's one rank hue */
+.column[data-rank-level='yokozuna'] {
+  border-top: 2px solid var(--gold);
+}
+
+/* The rank band: uniform, heavy, black — the sheet's top rule of characters */
+.rank {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.tier {
+  font-family: var(--font-jp-serif);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: 0;
+  color: var(--text);
+  /* One character per line — see .name for why this rather than writing-mode */
+  width: 1.05em;
+  word-break: break-all;
+  text-align: center;
+}
+
+.numeral {
+  font-family: var(--font-jp-serif);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  line-height: 1.05;
+  color: var(--muted);
+  width: 1.2em;
+  word-break: break-all;
+  text-align: center;
+}
+
+/* Home province, in the small band the sheet gives it */
+.origin {
+  font-size: 0.6rem;
+  font-family: var(--font-jp);
+  line-height: 1.1;
+  letter-spacing: 0;
+  color: var(--muted);
+  width: 1.3em;
+  word-break: break-all;
+  text-align: center;
+}
+
+/*
+ * The ring name, set down the column at the size its rank earns, crowded
+ * rather than spaced.
+ *
+ * The default is the stacked-character technique RankRow already relies on: a
+ * one-character-wide box plus CJK line breaking, which needs no vertical font
+ * metrics and so works with every mincho fallback. Where the browser reports
+ * real vertical typesetting, @supports below upgrades to it.
+ */
+.name {
+  font-family: var(--font-jp-serif);
+  font-size: calc(var(--col-scale, 1) * 1rem);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: 0;
+  color: var(--text);
+  width: 1.05em;
+  word-break: break-all;
+  text-align: center;
+}
+
+/* Latin has no vertical form; it turns on its side instead */
+.name:lang(en),
+.origin:lang(en) {
+  font-family: var(--font-names);
+  writing-mode: vertical-rl;
+  text-orientation: sideways;
+  width: auto;
+  word-break: normal;
+  white-space: nowrap;
+}
+
+/* Full weight, tracked tight: mincho tops out at 700, so the Latin has to go
+   to 900 to carry the same colour on the sheet as the kanji beside it. */
+.name:lang(en) {
+  font-weight: 900;
+  letter-spacing: -0.015em;
+}
+
+@supports (writing-mode: vertical-rl) and (text-orientation: upright) {
+  .tier,
+  .numeral,
+  .origin:lang(ja),
+  .name:lang(ja) {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    width: auto;
+    word-break: normal;
+    white-space: nowrap;
+  }
+}
+
+.column[data-dimmed] {
+  opacity: 0.35;
+  transition: opacity var(--dur-fast) ease;
+}
+
+.column[data-dimmed]:hover,
+.column[data-dimmed]:focus-visible {
+  opacity: 1;
+}
+
+@media (max-width: 600px) {
+  .sheet {
+    --rank-band: 3.9rem;
+    --origin-band: 3.5rem;
+    /* On a phone the columns are wider than the room, so the sheet reclaims
+       the body padding and runs edge to edge. */
+    margin-inline: calc(-1 * var(--space-5));
+  }
+
+  .paper {
+    border-width: 3px;
+    padding: var(--space-4) var(--space-2);
+  }
+
+  .bands {
+    row-gap: var(--space-4);
+  }
+}
+
+/* On paper the sheet is the whole point: let it print in full */
+@media print {
+  .sheet {
+    margin-inline: 0;
+  }
+
+  .paper {
+    /* Keep both frames — they are the sheet — but drop the lift off the page */
+    box-shadow:
+      inset 0 0 0 6px var(--card-bg),
+      inset 0 0 0 7px var(--text);
+  }
+
+  .half {
+    break-inside: avoid;
+  }
+}

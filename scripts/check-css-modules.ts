@@ -10,8 +10,11 @@
  */
 import { readdir, readFile } from 'node:fs/promises'
 import { dirname, join, relative } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const ROOT = new URL('../src/', import.meta.url).pathname
+// fileURLToPath, not URL.pathname: on Windows the latter yields "/C:/…", which
+// join() then turns into "C:\C:\…".
+const ROOT = fileURLToPath(new URL('../src/', import.meta.url))
 
 async function walk(dir: string): Promise<string[]> {
   const entries = await readdir(dir, { withFileTypes: true })

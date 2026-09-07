@@ -80,10 +80,10 @@ export function Footer({ helpOpen = false, onToggleHelp }: FooterProps) {
           />
           {', '}
           <FontCredit
-            name="Instrument Sans"
-            className={styles.instrumentSans}
-            author="Instrument"
-            href="https://github.com/Instrument/instrument-sans"
+            name="Archivo"
+            className={styles.archivo}
+            author="Omnibus-Type"
+            href="https://github.com/Omnibus-Type/Archivo"
           />
         </span>
       </p>

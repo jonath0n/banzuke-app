@@ -1,12 +1,3 @@
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 @keyframes riseIn {
   from {
     opacity: 0;
@@ -18,7 +9,7 @@
   }
 }
 
-/* One rank position on the sheet: East | rail | West */
+/* One rank position on the sheet: West | rail | East, right to left */
 .row {
   padding: var(--space-2) var(--space-3);
   transition: background var(--dur-fast) ease;
@@ -40,15 +31,19 @@
   background: rgb(var(--ink-rgb) / 0.035);
 }
 
+/* East is DOM-first and, on a banzuke, sits on the right */
 .inner {
   display: grid;
+  direction: rtl;
   grid-template-columns: minmax(0, 1fr) var(--rail-width) minmax(0, 1fr);
   align-items: center;
   gap: var(--space-3);
 }
 
-/* The centre rail: rank in kanji over its romaji short form */
+/* The centre rail: the rank, which is what the sheet is organised by, so it
+   is set at name scale rather than as a caption between two names. */
 .rail {
+  direction: ltr;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -64,11 +59,17 @@
 .kanji {
   display: block;
   font-family: var(--font-jp-serif);
-  font-size: var(--text-md);
+  font-size: var(--text-lg);
   font-weight: 700;
   letter-spacing: 0.05em;
   color: var(--text);
   white-space: nowrap;
+}
+
+/* The full printed rank (前頭十七枚目) where there is room; the short form
+   below, set by the markup. */
+.kanjiLong {
+  display: none;
 }
 
 .romaji {
@@ -90,12 +91,22 @@
 }
 
 .row[data-rank-level='yokozuna'] .rail {
-  border-inline-color: var(--tier-yokozuna);
+  border-inline-color: var(--gold);
 }
 
 .row[data-rank-level='yokozuna'] .kanji,
 .row[data-rank-level='ozeki'] .kanji {
-  font-size: var(--text-lg);
+  font-size: var(--text-2xl);
+}
+
+@media (min-width: 768px) {
+  .kanjiLong {
+    display: block;
+  }
+
+  .kanjiShort {
+    display: none;
+  }
 }
 
 @media (max-width: 600px) {
@@ -144,6 +155,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .row {
-    animation: fadeIn 200ms ease forwards;
+    animation: none;
   }
 }
