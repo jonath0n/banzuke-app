@@ -299,20 +299,25 @@ function AppContent() {
                   onClearSearch={handleClearSearch}
                 />
               )}
+              {diffWanted && previous.status === 'loading' && (
+                <div role="status" className="visually-hidden">
+                  {strings.loading}
+                </div>
+              )}
+              {diffWanted && previous.status === 'unavailable' && (
+                <div role="status" className={`${styles.status} ${styles.warning}`}>
+                  {strings.changesUnavailable}
+                </div>
+              )}
+              {diffWanted && diff && !isFiltering && (
+                <Departed
+                  division={division}
+                  departures={diff.byDivision[division]}
+                  sinceLabel={sinceLabel}
+                  onSelectRikishi={handleSelectRikishi}
+                />
+              )}
             </div>
-            {diffWanted && previous.status === 'unavailable' && (
-              <div role="status" className={`${styles.status} ${styles.warning}`}>
-                {strings.changesUnavailable}
-              </div>
-            )}
-            {diffWanted && diff && (
-              <Departed
-                division={division}
-                departures={diff.byDivision[division]}
-                sinceLabel={sinceLabel}
-                onSelectRikishi={handleSelectRikishi}
-              />
-            )}
           </ErrorBoundary>
         )}
       </main>

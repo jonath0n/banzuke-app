@@ -47,5 +47,4 @@
 /* Beside the name on a row */
 .row {
   flex-shrink: 0;
-  margin-inline-start: var(--space-2);
 }

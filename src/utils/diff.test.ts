@@ -158,5 +158,11 @@ describe('labels', () => {
     expect(describeMovement({ kind: 'new', previous: null, sideChanged: false }, 'jp')).toBe(
       '番付外から'
     )
+    expect(
+      describeMovement(
+        { kind: 'same', previous: { ...prev, side: 'west' }, sideChanged: true },
+        'jp'
+      )
+    ).toBe('西から東へ')
   })
 })

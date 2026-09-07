@@ -33,7 +33,7 @@ export function ChangesToggle({ on, onChange, sinceLabel }: ChangesToggleProps) 
         ▲▼
       </span>
       {strings.changes}
-      <span className="visually-hidden"> — {since}</span>
+      <span className="visually-hidden"> — {strings.since(sinceLabel)}</span>
     </button>
   )
 }

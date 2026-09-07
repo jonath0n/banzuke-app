@@ -139,7 +139,7 @@ describe('App', () => {
   it('offers Changes when the archive has a previous tournament, and annotates the sheet with ?diff=1', async () => {
     const user = userEvent.setup()
     render(<App />)
-    const toggle = await screen.findByRole('button', { name: /Changes since July 2026/ })
+    const toggle = await screen.findByRole('button', { name: /Changes.*since July 2026/ })
     expect(toggle).toHaveAttribute('aria-pressed', 'false')
     await user.click(toggle)
     expect(window.location.search).toBe('?diff=1')

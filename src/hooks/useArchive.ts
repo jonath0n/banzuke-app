@@ -18,7 +18,11 @@ async function fetchJson(url: string): Promise<unknown> {
   return response.json() as Promise<unknown>
 }
 
-/** The archive index, once per page; null when there is no archive. */
+/**
+ * The archive index, once per page; null when there is no archive. Failure is
+ * cached for the page lifetime on purpose, mirroring `useProfiles`: a missing
+ * overlay is not worth a retry storm, and a reload retries anyway.
+ */
 export function loadArchiveIndex(): Promise<ArchiveIndex | null> {
   if (!indexPending) {
     indexPending = fetchJson(`${ARCHIVE_BASE}index.json`)

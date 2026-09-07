@@ -129,21 +129,18 @@ const SIDE_JA: Record<Side, string> = { east: '東', west: '西' }
 /** A sentence for accessible names and the list view. */
 export function describeMovement(movement: Movement, language: Language): string {
   const { kind, previous, sideChanged } = movement
+  if (kind === 'new' || !previous) return language === 'jp' ? '番付外から' : 'New to the sheet'
+  const to: Side = previous.side === 'east' ? 'west' : 'east'
   if (language === 'jp') {
-    if (kind === 'new' || !previous) return '番付外から'
     const from = previousRankLabel(previous, 'jp')
     if (kind === 'same') {
-      return sideChanged
-        ? `${SIDE_JA[previous.side]}から${SIDE_JA[previous.side === 'east' ? 'west' : 'east']}へ`
-        : '変動なし'
+      return sideChanged ? `${SIDE_JA[previous.side]}から${SIDE_JA[to]}へ` : '変動なし'
     }
     return `${from}から`
   }
-  if (kind === 'new' || !previous) return 'New to the sheet'
   const from = previousRankLabel(previous, 'en')
   if (kind === 'same') {
     if (!sideChanged) return 'Unchanged'
-    const to = previous.side === 'east' ? 'west' : 'east'
     return `Unchanged, ${SIDE_EN[previous.side]} to ${SIDE_EN[to]}`
   }
   return `${kind === 'up' ? 'Up' : 'Down'} from ${from}`

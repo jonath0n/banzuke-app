@@ -55,26 +55,34 @@ export function Departed({ division, departures, sinceLabel, onSelectRikishi }: 
       </h2>
       {empty && <p className={styles.none}>{strings.departedNone}</p>}
       {departures.moved.length > 0 && (
-        <div className={styles.group}>
+        <div>
           <h3 className={styles.subheading}>{strings.departedMovedTo(otherName)}</h3>
           <ul className={styles.list}>
             {departures.moved.map((d) => (
               <li key={d.was.id}>
-                <button
-                  type="button"
-                  className={styles.name}
-                  onClick={() => d.now && onSelectRikishi?.(d.now)}
-                >
-                  <span className={styles.shikona}>{name(d)}</span>
-                  <span className={styles.rank}>{strings.departedNow(nowRank(d))}</span>
-                </button>
+                {onSelectRikishi ? (
+                  <button
+                    type="button"
+                    className={styles.name}
+                    onClick={() => d.now && onSelectRikishi(d.now)}
+                    aria-label={`${name(d)}, ${strings.departedNow(nowRank(d))}. ${strings.viewDetails}`}
+                  >
+                    <span className={styles.shikona}>{name(d)}</span>
+                    <span className={styles.rank}>{strings.departedNow(nowRank(d))}</span>
+                  </button>
+                ) : (
+                  <span className={styles.name}>
+                    <span className={styles.shikona}>{name(d)}</span>
+                    <span className={styles.rank}>{strings.departedNow(nowRank(d))}</span>
+                  </span>
+                )}
               </li>
             ))}
           </ul>
         </div>
       )}
       {departures.gone.length > 0 && (
-        <div className={styles.group}>
+        <div>
           <h3 className={styles.subheading}>{strings.departedGone}</h3>
           <ul className={styles.list}>
             {departures.gone.map((d) => (

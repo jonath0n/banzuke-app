@@ -12,7 +12,7 @@ describe('ChangesToggle', () => {
         <ChangesToggle on={false} onChange={onChange} sinceLabel="July 2026" />
       </LanguageProvider>
     )
-    const button = screen.getByRole('button', { name: /Changes since July 2026/ })
+    const button = screen.getByRole('button', { name: /Changes.*since July 2026/ })
     expect(button).toHaveAttribute('aria-pressed', 'false')
     await userEvent.click(button)
     expect(onChange).toHaveBeenCalledWith(true)

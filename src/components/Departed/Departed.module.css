@@ -29,9 +29,6 @@
   font-size: var(--text-sm);
 }
 
-.group {
-}
-
 .list {
   list-style: none;
   display: flex;

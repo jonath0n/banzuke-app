@@ -193,7 +193,7 @@ export function BanzukeSheet({ rows, onSelectRikishi, highlight, movements }: Ba
   }
 
   return (
-    <div className={styles.sheet} lang={langAttr(language)} data-diff={movements ? '' : undefined}>
+    <div className={styles.sheet} lang={langAttr(language)}>
       <div className={styles.paper} role="group" aria-label={strings.sheetLabel}>
         {half('east')}
         {half('west')}
