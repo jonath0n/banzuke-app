@@ -9,7 +9,9 @@ division. During a tournament **Results** lays the hoshitori over both views —
 record, ○● on the List, kachi-koshi and the yusho — with the day's bouts and the leaders beneath
 the paper. Arrow keys move between wrestlers on the Sheet and the List; the wrestler dialog steps
 along the banzuke with ‹ › or ← →. Not sure how to read it? `?guide=1` marks the real sheet with
-numbered notes and explains each beneath it, in English and Japanese. Bilingual English/Japanese.
+numbered notes and explains each beneath it, in English and Japanese. Open a wrestler and the
+dialog spells out the ring name character by character, with what each means. Bilingual
+English/Japanese.
 
 ## Project structure
 
@@ -36,6 +38,7 @@ src/
   data/
     schema.ts                  # Raw upstream types + snapshot validation (shared with scripts)
     kimarite.ts                # Kimarite romaji → kanji + gloss
+    shikona-glossary.ts        # What the kanji in ring names mean (hand-curated)
   hooks/
     useBanzuke.ts              # Data fetching hook
     useResults.ts              # Loads results/{bashoId}.json in season
@@ -64,6 +67,7 @@ scripts/
   archive-banzuke.ts           # Adds the snapshot's tournament to public/banzuke/
   backfill-archive.ts          # One-off: earlier tournaments from sumo-api.com, joined by JSA id
   fetch-results.ts             # Tournament results from sumo-api.com, joined by JSA id
+  glossary-gaps.ts             # Lists ring-name characters the glossary lacks (deploy warns)
   lib/charset.ts               # Collects the Japanese glyph set
   lib/http.ts                  # fetch with timeout, retries and a User-Agent
   lib/jp-search-page.ts        # Parses the Japanese rikishi list page
@@ -153,6 +157,7 @@ npm run make-sample      # derive the labelled Makuuchi-only fallback from the l
 npm run validate-data    # validate the committed snapshot
 npm run archive-banzuke  # add the current snapshot's tournament to public/banzuke/
 npm run fetch-results    # in season: refresh public/results/{bashoId}.json (-- --basho 202607 for a past one)
+npm run glossary-gaps    # list ring-name kanji the shikona glossary lacks
 ```
 
 Live site: https://jonath0n.github.io/banzuke-app/

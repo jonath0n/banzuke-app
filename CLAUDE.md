@@ -24,6 +24,7 @@ npm run make-sample    # derive public/sample-data.json (Makuuchi only, labelled
 npm run validate-data  # validate the committed snapshot
 npm run archive-banzuke # write public/banzuke/{id}.json + index from the snapshot
 npm run fetch-results  # in season, write public/results/{id}.json from sumo-api
+npm run glossary-gaps  # list ring-name kanji the shikona glossary lacks
 ```
 
 Every change must pass `npm run validate && npm run test:run && npm run build` before commit.
@@ -144,3 +145,11 @@ requests. There is no separate refresh workflow.
   annotate (no flow content, band heights untouched, no new glyphs), and `Guide` beneath the paper
   lists the same numbers with bilingual text. The way in is a link beside the controls, not a
   third seal — a guide is read once — and the legend carries the way out.
+- `src/data/shikona-glossary.ts` is **hand-written** and deliberately **not** tested against live
+  data: the deploy job runs the test suite after the bot's data commit, so a new wrestler's kanji
+  must never fail a test. Coverage is checked against the fixtures; `npm run glossary-gaps` (and
+  the deploy job, as a `::warning::`) lists what the live data needs. The dialog shows a bare
+  character for a gap. Meanings are the character's general sense, English only; notes carry
+  stable marks (琴, 朝, 栃 …). The font-coverage test scans test files too, so a test's deliberately
+  unknown character is written as a `\u{…}` escape, never a literal, or it lands in the glyph
+  manifest.

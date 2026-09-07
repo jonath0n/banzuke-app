@@ -15,6 +15,7 @@
     "backfill-archive": "tsx scripts/backfill-archive.ts",
     "fetch-results": "tsx scripts/fetch-results.ts",
     "validate-data": "tsx scripts/validate-banzuke.ts public/latest-banzuke.json",
+    "glossary-gaps": "tsx scripts/glossary-gaps.ts",
     "test": "vitest",
     "test:run": "vitest run",
     "test:tz": "TZ=America/Los_Angeles vitest run src/utils/dates.test.ts src/components/Hero && TZ=Pacific/Kiritimati vitest run src/utils/dates.test.ts",
