@@ -21,7 +21,7 @@ import { mkdir, readFile, writeFile, appendFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { parseArgs } from 'node:util'
-import { fetchJson } from './lib/http.ts'
+import { fetchJson, HttpError } from './lib/http.ts'
 import {
   resultsFromSumoApi,
   type SumoApiBanzuke,
@@ -156,9 +156,19 @@ async function main(): Promise<number> {
   for (const day of daysToFetch(previous, upTo)) {
     for (const division of DIVISIONS_API) {
       await sleep(delayMs)
-      const card = await fetchJson<SumoApiTorikumi>(
-        `${API}/basho/${yyyymm}/torikumi/${division}/${day}`
-      )
+      let card: SumoApiTorikumi
+      try {
+        card = await fetchJson<SumoApiTorikumi>(
+          `${API}/basho/${yyyymm}/torikumi/${division}/${day}`
+        )
+      } catch (error) {
+        if (error instanceof HttpError && error.status === 404) {
+          console.log(`day ${day} ${division}: card not published yet`)
+          card = { date: yyyymm }
+        } else {
+          throw error
+        }
+      }
       const existing = torikumi.get(day)
       torikumi.set(day, {
         date: card.date,
