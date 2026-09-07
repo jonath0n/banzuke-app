@@ -5,14 +5,30 @@
  * pair of declarations mirrors the whole cell — seal nearest the rail, name
  * ranged against it — with no [data-side] overrides, and keeps reading order,
  * focus order and visual order in agreement.
+ *
+ * The cell wraps two things: the wrestler button (.wrestler) and, under it,
+ * the detail line, whose stable name is a small button of its own.
  */
 .cell {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+  width: 100%;
+}
+
+.cell[data-side='east'] {
+  direction: ltr;
+}
+
+/* The wrestler: seal, name, record, badges — a real <button> when selectable */
+.wrestler {
   display: flex;
   align-items: baseline;
   gap: var(--space-2);
   min-width: 0;
   width: 100%;
-  /* Reset button chrome: the clickable cell is a real <button>. */
+  /* Reset button chrome */
   font: inherit;
   color: inherit;
   text-align: inherit;
@@ -21,11 +37,7 @@
   padding: 0;
 }
 
-.cell[data-side='east'] {
-  direction: ltr;
-}
-
-.clickable {
+.clickable .wrestler {
   cursor: pointer;
   border-radius: var(--radius-sm);
   padding: var(--space-1) var(--space-2);
@@ -33,7 +45,7 @@
   width: calc(100% + 2 * var(--space-2));
 }
 
-.cell:focus-visible {
+.wrestler:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 0;
 }
@@ -57,12 +69,12 @@
     border-color var(--dur-fast) ease;
 }
 
-.cell:hover .side-seal {
+.wrestler:hover .side-seal {
   color: var(--accent);
   border-color: var(--accent);
 }
 
-/* Name over its detail line, ranged against the rail on both sides */
+/* Name over its record, ranged against the rail on both sides */
 .text {
   display: flex;
   flex-direction: column;
@@ -72,22 +84,58 @@
   gap: 0.1rem;
 }
 
-/* Stable · region: only where the sheet is wide enough to carry a second line */
+/* Stable · region: only where the sheet is wide enough to carry a second line.
+   Indented past the seal so it sits under the name, as it did inside the button. */
 .detail {
   display: none;
   max-width: 100%;
+  margin-block-start: 0.1rem;
+  margin-inline-start: calc(1.35rem + var(--space-2));
   font-size: var(--text-sm);
   color: var(--muted);
   line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  /* Always read left to right: the stable button is an atomic inline, and under
+     the West half's rtl it would otherwise trade places with the province. */
+  direction: ltr;
+  text-align: left;
+}
+
+/* West ranges the line against the rail on its right, indent and all */
+.cell:not([data-side='east']) .detail {
+  margin-inline-start: 0;
+  margin-inline-end: calc(1.35rem + var(--space-2));
+  text-align: right;
 }
 
 @media (min-width: 768px) {
   .detail {
     display: block;
   }
+}
+
+/* The stable on the detail line: reads as text, acts as a link into the stable */
+.stableButton {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-underline-offset: 0.15em;
+}
+
+.stableButton:hover,
+.stableButton:focus-visible {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.stableButton:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
 }
 
 /* The partner of a search match stays for context, faded until pointed at */
@@ -97,7 +145,7 @@
 }
 
 .cell[data-dimmed]:hover,
-.cell[data-dimmed]:focus-visible {
+.cell[data-dimmed]:focus-within {
   opacity: 1;
 }
 
@@ -130,7 +178,7 @@
 }
 
 /* Vermilion rule under the name, struck rather than drawn */
-.cell:hover .name {
+.wrestler:hover .name {
   text-decoration: underline;
   text-decoration-color: var(--accent);
 }
@@ -175,7 +223,7 @@
 }
 
 @media (max-width: 600px) {
-  .clickable {
+  .clickable .wrestler {
     padding: var(--space-1);
     margin: calc(-1 * var(--space-1));
     width: calc(100% + 2 * var(--space-1));
@@ -185,7 +233,7 @@
      drops to a line of its own instead of squeezing the name to nothing —
      which, with overflow-wrap below, once stacked a name one letter per line
      inside a hidden box and made the row a foot tall. */
-  .cell {
+  .wrestler {
     flex-wrap: wrap;
     gap: var(--space-1);
   }

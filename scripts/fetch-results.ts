@@ -17,11 +17,12 @@
  * Exit codes: 0 success / unchanged / out of season, 1 fetch failure,
  * 2 a wrestler could not be mapped to a JSA id (nothing written).
  */
-import { mkdir, readFile, writeFile, appendFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { parseArgs } from 'node:util'
 import { fetchJson, HttpError } from './lib/http.ts'
+import { setOutput } from './lib/run-io.ts'
 import {
   resultsFromSumoApi,
   type SumoApiBanzuke,
@@ -57,13 +58,6 @@ const { values: args } = parseArgs({
 })
 
 const sleep = (ms: number) => new Promise<void>((done) => setTimeout(done, ms))
-
-async function setOutput(name: string, value: string): Promise<void> {
-  console.log(`${name}=${value}`)
-  if (process.env.GITHUB_OUTPUT) {
-    await appendFile(process.env.GITHUB_OUTPUT, `${name}=${value}\n`)
-  }
-}
 
 async function readResults(path: string): Promise<ResultsFile | null> {
   try {

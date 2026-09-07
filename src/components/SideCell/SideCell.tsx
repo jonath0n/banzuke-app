@@ -16,6 +16,8 @@ interface SideCellProps {
   rankLevel: RankLevel
   /** Callback when wrestler is clicked */
   onSelect?: (rikishi: Rikishi) => void
+  /** Callback when the stable on the detail line is clicked; without it the stable is plain text. */
+  onSelectStable?: (heyaId: number) => void
   /** True while a search matches the partner but not this wrestler. */
   dimmed?: boolean
   /** Movement since the previous banzuke. */
@@ -39,12 +41,18 @@ function getDisplayName(rikishi: Rikishi | null, language: Language): string {
  * rank earns, and stable · region under it where the sheet is wide enough.
  * No portrait — the banzuke is a printed document, and the size ladder is
  * what carries the hierarchy.
+ *
+ * The cell is a wrapper around two things: the wrestler button (seal, name,
+ * record, badges) and, beneath it, the detail line, where the stable name is
+ * a small button of its own. A button cannot hold a button, which is why the
+ * detail line sits beside the wrestler button rather than inside it.
  */
 function SideCellInner({
   rikishi,
   side,
   rankLevel,
   onSelect,
+  onSelectStable,
   dimmed = false,
   movement = null,
   record = null,
@@ -68,10 +76,6 @@ function SideCellInner({
 
   const displayName = getDisplayName(rikishi, language)
   const langAttr = language === 'jp' ? 'ja' : 'en'
-  // Stable and home region under the name; shown on wide sheets only (CSS).
-  const detail = rikishi
-    ? [rikishi.heya[language], rikishi.pref[language]].filter(Boolean).join(' · ')
-    : ''
 
   // 東 / 西 seal; the side is already part of the button's accessible name
   const content = (
@@ -83,17 +87,39 @@ function SideCellInner({
         <span className={styles.name} lang={langAttr}>
           {displayName}
         </span>
-        {detail && (
-          <span className={styles.detail} lang={langAttr}>
-            {detail}
-          </span>
-        )}
         {record && <Hoshitori record={record} variant="row" champion={champion} />}
       </span>
       {badge}
       {movement && <MovementBadge movement={movement} variant="row" />}
     </>
   )
+
+  // Stable and home region under the name; shown on wide sheets only (CSS).
+  // The stable opens its dialog when the cell has somewhere to send it. Out of
+  // the Tab order: the same stable is one Enter away inside the wrestler
+  // dialog, and a stop on every cell would double the walk down the list.
+  const heya = rikishi?.heya[language] ?? ''
+  const pref = rikishi?.pref[language] ?? ''
+  const detail =
+    rikishi && (heya || pref) ? (
+      <span className={styles.detail} lang={langAttr}>
+        {heya && onSelectStable && rikishi.heya.id > 0 ? (
+          <button
+            type="button"
+            className={styles.stableButton}
+            tabIndex={-1}
+            onClick={() => onSelectStable(rikishi.heya.id)}
+            aria-label={strings.openStable(heya)}
+          >
+            {heya}
+          </button>
+        ) : (
+          heya
+        )}
+        {heya && pref ? ' · ' : ''}
+        {pref}
+      </span>
+    ) : null
 
   const className = [
     styles.cell,
@@ -110,19 +136,26 @@ function SideCellInner({
       strings.viewDetails
     }`
     return (
-      <button
-        type="button"
+      <div
         className={className}
         data-side={side}
         data-rank-level={rankLevel}
         data-dimmed={dimmed || undefined}
-        data-id={rikishi.id}
-        data-pair={pairKey}
-        onClick={() => onSelect(rikishi)}
-        aria-label={label}
       >
-        {content}
-      </button>
+        <button
+          type="button"
+          className={styles.wrestler}
+          data-side={side}
+          data-dimmed={dimmed || undefined}
+          data-id={rikishi.id}
+          data-pair={pairKey}
+          onClick={() => onSelect(rikishi)}
+          aria-label={label}
+        >
+          {content}
+        </button>
+        {detail}
+      </div>
     )
   }
 
@@ -135,7 +168,8 @@ function SideCellInner({
       data-id={rikishi?.id}
       data-pair={pairKey}
     >
-      {content}
+      <div className={styles.wrestler}>{content}</div>
+      {detail}
     </div>
   )
 }

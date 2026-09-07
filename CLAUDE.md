@@ -19,6 +19,7 @@ npm run test:tz        # date tests under non-JST time zones
 npm run build          # tsc -b && vite build → dist/
 npm run fetch-remote   # fetch + validate the latest banzuke into public/latest-banzuke.json
 npm run fetch-profiles # scrape wrestler profiles into public/rikishi-profiles.json (optional)
+npm run fetch-stables  # scrape the stables on the sheet into public/stables.json (optional)
 npm run subset-fonts   # rebuild public/assets/fonts/NotoSerifJP-700-subset.woff2 + manifest
 npm run make-sample    # derive public/sample-data.json (Makuuchi only, labelled) from the live file
 npm run validate-data  # validate the committed snapshot
@@ -98,6 +99,20 @@ requests. There is no separate refresh workflow.
   photos live in `WrestlerModal`.
 - `public/rikishi-profiles.json` (`src/data/profiles.ts`) is optional enrichment loaded on the first
   modal open; the app must work without it.
+- **Stables** (`?heya=<id>`) are a second dialog, `StableModal`, a sibling of the wrestler one. Who is
+  *in* a stable is never fetched: `rosterFor` (`src/utils/stables.ts`) reads the sekitori off the
+  loaded `BanzukeSet` by `heya.id`, so it is right for whatever tournament is on screen.
+  `public/stables.json` (`src/data/stables.ts`, `scripts/fetch-stables.ts`) is optional enrichment
+  like the profiles: the master's name, former ring name and highest rank from the JSA stable pages,
+  which share the banzuke's stable id; the address is stored but not shown. Opening a stable from a
+  wrestler, or a member from a stable, **pushes** (`setUrlParams` swaps the two params in one entry),
+  so Back walks the chain back; ‹ › stepping still replaces. The wrestler wins when a URL names both.
+  The List's detail line carries the stable as a `tabIndex={-1}` button beside the wrestler button
+  (a button cannot hold a button): keyboard users reach the stable from the wrestler dialog, and a
+  Tab stop on every cell would double the walk down the list. "Show on the banzuke" leaves the
+  dialog by writing `?q=<stable name>` in place of `?heya`, so the sheet stays filtered and one Back
+  undoes it. The two dialog keyframes live in `base.css` and both modals reference them as
+  `global(...)`; the budget is still four.
 - Photos are hot-linked from the JSA CDN with `referrerPolicy="no-referrer"`; only the `60x60`
   and `270x474` sizes exist upstream.
 - The Sheet's mincho is a **self-hosted subset**: `public/assets/fonts/NotoSerifJP-700-subset.woff2`

@@ -1,16 +1,16 @@
 /**
- * Fetches wrestler profiles (height, weight, birth date, debut, highest rank …)
- * from the JSA profile pages for every wrestler in the current snapshot and
- * writes them to a JSON file the app loads on demand.
+ * Fetches the stables on the current banzuke — name, stablemaster and address —
+ * from the JSA stable pages and writes them to a JSON file the app loads on
+ * demand when a stable is opened.
  *
- * Profiles are refreshed once per tournament: a wrestler whose stored profile
- * already carries the current basho id is skipped. Requests are sequential
- * with a pause between them. A failed page keeps the previous profile (if any)
- * and never fails the run, so a scraping hiccup cannot block a deploy.
+ * Stables are refreshed once per tournament: an entry already carrying the
+ * current basho id is skipped, so a normal deploy makes no requests here.
+ * Requests are sequential with a pause between them. A failed page keeps the
+ * previous entry (if any) and never fails the run.
  *
  * Usage:
- *   tsx scripts/fetch-profiles.ts [--snapshot <path>] [--out <path>] [--previous <path>]
- *                                 [--delay <ms>] [--limit <n>] [--force]
+ *   tsx scripts/fetch-stables.ts [--snapshot <path>] [--out <path>] [--previous <path>]
+ *                                [--delay <ms>] [--limit <n>] [--force]
  *
  * In GitHub Actions the script appends `changed` to $GITHUB_OUTPUT.
  */
@@ -19,7 +19,7 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { parseArgs } from 'node:util'
 import { fetchText } from './lib/http.ts'
-import { buildProfile, parseEnProfile, parseJpProfile } from './lib/profile-parser.ts'
+import { buildStable, parseEnStable, parseJpStable } from './lib/stable-parser.ts'
 import { readJson, setOutput, sleep } from './lib/run-io.ts'
 import {
   isPlaceholderRow,
@@ -28,14 +28,14 @@ import {
   validateSnapshot,
   type RawDivisionSnapshot,
 } from '../src/data/schema.ts'
-import { validateProfiles, type ProfilesFile, type RikishiProfile } from '../src/data/profiles.ts'
+import { validateStablesFile, type Stable, type StablesFile } from '../src/data/stables.ts'
 
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
 const { values: args } = parseArgs({
   options: {
     snapshot: { type: 'string', default: resolve(rootDir, 'public/latest-banzuke.json') },
-    out: { type: 'string', default: resolve(rootDir, 'public/rikishi-profiles.json') },
+    out: { type: 'string', default: resolve(rootDir, 'public/stables.json') },
     previous: { type: 'string' },
     delay: { type: 'string', default: '400' },
     limit: { type: 'string' },
@@ -43,22 +43,19 @@ const { values: args } = parseArgs({
   },
 })
 
-export function profilePageUrls(id: number): { en: string; jp: string } {
+export function stablePageUrls(id: number): { en: string; jp: string } {
   return {
-    en: `https://www.sumo.or.jp/EnSumoDataRikishi/profile/${id}/`,
-    jp: `https://www.sumo.or.jp/ResultRikishiData/profile/${id}/`,
+    en: `https://www.sumo.or.jp/EnSumoDataSumoBeya/detail/${id}/`,
+    jp: `https://www.sumo.or.jp/ResultRikishiDataSumoBeya/detail/${id}/`,
   }
 }
 
-async function fetchProfile(id: number, bashoId: number): Promise<RikishiProfile> {
-  const urls = profilePageUrls(id)
+async function fetchStable(id: number, bashoId: number): Promise<Stable> {
+  const urls = stablePageUrls(id)
   const [enHtml, jpHtml] = await Promise.all([fetchText(urls.en), fetchText(urls.jp)])
-  const en = parseEnProfile(enHtml)
-  const jp = parseJpProfile(jpHtml)
-  if (!en.ringName && !jp.shikona) {
-    throw new Error('profile pages did not contain a basic information table')
-  }
-  return buildProfile(id, en, jp, bashoId)
+  const stable = buildStable(id, parseEnStable(enHtml), parseJpStable(jpHtml), bashoId)
+  if (!stable) throw new Error('stable pages did not name the stable')
+  return stable
 }
 
 async function main(): Promise<number> {
@@ -76,21 +73,24 @@ async function main(): Promise<number> {
   const snapshot = validation.snapshot
   const bashoId = snapshotBashoId(snapshot)
 
-  const ids: number[] = []
+  // Distinct stable ids across both divisions, in order of first appearance.
+  const ids = new Set<number>()
   for (const division of snapshotDivisions(snapshot)) {
     const en = (snapshot.divisions[division] as RawDivisionSnapshot).payloads.en
     for (const row of en.BanzukeTable) {
-      if (!isPlaceholderRow(row)) ids.push(Number(row.rikishi_id))
+      if (isPlaceholderRow(row)) continue
+      const id = Number(row.heya_id)
+      if (Number.isInteger(id) && id > 0) ids.add(id)
     }
   }
 
-  const previous = validateProfiles(await readJson(previousPath))
-  const existing: Record<string, RikishiProfile> = previous.ok ? previous.file.profiles : {}
+  const previous = validateStablesFile(await readJson(previousPath))
+  const existing: Record<string, Stable> = previous.ok ? previous.file.stables : {}
   if (!previous.ok && (await readJson(previousPath)) !== null) {
-    console.warn(`Ignoring previous profiles at ${previousPath}: ${previous.error}`)
+    console.warn(`Ignoring previous stables at ${previousPath}: ${previous.error}`)
   }
 
-  const profiles: Record<string, RikishiProfile> = {}
+  const stables: Record<string, Stable> = {}
   let fetched = 0
   let failed = 0
   let skipped = 0
@@ -100,34 +100,34 @@ async function main(): Promise<number> {
     const key = String(id)
     const current = existing[key]
     if (current && current.bashoId === bashoId && !args.force) {
-      profiles[key] = current
+      stables[key] = current
       skipped += 1
       continue
     }
     if (fetched + failed >= limit) {
-      if (current) profiles[key] = current
+      if (current) stables[key] = current
       continue
     }
     if (fetched + failed > 0 && delay > 0) await sleep(delay)
     try {
-      profiles[key] = await fetchProfile(id, bashoId)
+      stables[key] = await fetchStable(id, bashoId)
       fetched += 1
       changed = true
-      console.log(`fetched ${id}: ${profiles[key].realName.en || profiles[key].realName.jp}`)
+      console.log(`fetched ${id}: ${stables[key].name.en || stables[key].name.jp}`)
     } catch (error) {
       failed += 1
       const reason = error instanceof Error ? error.message : String(error)
-      console.warn(`profile ${id} failed: ${reason}`)
-      if (current) profiles[key] = current
+      console.warn(`stable ${id} failed: ${reason}`)
+      if (current) stables[key] = current
     }
   }
 
-  // Wrestlers no longer on the banzuke are dropped from the file.
-  const dropped = Object.keys(existing).filter((key) => !(key in profiles))
+  // Stables with no sekitori left are dropped from the file.
+  const dropped = Object.keys(existing).filter((key) => !(key in stables))
   if (dropped.length > 0) changed = true
 
   console.log(
-    `${ids.length} wrestlers: ${fetched} fetched, ${skipped} up to date, ${failed} failed, ${dropped.length} dropped`
+    `${ids.size} stables: ${fetched} fetched, ${skipped} up to date, ${failed} failed, ${dropped.length} dropped`
   )
 
   if (!changed) {
@@ -135,10 +135,10 @@ async function main(): Promise<number> {
     return 0
   }
 
-  const file: ProfilesFile = { version: 1, fetchedAt: new Date().toISOString(), profiles }
+  const file: StablesFile = { version: 1, fetchedAt: new Date().toISOString(), stables }
   await mkdir(dirname(outPath), { recursive: true })
   await writeFile(outPath, `${JSON.stringify(file, null, 2)}\n`, 'utf8')
-  console.log(`Saved ${Object.keys(profiles).length} profiles to ${outPath}`)
+  console.log(`Saved ${Object.keys(stables).length} stables to ${outPath}`)
   await setOutput('changed', 'true')
   return 0
 }

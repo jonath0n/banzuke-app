@@ -338,4 +338,26 @@ describe('WrestlerModal', () => {
     renderModal(makeRikishi({ shikona: { en: 'Nobody', jp: '\u{9F98}' } }))
     expect(screen.queryByRole('region', { name: 'Ring name' })).toBeNull()
   })
+
+  it('makes the stable a way into its dialog, and leaves focus with the stable dialog', async () => {
+    const user = userEvent.setup()
+    const onSelectStable = vi.fn()
+    const { onClose } = renderModal(onosato, vi.fn(), 'en', null, { onSelectStable })
+    const stable = screen.getByRole('button', { name: 'Nishonoseki stable' })
+    expect(stable).toHaveTextContent('Nishonoseki')
+    const opener = screen.getByRole('button', { name: 'opener' })
+    opener.focus()
+    await user.click(stable)
+    expect(onSelectStable).toHaveBeenCalledWith(32)
+    // The App swaps the dialogs; this one's close must not pull focus back to the sheet.
+    onClose.mockClear()
+    screen.getByRole('dialog').dispatchEvent(new Event('close'))
+    expect(opener).not.toHaveFocus()
+  })
+
+  it('keeps the stable as text without somewhere to send it', () => {
+    renderModal()
+    expect(screen.queryByRole('button', { name: /stable$/ })).toBeNull()
+    expect(screen.getByText('Nishonoseki')).toBeInTheDocument()
+  })
 })

@@ -13,6 +13,7 @@ import { ageOn, formatBirthDate, formatMeasure, formatYearMonth } from '../../ut
 import { boutMark, scoreLabel, type Bout, type RikishiRecord } from '../../data/results'
 import { kimariteLabel } from '../../data/kimarite'
 import { explainShikona } from '../../data/shikona-glossary'
+import { CloseIcon } from '../CloseIcon/CloseIcon'
 import styles from './WrestlerModal.module.css'
 
 interface WrestlerModalProps {
@@ -24,6 +25,8 @@ interface WrestlerModalProps {
   neighbours?: { previous: Rikishi | null; next: Rikishi | null }
   /** Step to a neighbouring wrestler, replacing the current one. */
   onStep?: (rikishi: Rikishi) => void
+  /** Open the wrestler's stable; without it the Stable row is plain text. */
+  onSelectStable?: (heyaId: number) => void
 }
 
 /**
@@ -38,12 +41,16 @@ export function WrestlerModal({
   record,
   neighbours,
   onStep,
+  onSelectStable,
 }: WrestlerModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
   const openerRef = useRef<Element | null>(null)
   const currentIdRef = useRef<number | null>(null)
   const openedIdRef = useRef<number | null>(null)
+  // Set when the stable is opened from here: the stable dialog takes over, so
+  // this dialog's close must not pull focus back out to the sheet.
+  const handingOverRef = useRef(false)
   const { language } = useLanguage()
   const strings = useStrings()
   const nameId = useId()
@@ -57,6 +64,7 @@ export function WrestlerModal({
       if (!dialog.open) {
         openerRef.current = document.activeElement
         openedIdRef.current = rikishi.id
+        handingOverRef.current = false
         dialog.showModal()
       } else if (currentIdRef.current !== rikishi.id) {
         // Stepped to a neighbour while already open: move focus to the new name.
@@ -77,6 +85,7 @@ export function WrestlerModal({
     const id = currentIdRef.current
     const stepped = currentIdRef.current !== openedIdRef.current
     openedIdRef.current = null
+    if (handingOverRef.current) return
     const current =
       id === null ? null : document.querySelector<HTMLElement>(`button[data-id="${id}"]`)
     const target = stepped ? (current ?? opener) : (opener ?? current)
@@ -145,14 +154,7 @@ export function WrestlerModal({
             type="button"
             aria-label={strings.closeDetails}
           >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <path
-                d="M15 5L5 15M5 5l10 10"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
+            <CloseIcon />
           </button>
 
           <div className={styles.photoSection}>
@@ -260,7 +262,26 @@ export function WrestlerModal({
               {rikishi.heya.en && (
                 <div className={styles.metaItem}>
                   <dt className={styles.metaLabel}>{strings.stable}</dt>
-                  <dd className={styles.metaValue}>{rikishi.heya[language]}</dd>
+                  <dd className={styles.metaValue}>
+                    {onSelectStable && rikishi.heya.id > 0 ? (
+                      <button
+                        type="button"
+                        className={styles.stableButton}
+                        aria-label={strings.openStable(rikishi.heya[language])}
+                        onClick={() => {
+                          handingOverRef.current = true
+                          onSelectStable(rikishi.heya.id)
+                        }}
+                      >
+                        {rikishi.heya[language]}
+                        <span className={styles.chevron} aria-hidden="true">
+                          ›
+                        </span>
+                      </button>
+                    ) : (
+                      rikishi.heya[language]
+                    )}
+                  </dd>
                 </div>
               )}
               {rikishi.pref.en && (

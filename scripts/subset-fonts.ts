@@ -75,6 +75,12 @@ async function gatherTexts(snapshotPath: string, archiveDir: string): Promise<st
   // The fallback sheet must render in the same face, and it is frozen at an
   // older basho than the live file.
   texts.push(await readFile(resolve(rootDir, 'public/sample-data.json'), 'utf8'))
+  // Stablemasters' names render in the serif in the stable dialog.
+  try {
+    texts.push(await readFile(resolve(rootDir, 'public/stables.json'), 'utf8'))
+  } catch {
+    // No stables file yet: nothing to add.
+  }
   // Archived tournaments: departed wrestlers' names render in the serif too.
   try {
     for (const name of await readdir(archiveDir)) {

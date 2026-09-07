@@ -7,9 +7,11 @@ import {
   makeRawSnapshot,
   makeRecord,
   makeResultsFile,
+  makeStablesFile,
 } from './test/fixtures'
 import { resetArchiveCache } from './hooks/useArchive'
 import { resetResultsCache } from './hooks/useResults'
+import { resetStablesCache } from './hooks/useStables'
 import App from './App'
 
 function jsonResponse(body: unknown): Response {
@@ -24,6 +26,7 @@ describe('App', () => {
     window.history.replaceState(null, '', '/')
     resetArchiveCache()
     resetResultsCache()
+    resetStablesCache()
     // From 2026-09-12 the fixture basho (637: 2026-09-13…27) is in season for
     // every un-faked test, which makes the shared stub's Hoshoryu ambiguous
     // with the Bouts card's fighter button of the same name. Pin the clock
@@ -41,25 +44,27 @@ describe('App', () => {
               ? jsonResponse(makeArchivedBanzuke())
               : String(url).includes('rikishi-profiles')
                 ? jsonResponse({ version: 1, fetchedAt: '2026-09-04T00:00:00Z', profiles: {} })
-                : String(url).includes('results/637.json')
-                  ? jsonResponse(
-                      makeResultsFile({
-                        records: { '1000': makeRecord(), '1001': recordOf10 },
-                        torikumi: {
-                          '12': [
-                            {
-                              division: 'makuuchi',
-                              matchNo: 1,
-                              east: { id: 1000, shikona: { en: 'Hoshoryu', jp: '豊昇龍' } },
-                              west: { id: 1001, shikona: { en: 'Onosato', jp: '大の里' } },
-                              winnerId: 1001,
-                              kimarite: 'yorikiri',
-                            },
-                          ],
-                        },
-                      })
-                    )
-                  : jsonResponse(makeRawSnapshot())
+                : String(url).includes('stables.json')
+                  ? jsonResponse(makeStablesFile())
+                  : String(url).includes('results/637.json')
+                    ? jsonResponse(
+                        makeResultsFile({
+                          records: { '1000': makeRecord(), '1001': recordOf10 },
+                          torikumi: {
+                            '12': [
+                              {
+                                division: 'makuuchi',
+                                matchNo: 1,
+                                east: { id: 1000, shikona: { en: 'Hoshoryu', jp: '豊昇龍' } },
+                                west: { id: 1001, shikona: { en: 'Onosato', jp: '大の里' } },
+                                winnerId: 1001,
+                                kimarite: 'yorikiri',
+                              },
+                            ],
+                          },
+                        })
+                      )
+                    : jsonResponse(makeRawSnapshot())
         )
       )
     )
@@ -336,5 +341,64 @@ describe('App', () => {
     await user.click(screen.getByRole('link', { name: 'How to read a banzuke' }))
     await user.click(screen.getByRole('link', { name: 'Hide the guide' }))
     expect(screen.getByRole('link', { name: 'How to read a banzuke' })).toHaveFocus()
+  })
+
+  /** Simulates the Back button landing on `path`. */
+  function goBack(path: string) {
+    window.history.replaceState(null, '', path)
+    window.dispatchEvent(new PopStateEvent('popstate'))
+  }
+
+  it('walks wrestler → stable → member, each step one history entry deeper', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.click(await screen.findByRole('button', { name: /Hoshoryu, East/ }))
+    expect(await screen.findByRole('dialog')).toHaveAccessibleName('Hoshoryu')
+    const depth = window.history.length
+
+    await user.click(screen.getByRole('button', { name: 'Tatsunami stable' }))
+    const stableDialog = await screen.findByRole('dialog')
+    expect(stableDialog).toHaveAccessibleName('Tatsunami')
+    expect(window.location.search).toBe('?heya=1')
+    expect(window.history.length).toBe(depth + 1)
+    expect(window.history.state?.urlParam).toBe('heya')
+    // The master line arrives from the stables file
+    expect(
+      await screen.findByText('Stablemaster Tatsunami Taiji, former Komusubi Asahiyutaka')
+    ).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: /^Onosato, .*, West\./ }))
+    await waitFor(() => expect(screen.getByRole('dialog')).toHaveAccessibleName('Onosato'))
+    expect(window.location.search).toBe('?rikishi=1001')
+    expect(window.history.length).toBe(depth + 2)
+
+    goBack('/?heya=1')
+    await waitFor(() => expect(screen.getByRole('dialog')).toHaveAccessibleName('Tatsunami'))
+    goBack('/?rikishi=1000')
+    await waitFor(() => expect(screen.getByRole('dialog')).toHaveAccessibleName('Hoshoryu'))
+  })
+
+  it('shows a stable on the banzuke by filling the search, in place of the dialog entry', async () => {
+    const user = userEvent.setup()
+    window.history.replaceState(null, '', '/?heya=1')
+    render(<App />)
+    expect(await screen.findByRole('dialog')).toHaveAccessibleName('Tatsunami')
+    await user.click(screen.getByRole('button', { name: 'Show on the banzuke' }))
+    expect(window.location.search).toBe('?q=Tatsunami')
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+    expect(screen.getByRole('searchbox')).toHaveValue('Tatsunami')
+  })
+
+  it('lets the wrestler win when a URL names both, and drops an unknown stable', async () => {
+    window.history.replaceState(null, '', '/?rikishi=1000&heya=1')
+    const { unmount } = render(<App />)
+    expect(await screen.findByRole('dialog')).toHaveAccessibleName('Hoshoryu')
+    unmount()
+
+    window.history.replaceState(null, '', '/?heya=999')
+    render(<App />)
+    await screen.findByRole('button', { name: /Hoshoryu, East/ })
+    await waitFor(() => expect(window.location.search).toBe(''))
+    expect(screen.queryByRole('dialog')).toBeNull()
   })
 })
