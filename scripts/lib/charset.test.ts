@@ -24,6 +24,14 @@ describe('collectGlyphs', () => {
     const glyphs = collectGlyphs(['両国国技館（東京）', '令和八年・九月場所'])
     for (const ch of '（）・') expect(glyphs).toContain(ch)
   })
+
+  it('does not treat Hangul, Yi or private-use characters as Japanese', () => {
+    const glyphs = collectGlyphs(['\u{AC00}\u{A000}\u{E000}\u{F900}'])
+    expect(glyphs).not.toContain('\u{AC00}')
+    expect(glyphs).not.toContain('\u{A000}')
+    expect(glyphs).not.toContain('\u{E000}')
+    expect(glyphs).toContain('\u{F900}')
+  })
 })
 
 describe('missingGlyphs', () => {

@@ -10,8 +10,9 @@
  */
 
 /** One character in the CJK punctuation, kana, kanji, compatibility or fullwidth ranges. */
-// eslint-disable-next-line no-irregular-whitespace
-export const JAPANESE_GLYPH_RE = /[　-〿ぁ-ゟ゠-ヿ㐀-䶿一-鿿豈-﫿＀-￯]/gu
+// Use \u{XXXX} escapes: editors and Unicode NFC normalization silently replace U+F900 with U+8C48.
+export const JAPANESE_GLYPH_RE =
+  /[\u{3000}-\u{303F}\u{3041}-\u{309F}\u{30A0}-\u{30FF}\u{3400}-\u{4DBF}\u{4E00}-\u{9FFF}\u{F900}-\u{FAFF}\u{FF00}-\u{FFEF}]/gu
 
 /** Always present, whatever the data says: hiragana, katakana, and the iteration marks. */
 function kanaBlocks(): string[] {
