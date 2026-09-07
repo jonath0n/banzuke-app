@@ -236,6 +236,69 @@
   opacity: 1;
 }
 
+/*
+ * Guide marks: numbered circles laid over the column's cells. They are
+ * grid children placed into the band they annotate, so they add no flow
+ * content and the band heights never move; ink on paper, no colour.
+ */
+.mark {
+  grid-column: 1;
+  justify-self: start;
+  align-self: start;
+  z-index: 1;
+  pointer-events: none;
+  display: inline-grid;
+  place-items: center;
+  width: 1rem;
+  height: 1rem;
+  margin: -0.2rem;
+  font-family: var(--font-names);
+  font-size: 0.6rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text);
+  background: var(--card-bg);
+  border: 1px solid var(--text);
+  border-radius: 50%;
+  writing-mode: horizontal-tb;
+}
+
+.mark[data-zone='top'] {
+  grid-row: 1;
+  justify-self: end;
+  margin-top: -0.6rem;
+}
+
+.mark[data-zone='rank'] {
+  grid-row: 1;
+}
+
+.mark[data-zone='numeral'] {
+  grid-row: 1;
+  align-self: end;
+}
+
+.mark[data-zone='origin'] {
+  grid-row: 2;
+}
+
+.mark[data-zone='name'] {
+  grid-row: 3;
+}
+
+.mark[data-zone='movement'],
+.mark[data-zone='record'] {
+  grid-row: 3;
+  align-self: end;
+}
+
+/* The East side mark carries its number inline, after 東 */
+.sideMark .mark {
+  display: inline-grid;
+  vertical-align: middle;
+  margin: 0 0 0 0.2rem;
+}
+
 @media (max-width: 600px) {
   .sheet {
     --rank-band: 3.9rem;

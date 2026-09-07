@@ -5,6 +5,7 @@ import { BanzukeSheet } from './BanzukeSheet'
 import { LanguageProvider } from '../../contexts/LanguageContext'
 import { makeRikishi } from '../../test/fixtures'
 import type { Rikishi } from '../../types/banzuke'
+import { buildGuide } from '../../utils/guide'
 
 const yokozunaEast = makeRikishi({ id: 1, side: 'east', shikona: { en: 'Onosato', jp: '大の里' } })
 const yokozunaWest = makeRikishi({ id: 2, side: 'west', shikona: { en: 'Hoshoryu', jp: '豊昇龍' } })
@@ -193,5 +194,29 @@ describe('BanzukeSheet', () => {
     await user.tab()
     expect(screen.getByRole('button', { name: 'after' })).toHaveFocus()
     expect(container.querySelectorAll('[data-lit]')).toHaveLength(0)
+  })
+
+  it('carries the guide marks in the right zones, hidden from assistive tech', () => {
+    const guide = buildGuide(rows, { movements: false, records: false })
+    const { container } = renderSheet({ onSelectRikishi: vi.fn(), guide })
+    const marks = [...container.querySelectorAll('[data-zone]')]
+    // DOM order: the East side mark first, then each column's marks in zone
+    // order, columns themselves in banzuke order (Onosato, Atamifuji, Abi) —
+    // Onosato's (top before name), then Atamifuji's (name), then Abi's
+    // (rank, numeral, origin).
+    expect(marks.map((m) => `${m.getAttribute('data-zone')}:${m.textContent}`)).toEqual([
+      'sideMark:2',
+      'top:7',
+      'name:1',
+      'name:6',
+      'rank:3',
+      'numeral:4',
+      'origin:5',
+    ])
+    for (const mark of marks) expect(mark).toHaveAttribute('aria-hidden', 'true')
+    // The accessible name of a marked column is unchanged
+    expect(screen.getByRole('button', { name: /Onosato/ })).toHaveAccessibleName(
+      /^Onosato, East\. Yokozuna\./
+    )
   })
 })
