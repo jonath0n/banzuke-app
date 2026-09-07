@@ -3,7 +3,9 @@
 React + TypeScript viewer for the official Japan Sumo Association banzuke endpoint.
 Renders the current Makuuchi and Juryo divisions two ways: **Sheet**, the banzuke as it is
 printed — vertical, read right to left, East on the right, ranked by character size — and
-**List**, a searchable row per rank. Bilingual English/Japanese.
+**List**, a searchable row per rank. Either can be switched to **Changes**, which marks each
+name with the rank it held at the previous tournament and lists who left each division.
+Bilingual English/Japanese.
 
 ## Project structure
 

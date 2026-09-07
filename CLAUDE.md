@@ -109,3 +109,8 @@ requests. There is no separate refresh workflow.
   `heya`/`pref` have `jp: ''`). `src/data/archive-files.test.ts` insists the index matches the
   files, is contiguous, and ends at the live tournament; the font subset includes these files
   because departed names render in mincho.
+- **Changes** (`?diff=1`) is an overlay, not a third view: `src/utils/diff.ts` compares the current
+  rows with the previous archived tournament by JSA id and yields a `Movement` per wrestler plus
+  per-division departures. Badges show the **rank a wrestler came from** (`▲M5`), never a step
+  count — steps are undefined across sanyaku and the Juryo line. Arrows are ink/muted; "new" borrows
+  the promotion pill's vermilion. Movement is also spoken in each button's accessible name.
