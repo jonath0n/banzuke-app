@@ -171,6 +171,13 @@
  * metrics and so works with every mincho fallback. Where the browser reports
  * real vertical typesetting, @supports below upgrades to it.
  */
+/* Name then, in diff mode, the rank it came from */
+.nameBand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .name {
   font-family: var(--font-jp-serif);
   font-size: calc(var(--col-scale, 1) * 1rem);

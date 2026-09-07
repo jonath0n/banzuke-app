@@ -1,0 +1,50 @@
+/* The rank a wrestler came from. Direction is the arrow, never a hue: the
+   palette stays six values plus gold. "New" borrows the promotion pill's
+   vermilion — the same meaning the sheet already gives that colour. */
+.badge {
+  font-family: var(--font-names);
+  font-weight: 700;
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.badge:lang(ja) {
+  font-family: var(--font-jp-serif);
+  letter-spacing: 0.05em;
+}
+
+.badge[data-kind='down'] {
+  color: var(--muted);
+}
+
+.badge[data-kind='new'] {
+  color: var(--accent);
+}
+
+/* Under the name on the sheet: read down like the numeral band */
+.sheet {
+  display: block;
+  margin-top: var(--space-1);
+  font-size: 0.6rem;
+  text-align: center;
+}
+
+.sheet:lang(ja) {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  margin-inline: auto;
+}
+
+/* Latin has no vertical form; it turns on its side, as the ring names do */
+.sheet:lang(en) {
+  writing-mode: vertical-rl;
+  text-orientation: sideways;
+}
+
+/* Beside the name on a row */
+.row {
+  flex-shrink: 0;
+}

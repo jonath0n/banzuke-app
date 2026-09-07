@@ -32,6 +32,21 @@ const en = {
   viewList: 'List',
   sheetLabel: 'The banzuke as printed: East on the right, West on the left, ranked by size.',
 
+  // Changes since the previous banzuke
+  changes: 'Changes',
+  changesSince: (basho: string) => `Changes since ${basho}`,
+  changesUnavailable: 'The previous banzuke could not be loaded.',
+  movementNew: 'New',
+  movementToEast: 'W→E',
+  movementToWest: 'E→W',
+  since: (basho: string) => `since ${basho}`,
+  departedHeading: (division: string, basho: string) => `Left ${division} since ${basho}`,
+  departedMovedTo: (division: string) => `Now in ${division}`,
+  departedGone: 'No longer on the sheet',
+  departedWas: (rank: string) => `was ${rank}`,
+  departedNow: (rank: string) => `now ${rank}`,
+  departedNone: 'Nobody left.',
+
   // Search
   searchPlaceholder: 'Search wrestlers, stables, regions, or ranks…',
   searchLabel: 'Search wrestlers',
@@ -121,6 +136,20 @@ const jp: Strings = {
   viewSheet: '番付表',
   viewList: '一覧',
   sheetLabel: '実際の番付の形式。右が東、左が西、番付順に字が大きくなります。',
+
+  changes: '変動',
+  changesSince: (basho: string) => `${basho}からの変動`,
+  changesUnavailable: '前回の番付を読み込めませんでした。',
+  movementNew: '新',
+  movementToEast: '西→東',
+  movementToWest: '東→西',
+  since: (basho: string) => `${basho}から`,
+  departedHeading: (division: string, basho: string) => `${basho}から${division}を離れた力士`,
+  departedMovedTo: (division: string) => `${division}へ`,
+  departedGone: '番付外へ',
+  departedWas: (rank: string) => `旧 ${rank}`,
+  departedNow: (rank: string) => `現 ${rank}`,
+  departedNone: '該当なし',
 
   searchPlaceholder: '四股名・部屋・出身地・番付で検索…',
   searchLabel: '力士を検索',

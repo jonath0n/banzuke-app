@@ -1,10 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useBanzuke } from './hooks/useBanzuke'
+import { useArchiveIndex, useArchivedBanzuke } from './hooks/useArchive'
+import { previousEntry } from './data/archive'
+import { diffBanzuke, type CurrentRow } from './utils/diff'
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { clearUrlParam, useUrlParam } from './hooks/useUrlState'
 import { useStrings } from './i18n/useStrings'
 import { buildSearchIndex, matchingIds } from './utils/search'
+import { formatYearMonth } from './utils/profile'
+import { jpBashoName } from './data/kanji'
 import { Hero } from './components/Hero/Hero'
 import { SearchBar } from './components/SearchBar/SearchBar'
 import { DivisionTabs } from './components/DivisionTabs/DivisionTabs'
@@ -12,6 +17,8 @@ import { PANEL_ID, tabId } from './components/DivisionTabs/ids'
 import { BanzukeGrid, BanzukeGridSkeleton } from './components/BanzukeGrid/BanzukeGrid'
 import { BanzukeSheet } from './components/BanzukeSheet/BanzukeSheet'
 import { ViewToggle, type View } from './components/ViewToggle/ViewToggle'
+import { ChangesToggle } from './components/ChangesToggle/ChangesToggle'
+import { Departed } from './components/Departed/Departed'
 import { WrestlerModal } from './components/WrestlerModal/WrestlerModal'
 import { Footer } from './components/Footer/Footer'
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary'
@@ -47,6 +54,7 @@ function AppContent() {
   const [divisionParam, setDivisionParam] = useUrlParam('div')
   const [viewParam, setViewParam] = useUrlParam('view')
   const [selectedId, setSelectedId] = useUrlParam('rikishi', 'push')
+  const [diffParam, setDiffParam] = useUrlParam('diff')
   const [helpOpen, setHelpOpen] = useState(false)
   // Entrance animations play once, on the first sheet; later renders (tab
   // switches, search) must not replay the cascade.
@@ -106,6 +114,41 @@ function AppContent() {
   const showTabs = data?.juryo != null
   // Nothing on the sheet: no data at all, or a search this division cannot answer.
   const nothingToShow = allRows.length === 0 || (highlight !== null && highlight.size === 0)
+
+  // The archive index says which tournament preceded this one, if any; the
+  // toggle only appears when there is something to diff against.
+  const index = useArchiveIndex()
+  const prevEntry = banzuke && index ? previousEntry(index, banzuke.basho.id) : null
+  const diffWanted = diffParam === '1' && prevEntry != null
+  const previous = useArchivedBanzuke(diffWanted ? prevEntry : null)
+  const sinceLabel = prevEntry
+    ? language === 'jp'
+      ? jpBashoName(prevEntry.month)
+      : formatYearMonth(
+          `${prevEntry.year}-${String(prevEntry.month).padStart(2, '0')}`,
+          'en',
+          'long'
+        )
+    : ''
+
+  const currentRows: CurrentRow[] = useMemo(
+    () =>
+      data
+        ? [
+            ...data.makuuchi.rikishi.map((rikishi) => ({ rikishi, division: 'makuuchi' as const })),
+            ...(data.juryo?.rikishi ?? []).map((rikishi) => ({
+              rikishi,
+              division: 'juryo' as const,
+            })),
+          ]
+        : [],
+    [data]
+  )
+  const diff = useMemo(
+    () => (previous.archive ? diffBanzuke(currentRows, previous.archive) : null),
+    [currentRows, previous.archive]
+  )
+  const movements = diffWanted && diff ? diff.movements : null
 
   const handleSelectRikishi = useCallback(
     (rikishi: Rikishi) => setSelectedId(String(rikishi.id)),
@@ -217,6 +260,13 @@ function AppContent() {
               />
             )}
             <ViewToggle view={view} onViewChange={handleChangeView} />
+            {prevEntry && (
+              <ChangesToggle
+                on={diffParam === '1'}
+                onChange={(on) => setDiffParam(on ? '1' : null)}
+                sinceLabel={sinceLabel}
+              />
+            )}
           </div>
         )}
         {banzuke && (
@@ -233,6 +283,7 @@ function AppContent() {
                   key={division}
                   rows={allRows}
                   highlight={highlight}
+                  movements={movements}
                   onSelectRikishi={handleSelectRikishi}
                 />
               ) : (
@@ -240,11 +291,30 @@ function AppContent() {
                   key={division}
                   rows={allRows}
                   highlight={highlight}
+                  movements={movements}
                   onSelectRikishi={handleSelectRikishi}
                   emptyReason={isFiltering ? 'no-matches' : 'no-data'}
                   query={query}
                   otherMatches={otherMatches}
                   onClearSearch={handleClearSearch}
+                />
+              )}
+              {diffWanted && previous.status === 'loading' && (
+                <div role="status" className="visually-hidden">
+                  {strings.loading}
+                </div>
+              )}
+              {diffWanted && previous.status === 'unavailable' && (
+                <div role="status" className={`${styles.status} ${styles.warning}`}>
+                  {strings.changesUnavailable}
+                </div>
+              )}
+              {diffWanted && diff && !isFiltering && (
+                <Departed
+                  division={division}
+                  departures={diff.byDivision[division]}
+                  sinceLabel={sinceLabel}
+                  onSelectRikishi={handleSelectRikishi}
                 />
               )}
             </div>

@@ -108,4 +108,33 @@ describe('BanzukeSheet', () => {
     renderSheet()
     expect(screen.queryByRole('button')).toBeNull()
   })
+
+  it("carries each wrestler's movement in the badge and the accessible name when given", () => {
+    const movements = new Map([
+      [
+        3,
+        {
+          kind: 'up' as const,
+          previous: {
+            division: 'makuuchi' as const,
+            rankCode: 500,
+            rankNumber: 5,
+            seat: 1,
+            side: 'east' as const,
+          },
+          sideChanged: false,
+        },
+      ],
+      [5, { kind: 'new' as const, previous: null, sideChanged: false }],
+    ])
+    renderSheet({ onSelectRikishi: vi.fn(), movements })
+    const atamifuji = screen.getByRole('button', { name: /Atamifuji/ })
+    expect(atamifuji).toHaveAccessibleName(/Up from M5/)
+    expect(atamifuji).toHaveTextContent('▲M5')
+    expect(screen.getByRole('button', { name: /Abi/ })).toHaveAccessibleName(/New to the sheet/)
+    // No movement given for Onosato: nothing added.
+    expect(screen.getByRole('button', { name: /Onosato/ })).not.toHaveAccessibleName(
+      /from|New|Unchanged/
+    )
+  })
 })

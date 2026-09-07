@@ -5,6 +5,8 @@ import { RANK_CODES, RANK_LEVEL_KANJI } from '../../constants/ranks'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { useStrings } from '../../i18n/useStrings'
 import { langAttr } from '../../i18n/strings'
+import { describeMovement, type Movement } from '../../utils/diff'
+import { MovementBadge } from '../MovementBadge/MovementBadge'
 import styles from './BanzukeSheet.module.css'
 
 interface BanzukeSheetProps {
@@ -13,6 +15,8 @@ interface BanzukeSheetProps {
   onSelectRikishi?: (rikishi: Rikishi) => void
   /** Ids matching the current search; everyone else is dimmed. */
   highlight?: Set<number> | null
+  /** Movement since the previous banzuke, keyed by wrestler id. */
+  movements?: Map<number, Movement> | null
 }
 
 /**
@@ -52,11 +56,13 @@ function Column({
   scale,
   onSelect,
   dimmed,
+  movement,
 }: {
   rikishi: Rikishi
   scale: number
   onSelect?: (rikishi: Rikishi) => void
   dimmed: boolean
+  movement: Movement | null
 }) {
   const { language } = useLanguage()
   const strings = useStrings()
@@ -70,7 +76,10 @@ function Column({
   const numeral = rikishi.rankCode >= RANK_CODES.MAEGASHIRA ? toKanjiNumber(rikishi.rankNumber) : ''
   // The full rank goes into the accessible name: a screen reader cannot see how
   // large the characters are, or how far along the band the column sits.
-  const label = `${name}, ${strings.side[rikishi.side]}. ${rikishi.rankName[language]}. ${strings.viewDetails}`
+  const movementText = movement ? describeMovement(movement, language) : ''
+  const label = `${name}, ${strings.side[rikishi.side]}. ${rikishi.rankName[language]}.${
+    movementText ? ` ${movementText}.` : ''
+  } ${strings.viewDetails}`
 
   const content = (
     <>
@@ -88,8 +97,11 @@ function Column({
       <span className={styles.origin} lang={lang}>
         {language === 'jp' && rikishi.pref.jp ? shortPrefecture(rikishi.pref.jp) : rikishi.pref.en}
       </span>
-      <span className={styles.name} lang={lang}>
-        {name}
+      <span className={styles.nameBand}>
+        <span className={styles.name} lang={lang}>
+          {name}
+        </span>
+        {movement && <MovementBadge movement={movement} variant="sheet" />}
       </span>
     </>
   )
@@ -138,7 +150,7 @@ function Column({
  * is `direction: rtl`, so the highest rank sits at the right where reading
  * starts, and DOM order, focus order and reading order all agree.
  */
-export function BanzukeSheet({ rows, onSelectRikishi, highlight }: BanzukeSheetProps) {
+export function BanzukeSheet({ rows, onSelectRikishi, highlight, movements }: BanzukeSheetProps) {
   const strings = useStrings()
   const { language } = useLanguage()
   const groups = visibleGroups(groupRowsByRank(rows), highlight)
@@ -172,6 +184,7 @@ export function BanzukeSheet({ rows, onSelectRikishi, highlight }: BanzukeSheetP
               scale={columnScale(rikishi, lowestNumber)}
               onSelect={onSelectRikishi}
               dimmed={isDimmed(rikishi)}
+              movement={movements?.get(rikishi.id) ?? null}
             />
           ))}
         </div>

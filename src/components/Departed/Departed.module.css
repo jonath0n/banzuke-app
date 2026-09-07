@@ -1,0 +1,61 @@
+.departed {
+  border-top: 1px solid var(--rule);
+  padding-top: var(--space-2);
+}
+
+.heading {
+  font-size: var(--text-base);
+  font-weight: var(--label-weight);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: var(--space-5) 0 var(--space-2);
+}
+
+.heading:lang(ja) {
+  text-transform: none;
+  letter-spacing: 0.1em;
+}
+
+.subheading {
+  font-size: var(--text-sm);
+  color: var(--muted);
+  font-weight: var(--label-weight);
+  margin: var(--space-3) 0 var(--space-1);
+}
+
+.none {
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+}
+
+.name {
+  font: inherit;
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+}
+
+.shikona:lang(ja) {
+  font-family: var(--font-jp-serif);
+  font-weight: 700;
+}
+
+.rank {
+  color: var(--muted);
+  margin-inline-start: var(--space-1);
+  font-size: var(--text-sm);
+}
+
+.external {
+  margin-inline-start: 0.2em;
+  color: var(--muted);
+}

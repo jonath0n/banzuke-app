@@ -4,6 +4,7 @@ import { formatRankLabel } from '../../utils/formatting'
 import { isSanyaku, RANK_LEVEL_NAMES } from '../../constants/ranks'
 import { jpRankName, jpRankShort } from '../../data/kanji'
 import { SideCell } from '../SideCell/SideCell'
+import type { Movement } from '../../utils/diff'
 import styles from './RankRow.module.css'
 
 interface RankRowProps {
@@ -14,6 +15,8 @@ interface RankRowProps {
   onSelectRikishi?: (rikishi: Rikishi) => void
   /** Ids matching the current search; wrestlers outside it are dimmed. */
   highlight?: Set<number> | null
+  /** Movement since the previous banzuke, keyed by wrestler id. */
+  movements?: Map<number, Movement> | null
 }
 
 function isDimmed(rikishi: Rikishi | null, highlight: Set<number> | null | undefined): boolean {
@@ -25,6 +28,7 @@ export const RankRow = memo(function RankRow({
   index = 0,
   onSelectRikishi,
   highlight,
+  movements,
 }: RankRowProps) {
   const short = jpRankShort(group.rankCode, group.rankNumber) || group.name.jp
   // The full printed rank on a wide sheet, the short form on a narrow one.
@@ -48,6 +52,7 @@ export const RankRow = memo(function RankRow({
           rankLevel={group.rankLevel}
           onSelect={onSelectRikishi}
           dimmed={isDimmed(group.east, highlight)}
+          movement={group.east ? (movements?.get(group.east.id) ?? null) : null}
         />
         <div className={styles.rail}>
           {long === short ? (
@@ -72,6 +77,7 @@ export const RankRow = memo(function RankRow({
           rankLevel={group.rankLevel}
           onSelect={onSelectRikishi}
           dimmed={isDimmed(group.west, highlight)}
+          movement={group.west ? (movements?.get(group.west.id) ?? null) : null}
         />
       </div>
     </div>
