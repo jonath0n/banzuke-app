@@ -39,11 +39,17 @@ describe('shikona glossary', () => {
       ['里', 'village; home'],
     ])
     expect(explainShikona('熱海富士').map((s) => s.text)).toEqual(['熱海', '富士'])
-    expect(explainShikona('龘').map((s) => [s.text, s.gloss])).toEqual([['龘', null]])
+    // Escaped so the font-coverage source scan doesn't pick up this made-up
+    // character and demand it in the glyph manifest: it never renders for real.
+    expect(explainShikona('\u{9F98}').map((s) => [s.text, s.gloss])).toEqual([['\u{9F98}', null]])
     expect(explainShikona('')).toEqual([])
   })
 
   it('reports the characters it lacks, once each, sorted', () => {
-    expect(glossaryGaps(['龘龘', '大龘', '齉'])).toEqual(['齉', '龘'])
+    // Escaped for the same reason as above.
+    expect(glossaryGaps(['\u{9F98}\u{9F98}', '大\u{9F98}', '\u{9F49}'])).toEqual([
+      '\u{9F49}',
+      '\u{9F98}',
+    ])
   })
 })
