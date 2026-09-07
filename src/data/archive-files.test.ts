@@ -8,7 +8,7 @@ import { readdirSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { archiveFileName, validateArchive, validateArchiveIndex } from './archive'
-import { validateSnapshot } from './schema'
+import { snapshotBashoId, validateSnapshot } from './schema'
 
 const dir = resolve(__dirname, '../../public/banzuke')
 const read = (name: string): unknown => JSON.parse(readFileSync(resolve(dir, name), 'utf8'))
@@ -35,6 +35,8 @@ describe('public/banzuke', () => {
       expect(result.archive.divisions).toEqual(entry.divisions)
       expect(result.archive.startDate).toBe(entry.startDate)
       expect(result.archive.rikishi.length).toBeGreaterThanOrEqual(40)
+      const yearMonth = `${result.archive.year}-${String(result.archive.month).padStart(2, '0')}`
+      expect(result.archive.startDate.slice(0, 7)).toBe(yearMonth)
     }
   })
 
@@ -42,7 +44,7 @@ describe('public/banzuke', () => {
     if (!index.ok) throw new Error(index.error)
     const live = validateSnapshot(read('../latest-banzuke.json'))
     if (!live.ok) throw new Error(live.errors.join('; '))
-    const liveId = Number(live.snapshot.divisions.makuuchi.payloads.en.basho_id)
+    const liveId = snapshotBashoId(live.snapshot)
     expect(index.index.basho.at(-1)?.bashoId).toBe(liveId)
   })
 

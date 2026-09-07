@@ -38,6 +38,12 @@ describe('archiveFromBanzukeSet', () => {
     expect(archive.divisions).toEqual(['makuuchi'])
     expect(archive.rikishi.every((r) => r.division === 'makuuchi')).toBe(true)
   })
+
+  it('refuses a snapshot whose dates disagree with the id arithmetic', () => {
+    const set = makeBanzukeSet()
+    set.makuuchi.basho = { ...set.makuuchi.basho, month: 11 }
+    expect(() => archiveFromBanzukeSet(set)).toThrow(/637.*2026-9.*2026-11/)
+  })
 })
 
 describe('validateArchive', () => {

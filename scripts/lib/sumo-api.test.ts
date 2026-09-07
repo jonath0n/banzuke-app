@@ -10,8 +10,6 @@ import {
   type SumoApiRikishi,
 } from './sumo-api.ts'
 import { validateArchive } from '../../src/data/archive.ts'
-import { normalizeSnapshot } from '../../src/data/normalize.ts'
-import { validateSnapshot } from '../../src/data/schema.ts'
 
 const fixtures = resolve(__dirname, '__fixtures__')
 const load = <T>(name: string): T => JSON.parse(readFileSync(resolve(fixtures, name), 'utf8')) as T
@@ -129,7 +127,9 @@ describe('archiveFromSumoApi', () => {
     expect(archive.startDate).toBe('2026-07-12')
     expect(archive.endDate).toBe('2026-07-26')
     expect(archive.source).toBe('sumo-api')
-    expect(archive.divisions).toEqual(['makuuchi', 'juryo'])
+    // Nobody, the sole Juryo entry, has no JSA id and is dropped — no Juryo rows means
+    // divisions honestly reports only makuuchi.
+    expect(archive.divisions).toEqual(['makuuchi'])
     expect(archive.rikishi.map((r) => r.id)).toEqual([3842, 4227])
     expect(archive.rikishi[0]).toEqual({
       id: 3842,
@@ -167,13 +167,12 @@ describe('archiveFromSumoApi', () => {
 })
 
 describe('against the JSA snapshot for the same tournament', () => {
-  it('reproduces every id, rank, number, seat and side of basho 637 from sumo-api 202609', () => {
-    const snapshot = validateSnapshot(
-      JSON.parse(readFileSync(resolve(__dirname, '../../public/latest-banzuke.json'), 'utf8'))
+  it('reproduces basho 637 (public/banzuke/637.json) from the sumo-api 202609 fixtures', () => {
+    const result = validateArchive(
+      JSON.parse(readFileSync(resolve(__dirname, '../../public/banzuke/637.json'), 'utf8'))
     )
-    if (!snapshot.ok) throw new Error(snapshot.errors.join('; '))
-    const set = normalizeSnapshot(snapshot.snapshot, 'live')
-    if (set.makuuchi.basho.id !== 637) return // the live file has moved on; this check is for 637 only
+    if (!result.ok) throw new Error(result.error)
+    const expected = result.archive
 
     const rikishi = new Map(
       load<SumoApiRikishi[]>('sumo-api-202609-rikishis.json').map((r) => [r.id, r])
@@ -195,13 +194,11 @@ describe('against the JSA snapshot for the same tournament', () => {
       seat: number
       side: string
     }) => `${r.id}:${r.rankCode}:${r.rankNumber}:${r.seat}:${r.side}`
-    const fromJsa = [...set.makuuchi.rikishi, ...(set.juryo?.rikishi ?? [])].map(key)
+    const fromJsa = expected.rikishi.map(key)
     const fromApi = archive.rikishi.map(key)
     expect(fromApi).toEqual(fromJsa)
 
-    const jsaNames = new Map(
-      [...set.makuuchi.rikishi, ...(set.juryo?.rikishi ?? [])].map((r) => [r.id, r.shikona.jp])
-    )
+    const jsaNames = new Map(expected.rikishi.map((r) => [r.id, r.shikona.jp]))
     for (const r of archive.rikishi) expect(r.shikona.jp, r.shikona.en).toBe(jsaNames.get(r.id))
   })
 })

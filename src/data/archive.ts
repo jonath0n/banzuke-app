@@ -175,6 +175,13 @@ function archiveRikishi(rikishi: Rikishi, division: Division): ArchivedRikishi {
 export function archiveFromBanzukeSet(set: BanzukeSet): ArchivedBanzuke {
   const { basho } = set.makuuchi
   const { year, month } = bashoYearMonth(basho.id)
+  // A cancelled tournament that consumes no id would shift every later label
+  // while leaving startDate correct; the snapshot's own year/month catch it.
+  if (year !== basho.year || month !== basho.month) {
+    throw new Error(
+      `basho ${basho.id}: id arithmetic says ${year}-${month} but the snapshot says ${basho.year}-${basho.month}; check ANCHOR in bashoIds.ts`
+    )
+  }
   const divisions: Division[] = set.juryo ? ['makuuchi', 'juryo'] : ['makuuchi']
   const rikishi = [
     ...set.makuuchi.rikishi.map((r) => archiveRikishi(r, 'makuuchi')),

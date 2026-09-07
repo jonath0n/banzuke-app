@@ -8,6 +8,7 @@
  */
 import type { ArchivedBanzuke, ArchivedRikishi } from '../../src/data/archive.ts'
 import type { Division } from '../../src/data/schema.ts'
+import { DIVISIONS } from '../../src/data/schema.ts'
 import { bashoIdFromSumoApi, bashoYearMonth } from '../../src/data/bashoIds.ts'
 import { ringName } from '../../src/data/normalize.ts'
 
@@ -102,11 +103,9 @@ export function archiveFromSumoApi(input: {
   const { year, month } = bashoYearMonth(bashoId)
   const problems: string[] = []
   const rows: ArchivedRikishi[] = []
-  const divisions: Division[] = []
 
   for (const table of input.banzuke) {
     const division = DIVISION_OF[table.division]
-    divisions.push(division)
     for (const entry of [...table.east, ...table.west]) {
       const label = `${table.division}: ${entry.shikonaEn} (sumo-api ${entry.rikishiID})`
       const person = input.rikishi.get(entry.rikishiID)
@@ -134,6 +133,7 @@ export function archiveFromSumoApi(input: {
     }
   }
   rows.sort((a, b) => sortKey(a) - sortKey(b))
+  const divisions = DIVISIONS.filter((d) => rows.some((r) => r.division === d))
 
   return {
     archive: {

@@ -35,20 +35,19 @@ export async function writeArchive(dir: string, archive: ArchivedBanzuke): Promi
   return path
 }
 
+/** Writes index.json for `archives` and returns the index that was written. */
 export async function writeIndex(
   dir: string,
   archives: ArchivedBanzuke[],
   now = new Date()
-): Promise<string> {
+): Promise<ArchiveIndex> {
   const index = buildIndex(archives, now.toISOString())
   const path = join(dir, INDEX)
   await writeFile(path, `${JSON.stringify(index, null, 1)}\n`, 'utf8')
-  return path
+  return index
 }
 
 /** Rebuilds index.json from the archive files actually present. */
 export async function refreshIndex(dir: string): Promise<ArchiveIndex> {
-  const archives = await readArchives(dir)
-  await writeIndex(dir, archives)
-  return buildIndex(archives, new Date().toISOString())
+  return writeIndex(dir, await readArchives(dir))
 }

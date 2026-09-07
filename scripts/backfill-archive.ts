@@ -63,6 +63,7 @@ async function backfill(yyyymm: string, outDir: string, delayMs: number): Promis
   }
   console.log(`Fetching ${yyyymm} (basho ${bashoId})`)
   const basho = await fetchJson<SumoApiBasho>(`${API}/basho/${yyyymm}`)
+  if (basho.date !== yyyymm) throw new Error(`API returned ${basho.date} for ${yyyymm}`)
   await sleep(delayMs)
   const makuuchi = await fetchJson<SumoApiBanzuke>(`${API}/basho/${yyyymm}/banzuke/Makuuchi`)
   await sleep(delayMs)
