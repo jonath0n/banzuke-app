@@ -181,20 +181,31 @@
     width: calc(100% + 2 * var(--space-1));
   }
 
+  /* Seals and pills yield to the name. A pill that will not fit beside it
+     drops to a line of its own instead of squeezing the name to nothing —
+     which, with overflow-wrap below, once stacked a name one letter per line
+     inside a hidden box and made the row a foot tall. */
   .cell {
+    flex-wrap: wrap;
     gap: var(--space-1);
   }
 
-  /* Names wrap rather than shrink: the ladder is clamped in tokens.css and
-     must survive the phone, since it is the only thing carrying rank here. */
+  .text {
+    flex: 1 1 auto;
+    min-width: 70%;
+  }
+
+  /* The ladder steps down in tokens.css so a name normally fits on one line;
+     wrapping is the fallback for the rare name that still does not. */
   .name {
+    letter-spacing: -0.02em;
     white-space: normal;
     overflow-wrap: anywhere;
   }
 
+  /* The 東/西 seal goes: the rail and the side of the row already say it,
+     and the 1.1rem it took is the difference between one line and two. */
   .side-seal {
-    width: 1.1rem;
-    height: 1.1rem;
-    font-size: 0.7rem;
+    display: none;
   }
 }
