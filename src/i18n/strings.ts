@@ -80,8 +80,8 @@ const en = {
     numeral:
       'The small numeral beneath the tier is added here, because a screen has no fixed sheet to count along: 十七 is Maegashira 17.',
     origin:
-      "Between the rank and the name is the wrestler's home: a prefecture, or a country for wrestlers born abroad.",
-    name: "The ring name, the shikona, reads top to bottom. A wrestler takes one on joining a stable, and it often shares a character with the stablemaster or the stable's tradition.",
+      'Between the rank and the name is the wrestler\u{2019}s home: a prefecture, or a country for wrestlers born abroad.',
+    name: 'The ring name, the shikona, reads top to bottom. A wrestler takes one on joining a stable, and it often shares a character with the stablemaster or the stable\u{2019}s tradition.',
     gold: 'The gold rule at the head of a column marks a Yokozuna, the one rank the sheet gives a colour of its own.',
     changes:
       'With Changes on, the small mark under a name is the rank the wrestler held on the previous banzuke: ▲ for a rise, ▼ for a fall, 新 for a newcomer to the division.',
