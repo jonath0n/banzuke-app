@@ -70,7 +70,7 @@ Three codebase surveys (UI surface, data layer, visual system) were run against 
 
 - `GET /api/basho/202607` → `{ date, startDate, endDate, yusho: [{type:'Makuuchi'|'Juryo'|…, rikishiId, shikonaEn, shikonaJp}], specialPrizes: [...] }`. For a future basho (202609) only `{date, startDate, endDate}`.
 - `GET /api/basho/202607/banzuke/Makuuchi|Juryo` → `{ bashoId, division, east: Entry[], west: Entry[] }`, `Entry { side, rikishiID, shikonaEn, shikonaJp, rankValue, rank, record: Bout[], wins, losses, absences }`, `Bout { result: 'win'|'loss'|'fusen win'|'fusen loss'|'absent', opponentShikonaEn, opponentShikonaJp, opponentID, kimarite }` (`kimarite: 'fusen'` on fusen bouts, `''` on absences; `opponentID` is present even for absences and must be ignored then). Finished tournaments have exactly 15 entries; a live one may have fewer or trailing entries with an unknown result — the parser keeps only bouts whose `result` is one of the five values.
-- `GET /api/basho/202607/torikumi/Makuuchi/15` → `{ …basho, torikumi: Match[] }`, `Match { bashoId, division, day, matchNo, eastId, eastShikona, eastRank, westId, westShikona, westRank, kimarite, winnerId, winnerEn, winnerJp }`; Makuuchi has ~20–21 matches a day, Juryo ~13; a Juryo–Makuuchi cross bout appears in **both** divisions' lists. Before the tournament the `torikumi` key is absent — treat missing/empty as "not published".
+- `GET /api/basho/202607/torikumi/Makuuchi/15` → `{ …basho, torikumi: Match[] }`, `Match { bashoId, division, day, matchNo, eastId, eastShikona, eastRank, westId, westShikona, westRank, kimarite, winnerId, winnerEn, winnerJp }`; Makuuchi has ~20–21 matches a day, Juryo ~13. **Verified on all 15 days of July 2026:** a Juryo–Makuuchi cross bout appears on the **Makuuchi card only** (as match 1 or 2), never on both, so `Match.division` records the card of origin and a division's bouts must be selected by fighter-id membership in that division's rows, not by the label. Before the tournament the `torikumi` key is absent — treat missing/empty as "not published".
 - `GET /api/rikishis?limit=1000` → `{ records: [{ id, nskId, … }] }` — `nskId` is the JSA id; 42 Juryo bouts in 202607 were against wrestlers outside Juryo, so opponents are joined through the same map and may be unknown (`id: null`) when the opponent is a Makushita visitor sumo-api has no `nskId` for.
 - Kimarite arrive as romaji (`yorikiri`, `oshidashi`, `fusen`, `hansoku`, `isamiashi`, …); `src/data/kimarite.ts` supplies the kanji.
 
@@ -1202,7 +1202,7 @@ main()
     process.exitCode = 1
   })
 ```
-**Simplify before committing:** the block that builds `torikumi` from `previous` and then calls `torikumi.clear()` is dead — delete it, keep only `const torikumi = new Map<number, SumoApiTorikumi>()` followed by the `keep` map and the fetch loop. (It is left in the plan text to make the intent explicit: complete days are carried over already-converted via `keep`, never re-fetched.) Note the cross-division duplicate: a Juryo–Makuuchi bout appears on both cards; `resultsFromSumoApi` sorts by `matchNo` and both copies survive with different `division` — the UI filters by the division on screen, so this is correct.
+**Simplify before committing:** the block that builds `torikumi` from `previous` and then calls `torikumi.clear()` is dead — delete it, keep only `const torikumi = new Map<number, SumoApiTorikumi>()` followed by the `keep` map and the fetch loop. (It is left in the plan text to make the intent explicit: complete days are carried over already-converted via `keep`, never re-fetched.) Note on cross-division bouts: they are published on the Makuuchi card only (verified on July 2026), so `Match.division` is the card of origin; the UI selects a division's bouts by whether either fighter's id is on that division's rows.
 
 `package.json` scripts, after `backfill-archive`: `"fetch-results": "tsx scripts/fetch-results.ts",`
 
@@ -2031,7 +2031,11 @@ export function Bouts({ results, division, rows, day, onChangeDay, onSelectRikis
   const headingId = useId()
   const lang = langAttr(language)
   const byId = new Map(rows.map((r) => [r.id, r]))
-  const matches = (results.torikumi[String(day)] ?? []).filter((m) => m.division === division)
+  // Cross-division bouts are published on the Makuuchi card only, so select by
+  // who is fighting, not by the card the match came from.
+  const matches = (results.torikumi[String(day)] ?? []).filter(
+    (m) => (m.east.id !== null && byId.has(m.east.id)) || (m.west.id !== null && byId.has(m.west.id))
+  )
   const last = lastSteppableDay(results)
   const tiers = results.day >= 1 ? leaders(results.records, rows) : []
 
