@@ -13,6 +13,7 @@
     "make-sample": "tsx scripts/make-sample.ts",
     "archive-banzuke": "tsx scripts/archive-banzuke.ts",
     "backfill-archive": "tsx scripts/backfill-archive.ts",
+    "fetch-results": "tsx scripts/fetch-results.ts",
     "validate-data": "tsx scripts/validate-banzuke.ts public/latest-banzuke.json",
     "test": "vitest",
     "test:run": "vitest run",
