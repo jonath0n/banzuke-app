@@ -38,6 +38,12 @@
   margin-inline: auto;
 }
 
+/* Latin has no vertical form; it turns on its side, as the ring names do */
+.sheet:lang(en) {
+  writing-mode: vertical-rl;
+  text-orientation: sideways;
+}
+
 /* Beside the name on a row */
 .row {
   flex-shrink: 0;

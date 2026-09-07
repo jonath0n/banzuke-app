@@ -64,6 +64,27 @@ describe('SideCell', () => {
     expect(screen.getByText('新入幕')).toBeInTheDocument()
   })
 
+  it('shows the movement badge beside the name and describes it', () => {
+    render(
+      <LanguageProvider>
+        <SideCell
+          rikishi={makeRikishi()}
+          side="east"
+          rankLevel="yokozuna"
+          onSelect={vi.fn()}
+          movement={{
+            kind: 'down',
+            previous: { division: 'makuuchi', rankCode: 100, rankNumber: 1, seat: 1, side: 'east' },
+            sideChanged: false,
+          }}
+        />
+      </LanguageProvider>
+    )
+    const button = screen.getByRole('button')
+    expect(button).toHaveAccessibleName(/Down from Y/)
+    expect(button).toHaveTextContent('▼Y')
+  })
+
   it('renders a dash for a vacant slot', () => {
     render(
       <LanguageProvider>

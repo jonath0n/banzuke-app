@@ -4,6 +4,8 @@ import { useLanguage } from '../../contexts/LanguageContext'
 import { describePromotion } from '../../utils/promotion'
 import { SIDE_KANJI } from '../../data/kanji'
 import { useStrings } from '../../i18n/useStrings'
+import { describeMovement, type Movement } from '../../utils/diff'
+import { MovementBadge } from '../MovementBadge/MovementBadge'
 import styles from './SideCell.module.css'
 
 interface SideCellProps {
@@ -14,6 +16,8 @@ interface SideCellProps {
   onSelect?: (rikishi: Rikishi) => void
   /** True while a search matches the partner but not this wrestler. */
   dimmed?: boolean
+  /** Movement since the previous banzuke. */
+  movement?: Movement | null
 }
 
 /** Gets the display name for a rikishi based on current language */
@@ -28,7 +32,14 @@ function getDisplayName(rikishi: Rikishi | null, language: Language): string {
  * No portrait — the banzuke is a printed document, and the size ladder is
  * what carries the hierarchy.
  */
-function SideCellInner({ rikishi, side, rankLevel, onSelect, dimmed = false }: SideCellProps) {
+function SideCellInner({
+  rikishi,
+  side,
+  rankLevel,
+  onSelect,
+  dimmed = false,
+  movement = null,
+}: SideCellProps) {
   const { language } = useLanguage()
   const strings = useStrings()
 
@@ -68,6 +79,7 @@ function SideCellInner({ rikishi, side, rankLevel, onSelect, dimmed = false }: S
         )}
       </span>
       {badge}
+      {movement && <MovementBadge movement={movement} variant="row" />}
     </>
   )
 
@@ -78,6 +90,10 @@ function SideCellInner({ rikishi, side, rankLevel, onSelect, dimmed = false }: S
   ].join(' ')
 
   if (rikishi && onSelect) {
+    const movementText = movement ? describeMovement(movement, language) : ''
+    const label = `${displayName}, ${strings.side[side]}.${
+      movementText ? ` ${movementText}.` : ''
+    } ${strings.viewDetails}`
     return (
       <button
         type="button"
@@ -86,7 +102,7 @@ function SideCellInner({ rikishi, side, rankLevel, onSelect, dimmed = false }: S
         data-rank-level={rankLevel}
         data-dimmed={dimmed || undefined}
         onClick={() => onSelect(rikishi)}
-        aria-label={`${displayName}, ${strings.side[side]}. ${strings.viewDetails}`}
+        aria-label={label}
       >
         {content}
       </button>

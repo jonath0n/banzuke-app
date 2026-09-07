@@ -5,6 +5,7 @@ import { useLanguage } from '../../contexts/LanguageContext'
 import { langAttr } from '../../i18n/strings'
 import { RankRow } from '../RankRow/RankRow'
 import { useStrings } from '../../i18n/useStrings'
+import type { Movement } from '../../utils/diff'
 import styles from './BanzukeGrid.module.css'
 
 /** Matches in the other division, offered when this one has none. */
@@ -31,6 +32,8 @@ interface BanzukeGridProps {
   otherMatches?: OtherMatches | null
   /** Shown in the no-matches state to reset the search. */
   onClearSearch?: () => void
+  /** Movement since the previous banzuke, keyed by wrestler id. */
+  movements?: Map<number, Movement> | null
 }
 
 /** Tiers whose single row already stamps the rank on its rail need no band. */
@@ -173,6 +176,7 @@ export function BanzukeGrid({
   query,
   otherMatches,
   onClearSearch,
+  movements,
 }: BanzukeGridProps) {
   const grouped = visibleGroups(groupRowsByRank(rows), highlight)
 
@@ -216,6 +220,7 @@ export function BanzukeGrid({
               index={rowIndex++}
               onSelectRikishi={onSelectRikishi}
               highlight={highlight}
+              movements={movements}
             />
           ))}
         </section>
