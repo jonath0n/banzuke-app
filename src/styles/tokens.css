@@ -124,6 +124,19 @@
   }
 }
 
+/* A phone row gives each name about 130px. The ladder keeps its order but
+   steps down so the longest names on the sheet (Wakatakakage, Kotozakura)
+   fit on one line; 1.5 → 0.85 is still a ladder of near 2x. */
+@media (max-width: 600px) {
+  :root {
+    --name-yokozuna: 1.5rem;
+    --name-ozeki: 1.25rem;
+    --name-sekiwake: 1.05rem;
+    --name-komusubi: 0.95rem;
+    --name-maegashira: 0.85rem;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #15181d;
