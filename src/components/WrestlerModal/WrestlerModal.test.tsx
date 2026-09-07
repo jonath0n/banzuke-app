@@ -208,10 +208,24 @@ describe('WrestlerModal', () => {
     expect(screen.queryByRole('button', { name: /Previous/ })).toBeNull()
     await user.click(screen.getByRole('button', { name: 'Next: Hoshoryu' }))
     expect(onStep).toHaveBeenCalledWith(next)
-    await user.keyboard('{ArrowRight}')
-    expect(onStep).toHaveBeenCalledTimes(2)
+    // Right to left like the sheet: ← is the next (lower) rank, → the previous
     await user.keyboard('{ArrowLeft}')
     expect(onStep).toHaveBeenCalledTimes(2)
+    await user.keyboard('{ArrowRight}')
+    expect(onStep).toHaveBeenCalledTimes(2)
+  })
+
+  it('lays the stepper out right to left: next on the left, previous on the right', () => {
+    const previous = makeRikishi({ id: 2, shikona: { en: 'Kirishima', jp: '霧島' } })
+    const next = makeRikishi({ id: 1, shikona: { en: 'Hoshoryu', jp: '豊昇龍' } })
+    renderModal(onosato, vi.fn(), 'en', null, { neighbours: { previous, next }, onStep: vi.fn() })
+    const nextButton = screen.getByRole('button', { name: 'Next: Hoshoryu' })
+    const previousButton = screen.getByRole('button', { name: 'Previous: Kirishima' })
+    expect(nextButton).toHaveTextContent('‹')
+    expect(previousButton).toHaveTextContent('›')
+    expect(
+      nextButton.compareDocumentPosition(previousButton) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy()
   })
 
   it('returns focus to the current wrestler’s button on close after stepping', async () => {

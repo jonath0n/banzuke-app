@@ -154,7 +154,8 @@
   text-align: center;
 }
 
-/* Previous / next along the banzuke, either side of the name */
+/* Next / previous along the banzuke, either side of the name. Right to left
+   like the sheet: the lower rank is on the left, the higher on the right. */
 .stepper {
   display: flex;
   justify-content: space-between;
