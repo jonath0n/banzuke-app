@@ -1,0 +1,47 @@
+/*
+ * Same pressed seal as ChangesToggle.module.css — two uses of one pattern.
+ * Copied verbatim; keep the two files in sync if the seal ever changes.
+ */
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  align-self: flex-end;
+  min-height: 32px;
+  padding: 0.3rem 0.7rem;
+  font-family: var(--font-names);
+  font-weight: 700;
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    color var(--dur-base) ease,
+    background var(--dur-base) ease;
+}
+
+.toggle:hover {
+  color: var(--text);
+}
+
+.toggle.on {
+  color: var(--on-accent);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.toggle:lang(ja) {
+  font-family: var(--font-jp-serif);
+  font-size: var(--text-sm);
+  text-transform: none;
+  letter-spacing: 0.1em;
+}
+
+.mark {
+  font-size: 0.55em;
+  letter-spacing: -0.1em;
+}
