@@ -24,6 +24,10 @@ describe('Footer', () => {
       'href',
       'https://sumo.or.jp/'
     )
+    expect(screen.getByRole('link', { name: 'results via sumo-api.com' })).toHaveAttribute(
+      'href',
+      'https://www.sumo-api.com/'
+    )
     expect(screen.getByRole('link', { name: 'Emily Sneddon' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Omnibus-Type' })).toBeInTheDocument()
     expect(

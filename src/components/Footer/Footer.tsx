@@ -66,6 +66,8 @@ export function Footer({ helpOpen = false, onToggleHelp }: FooterProps) {
         <span className={styles.credit}>
           {strings.footerDataSource}{' '}
           <ExternalLink href="https://sumo.or.jp/">{strings.footerJsa}</ExternalLink>
+          {', '}
+          <ExternalLink href="https://www.sumo-api.com/">{strings.footerSumoApi}</ExternalLink>
         </span>
         <span className={styles.separator} aria-hidden="true">
           ·

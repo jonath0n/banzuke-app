@@ -4,12 +4,15 @@ import { LanguageProvider } from '../../contexts/LanguageContext'
 import { makeBanzuke } from '../../test/fixtures'
 import { Hero } from './Hero'
 
-function renderHero(now: string, lang: 'en' | 'jp' = 'en') {
+function renderHero(now: string, lang: 'en' | 'jp' = 'en', resultsFetchedAt?: string) {
   vi.setSystemTime(new Date(now))
   window.history.replaceState({}, '', `/?lang=${lang}`)
   return render(
     <LanguageProvider>
-      <Hero data={makeBanzuke({ fetchedAt: new Date(now).toISOString() })} />
+      <Hero
+        data={makeBanzuke({ fetchedAt: new Date(now).toISOString() })}
+        resultsFetchedAt={resultsFetchedAt}
+      />
     </LanguageProvider>
   )
 }
@@ -57,6 +60,19 @@ describe('Hero', () => {
     expect(screen.getByText(/2026年9月13日/)).toBeInTheDocument()
     expect(screen.getByText('初日まであと12日')).toBeInTheDocument()
     expect(screen.getByText(/番付発表 2026年8月31日/)).toBeInTheDocument()
+  })
+
+  it('reports the results freshness in season in place of the snapshot stamp', () => {
+    renderHero('2026-09-20T03:00:00Z', 'en', '2026-09-20T01:00:00Z')
+    expect(
+      screen.getByText(/Data from sumo.or.jp, results updated 2 hours ago/)
+    ).toBeInTheDocument()
+    expect(screen.queryByText(/checked/)).toBeNull()
+  })
+
+  it('reports the results freshness in Japanese', () => {
+    renderHero('2026-09-20T03:00:00Z', 'jp', '2026-09-20T01:00:00Z')
+    expect(screen.getByText(/星取は2\s?時間前に確認/)).toBeInTheDocument()
   })
 
   it('names the bundled sample data as such', () => {

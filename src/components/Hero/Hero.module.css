@@ -5,8 +5,8 @@
   animation: global(fadeIn) var(--dur-slow) var(--ease-out-expo);
 }
 
-/* Wordmark and seal on the left, the sheet's own masthead beside them, the
-   language toggle at the end. */
+/* Wordmark and seal on the left, the sheet's own masthead and the language
+   toggle at the right edge. */
 .titleRow {
   display: flex;
   align-items: center;
@@ -23,7 +23,18 @@
 }
 
 .toggle {
-  margin-left: auto;
+  margin-inline-start: auto;
+}
+
+/* The masthead prints at the head of the sheet, hard against its edge, so it
+   takes the free space rather than trailing the wordmark; the toggle then
+   sits beside it instead of carrying the auto margin itself. */
+.masthead {
+  margin-inline-start: auto;
+}
+
+.masthead + .toggle {
+  margin-inline-start: 0;
 }
 
 .hero h1 {
@@ -143,6 +154,11 @@
      the deck says on the next line, so it stays on wider sheets. */
   .masthead {
     display: none;
+  }
+
+  /* With the masthead gone the toggle takes the free space back */
+  .masthead + .toggle {
+    margin-inline-start: auto;
   }
 
   .deck {
