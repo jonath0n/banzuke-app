@@ -16,10 +16,15 @@ on:
   push:
     branches: [main]
   schedule:
-    # 22:00 UTC = 07:00 JST, an hour after the banzuke is published
-    - cron: '0 22 * * *'
-    # 10:00 UTC = 19:00 JST, after the day's last bout
-    - cron: '0 10 * * *'
+    # 22:00 UTC = 07:13 JST, after the banzuke is published
+    - cron: '13 22 * * *'
+    # 09:12 UTC = 18:12 JST, as the Makuuchi card finishes
+    - cron: '12 9 * * *'
+    # 10:38 UTC = 19:38 JST, after the day's last bout for a card that ran late
+    - cron: '38 10 * * *'
+    # 12:38 UTC = 21:38 JST, the last pass of the day
+    - cron: '38 12 * * *'
+    
   workflow_dispatch:
 
 permissions:
