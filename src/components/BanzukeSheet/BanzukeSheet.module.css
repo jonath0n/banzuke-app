@@ -26,6 +26,8 @@
      overflows spills its characters into the one below. */
   --rank-band: 4.3rem;
   --origin-band: 3.9rem;
+  /* The paper's outer rule; also how deep the division tabs seat into it */
+  --frame: 4px;
   margin-block: var(--space-4) 0;
 }
 
@@ -41,7 +43,7 @@
   max-width: 100%;
   padding: var(--space-5) var(--space-4);
   background: var(--card-bg);
-  border: 4px solid var(--text);
+  border: var(--frame) solid var(--text);
   box-shadow:
     inset 0 0 0 6px var(--card-bg),
     inset 0 0 0 7px var(--text),
