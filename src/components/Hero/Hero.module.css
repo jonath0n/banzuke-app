@@ -64,6 +64,12 @@
   grid-column: 2;
   grid-row: 1 / span 3;
   align-self: start;
+  /* The width is the character column itself, so the padding and the two
+     rules sit outside it — under the global border-box reset they would eat
+     into it instead, leaving 6.8px for a 16px glyph, which then hangs off
+     the right rule (an overflowing line box starts at the line's start edge;
+     text-align has no leftover space to centre). */
+  box-sizing: content-box;
   width: 1.15em;
   font-family: var(--font-jp-serif);
   font-size: var(--text-md);
