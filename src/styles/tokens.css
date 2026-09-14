@@ -92,7 +92,11 @@
 
   /* Layout --------------------------------------------------------------- */
   --sheet-max: 840px;
-  --rail-width: 5rem;
+  /* The rank rail is one fixed width for every row, so the rules line up down
+     the list; it has to hold the longest label it is asked to set. The short
+     form (前頭十七, 前頭筆頭) measures 4 characters, the full printed one
+     (前頭十七枚目) six, so the rail steps up with the label the row shows. */
+  --rail-width: 5.5rem;
 
   /* Radii: seals and sheets are square-cornered. Nothing here is round. */
   --radius-sm: 2px;
@@ -117,10 +121,16 @@
   --shadow-glow: 0 0 0 3px rgb(var(--accent-rgb) / 0.15);
 }
 
+/* Wide enough for the full printed rank, which RankRow swaps in at this width */
+@media (min-width: 768px) {
+  :root {
+    --rail-width: 8rem;
+  }
+}
+
 @media (min-width: 1024px) {
   :root {
     --sheet-max: 960px;
-    --rail-width: 5.5rem;
   }
 }
 
