@@ -373,14 +373,6 @@ function AppContent() {
         )}
         {banzuke && (
           <div className={styles.controls}>
-            {showTabs && (
-              <DivisionTabs
-                value={division}
-                onChange={handleChangeDivision}
-                counts={counts}
-                matched={matchedByDivision}
-              />
-            )}
             <ViewToggle view={view} onViewChange={handleChangeView} />
             {prevEntry && (
               <ChangesToggle
@@ -404,10 +396,23 @@ function AppContent() {
             )}
           </div>
         )}
+        {/* The tabs are cut as paper tabs — open along the bottom — so they
+            belong against the top edge of the sheet, not in the controls row
+            above it, where a wrap left them floating with that edge open. The
+            tablist also reads better immediately before the panel it labels. */}
+        {banzuke && showTabs && (
+          <DivisionTabs
+            value={division}
+            onChange={handleChangeDivision}
+            counts={counts}
+            matched={matchedByDivision}
+          />
+        )}
         {banzuke && (
           <ErrorBoundary>
             <div
               id={PANEL_ID}
+              className={showTabs ? styles.seated : undefined}
               role={showTabs ? 'tabpanel' : undefined}
               aria-labelledby={showTabs ? tabId(division) : undefined}
               onPointerEnter={prefetchProfiles}
