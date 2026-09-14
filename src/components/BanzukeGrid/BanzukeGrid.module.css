@@ -3,9 +3,11 @@
    trims the edges without becoming a scroll container, so the sticky tier
    bands inside can still pin to the viewport. */
 .grid {
+  /* The card's rule; also how deep the division tabs seat into it */
+  --frame: 1px;
   margin-top: var(--space-4);
   background: var(--card-bg);
-  border: 1px solid var(--border);
+  border: var(--frame) solid var(--border);
   box-shadow: var(--shadow-sm);
   overflow: clip;
   /* A new sheet (tab switch) fades in as one piece rather than row by row */

@@ -1,9 +1,11 @@
 /* Division tabs on the sheet's top edge, the layout toggle opposite them */
-/* With the tabs seated on it, the sheet starts where they end: the tabs'
-   negative bottom margin does the seating, and the content's own top margin
-   (which collapses through this wrapper) would otherwise cancel it out. */
+/* With the tabs seated on it, the panel's content pulls up under them by the
+   width of its own frame — `--frame`, declared by the sheet and the list on
+   themselves — so the selected tab breaks that frame and the others stand on
+   it. Its usual top margin (which collapses through this wrapper) would
+   otherwise hold it clear. */
 .seated > :first-child {
-  margin-top: 0;
+  margin-top: calc(-1 * var(--frame, 1px));
 }
 
 /* The view, overlay and guide controls. They read as one group, so they sit
