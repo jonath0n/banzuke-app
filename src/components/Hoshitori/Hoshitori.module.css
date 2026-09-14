@@ -19,8 +19,15 @@
   color: var(--muted);
 }
 
+/* The West cell inherits the row's `direction: rtl` (SideCell mirrors the cell
+   that way). These runs carry meaning in their order and must never mirror:
+   the bidi algorithm reads the neutral en-dash between two digit runs as RTL
+   and paints "2–0" as "0–2", and a strip laid out rtl puts day 1 on the right.
+   `.detail` in SideCell.module.css declares ltr for the same reason. */
+
 /* Under the name on the sheet: horizontal, tiny — digits have no vertical form */
 .sheet {
+  direction: ltr;
   display: inline-flex;
   align-items: center;
   gap: 0.2em;
@@ -38,7 +45,9 @@
   margin-top: 0.15rem;
 }
 
+/* Day 1 is leftmost, whichever side of the rail the cell is on */
 .strip {
+  direction: ltr;
   font-family: var(--font-jp-serif);
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -60,7 +69,9 @@
   color: var(--border);
 }
 
+/* Wins–losses–absences, in that order, on both sides of the rail */
 .score {
+  direction: ltr;
   font-weight: 700;
 }
 
