@@ -15,6 +15,8 @@ import styles from './Hero.module.css'
 
 interface HeroProps {
   data: Banzuke | null
+  /** When the results file is loaded, its own fetch time; it is what moves in season. */
+  resultsFetchedAt?: string | null
 }
 
 function TournamentStatus({ data }: { data: Banzuke }) {
@@ -56,7 +58,7 @@ const SEPARATOR = ' · '
  * one side, the banzuke's own printed masthead (令和八年九月場所, set
  * vertically in mincho) on the other, then the tournament in a single line.
  */
-export function Hero({ data }: HeroProps) {
+export function Hero({ data, resultsFetchedAt = null }: HeroProps) {
   const { language, setLanguage } = useLanguage()
   const strings = useStrings()
   const basho = data?.basho
@@ -72,8 +74,12 @@ export function Hero({ data }: HeroProps) {
   if (data?.source === 'sample') {
     provenance.push(strings.sampleData)
   } else if (data) {
-    const checked = formatRelativeTime(data.fetchedAt, language)
-    provenance.push(checked ? `${strings.dataFrom}, ${strings.checked(checked)}` : strings.dataFrom)
+    // The snapshot is rewritten only when the sheet itself changes, so in
+    // season its stamp reads stale while the results file moves every run;
+    // the freshness shown is whichever of the two is being refreshed.
+    const checked = formatRelativeTime(resultsFetchedAt ?? data.fetchedAt, language)
+    const label = resultsFetchedAt ? strings.resultsUpdated : strings.checked
+    provenance.push(checked ? `${strings.dataFrom}, ${label(checked)}` : strings.dataFrom)
   }
 
   return (
