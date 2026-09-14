@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { render } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { MovementBadge } from './MovementBadge'
@@ -19,6 +21,15 @@ const wrap = (m: Movement, variant: 'sheet' | 'row' = 'sheet') =>
   ).container
 
 describe('MovementBadge', () => {
+  /* The List's West cell inherits `direction: rtl` from the row, and the badge's
+     leading arrow is a bidi neutral: without its own direction "▲M1" paints as
+     "M1▲". jsdom does no bidi layout, so the guard is on the stylesheet. */
+  it('pins itself to ltr, so a West cell cannot send the arrow to the end', () => {
+    const css = readFileSync(resolve(__dirname, 'MovementBadge.module.css'), 'utf8')
+    const block = css.slice(css.indexOf('.badge {'))
+    expect(block.slice(0, block.indexOf('}'))).toMatch(/direction:\s*ltr/)
+  })
+
   afterEach(() => {
     window.history.replaceState(null, '', '/')
   })

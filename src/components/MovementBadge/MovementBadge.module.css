@@ -1,7 +1,11 @@
 /* The rank a wrestler came from. Direction is the arrow, never a hue: the
    palette stays six values plus gold. "New" borrows the promotion pill's
    vermilion — the same meaning the sheet already gives that colour. */
+/* The arrow leads the rank it came from. In the List's West cell, which
+   inherits `direction: rtl`, the leading arrow is a neutral and the bidi
+   algorithm paints "▲M1" as "M1▲", so the badge declares its own direction. */
 .badge {
+  direction: ltr;
   font-family: var(--font-names);
   font-weight: 700;
   font-size: var(--text-xs);
