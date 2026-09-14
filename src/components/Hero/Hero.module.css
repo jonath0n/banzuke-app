@@ -5,8 +5,7 @@
   animation: global(fadeIn) var(--dur-slow) var(--ease-out-expo);
 }
 
-/* Wordmark and seal on the left, the sheet's own masthead and the language
-   toggle at the right edge. */
+/* Wordmark and seal on the left, the language toggle at the right. */
 .titleRow {
   display: flex;
   align-items: center;
@@ -24,17 +23,6 @@
 
 .toggle {
   margin-inline-start: auto;
-}
-
-/* The masthead prints at the head of the sheet, hard against its edge, so it
-   takes the free space rather than trailing the wordmark; the toggle then
-   sits beside it instead of carrying the auto margin itself. */
-.masthead {
-  margin-inline-start: auto;
-}
-
-.masthead + .toggle {
-  margin-inline-start: 0;
 }
 
 .hero h1 {
@@ -68,9 +56,14 @@
 /* 令和八年九月場所, set the way the sheet prints it: one narrow column of
    characters, read top to bottom. The stacked-character technique (a 1em
    column plus CJK line breaking) is used rather than writing-mode, because
-   it needs no vertical font metrics — the same call RankRow makes. */
+   it needs no vertical font metrics — the same call RankRow makes.
+   The column is taller than the wordmark, so it stands in a grid column of
+   its own beside the title row, the deck and the provenance, top-aligned
+   with the wordmark, and sets no row's height. */
 .masthead {
-  flex-shrink: 0;
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  align-self: start;
   width: 1.15em;
   font-family: var(--font-jp-serif);
   font-size: var(--text-md);
@@ -134,8 +127,22 @@
   color: var(--muted);
 }
 
-/* On a phone the wordmark takes its own line and the seal drops beneath it;
-   the masthead and the language toggle share the next. */
+@media (min-width: 601px) {
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: var(--space-4);
+  }
+
+  .titleRow,
+  .deck,
+  .provenance {
+    grid-column: 1;
+  }
+}
+
+/* On a phone the wordmark takes its own line and the seal drops beneath it,
+   with the language toggle on the next. */
 @media (max-width: 600px) {
   .titleRow {
     gap: var(--space-3);
@@ -154,11 +161,6 @@
      the deck says on the next line, so it stays on wider sheets. */
   .masthead {
     display: none;
-  }
-
-  /* With the masthead gone the toggle takes the free space back */
-  .masthead + .toggle {
-    margin-inline-start: auto;
   }
 
   .deck {
