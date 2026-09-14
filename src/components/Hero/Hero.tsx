@@ -54,9 +54,10 @@ function TournamentStatus({ data }: { data: Banzuke }) {
 const SEPARATOR = ' · '
 
 /**
- * The head of the sheet, not a title card above it: the wordmark and seal on
- * one side, the banzuke's own printed masthead (令和八年九月場所, set
- * vertically in mincho) on the other, then the tournament in a single line.
+ * The head of the sheet, not a title card above it: the wordmark and seal, the
+ * tournament in a single line beneath, and the banzuke's own printed masthead
+ * (令和八年九月場所, set vertically in mincho) as a spine down the right edge
+ * of both.
  */
 export function Hero({ data, resultsFetchedAt = null }: HeroProps) {
   const { language, setLanguage } = useLanguage()
@@ -91,15 +92,19 @@ export function Hero({ data, resultsFetchedAt = null }: HeroProps) {
             番付
           </span>
         </div>
-        {masthead && (
-          <span className={styles.masthead} lang="ja" aria-hidden="true">
-            {masthead}
-          </span>
-        )}
         <div className={styles.toggle}>
           <LanguageToggle language={language} onLanguageChange={setLanguage} />
         </div>
       </div>
+      {/* A spine down the right edge, beside the wordmark and the deck both,
+          rather than an item in the title row: eight characters stand taller
+          than the wordmark, and in the row they set its height and left the
+          wordmark floating halfway down. */}
+      {masthead && (
+        <span className={styles.masthead} lang="ja" aria-hidden="true">
+          {masthead}
+        </span>
+      )}
 
       <p className={styles.deck}>
         {data ? (

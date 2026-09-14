@@ -45,11 +45,13 @@ Dates from upstream are naive JST strings; always go through `src/utils/dates.ts
 and formats in `Asia/Tokyo`.
 
 The deploy workflow (`.github/workflows/deploy.yml`) refreshes data on every push to `main`,
-twice daily (07:00 and 19:00 JST), and on demand. When the tournament data changed it also
-archives the banzuke under `public/banzuke/`, regenerates the mincho subset; profiles are
-re-scraped only when stale; whatever changed is committed to `main` before building. During a
-tournament it also fetches results into `public/results/`. `ci.yml` runs the checks on pull
-requests. There is no separate refresh workflow.
+on demand, and on four daily slots — 07:13 JST for the banzuke, then 18:12, 19:38 and 21:38
+JST for the day's results. The times are mid-hour and the results window has three of them
+because GitHub's shared scheduler delays cron slots on the hour by one to four hours. When the
+tournament data changed it also archives the banzuke under `public/banzuke/`, regenerates the
+mincho subset; profiles are re-scraped only when stale; whatever changed is committed to `main`
+before building. During a tournament it also fetches results into `public/results/`. `ci.yml`
+runs the checks on pull requests. There is no separate refresh workflow.
 
 ## Conventions
 
