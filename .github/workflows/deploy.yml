@@ -219,7 +219,7 @@ jobs:
         run: npm ci
 
       - name: Use refreshed data
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: banzuke-data
           path: public
