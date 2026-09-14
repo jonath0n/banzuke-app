@@ -1,8 +1,17 @@
 /* Division tabs on the sheet's top edge, the layout toggle opposite them */
+/* With the tabs seated on it, the sheet starts where they end: the tabs'
+   negative bottom margin does the seating, and the content's own top margin
+   (which collapses through this wrapper) would otherwise cancel it out. */
+.seated > :first-child {
+  margin-top: 0;
+}
+
+/* The view, overlay and guide controls. They read as one group, so they sit
+   together at the start of the row rather than spread across it; the division
+   tabs are not here — they belong against the sheet's top edge. */
 .controls {
   display: flex;
   align-items: flex-end;
-  justify-content: space-between;
   gap: var(--space-3);
   flex-wrap: wrap;
   margin-top: var(--space-4);
