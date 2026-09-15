@@ -1,8 +1,8 @@
 {
  "version": 1,
  "bashoId": 637,
- "fetchedAt": "2026-09-14T16:30:48.734Z",
- "day": 2,
+ "fetchedAt": "2026-09-15T00:36:55.492Z",
+ "day": 3,
  "divisions": [
   "makuuchi",
   "juryo"
@@ -817,7 +817,7 @@
   "3761": {
    "wins": 0,
    "losses": 0,
-   "absences": 2,
+   "absences": 3,
    "bouts": [
     {
      "day": 1,
@@ -827,6 +827,12 @@
     },
     {
      "day": 2,
+     "outcome": "absent",
+     "opponent": null,
+     "kimarite": ""
+    },
+    {
+     "day": 3,
      "outcome": "absent",
      "opponent": null,
      "kimarite": ""
@@ -960,7 +966,7 @@
   "3842": {
    "wins": 0,
    "losses": 0,
-   "absences": 2,
+   "absences": 3,
    "bouts": [
     {
      "day": 1,
@@ -970,6 +976,12 @@
     },
     {
      "day": 2,
+     "outcome": "absent",
+     "opponent": null,
+     "kimarite": ""
+    },
+    {
+     "day": 3,
      "outcome": "absent",
      "opponent": null,
      "kimarite": ""
@@ -1537,7 +1549,7 @@
   "4121": {
    "wins": 0,
    "losses": 0,
-   "absences": 2,
+   "absences": 3,
    "bouts": [
     {
      "day": 1,
@@ -1547,6 +1559,12 @@
     },
     {
      "day": 2,
+     "outcome": "absent",
+     "opponent": null,
+     "kimarite": ""
+    },
+    {
+     "day": 3,
      "outcome": "absent",
      "opponent": null,
      "kimarite": ""
@@ -3506,6 +3524,688 @@
     },
     "winnerId": 4227,
     "kimarite": "oshidashi"
+   }
+  ],
+  "3": [
+   {
+    "division": "makuuchi",
+    "matchNo": 1,
+    "east": {
+     "id": 4116,
+     "shikona": {
+      "en": "Daiseizan",
+      "jp": "大青山"
+     }
+    },
+    "west": {
+     "id": 3933,
+     "shikona": {
+      "en": "Tokihayate",
+      "jp": "時疾風"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "juryo",
+    "matchNo": 1,
+    "east": {
+     "id": 4186,
+     "shikona": {
+      "en": "Himukamaru",
+      "jp": "日向丸"
+     }
+    },
+    "west": {
+     "id": 3927,
+     "shikona": {
+      "en": "Tokifudo",
+      "jp": "時不動"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "makuuchi",
+    "matchNo": 2,
+    "east": {
+     "id": 4285,
+     "shikona": {
+      "en": "Asasuiryu",
+      "jp": "朝翠龍"
+     }
+    },
+    "west": {
+     "id": 4243,
+     "shikona": {
+      "en": "Toshinofuji",
+      "jp": "寿之富士"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "juryo",
+    "matchNo": 2,
+    "east": {
+     "id": 3337,
+     "shikona": {
+      "en": "Meisei",
+      "jp": "明生"
+     }
+    },
+    "west": {
+     "id": 3839,
+     "shikona": {
+      "en": "Tochitaikai",
+      "jp": "栃大海"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "makuuchi",
+    "matchNo": 3,
+    "east": {
+     "id": 3553,
+     "shikona": {
+      "en": "Shonannoumi",
+      "jp": "湘南乃海"
+     }
+    },
+    "west": {
+     "id": 3207,
+     "shikona": {
+      "en": "Chiyoshoma",
+      "jp": "千代翔馬"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "juryo",
+    "matchNo": 3,
+    "east": {
+     "id": 3367,
+     "shikona": {
+      "en": "Tamashoho",
+      "jp": "玉正鳳"
+     }
+    },
+    "west": {
+     "id": 2892,
+     "shikona": {
+      "en": "Nishikigi",
+      "jp": "錦木"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "makuuchi",
+    "matchNo": 4,
+    "east": {
+     "id": 3594,
+     "shikona": {
+      "en": "Tobizaru",
+      "jp": "翔猿"
+     }
+    },
+    "west": {
+     "id": 3485,
+     "shikona": {
+      "en": "Abi",
+      "jp": "阿炎"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "juryo",
+    "matchNo": 4,
+    "east": {
+     "id": 4165,
+     "shikona": {
+      "en": "Kayo",
+      "jp": "嘉陽"
+     }
+    },
+    "west": {
+     "id": 4095,
+     "shikona": {
+      "en": "Hitoshi",
+      "jp": "日翔志"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "makuuchi",
+    "matchNo": 5,
+    "east": {
+     "id": 4101,
+     "shikona": {
+      "en": "Asakoryu",
+      "jp": "朝紅龍"
+     }
+    },
+    "west": {
+     "id": 3521,
+     "shikona": {
+      "en": "Shodai",
+      "jp": "正代"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "juryo",
+    "matchNo": 5,
+    "east": {
+     "id": 3255,
+     "shikona": {
+      "en": "Kagayaki",
+      "jp": "輝"
+     }
+    },
+    "west": {
+     "id": 3969,
+     "shikona": {
+      "en": "Tohakuryu",
+      "jp": "東白龍"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "makuuchi",
+    "matchNo": 6,
+    "east": {
+     "id": 3371,
+     "shikona": {
+      "en": "Wakamotoharu",
+      "jp": "若元春"
+     }
+    },
+    "west": {
+     "id": 4175,
+     "shikona": {
+      "en": "Asahakuryu",
+      "jp": "朝白龍"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "juryo",
+    "matchNo": 6,
+    "east": {
+     "id": 3803,
+     "shikona": {
+      "en": "Enho",
+      "jp": "炎鵬"
+     }
+    },
+    "west": {
+     "id": 3988,
+     "shikona": {
+      "en": "Nabatame",
+      "jp": "生田目"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "makuuchi",
+    "matchNo": 7,
+    "east": {
+     "id": 4112,
+     "shikona": {
+      "en": "Kinbozan",
+      "jp": "金峰山"
+     }
+    },
+    "west": {
+     "id": 3990,
+     "shikona": {
+      "en": "Shishi",
+      "jp": "獅司"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "juryo",
+    "matchNo": 7,
+    "east": {
+     "id": 4142,
+     "shikona": {
+      "en": "Tanji",
+      "jp": "丹治"
+     }
+    },
+    "west": {
+     "id": 4124,
+     "shikona": {
+      "en": "Hatsuyama",
+      "jp": "羽出山"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "makuuchi",
+    "matchNo": 8,
+    "east": {
+     "id": 3616,
+     "shikona": {
+      "en": "Ura",
+      "jp": "宇良"
+     }
+    },
+    "west": {
+     "id": 3844,
+     "shikona": {
+      "en": "Oho",
+      "jp": "王鵬"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "juryo",
+    "matchNo": 8,
+    "east": {
+     "id": 3743,
+     "shikona": {
+      "en": "Midorifuji",
+      "jp": "翠富士"
+     }
+    },
+    "west": {
+     "id": 3818,
+     "shikona": {
+      "en": "Tomokaze",
+      "jp": "友風"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "makuuchi",
+    "matchNo": 9,
+    "east": {
+     "id": 3705,
+     "shikona": {
+      "en": "Hiradoumi",
+      "jp": "平戸海"
+     }
+    },
+    "west": {
+     "id": 3742,
+     "shikona": {
+      "en": "Nishikifuji",
+      "jp": "錦富士"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "juryo",
+    "matchNo": 9,
+    "east": {
+     "id": 2890,
+     "shikona": {
+      "en": "Ryuden",
+      "jp": "竜電"
+     }
+    },
+    "west": {
+     "id": 4164,
+     "shikona": {
+      "en": "Shirokuma",
+      "jp": "白熊"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "makuuchi",
+    "matchNo": 10,
+    "east": {
+     "id": 4093,
+     "shikona": {
+      "en": "Fujiseiun",
+      "jp": "藤青雲"
+     }
+    },
+    "west": {
+     "id": 4171,
+     "shikona": {
+      "en": "Takerufuji",
+      "jp": "尊富士"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "juryo",
+    "matchNo": 10,
+    "east": {
+     "id": 2565,
+     "shikona": {
+      "en": "Sadanoumi",
+      "jp": "佐田の海"
+     }
+    },
+    "west": {
+     "id": 4267,
+     "shikona": {
+      "en": "Arashifuji",
+      "jp": "嵐富士"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "makuuchi",
+    "matchNo": 11,
+    "east": {
+     "id": 3753,
+     "shikona": {
+      "en": "Ichiyamamoto",
+      "jp": "一山本"
+     }
+    },
+    "west": {
+     "id": 4108,
+     "shikona": {
+      "en": "Oshoma",
+      "jp": "欧勝馬"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "juryo",
+    "matchNo": 11,
+    "east": {
+     "id": 3939,
+     "shikona": {
+      "en": "Kitanowaka",
+      "jp": "北の若"
+     }
+    },
+    "west": {
+     "id": 3620,
+     "shikona": {
+      "en": "Mitakeumi",
+      "jp": "御嶽海"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "makuuchi",
+    "matchNo": 12,
+    "east": {
+     "id": 3907,
+     "shikona": {
+      "en": "Roga",
+      "jp": "狼雅"
+     }
+    },
+    "west": {
+     "id": 3682,
+     "shikona": {
+      "en": "Asanoyama",
+      "jp": "朝乃山"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "juryo",
+    "matchNo": 12,
+    "east": {
+     "id": 2629,
+     "shikona": {
+      "en": "Tamawashi",
+      "jp": "玉鷲"
+     }
+    },
+    "west": {
+     "id": 4231,
+     "shikona": {
+      "en": "Onokatsu",
+      "jp": "阿武剋"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "makuuchi",
+    "matchNo": 13,
+    "east": {
+     "id": 3711,
+     "shikona": {
+      "en": "Churanoumi",
+      "jp": "美ノ海"
+     }
+    },
+    "west": {
+     "id": 4279,
+     "shikona": {
+      "en": "Yoshinofuji",
+      "jp": "義ノ富士"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "juryo",
+    "matchNo": 13,
+    "east": {
+     "id": 4158,
+     "shikona": {
+      "en": "Kazekeno",
+      "jp": "風賢央"
+     }
+    },
+    "west": {
+     "id": 4287,
+     "shikona": {
+      "en": "Kazuma",
+      "jp": "一意"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "makuuchi",
+    "matchNo": 14,
+    "east": {
+     "id": 4187,
+     "shikona": {
+      "en": "Hakunofuji",
+      "jp": "伯乃富士"
+     }
+    },
+    "west": {
+     "id": 4336,
+     "shikona": {
+      "en": "Fujiryoga",
+      "jp": "藤凌駕"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "juryo",
+    "matchNo": 14,
+    "east": {
+     "id": 3983,
+     "shikona": {
+      "en": "Dewanoryu",
+      "jp": "出羽ノ龍"
+     }
+    },
+    "west": {
+     "id": 4232,
+     "shikona": {
+      "en": "Kyokukaiyu",
+      "jp": "旭海雄"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "makuuchi",
+    "matchNo": 15,
+    "east": {
+     "id": 4079,
+     "shikona": {
+      "en": "Gonoyama",
+      "jp": "豪ノ山"
+     }
+    },
+    "west": {
+     "id": 4191,
+     "shikona": {
+      "en": "Fujinokawa",
+      "jp": "藤ノ川"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "makuuchi",
+    "matchNo": 16,
+    "east": {
+     "id": 4055,
+     "shikona": {
+      "en": "Atamifuji",
+      "jp": "熱海富士"
+     }
+    },
+    "west": {
+     "id": 3265,
+     "shikona": {
+      "en": "Takanosho",
+      "jp": "隆の勝"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "makuuchi",
+    "matchNo": 17,
+    "east": {
+     "id": 3376,
+     "shikona": {
+      "en": "Daieisho",
+      "jp": "大栄翔"
+     }
+    },
+    "west": {
+     "id": 3661,
+     "shikona": {
+      "en": "Kotozakura",
+      "jp": "琴櫻"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "makuuchi",
+    "matchNo": 18,
+    "east": {
+     "id": 3622,
+     "shikona": {
+      "en": "Kirishima",
+      "jp": "霧島"
+     }
+    },
+    "west": {
+     "id": 2775,
+     "shikona": {
+      "en": "Takayasu",
+      "jp": "高安"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "makuuchi",
+    "matchNo": 19,
+    "east": {
+     "id": 4230,
+     "shikona": {
+      "en": "Aonishiki",
+      "jp": "安青錦"
+     }
+    },
+    "west": {
+     "id": 3840,
+     "shikona": {
+      "en": "Kotoshoho",
+      "jp": "琴勝峰"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
+   },
+   {
+    "division": "makuuchi",
+    "matchNo": 20,
+    "east": {
+     "id": 4227,
+     "shikona": {
+      "en": "Onosato",
+      "jp": "大の里"
+     }
+    },
+    "west": {
+     "id": 4120,
+     "shikona": {
+      "en": "Kotoeiho",
+      "jp": "琴栄峰"
+     }
+    },
+    "winnerId": null,
+    "kimarite": ""
    }
   ]
  },
