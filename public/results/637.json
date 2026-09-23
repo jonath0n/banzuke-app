@@ -1,8 +1,8 @@
 {
  "version": 1,
  "bashoId": 637,
- "fetchedAt": "2026-09-22T14:00:59.869Z",
- "day": 10,
+ "fetchedAt": "2026-09-23T00:30:23.167Z",
+ "day": 11,
  "divisions": [
   "makuuchi",
   "juryo"
@@ -3313,7 +3313,7 @@
   "3761": {
    "wins": 0,
    "losses": 0,
-   "absences": 10,
+   "absences": 11,
    "bouts": [
     {
      "day": 1,
@@ -3371,6 +3371,12 @@
     },
     {
      "day": 10,
+     "outcome": "absent",
+     "opponent": null,
+     "kimarite": ""
+    },
+    {
+     "day": 11,
      "outcome": "absent",
      "opponent": null,
      "kimarite": ""
@@ -3888,7 +3894,7 @@
   "3842": {
    "wins": 0,
    "losses": 0,
-   "absences": 10,
+   "absences": 11,
    "bouts": [
     {
      "day": 1,
@@ -3946,6 +3952,12 @@
     },
     {
      "day": 10,
+     "outcome": "absent",
+     "opponent": null,
+     "kimarite": ""
+    },
+    {
+     "day": 11,
      "outcome": "absent",
      "opponent": null,
      "kimarite": ""
@@ -6241,7 +6253,7 @@
   "4121": {
    "wins": 0,
    "losses": 0,
-   "absences": 10,
+   "absences": 11,
    "bouts": [
     {
      "day": 1,
@@ -6299,6 +6311,12 @@
     },
     {
      "day": 10,
+     "outcome": "absent",
+     "opponent": null,
+     "kimarite": ""
+    },
+    {
+     "day": 11,
      "outcome": "absent",
      "opponent": null,
      "kimarite": ""
