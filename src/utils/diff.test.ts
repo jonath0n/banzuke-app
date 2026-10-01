@@ -162,9 +162,7 @@ describe('labels', () => {
     expect(describeMovement({ kind: 'up', previous: prev, sideChanged: false }, 'jp')).toMatch(
       /^前頭.*から$/
     )
-    expect(describeMovement({ kind: 'new', previous: null, sideChanged: false }, 'jp')).toBe(
-      '新顔'
-    )
+    expect(describeMovement({ kind: 'new', previous: null, sideChanged: false }, 'jp')).toBe('新顔')
     expect(
       describeMovement(
         { kind: 'same', previous: { ...prev, side: 'west' }, sideChanged: true },
