@@ -226,7 +226,7 @@ jobs:
         run: |
           echo "::warning::The font subset could not be regenerated; shipping the committed subset."
           mkdir -p .data/assets/fonts
-          cp public/assets/fonts/NotoSerifJP-700-subset.woff2 public/assets/fonts/NotoSerifJP-subset.json .data/assets/fonts/
+          cp public/assets/fonts/NotoSerifJP-700-*.woff2 public/assets/fonts/NotoSerifJP-subset.json .data/assets/fonts/
 
       # Profiles are re-scraped only when stale (the script skips any profile
       # already carrying the current basho id); a scraping failure keeps the

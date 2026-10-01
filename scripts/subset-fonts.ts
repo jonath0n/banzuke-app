@@ -6,7 +6,8 @@
  * often none on Windows or Android, where the calligraphic voice silently
  * became gothic. This script downloads the variable Noto Serif JP (OFL),
  * instances it at 700, keeps only the glyphs the app can render (see
- * scripts/lib/charset.ts) and writes a woff2 plus a manifest that
+ * scripts/lib/charset.ts) and writes two woff2 files — core and names, see
+ * CORE_FILE — plus src/styles/fonts-jp.css and a manifest that
  * scripts/lib/font-coverage.test.ts checks against the current data.
  *
  * Usage:
@@ -40,8 +41,21 @@ import { collectGlyphs } from './lib/charset.ts'
 
 const FAMILY = 'Noto Serif JP'
 const WEIGHT = 700
-const FILE = `NotoSerifJP-${WEIGHT}-subset.woff2`
+/**
+ * Two faces of one family, split by who needs them. `core` is what an English
+ * page draws in mincho: the rank kanji, the numerals, 東/西, the masthead and
+ * the seals — every character in the components, data helpers and utilities.
+ * `names` is everything else: the kana blocks, the Japanese UI strings, the
+ * glossary and kimarite tables, and what the data brings (ring names,
+ * stables, birthplaces). With unicode-range on each, an English reader's
+ * browser fetches core alone (about a quarter of the glyphs) and asks for
+ * names the first time it draws one — a Japanese page, or the dialog's name
+ * section. The coverage test still checks the union against everything.
+ */
+const CORE_FILE = `NotoSerifJP-${WEIGHT}-core.woff2`
+const NAMES_FILE = `NotoSerifJP-${WEIGHT}-names.woff2`
 const MANIFEST = 'NotoSerifJP-subset.json'
+const FONT_FACE_CSS = resolve(dirname(fileURLToPath(import.meta.url)), '../src/styles/fonts-jp.css')
 const LICENSE = 'NotoSerifJP-OFL.txt'
 
 // google/fonts main as of 2026-10-01. Move the commit and the hash together.
@@ -86,36 +100,109 @@ async function sourceFiles(dir: string): Promise<string[]> {
   return nested.flat()
 }
 
-/** Everything Japanese the app can show: the snapshot plus every source literal. */
+/**
+ * Everything Japanese the app can show, in two piles: the source (every
+ * page's glyphs) and the data (names, which only a Japanese reader draws).
+ */
 async function gatherTexts(
   snapshotPath: string,
   archiveDir: string,
   stablesPath: string
-): Promise<string[]> {
-  const texts = [await readFile(snapshotPath, 'utf8')]
+): Promise<{ core: string[]; names: string[] }> {
+  const names = [await readFile(snapshotPath, 'utf8')]
   // The fallback sheet must render in the same face, and it is frozen at an
   // older basho than the live file.
-  texts.push(await readFile(resolve(rootDir, 'public/sample-data.json'), 'utf8'))
+  names.push(await readFile(resolve(rootDir, 'public/sample-data.json'), 'utf8'))
   // Stablemasters' names render in the serif in the stable dialog.
   try {
-    texts.push(await readFile(stablesPath, 'utf8'))
+    names.push(await readFile(stablesPath, 'utf8'))
   } catch {
     // No stables file yet: nothing to add.
   }
   // Archived tournaments: departed wrestlers' names render in the serif too.
   try {
     for (const name of await readdir(archiveDir)) {
-      if (name.endsWith('.json')) texts.push(await readFile(join(archiveDir, name), 'utf8'))
+      if (name.endsWith('.json')) names.push(await readFile(join(archiveDir, name), 'utf8'))
     }
   } catch {
     // No archive yet: nothing to add.
   }
   // Test files are deliberately included (~5% of glyphs) so this script and
-  // the coverage test scan identical file sets.
+  // the coverage test scan identical file sets — in the names face, with the
+  // Japanese UI strings and the two lookup tables, since an English page
+  // draws none of them in mincho.
+  const core: string[] = []
   for (const path of await sourceFiles(resolve(rootDir, 'src'))) {
-    texts.push(await readFile(path, 'utf8'))
+    const text = await readFile(path, 'utf8')
+    if (NAMES_SOURCE.test(path)) names.push(text)
+    else core.push(text)
   }
-  return texts
+  return { core, names }
+}
+
+/** Source files whose Japanese an English page never sets in mincho. */
+const NAMES_SOURCE =
+  /(\.test\.tsx?|test[\\/]fixtures\.ts|i18n[\\/]strings\.ts|shikona-glossary\.ts|kimarite\.ts)$/
+
+/** "U+3041-3096, U+30A1-30FA, U+30FC" for a string of glyphs, consecutive code points merged. */
+export function unicodeRange(glyphs: string): string {
+  const points = [...glyphs].map((ch) => ch.codePointAt(0)!).sort((a, b) => a - b)
+  const ranges: string[] = []
+  let start = -1
+  let end = -1
+  const hex = (n: number) => n.toString(16).toUpperCase().padStart(4, '0')
+  const flush = () => {
+    if (start < 0) return
+    ranges.push(start === end ? `U+${hex(start)}` : `U+${hex(start)}-${hex(end)}`)
+  }
+  for (const point of points) {
+    if (point === end + 1) {
+      end = point
+      continue
+    }
+    flush()
+    start = point
+    end = point
+  }
+  flush()
+  return ranges.join(', ')
+}
+
+/** One @font-face per file, wrapped the way Prettier wraps a long value. */
+function fontFaceCss(faces: Array<{ file: string; range: string }>): string {
+  const wrap = (value: string) => {
+    const lines: string[] = []
+    let line = '   '
+    for (const part of value.split(', ')) {
+      const next = `${line} ${part},`
+      if (next.length > 100) {
+        lines.push(line)
+        line = `    ${part},`
+      } else {
+        line = next
+      }
+    }
+    lines.push(line.replace(/,$/, ';'))
+    return lines.join('\n')
+  }
+  const rules = faces.map(
+    ({ file, range }) => `@font-face {
+  font-family: '${FAMILY}';
+  src: url('/assets/fonts/${file}') format('woff2');
+  font-weight: ${WEIGHT};
+  font-style: normal;
+  font-display: swap;
+  unicode-range:
+${wrap(range)}
+}`
+  )
+  return `/* Generated by scripts/subset-fonts.ts — do not edit. Noto Serif JP (SIL OFL 1.1,
+   see public/assets/fonts/NotoSerifJP-OFL.txt), instanced at ${WEIGHT} and cut in two:
+   core (kana and every character in the source) and names (what only the data
+   brings). unicode-range lets a browser fetch only the face a page draws. */
+
+${rules.join('\n\n')}
+`
 }
 
 /** The variable TTF, downloaded once and kept under .data/ (gitignored). */
@@ -143,15 +230,21 @@ async function loadSourceFont(cachePath: string): Promise<Uint8Array> {
 
 async function main(): Promise<number> {
   const outDir = resolve(args['out-dir'] as string)
-  const glyphs = collectGlyphs(
-    await gatherTexts(
-      resolve(args.snapshot as string),
-      resolve(args['archive-dir'] as string),
-      resolve(args.stables as string)
-    )
+  const texts = await gatherTexts(
+    resolve(args.snapshot as string),
+    resolve(args['archive-dir'] as string),
+    resolve(args.stables as string)
   )
+  // collectGlyphs adds the kana blocks; they belong to the names face.
+  const kana = new Set(collectGlyphs([]))
+  const coreGlyphs = [...collectGlyphs(texts.core)].filter((ch) => !kana.has(ch)).join('')
+  const coreSet = new Set(coreGlyphs)
+  const namesGlyphs = [...collectGlyphs(texts.names)].filter((ch) => !coreSet.has(ch)).join('')
+  const glyphs = coreGlyphs + namesGlyphs
   const glyphCount = [...glyphs].length
-  console.log(`Glyph set: ${glyphCount} characters`)
+  console.log(
+    `Glyph set: ${glyphCount} characters (core ${[...coreGlyphs].length}, names ${[...namesGlyphs].length})`
+  )
 
   let source: Uint8Array
   try {
@@ -163,32 +256,58 @@ async function main(): Promise<number> {
     return 1
   }
 
-  let woff2: Uint8Array
-  try {
+  const cut = async (set: string): Promise<Uint8Array> =>
     // fontverter (a subset-font dependency) sniffs the format with
     // `buffer.toString('ascii', 0, 4)`, which only behaves on a Node Buffer —
     // a plain Uint8Array ignores those arguments and stringifies as
     // comma-separated bytes, so the signature check always fails.
-    woff2 = await subsetFont(Buffer.from(source), glyphs, {
-      targetFormat: 'woff2',
-      variationAxes: { wght: WEIGHT },
+    subsetFont(Buffer.from(source), set, { targetFormat: 'woff2', variationAxes: { wght: WEIGHT } })
+  const faces = [
+    { role: 'core', file: CORE_FILE, glyphs: coreGlyphs },
+    { role: 'names', file: NAMES_FILE, glyphs: namesGlyphs },
+  ].filter((face) => face.glyphs.length > 0)
+  const files: Array<{
+    role: string
+    file: string
+    glyphs: string
+    glyphCount: number
+    unicodeRange: string
+  }> = []
+  await mkdir(outDir, { recursive: true })
+  for (const face of faces) {
+    let woff2: Uint8Array
+    try {
+      woff2 = await cut(face.glyphs)
+    } catch (error) {
+      console.error(
+        `Subsetting ${face.role} failed: ${error instanceof Error ? error.message : error}`
+      )
+      return 2
+    }
+    await writeFile(join(outDir, face.file), woff2)
+    console.log(`Wrote ${face.file} (${(woff2.length / 1e3).toFixed(1)} kB)`)
+    files.push({
+      role: face.role,
+      file: face.file,
+      glyphs: face.glyphs,
+      glyphCount: [...face.glyphs].length,
+      unicodeRange: unicodeRange(face.glyphs),
     })
-  } catch (error) {
-    console.error(`Subsetting failed: ${error instanceof Error ? error.message : error}`)
-    return 2
   }
 
-  await mkdir(outDir, { recursive: true })
-  await writeFile(join(outDir, FILE), woff2)
-  console.log(`Wrote ${FILE} (${(woff2.length / 1e3).toFixed(1)} kB)`)
+  await writeFile(
+    FONT_FACE_CSS,
+    fontFaceCss(files.map((f) => ({ file: f.file, range: f.unicodeRange })))
+  )
+  console.log(`Wrote ${FONT_FACE_CSS.slice(rootDir.length + 1)}`)
 
   const manifest = {
-    version: 1,
+    version: 2,
     family: FAMILY,
     weight: WEIGHT,
-    file: FILE,
     source: SOURCE_URL,
     license: 'OFL-1.1',
+    files,
     glyphs,
     glyphCount,
     generatedAt: new Date().toISOString(),

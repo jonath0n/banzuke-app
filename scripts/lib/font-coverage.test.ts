@@ -22,16 +22,64 @@ function sourceFiles(dir: string): string[] {
 describe('NotoSerifJP subset', () => {
   const manifest = JSON.parse(
     readFileSync(resolve(fontsDir, 'NotoSerifJP-subset.json'), 'utf8')
-  ) as { version: number; weight: number; file: string; glyphs: string; glyphCount: number }
+  ) as {
+    version: number
+    weight: number
+    files: Array<{
+      role: string
+      file: string
+      glyphs: string
+      glyphCount: number
+      unicodeRange: string
+    }>
+    glyphs: string
+    glyphCount: number
+  }
 
-  it('has a consistent manifest and a real woff2 beside it', () => {
-    expect(manifest.version).toBe(1)
+  it('has a consistent manifest and a real woff2 for each face', () => {
+    expect(manifest.version).toBe(2)
     expect(manifest.weight).toBe(700)
     expect(manifest.glyphCount).toBe([...manifest.glyphs].length)
-    const bytes = readFileSync(resolve(fontsDir, manifest.file))
-    // woff2 magic number "wOF2"
-    expect(bytes.subarray(0, 4).toString('latin1')).toBe('wOF2')
-    expect(bytes.length).toBeGreaterThan(10_000)
+    expect(manifest.files.map((f) => f.role)).toEqual(['core', 'names'])
+    expect(manifest.files.map((f) => f.glyphs).join('')).toBe(manifest.glyphs)
+    for (const face of manifest.files) {
+      expect(face.glyphCount).toBe([...face.glyphs].length)
+      const bytes = readFileSync(resolve(fontsDir, face.file))
+      // woff2 magic number "wOF2"
+      expect(bytes.subarray(0, 4).toString('latin1')).toBe('wOF2')
+      expect(bytes.length).toBeGreaterThan(10_000)
+    }
+    // The two faces never overlap: unicode-range decides which one a glyph comes from
+    const core = new Set(manifest.files[0].glyphs)
+    expect([...manifest.files[1].glyphs].filter((ch) => core.has(ch))).toEqual([])
+  })
+
+  it('declares both faces in src/styles/fonts-jp.css with their unicode ranges', () => {
+    const css = readFileSync(resolve(root, 'src/styles/fonts-jp.css'), 'utf8')
+    for (const face of manifest.files) {
+      expect(css).toContain(`/assets/fonts/${face.file}`)
+      // The first and last ranges of each face appear verbatim
+      const ranges = face.unicodeRange.split(', ')
+      expect(css).toContain(ranges[0])
+      expect(css).toContain(ranges[ranges.length - 1])
+    }
+  })
+
+  it('keeps every character an English page sets in mincho in the core face', () => {
+    // Components, data helpers and utilities; not the tests, fixtures, UI
+    // strings or lookup tables, which only a Japanese page or the dialog draws.
+    const namesSource =
+      /(\.test\.tsx?|test[\\/]fixtures\.ts|i18n[\\/]strings\.ts|shikona-glossary\.ts|kimarite\.ts)$/
+    const texts = sourceFiles(resolve(root, 'src'))
+      .filter((path) => !namesSource.test(path))
+      .map((path) => readFileSync(path, 'utf8'))
+    // The kana blocks live in the names face whole, so a kana literal in a
+    // component (a regex range, an iteration mark) is not a core gap.
+    const kana = /^[\u{3041}-\u{30FF}\u{3005}\u{3006}\u{3007}]$/u
+    expect(missingGlyphs(manifest.files[0].glyphs, texts).filter((ch) => !kana.test(ch))).toEqual(
+      []
+    )
+    expect(manifest.files[0].glyphCount).toBeLessThan(manifest.files[1].glyphCount)
   })
 
   it('covers every Japanese character in the current snapshot', () => {
