@@ -26,7 +26,8 @@
     "src/data/stables.ts",
     "src/constants/ranks.ts",
     "src/types/banzuke.ts",
-    "src/utils/dates.ts"
+    "src/utils/dates.ts",
+    "src/utils/stables.ts"
   ],
   "exclude": ["scripts/**/*.test.ts"]
 }

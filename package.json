@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && tsx scripts/build-stubs.ts",
     "preview": "vite preview",
     "fetch-remote": "tsx scripts/fetch-banzuke.ts",
     "fetch-profiles": "tsx scripts/fetch-profiles.ts",

@@ -11,6 +11,9 @@
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f3ede2" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15181d" />
     <link rel="canonical" href="https://jonath0n.github.io/banzuke-app/" />
+    <link rel="alternate" hreflang="en" href="https://jonath0n.github.io/banzuke-app/?lang=en" />
+    <link rel="alternate" hreflang="ja" href="https://jonath0n.github.io/banzuke-app/?lang=jp" />
+    <link rel="alternate" hreflang="x-default" href="https://jonath0n.github.io/banzuke-app/" />
     <meta property="og:title" content="Grand Sumo Banzuke" />
     <meta
       property="og:description"
@@ -61,6 +64,12 @@
     />
   </head>
   <body>
+    <noscript>
+      <p lang="en">
+        The banzuke needs JavaScript to draw. The data it draws is at
+        <a href="latest-banzuke.json">latest-banzuke.json</a>.
+      </p>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

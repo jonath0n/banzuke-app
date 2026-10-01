@@ -137,7 +137,13 @@ export function WrestlerModal({
   // "Copy link" copies. The share sheet is offered only on a touch device, where
   // it is the native way to pass a link on; on a desktop it is a surprise.
   const handleCopyLink = async () => {
-    const url = window.location.href
+    // The share page under r/<id>/ carries this wrestler's own preview card
+    // and forwards to the app, keeping the language.
+    const url = rikishi
+      ? `${new URL(import.meta.env.BASE_URL, window.location.origin).href}r/${rikishi.id}/${
+          language === 'jp' ? '?lang=jp' : ''
+        }`
+      : window.location.href
     const coarse = window.matchMedia?.('(pointer: coarse)').matches ?? false
     try {
       if (coarse && navigator.share) {
