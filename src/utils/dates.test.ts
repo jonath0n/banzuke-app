@@ -6,6 +6,7 @@ import {
   formatRelativeTime,
   getTournamentStatus,
   jstDayIndex,
+  jstHour,
   parseJst,
 } from './dates'
 
@@ -90,6 +91,15 @@ describe('getTournamentStatus', () => {
 
   it('is unknown for bad dates', () => {
     expect(getTournamentStatus({ startDate: '', endDate: '' })).toEqual({ kind: 'unknown' })
+  })
+})
+
+describe('jstHour', () => {
+  it('reads the hour in Tokyo whatever the machine zone', () => {
+    expect(jstHour(new Date('2026-11-08T09:15:00Z'))).toBe(18)
+    expect(jstHour(new Date('2026-11-08T14:59:00Z'))).toBe(23)
+    expect(jstHour(new Date('2026-11-08T15:00:00Z'))).toBe(0)
+    expect(jstHour(new Date('2026-11-08T03:00:00+09:00'))).toBe(3)
   })
 })
 
