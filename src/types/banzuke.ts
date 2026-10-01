@@ -53,6 +53,12 @@ export interface Rikishi {
   seat: number
   /** Full rank name, e.g. { en: 'Maegashira #17', jp: '前頭十七枚目' } */
   rankName: Localized
+  /**
+   * The tier as the sheet prints it at the head of the column: the rank's own
+   * characters (前頭, 大関), or 横綱大関 when a Yokozuna fills the second Ozeki
+   * slot — a printed title, not a competitive rank, so `rankCode` stays 100.
+   */
+  printedTier: string
   /** Japanese ordinal for the position: 筆頭, 二枚目 … */
   numberKanji: string
   /** Upstream composite sort key; ascending order is banzuke order. */

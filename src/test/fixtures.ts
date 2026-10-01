@@ -207,6 +207,7 @@ export function makeRikishi(overrides: Partial<Rikishi> = {}): Rikishi {
     rankNumber: 1,
     seat: 1,
     rankName: { en: 'Yokozuna', jp: '横綱' },
+    printedTier: '横綱',
     numberKanji: '筆頭',
     sortKey: '001000000100001',
     shikona: { en: 'Hoshoryu', jp: '豊昇龍' },
