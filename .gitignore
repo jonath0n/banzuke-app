@@ -1,5 +1,5 @@
-# Dependencies
-node_modules/
+# Dependencies (no trailing slash: a symlinked node_modules must be ignored too)
+node_modules
 
 # Build output
 dist/

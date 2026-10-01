@@ -66,6 +66,8 @@ export function WrestlerModal({
         openedIdRef.current = rikishi.id
         handingOverRef.current = false
         dialog.showModal()
+        // The name, not the first button: a reader hears who opened, then walks down.
+        headingRef.current?.focus()
       } else if (currentIdRef.current !== rikishi.id) {
         // Stepped to a neighbour while already open: move focus to the new name.
         headingRef.current?.focus()
@@ -114,10 +116,13 @@ export function WrestlerModal({
 
   const nameOf = (r: Rikishi) => r.shikona[language] || r.shikona.en
 
+  // "Copy link" copies. The share sheet is offered only on a touch device, where
+  // it is the native way to pass a link on; on a desktop it is a surprise.
   const handleCopyLink = async () => {
     const url = window.location.href
+    const coarse = window.matchMedia?.('(pointer: coarse)').matches ?? false
     try {
-      if (navigator.share) {
+      if (coarse && navigator.share) {
         await navigator.share({ url, title: document.title })
       } else {
         await navigator.clipboard.writeText(url)
@@ -321,6 +326,9 @@ export function WrestlerModal({
               <button type="button" className={styles.action} onClick={handleCopyLink}>
                 {copied ? strings.linkCopied : strings.copyLink}
               </button>
+              <span role="status" className="visually-hidden">
+                {copied ? strings.linkCopied : ''}
+              </span>
             </div>
           </div>
         </div>
@@ -368,7 +376,6 @@ function NameSection({ rikishi }: { rikishi: Rikishi }) {
         {strings.nameMeaning}
       </h3>
       {/* list-style: none loses list semantics in Safari; role restores it. */}
-      {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
       <ul className={styles.segments} role="list">
         {segments.map((s, i) => (
           <li key={`${s.text}-${i}`} className={styles.segment} data-segment={s.text}>
@@ -440,7 +447,7 @@ function CareerLadder({ profile }: { profile: RikishiProfile }) {
       <h3 id={headingId} className={styles.careerTitle}>
         {strings.career}
       </h3>
-      <ol className={styles.ladder}>
+      <ol className={styles.ladder} role="list">
         {steps.map(([step, date]) => (
           <li key={step} className={styles.step}>
             <span className={styles.stepLabel}>{strings.milestone[step]}</span>
@@ -467,13 +474,17 @@ function RecordSection({ record }: { record: RikishiRecord }) {
         : bout.outcome === 'fusen-loss'
           ? strings.fusenLoss
           : kimariteLabel(bout.kimarite, language)
+  // ○ and ● are hidden from readers; a fought bout says Win or Loss in words,
+  // and a forfeit or an absence already says so in its visible text.
+  const spokenOutcome = (bout: Bout) =>
+    bout.outcome === 'win' ? strings.boutWin : bout.outcome === 'loss' ? strings.boutLoss : ''
   return (
     <section className={styles.career} aria-labelledby={headingId}>
       <h3 id={headingId} className={styles.careerTitle}>
         {strings.record}
       </h3>
       <p className={styles.score}>{scoreLabel(record, language)}</p>
-      <ol className={styles.bouts}>
+      <ol className={styles.bouts} role="list">
         {record.bouts.map((bout) => (
           <li
             key={bout.day}
@@ -485,6 +496,7 @@ function RecordSection({ record }: { record: RikishiRecord }) {
             <span className={styles.boutMark} lang="ja" aria-hidden="true">
               {boutMark(bout.outcome)}
             </span>
+            {spokenOutcome(bout) && <span className="visually-hidden">{spokenOutcome(bout)} </span>}
             <span className={styles.boutOpponent}>
               {bout.opponent
                 ? strings.boutAgainst(bout.opponent.shikona[language] || bout.opponent.shikona.en)

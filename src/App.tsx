@@ -165,7 +165,11 @@ function AppContent() {
   )
   const { loading: stableLoading, stable } = useStableState(selectedHeyaId)
 
-  // A link to a stable neither the banzuke nor the file knows: nothing to show.
+  // A link to a wrestler not on this banzuke, or to a stable neither the banzuke
+  // nor the file knows: nothing to show, so the parameter goes.
+  useEffect(() => {
+    if (selectedId && data && !selectedRikishi) clearUrlParam('rikishi')
+  }, [data, selectedId, selectedRikishi])
   useEffect(() => {
     if (selectedHeyaId != null && !roster && !stableLoading && !stable) clearUrlParam('heya')
   }, [selectedHeyaId, roster, stableLoading, stable])
@@ -344,10 +348,20 @@ function AppContent() {
     onToggleHelp: handleToggleHelp,
   })
 
+  // The tab reads what is on screen: the open dialog's subject first, then the app.
   useEffect(() => {
     const bashoName = banzuke ? banzuke.basho.name[language] || banzuke.basho.name.en : ''
-    document.title = bashoName ? `${strings.appTitle} · ${bashoName}` : strings.appTitle
-  }, [banzuke, language, strings.appTitle])
+    const subject = selectedRikishi
+      ? selectedRikishi.shikona[language] || selectedRikishi.shikona.en
+      : roster
+        ? strings.openStable(roster.name[language] || roster.name.en)
+        : ''
+    document.title = subject
+      ? `${subject} · ${strings.appTitle}`
+      : bashoName
+        ? `${strings.appTitle} · ${bashoName}`
+        : strings.appTitle
+  }, [banzuke, language, roster, selectedRikishi, strings])
 
   const problemMessage =
     problem === 'sample'
