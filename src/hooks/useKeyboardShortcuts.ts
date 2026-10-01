@@ -5,6 +5,8 @@ interface ShortcutActions {
   onFocusSearch: () => void
   onEscape: () => void
   onToggleHelp?: () => void
+  /** The single printable keys (L, /, ?); Escape works regardless. Default on. */
+  singleKeys?: boolean
 }
 
 export function useKeyboardShortcuts({
@@ -12,6 +14,7 @@ export function useKeyboardShortcuts({
   onFocusSearch,
   onEscape,
   onToggleHelp,
+  singleKeys = true,
 }: ShortcutActions) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -29,6 +32,13 @@ export function useKeyboardShortcuts({
       // Don't fire if modifier keys are held (allow browser shortcuts)
       if (e.ctrlKey || e.metaKey || e.altKey) return
 
+      if (e.key === 'Escape') {
+        onEscape()
+        return
+      }
+      // The single printable keys can be switched off (WCAG 2.1.4)
+      if (!singleKeys) return
+
       switch (e.key) {
         case 'l':
         case 'L':
@@ -45,13 +55,10 @@ export function useKeyboardShortcuts({
             onToggleHelp()
           }
           break
-        case 'Escape':
-          onEscape()
-          break
       }
     }
 
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [onToggleLanguage, onFocusSearch, onEscape, onToggleHelp])
+  }, [onToggleLanguage, onFocusSearch, onEscape, onToggleHelp, singleKeys])
 }

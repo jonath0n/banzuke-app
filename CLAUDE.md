@@ -112,8 +112,9 @@ runs the checks on pull requests. There is no separate refresh workflow.
   wrestler, or a member from a stable, **pushes** (`setUrlParams` swaps the two params in one entry),
   so Back walks the chain back; ‹ › stepping still replaces. The wrestler wins when a URL names both.
   The List's detail line carries the stable as a `tabIndex={-1}` button beside the wrestler button
-  (a button cannot hold a button): keyboard users reach the stable from the wrestler dialog, and a
-  Tab stop on every cell would double the walk down the list. "Show on the banzuke" leaves the
+  (a button cannot hold a button): keyboard users reach the stable from the wrestler dialog. Both
+  layouts use a **roving tabindex**: one wrestler button is in the Tab order (the last focused, or
+  the highest rank), the arrows walk to the rest, so Tab crosses the paper or the list in one step. "Show on the banzuke" leaves the
   dialog by writing `?q=<stable name>` in place of `?heya`, so the sheet stays filtered and one Back
   undoes it. The dialog keyframes live in `base.css` and both modals reference them as
   `global(...)`: `fadeIn` for the backdrop, `modalSlideUp` for the panel.

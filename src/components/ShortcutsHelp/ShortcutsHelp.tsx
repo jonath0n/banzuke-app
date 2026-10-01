@@ -1,14 +1,24 @@
+import { useId } from 'react'
 import { useStrings } from '../../i18n/useStrings'
 import styles from './ShortcutsHelp.module.css'
 
 interface ShortcutsHelpProps {
   open: boolean
   onToggle: (open: boolean) => void
+  /** The single printable keys can be switched off (WCAG 2.1.4). */
+  singleKeys?: boolean
+  onSingleKeysChange?: (on: boolean) => void
 }
 
 /** A small disclosure listing the keyboard shortcuts; `?` toggles it. */
-export function ShortcutsHelp({ open, onToggle }: ShortcutsHelpProps) {
+export function ShortcutsHelp({
+  open,
+  onToggle,
+  singleKeys = true,
+  onSingleKeysChange,
+}: ShortcutsHelpProps) {
   const strings = useStrings()
+  const hintId = useId()
   const rows: Array<[string, string]> = [
     ['/', strings.shortcutSearch],
     ['← → ↑ ↓', strings.shortcutArrows],
@@ -35,6 +45,22 @@ export function ShortcutsHelp({ open, onToggle }: ShortcutsHelpProps) {
           </div>
         ))}
       </dl>
+      {onSingleKeysChange && (
+        <p className={styles.setting}>
+          <label>
+            <input
+              type="checkbox"
+              checked={singleKeys}
+              onChange={(e) => onSingleKeysChange(e.target.checked)}
+              aria-describedby={hintId}
+            />{' '}
+            {strings.shortcutsSingleKey}
+          </label>
+          <span id={hintId} className={styles.hint}>
+            {strings.shortcutsSingleKeyHint}
+          </span>
+        </p>
+      )}
     </details>
   )
 }

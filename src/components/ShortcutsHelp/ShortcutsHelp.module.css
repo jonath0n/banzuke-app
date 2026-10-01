@@ -66,3 +66,23 @@
   border-bottom-width: 2px;
   border-radius: var(--radius-sm);
 }
+
+/* The switch under the list: a checkbox and its one-line reason */
+.setting {
+  display: grid;
+  gap: var(--space-1);
+  margin: var(--space-3) 0 0;
+  font-size: var(--text-sm);
+}
+
+.setting label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 24px;
+  cursor: pointer;
+}
+
+.hint {
+  color: var(--muted);
+}

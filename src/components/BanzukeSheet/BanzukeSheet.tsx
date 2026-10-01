@@ -102,6 +102,7 @@ const Column = memo(function Column({
   record,
   champion,
   kadoban,
+  tabbable,
   pairKey,
   lit,
   marks,
@@ -112,6 +113,8 @@ const Column = memo(function Column({
   dimmed: boolean
   movement: Movement | null
   kadoban: boolean
+  /** The one column in the Tab order; the arrows reach the rest. */
+  tabbable: boolean
   record: RikishiRecord | null
   champion: boolean
   pairKey: string
@@ -204,6 +207,7 @@ const Column = memo(function Column({
       data-rank-level={rikishi.rankLevel}
       data-dimmed={dimmed || undefined}
       data-lit={lit || undefined}
+      tabIndex={tabbable ? 0 : -1}
       onClick={() => onSelect(rikishi)}
       aria-label={label}
     >
@@ -254,6 +258,12 @@ export function BanzukeSheet({
   const sideMarkN = guide?.marks.find((m) => m.zone === 'sideMark')?.n
   const [hover, setHover] = useState<PairRef | null>(null)
   const [focus, setFocus] = useState<PairRef | null>(null)
+  // Roving tabindex: one column is in the Tab order — the last one focused,
+  // or the highest rank to begin with — and the arrows walk from there, so
+  // Tab crosses the paper in one step instead of seventy.
+  const [activeId, setActiveId] = useState<number | null>(null)
+  const tabbableId =
+    activeId !== null && rows.some((r) => r.id === activeId) ? activeId : rows[0]?.id
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => handleRovingKey(e.currentTarget, e, 'sheet'),
     []
@@ -303,6 +313,7 @@ export function BanzukeSheet({
               record={records?.[String(rikishi.id)] ?? null}
               champion={championIds.has(rikishi.id)}
               kadoban={kadoban?.has(rikishi.id) ?? false}
+              tabbable={rikishi.id === tabbableId}
               pairKey={group.key}
               lit={active !== null && active.pair === group.key && active.side !== rikishi.side}
               marks={marksById.get(rikishi.id)}
@@ -324,7 +335,11 @@ export function BanzukeSheet({
         onPointerOver={(e) => setPairIfChanged(setHover, refOf(e.target))}
         onPointerOut={(e) => setPairIfChanged(setHover, refOf(e.relatedTarget))}
         onPointerLeave={() => setPairIfChanged(setHover, null)}
-        onFocus={(e) => setPairIfChanged(setFocus, refOf(e.target))}
+        onFocus={(e) => {
+          setPairIfChanged(setFocus, refOf(e.target))
+          const id = Number((e.target as HTMLElement).dataset.id)
+          if (Number.isInteger(id) && id !== activeId) setActiveId(id)
+        }}
         onBlur={(e) => {
           setPairIfChanged(setFocus, refOf(e.relatedTarget))
           // Dialog opened on this wrestler: clear the stale hover state left

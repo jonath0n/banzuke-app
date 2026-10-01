@@ -8,6 +8,8 @@ interface FooterProps {
   /** The keyboard-shortcuts panel lives in the footer; `?` toggles it too. */
   helpOpen?: boolean
   onToggleHelp?: (open: boolean) => void
+  singleKeys?: boolean
+  onSingleKeysChange?: (on: boolean) => void
 }
 
 function ExternalLink({ href, children }: { href: string; children: ReactNode }) {
@@ -48,7 +50,12 @@ function FontCredit({
   )
 }
 
-export function Footer({ helpOpen = false, onToggleHelp }: FooterProps) {
+export function Footer({
+  helpOpen = false,
+  onToggleHelp,
+  singleKeys,
+  onSingleKeysChange,
+}: FooterProps) {
   const { language } = useLanguage()
   const strings = useStrings()
   // A full-width colon carries its own spacing; a half-width one needs a space after it.
@@ -99,7 +106,14 @@ export function Footer({ helpOpen = false, onToggleHelp }: FooterProps) {
       <p className={styles.small}>
         <span>{strings.footerDisclaimer}</span> <span>{strings.footerRights(currentYear)}</span>
       </p>
-      {onToggleHelp && <ShortcutsHelp open={helpOpen} onToggle={onToggleHelp} />}
+      {onToggleHelp && (
+        <ShortcutsHelp
+          open={helpOpen}
+          onToggle={onToggleHelp}
+          singleKeys={singleKeys}
+          onSingleKeysChange={onSingleKeysChange}
+        />
+      )}
     </footer>
   )
 }
