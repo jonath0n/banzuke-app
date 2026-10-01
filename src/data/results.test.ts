@@ -6,6 +6,7 @@ import {
   leaders,
   resultsEqualIgnoringFetchedAt,
   resultsFileName,
+  resultsRegressed,
   scoreLabel,
   validateResults,
 } from './results'
@@ -123,5 +124,55 @@ describe('helpers', () => {
       [8, [3842]],
     ])
     expect(leaders({}, rows)).toEqual([])
+  })
+})
+
+describe('resultsRegressed', () => {
+  const file = makeResultsFile()
+  const firstId = Object.keys(file.records)[0]
+
+  it('is empty when the next file only moves forward', () => {
+    expect(resultsRegressed(file, file)).toEqual([])
+    const ahead = {
+      ...file,
+      day: file.day + 1,
+      records: {
+        ...file.records,
+        [firstId]: { ...file.records[firstId], wins: file.records[firstId].wins + 1 },
+      },
+    }
+    expect(resultsRegressed(file, ahead)).toEqual([])
+  })
+
+  it('names a day that went backwards', () => {
+    expect(resultsRegressed(file, { ...file, day: file.day - 1 })).toEqual([
+      `day ${file.day - 1} is behind ${file.day}`,
+    ])
+  })
+
+  it('names a record that shrank or vanished', () => {
+    const shrunk = { ...file.records[firstId], wins: 0, losses: 0, absences: 0 }
+    expect(
+      resultsRegressed(file, { ...file, records: { ...file.records, [firstId]: shrunk } })
+    ).toEqual([
+      `record ${firstId} shrank from ${file.records[firstId].wins + file.records[firstId].losses + file.records[firstId].absences} to 0 bouts`,
+    ])
+    const { [firstId]: _gone, ...rest } = file.records
+    expect(resultsRegressed(file, { ...file, records: rest })[0]).toMatch(
+      new RegExp(`^record ${firstId} is gone`)
+    )
+  })
+
+  it('names a decided bout that lost its winner', () => {
+    const [day, matches] = Object.entries(file.torikumi).find(([, m]) =>
+      m.some((x) => x.winnerId !== null)
+    )!
+    const undone = matches.map((m) => ({ ...m, winnerId: null }))
+    const reasons = resultsRegressed(file, {
+      ...file,
+      torikumi: { ...file.torikumi, [day]: undone },
+    })
+    expect(reasons.length).toBe(matches.filter((m) => m.winnerId !== null).length)
+    expect(reasons[0]).toMatch(new RegExp(`^day ${day} `))
   })
 })

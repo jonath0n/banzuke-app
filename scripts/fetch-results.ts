@@ -15,7 +15,9 @@
  *           archive and to test against a finished basho.
  *
  * Exit codes: 0 success / unchanged / out of season, 1 fetch failure,
- * 2 a wrestler could not be mapped to a JSA id (nothing written).
+ * 2 the snapshot or the response is unusable (nothing written), 3 the fetch
+ * would be a step backwards from the previous file (nothing written; see
+ * `resultsRegressed`, override with --force).
  */
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
@@ -24,6 +26,7 @@ import { parseArgs } from 'node:util'
 import { fetchJson, HttpError } from './lib/http.ts'
 import { setOutput } from './lib/run-io.ts'
 import {
+  parseOutcome,
   resultsFromSumoApi,
   type SumoApiBanzuke,
   type SumoApiBanzukeEntry,
@@ -36,6 +39,7 @@ import {
   MAX_DAYS,
   resultsEqualIgnoringFetchedAt,
   resultsFileName,
+  resultsRegressed,
   validateResults,
   type ResultsFile,
 } from '../src/data/results.ts'
@@ -145,16 +149,28 @@ async function main(): Promise<number> {
     banzuke.push(await fetchJson<SumoApiBanzuke>(`${API}/basho/${yyyymm}/banzuke/${division}`))
     await sleep(delayMs)
   }
-  const page = await fetchJson<{ records: SumoApiRikishi[] }>(`${API}/rikishis?limit=1000`, {
-    timeoutMs: 60_000,
-  })
-  const rikishi = new Map(page.records.map((r) => [r.id, r]))
+  // Every wrestler sumo-api knows, a page at a time; one page holds them all
+  // today (about 600 of a 1000 limit), and this keeps working when it won't.
+  const rikishi = new Map<number, SumoApiRikishi>()
+  const pageSize = 1000
+  for (let skip = 0; ; skip += pageSize) {
+    const page = await fetchJson<{ records: SumoApiRikishi[] }>(
+      `${API}/rikishis?limit=${pageSize}&skip=${skip}`,
+      { timeoutMs: 60_000 }
+    )
+    for (const r of page.records) rikishi.set(r.id, r)
+    if (page.records.length < pageSize) break
+    await sleep(delayMs)
+  }
 
-  // The latest fought day for one entry's record, from the last decided bout.
+  // The latest day one entry fought in the ring. Absences and fusen are
+  // written for the days ahead as soon as a withdrawal is announced, so
+  // they say nothing about how far the tournament has got.
   const lastFoughtDay = (record: SumoApiBanzukeEntry['record']): number => {
     const bouts = record ?? []
     for (let i = bouts.length - 1; i >= 0; i--) {
-      if (bouts[i].result) return i + 1
+      const outcome = parseOutcome(bouts[i].result)
+      if (outcome === 'win' || outcome === 'loss') return i + 1
     }
     return 0
   }
@@ -222,6 +238,17 @@ async function main(): Promise<number> {
     console.log('No changes.')
     await setOutput('changed', 'false')
     return 0
+  }
+  if (previous && !args.force) {
+    const regressions = resultsRegressed(previous, results)
+    if (regressions.length > 0) {
+      console.error(
+        `Refusing to write: the fetch is behind the previous file (--force to override):`
+      )
+      for (const reason of regressions) console.error(`  - ${reason}`)
+      await setOutput('changed', 'false')
+      return 3
+    }
   }
   await mkdir(outDir, { recursive: true })
   const path = join(outDir, resultsFileName(bashoId))

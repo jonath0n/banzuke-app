@@ -4,7 +4,9 @@
  *
  * The join to the JSA is `nskId` on sumo-api's rikishi records, which is the
  * JSA `rikishi_id`; entries without one are reported and left out rather
- * than guessed at by name.
+ * than guessed at by name. For the archive that is a problem (the sheet
+ * would have a hole); for results it is a warning, because one debutant
+ * sumo-api has not linked yet must not freeze the hoshitori for everyone.
  */
 import type { ArchivedBanzuke, ArchivedRikishi } from '../../src/data/archive.ts'
 import type { Division } from '../../src/data/schema.ts'
@@ -213,6 +215,21 @@ export function parseOutcome(result: string): BoutOutcome | null {
   return OUTCOMES[result] ?? null
 }
 
+/**
+ * The latest day on which the wrestler actually fought. sumo-api records
+ * a withdrawal's absences, and the opponent's fusen win, for the days ahead
+ * as soon as the JSA announces them — the morning of day 3 can already show
+ * absences through day 15 — so the last entry in a record says nothing about
+ * how far the tournament has got. Only a bout decided in the ring does.
+ */
+export function foughtDay(bouts: Bout[]): number {
+  let day = 0
+  for (const bout of bouts) {
+    if (bout.outcome === 'win' || bout.outcome === 'loss') day = Math.max(day, bout.day)
+  }
+  return day
+}
+
 /** A fighter by sumo-api id: the JSA id when known, otherwise just the name. */
 function fighter(
   sumoApiId: number,
@@ -245,11 +262,16 @@ function recordFromEntry(
       kimarite: raw.kimarite ?? '',
     })
   }
+  return tally(bouts)
+}
+
+/** A record whose totals are what its bouts add up to. */
+function tally(bouts: Bout[]): RikishiRecord {
   const count = (test: (b: Bout) => boolean) => bouts.filter(test).length
   return {
-    wins: entry.wins ?? count((b) => b.outcome === 'win' || b.outcome === 'fusen-win'),
-    losses: entry.losses ?? count((b) => b.outcome === 'loss' || b.outcome === 'fusen-loss'),
-    absences: entry.absences ?? count((b) => b.outcome === 'absent'),
+    wins: count((b) => b.outcome === 'win' || b.outcome === 'fusen-win'),
+    losses: count((b) => b.outcome === 'loss' || b.outcome === 'fusen-loss'),
+    absences: count((b) => b.outcome === 'absent'),
     bouts,
   }
 }
@@ -264,21 +286,23 @@ export function resultsFromSumoApi(input: {
 }): { results: ResultsFile; problems: string[]; warnings: string[] } {
   const problems: string[] = []
   const warnings: string[] = []
-  const records: ResultsFile['records'] = {}
+  // Every record as sumo-api gives it, days ahead included; trimmed below
+  // once the tournament's actual day is known.
+  const untrimmed = new Map<number, RikishiRecord>()
   let day = 0
 
   for (const table of input.banzuke) {
     for (const entry of [...table.east, ...table.west]) {
       const person = input.rikishi.get(entry.rikishiID)
       if (!person?.nskId) {
-        problems.push(
-          `${table.division}: ${entry.shikonaEn} (sumo-api ${entry.rikishiID}) has no JSA id`
+        warnings.push(
+          `${table.division}: ${entry.shikonaEn} (sumo-api ${entry.rikishiID}) has no JSA id; left out`
         )
         continue
       }
       const record = recordFromEntry(entry, input.rikishi)
-      records[String(person.nskId)] = record
-      day = Math.max(day, record.bouts.at(-1)?.day ?? 0)
+      untrimmed.set(person.nskId, record)
+      day = Math.max(day, foughtDay(record.bouts))
     }
   }
 
@@ -302,7 +326,9 @@ export function resultsFromSumoApi(input: {
           warnings.push(
             `day ${dayNumber} match ${m.matchNo}: winner ${m.winnerEn} (sumo-api ${m.winnerId}) has no JSA id`
           )
-        } else {
+        } else if (m.kimarite !== 'fusen') {
+          // A fusen is on the card the moment the withdrawal is announced,
+          // usually the morning before; only a bout fought moves the day.
           day = Math.max(day, dayNumber)
         }
       }
@@ -316,6 +342,13 @@ export function resultsFromSumoApi(input: {
       })
     }
     torikumi[String(dayNumber)] = mapped
+  }
+
+  // Nothing past the day the tournament has reached: a withdrawal's future
+  // absences, and the fusen wins they hand out, wait until their day comes.
+  const records: ResultsFile['records'] = {}
+  for (const [id, record] of untrimmed) {
+    records[String(id)] = tally(record.bouts.filter((bout) => bout.day <= day))
   }
 
   const yusho: ResultsFile['yusho'] = {}
