@@ -84,6 +84,24 @@ describe('App', () => {
     )
   })
 
+  it('loads behind a skeleton shaped like the view it is about to show', async () => {
+    const { unmount } = render(<App />)
+    // The Sheet is the default view: its skeleton is the ruled paper, not a list.
+    expect(screen.getByRole('status', { busy: true })).toHaveTextContent('Loading the banzuke')
+    expect(
+      screen.getByRole('status', { busy: true }).querySelectorAll('[class*="half"]')
+    ).toHaveLength(2)
+    await screen.findByRole('button', { name: /Hoshoryu, East/ })
+    unmount()
+
+    // The first load cached the snapshot; forget it so the List loads from nothing too.
+    window.localStorage.clear()
+    window.history.replaceState(null, '', '/?view=list')
+    render(<App />)
+    expect(screen.getByRole('status', { busy: true }).querySelector('[class*="half"]')).toBeNull()
+    await screen.findByRole('button', { name: /Hoshoryu, East/ })
+  })
+
   it('opens a wrestler from the URL and closes without leaving the deep link', async () => {
     const user = userEvent.setup()
     window.history.replaceState(null, '', '/?rikishi=1001')

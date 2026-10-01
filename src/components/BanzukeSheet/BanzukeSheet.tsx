@@ -333,3 +333,47 @@ export function BanzukeSheet({
     </div>
   )
 }
+
+/**
+ * The ladder a full half runs down, top rank first: the size each placeholder
+ * column takes while the snapshot loads, so the paper settles into roughly
+ * the shape it will have and nothing jumps when the names arrive.
+ */
+const SKELETON_SCALES = [
+  2.4, 2.1, 1.9, 1.7, 1.6, 1.5, 1.4, 1.3, 1.25, 1.2, 1.15, 1.1, 1.05, 1, 1, 1,
+]
+
+/** The ruled paper with the columns blocked in — no names, no motion. */
+export function BanzukeSheetSkeleton() {
+  const { language } = useLanguage()
+  const strings = useStrings()
+  const half = (side: Side) => (
+    <div className={styles.half}>
+      <p className={styles.sideMark} lang="ja">
+        {SIDE_KANJI[side]}
+      </p>
+      <div className={styles.bands}>
+        {SKELETON_SCALES.map((scale, i) => (
+          <div
+            key={i}
+            className={styles.column}
+            style={{ '--col-scale': scale } as React.CSSProperties}
+          >
+            <span className={`${styles.ghost} ${styles.ghostRank}`} />
+            <span className={`${styles.ghost} ${styles.ghostOrigin}`} />
+            <span className={`${styles.ghost} ${styles.ghostName}`} />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+  return (
+    <div className={styles.sheet} lang={langAttr(language)} role="status" aria-busy="true">
+      <span className="visually-hidden">{strings.loading}</span>
+      <div className={styles.paper} aria-hidden="true">
+        {half('east')}
+        {half('west')}
+      </div>
+    </div>
+  )
+}

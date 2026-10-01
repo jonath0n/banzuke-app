@@ -21,6 +21,7 @@ import { SearchBar } from './components/SearchBar/SearchBar'
 import { DivisionTabs } from './components/DivisionTabs/DivisionTabs'
 import { PANEL_ID, tabId } from './components/DivisionTabs/ids'
 import { BanzukeGrid, BanzukeGridSkeleton } from './components/BanzukeGrid/BanzukeGrid'
+import { BanzukeSheetSkeleton } from './components/BanzukeSheet/BanzukeSheet'
 import { BanzukeSheet } from './components/BanzukeSheet/BanzukeSheet'
 import { ViewToggle, type View } from './components/ViewToggle/ViewToggle'
 import { ChangesToggle } from './components/ChangesToggle/ChangesToggle'
@@ -265,8 +266,14 @@ function AppContent() {
         : null,
     [guideOn, allRows, movements, records]
   )
+  // Opened from the link (as against a deep link): the legend then takes focus,
+  // because the link is above the paper and the legend lands beneath it.
+  const [guideOpenedHere, setGuideOpenedHere] = useState(false)
   const handleToggleGuide = useCallback(
-    (on: boolean) => setGuideParam(on ? '1' : null),
+    (on: boolean) => {
+      setGuideOpenedHere(on)
+      setGuideParam(on ? '1' : null)
+    },
     [setGuideParam]
   )
 
@@ -387,7 +394,8 @@ function AppContent() {
             matchedCount={matchedCount}
           />
         )}
-        {status === 'loading' && <BanzukeGridSkeleton />}
+        {status === 'loading' &&
+          (view === 'sheet' ? <BanzukeSheetSkeleton /> : <BanzukeGridSkeleton />)}
         {problemMessage && !data && (
           <div role="alert" className={`${styles.status} ${styles.error}`}>
             {problemMessage}
@@ -474,7 +482,13 @@ function AppContent() {
                   onClearSearch={handleClearSearch}
                 />
               )}
-              {guide && <Guide items={guide.items} onClose={() => handleToggleGuide(false)} />}
+              {guide && (
+                <Guide
+                  items={guide.items}
+                  onClose={() => handleToggleGuide(false)}
+                  focusOnOpen={guideOpenedHere}
+                />
+              )}
               {diffWanted && previous.status === 'loading' && (
                 <div role="status" className="visually-hidden">
                   {strings.loading}

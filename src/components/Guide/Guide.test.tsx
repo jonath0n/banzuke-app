@@ -25,6 +25,28 @@ describe('Guide', () => {
     expect(onClose).toHaveBeenCalled()
   })
 
+  it('takes focus and comes into view when opened here, not from a deep link', () => {
+    const scrollIntoView = vi.fn()
+    HTMLElement.prototype.scrollIntoView = scrollIntoView
+    const { unmount } = render(
+      <LanguageProvider>
+        <Guide items={['size']} onClose={vi.fn()} focusOnOpen />
+      </LanguageProvider>
+    )
+    const heading = screen.getByRole('heading', { name: 'How to read a banzuke' })
+    expect(heading).toHaveFocus()
+    expect(heading).toHaveAttribute('tabindex', '-1')
+    expect(scrollIntoView).toHaveBeenCalledWith(expect.objectContaining({ block: 'start' }))
+    unmount()
+
+    render(
+      <LanguageProvider>
+        <Guide items={['size']} onClose={vi.fn()} />
+      </LanguageProvider>
+    )
+    expect(screen.getByRole('heading', { name: 'How to read a banzuke' })).not.toHaveFocus()
+  })
+
   it('links to ?guide=1 and toggles without leaving the page', async () => {
     const onToggle = vi.fn()
     window.history.replaceState({}, '', '/?div=juryo')

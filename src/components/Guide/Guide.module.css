@@ -1,7 +1,8 @@
 /* The guide: a quiet link in, a legend beneath the paper in the sheet's small hand */
 .link {
   align-self: flex-end;
-  min-height: 32px;
+  /* The only way into the guide, so a full touch target and ink, not grey */
+  min-height: 44px;
   display: inline-flex;
   align-items: center;
   font-family: var(--font-names);
@@ -9,14 +10,13 @@
   font-size: var(--text-xs);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--text);
   text-decoration: underline;
   text-decoration-color: var(--border);
   text-underline-offset: 0.2em;
 }
 
 .link:hover {
-  color: var(--text);
   text-decoration-color: var(--text);
 }
 
@@ -45,6 +45,11 @@
 .heading:lang(ja) {
   text-transform: none;
   letter-spacing: 0.1em;
+}
+
+/* Focused by script when the guide opens: no ring for a pointer, one for a key */
+.heading:focus:not(:focus-visible) {
+  outline: none;
 }
 
 .intro {
