@@ -11,12 +11,13 @@ export default defineConfig({
     // Emit source maps for debugging without referencing them from the bundle
     sourcemap: 'hidden',
     chunkSizeWarningLimit: 500,
-    minify: 'esbuild',
     rollupOptions: {
       output: {
-        // Keep React in its own long-lived chunk
-        manualChunks: {
-          react: ['react', 'react-dom', 'react-dom/client'],
+        // Keep React in its own long-lived chunk. Vite 8 bundles with Rolldown,
+        // whose chunking is `codeSplitting`; the object-form `manualChunks`
+        // it replaced is rejected outright ("manualChunks is not a function").
+        codeSplitting: {
+          groups: [{ name: 'react', test: /node_modules[\\/](react|react-dom|scheduler)[\\/]/ }],
         },
       },
     },
