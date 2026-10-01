@@ -14,6 +14,7 @@ import { useSelection } from './app/useSelection'
 import { useChanges } from './app/useChanges'
 import { useGuide } from './app/useGuide'
 import { useDocumentTitle } from './app/useDocumentTitle'
+import { useEverTrue } from './app/useEverTrue'
 import { useArchiveViewer } from './app/useArchiveViewer'
 import { useArchiveIndex } from './hooks/useArchive'
 import { BashoPicker } from './components/BashoPicker/BashoPicker'
@@ -31,6 +32,7 @@ import { Departed } from './components/Departed/Departed'
 import { Bouts } from './components/Bouts/Bouts'
 import { TodayStrip } from './components/TodayStrip/TodayStrip'
 import { Footer } from './components/Footer/Footer'
+import { DialogFallback } from './components/ErrorBoundary/DialogFallback'
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary'
 import { ScrollToTop } from './components/ScrollToTop/ScrollToTop'
 import type { BanzukeSet, Division, Rikishi } from './types/banzuke'
@@ -219,6 +221,8 @@ function AppContent() {
   }, [])
 
   useDocumentTitle(banzuke, selectedRikishi, roster, language, strings)
+  const wrestlerMounted = useEverTrue(selectedRikishi !== null)
+  const stableMounted = useEverTrue(selectedHeyaId != null)
 
   const problemMessage =
     problem === 'sample'
@@ -407,32 +411,45 @@ function AppContent() {
         onSingleKeysChange={setSingleKeys}
       />
       <ScrollToTop />
-      <Suspense fallback={null}>
-        <WrestlerModal
-          rikishi={selectedRikishi}
-          onClose={selection.onCloseWrestler}
-          record={selectedRikishi ? (records?.[String(selectedRikishi.id)] ?? null) : null}
-          results={file}
-          rankById={rankById}
-          kadoban={selectedRikishi ? kadoban.has(selectedRikishi.id) : false}
-          neighbours={neighbours}
-          onStep={selection.onStep}
-          onSelectStable={selection.onSelectStable}
-        />
-        <StableModal
-          heyaId={selectedHeyaId}
-          roster={roster}
-          stable={stable}
-          stableLoading={stableLoading}
-          movements={movements}
-          kadoban={kadoban}
-          records={records}
-          champions={champions}
-          onClose={selection.onCloseStable}
-          onSelectRikishi={selection.onSelectMember}
-          onShowOnBanzuke={selection.onShowOnBanzuke}
-        />
-      </Suspense>
+      {/* Each dialog's chunk is fetched on its first open, not with the page, and
+          stays mounted afterwards for the close transition. Its own boundary
+          keeps a lost chunk from taking the banzuke down with it. */}
+      {wrestlerMounted && (
+        <ErrorBoundary fallback={<DialogFallback />}>
+          <Suspense fallback={null}>
+            <WrestlerModal
+              rikishi={selectedRikishi}
+              onClose={selection.onCloseWrestler}
+              record={selectedRikishi ? (records?.[String(selectedRikishi.id)] ?? null) : null}
+              results={file}
+              rankById={rankById}
+              kadoban={selectedRikishi ? kadoban.has(selectedRikishi.id) : false}
+              neighbours={neighbours}
+              onStep={selection.onStep}
+              onSelectStable={selection.onSelectStable}
+            />
+          </Suspense>
+        </ErrorBoundary>
+      )}
+      {stableMounted && (
+        <ErrorBoundary fallback={<DialogFallback />}>
+          <Suspense fallback={null}>
+            <StableModal
+              heyaId={selectedHeyaId}
+              roster={roster}
+              stable={stable}
+              stableLoading={stableLoading}
+              movements={movements}
+              kadoban={kadoban}
+              records={records}
+              champions={champions}
+              onClose={selection.onCloseStable}
+              onSelectRikishi={selection.onSelectMember}
+              onShowOnBanzuke={selection.onShowOnBanzuke}
+            />
+          </Suspense>
+        </ErrorBoundary>
+      )}
     </>
   )
 }

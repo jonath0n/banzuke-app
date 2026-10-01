@@ -193,7 +193,7 @@ describe('App', () => {
     await user.click(screen.getByRole('button', { name: 'Tatsunami stable' }))
     await waitFor(() => expect(document.title).toBe('Tatsunami stable · Grand Sumo Banzuke'))
     // Closing the stable walks Back to the wrestler; closing the wrestler leaves the chain.
-    await user.click(screen.getByRole('button', { name: 'Close stable details' }))
+    await user.click(await screen.findByRole('button', { name: 'Close stable details' }))
     await waitFor(() => expect(document.title).toBe('Hoshoryu · Grand Sumo Banzuke'))
     await user.click(screen.getByRole('button', { name: 'Close wrestler details' }))
     await waitFor(() =>
@@ -207,6 +207,19 @@ describe('App', () => {
     await user.click(await screen.findByRole('button', { name: /Onosato, West/ }))
     expect(window.location.search).toBe('?rikishi=1001')
     expect(screen.getByRole('dialog')).toHaveAccessibleName('Onosato')
+  })
+
+  it('mounts a dialog on its first open and keeps it for the close transition', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await screen.findByRole('button', { name: /Onosato, West/ })
+    // Neither dialog element exists yet: their chunks are not fetched with the page.
+    expect(document.querySelector('dialog')).toBeNull()
+    await user.click(screen.getByRole('button', { name: /Onosato, West/ }))
+    expect(await screen.findByRole('dialog')).toHaveAccessibleName('Onosato')
+    await user.click(screen.getByRole('button', { name: 'Close wrestler details' }))
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+    expect(document.querySelector('dialog')).not.toBeNull()
   })
 
   it('filters from ?q= and keeps the URL in step with the search box', async () => {
