@@ -94,7 +94,7 @@ export function Bouts({ results, division, rows, day, onChangeDay, onSelectRikis
   )
 
   return (
-    <section className={styles.bouts} aria-labelledby={headingId} lang={lang}>
+    <section id="bouts" className={styles.bouts} aria-labelledby={headingId} lang={lang}>
       <div className={styles.head}>
         <button
           type="button"

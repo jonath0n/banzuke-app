@@ -29,6 +29,7 @@ import { ResultsToggle } from './components/ResultsToggle/ResultsToggle'
 import { Guide, GuideLink } from './components/Guide/Guide'
 import { Departed } from './components/Departed/Departed'
 import { Bouts } from './components/Bouts/Bouts'
+import { TodayStrip } from './components/TodayStrip/TodayStrip'
 import { WrestlerModal } from './components/WrestlerModal/WrestlerModal'
 import { StableModal } from './components/StableModal/StableModal'
 import { Footer } from './components/Footer/Footer'
@@ -438,6 +439,16 @@ function AppContent() {
               <GuideLink ref={guideLinkRef} on={false} onToggle={handleToggleGuide} />
             )}
           </div>
+        )}
+        {/* In season, today's line: the day, the card so far, the leader, the freshness. */}
+        {banzuke && file && tournamentStatus?.kind === 'live' && (
+          <TodayStrip
+            results={file}
+            division={division}
+            rows={allRows}
+            day={tournamentStatus.day}
+            totalDays={tournamentStatus.totalDays}
+          />
         )}
         {/* The tabs are cut as paper tabs — open along the bottom — so they
             belong against the top edge of the sheet, not in the controls row

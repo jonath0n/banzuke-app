@@ -70,6 +70,17 @@ export function jpBashoName(month: number): string {
   return `${toKanjiNumber(month)}月場所`
 }
 
+/**
+ * The day as the sumo calendar names it: 初日 (the first), 中日 (the middle, day
+ * 8 of fifteen) and 千秋楽 (the last); every other day is a number.
+ */
+export function jpDayName(day: number, totalDays = 15): string {
+  if (day === 1) return '初日'
+  if (day === totalDays) return '千秋楽'
+  if (day === Math.ceil(totalDays / 2)) return '中日'
+  return `${day}日目`
+}
+
 /** Reiwa era year: 2019 → 令和元年, 2026 → 令和八年. */
 export function jpEraYear(year: number): string {
   const reiwa = year - 2018
