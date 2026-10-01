@@ -5,7 +5,9 @@ English/Japanese, deployed to GitHub Pages at https://jonath0n.github.io/banzuke
 
 ## Stack
 
-- React 18 + TypeScript, Vite 6, CSS Modules (no CSS framework), Vitest + Testing Library.
+- React 19 + TypeScript, Vite 8 (Rolldown: chunking is `codeSplitting.groups`, not
+  `manualChunks`), CSS Modules (no CSS framework), Vitest 5 + Testing Library, ESLint 9 (pinned:
+  `eslint-plugin-jsx-a11y` peers on ≤9), Playwright for the CI-only smoke spec.
 - Node 22 (`.nvmrc`). Scripts in `scripts/` are TypeScript run with `tsx`.
 - No runtime dependencies beyond React. Keep it that way unless there is a strong reason.
 
@@ -17,7 +19,7 @@ npm run validate       # type-check (app + scripts), eslint (incl. jsx-a11y), pr
 npm run test:run       # vitest, single run
 npm run test:tz        # date tests under non-JST time zones
 npm run test:e2e       # Playwright smoke spec in Chromium against `vite preview` (build first; PW_CHROMIUM=<path> to use a local browser)
-npm run build          # tsc -b && vite build → dist/
+npm run build          # tsc -b && vite build → dist/, then scripts/build-stubs.ts writes the share pages, sitemap and JSON-LD
 npm run fetch-remote   # fetch + validate the latest banzuke into public/latest-banzuke.json
 npm run fetch-profiles # scrape wrestler profiles into public/rikishi-profiles.json (optional)
 npm run fetch-stables  # scrape the stables on the sheet into public/stables.json (optional)
@@ -47,12 +49,18 @@ and formats in `Asia/Tokyo`.
 
 The deploy workflow (`.github/workflows/deploy.yml`) refreshes data on every push to `main`,
 on demand, and on four daily slots — 07:13 JST for the banzuke, then 18:12, 19:38 and 21:38
-JST for the day's results. The times are mid-hour and the results window has three of them
-because GitHub's shared scheduler delays cron slots on the hour by one to four hours. When the
-tournament data changed it also archives the banzuke under `public/banzuke/`, regenerates the
-mincho subset; profiles are re-scraped only when stale; whatever changed is committed to `main`
-before building. During a tournament it also fetches results into `public/results/`. `ci.yml`
-runs the checks on pull requests. There is no separate refresh workflow.
+JST for the day's results. GitHub's shared scheduler creates the evening runs three to seven
+hours late, which is why `docs/ops/` carries the next version of the workflow for the owner to
+apply (sessions cannot push `.github/workflows/`): a season gate (`scripts/season-gate.mjs`),
+results-only runs, and `watch.yml`, a self-chaining watcher that polls sumo-api through the
+Tokyo evening (`scripts/watch-results.ts`) and dispatches a results-only deploy the moment more
+of the day is decided than the site shows. When the tournament data changed the data job also
+archives the banzuke under `public/banzuke/` and regenerates the mincho subset (stables are
+refreshed first, so a new stablemaster's kanji is in it); profiles are re-scraped only when
+stale; whatever changed is committed to `main` before building. During a tournament it also
+fetches results into `public/results/`. `ci.yml` runs the checks on pull requests (and, once
+`docs/ops/ci.yml` is applied, the Chromium smoke spec). Workflow changes are delivered as whole
+files under `docs/ops/` with a note saying why and how to check they took.
 
 ## Conventions
 
@@ -143,23 +151,71 @@ runs the checks on pull requests. There is no separate refresh workflow.
   `heya`/`pref` have `jp: ''`). `src/data/archive-files.test.ts` insists the index matches the
   files, is contiguous, and ends at the live tournament; the font subset includes these files
   because departed names render in mincho.
-- **Changes** (`?diff=1`) is an overlay, not a third view: `src/utils/diff.ts` compares the current
-  rows with the previous archived tournament by JSA id and yields a `Movement` per wrestler plus
-  per-division departures. Badges show the **rank a wrestler came from** (`▲M5`), never a step
-  count — steps are undefined across sanyaku and the Juryo line. Arrows are ink/muted; "new" borrows
-  the promotion pill's vermilion. Movement is also spoken in each button's accessible name.
+- **Changes** (`?diff=1` / `?diff=0`) is an overlay, not a third view: `src/utils/diff.ts` compares
+  the current rows with the previous archived tournament by JSA id and yields a `Movement` per
+  wrestler plus per-division departures. It is **on by default from the banzuke's announcement
+  until day 1** and off once the tournament starts. Badges show the **rank a wrestler came from**
+  and, when the previous results file is on disk, **the record that earned the move** (`▲M5 9–6`),
+  never a step count — steps are undefined across sanyaku and the Juryo line. Arrows are
+  ink/muted; "new" borrows the promotion pill's vermilion, and a newcomer who already carries a
+  printed flag (新入幕 …) gets no "new" badge. The previous banzuke and its results are loaded
+  whenever there is one, because the kadoban mark reads them too.
+- **One accessible name**: `describeWrestler()` (`src/utils/describe.ts`) builds the name for every
+  wrestler button — Sheet column, List cell, stable roster — in the order name, side, rank,
+  promotion, kadoban, movement, record, yusho, then "View details". English keeps "Name, Side."
+  first; Japanese joins with 、 and ends sentences with 。. Nothing else builds one by hand.
+- **Promotions print on the Sheet** too (`PromotionPill`, vertical under the name), not only on the
+  List. **Kadoban** (角番) is derived, never stored: `kadobanIds()` in `src/utils/stakes.ts` — an
+  Ozeki now, an Ozeki on the previous banzuke, make-koshi there (absences counted) — and prints as
+  an ink pill with a hairline, never over a printed flag. **横綱大関** is a printed tier, not a rank:
+  `printedTier` on `Rikishi` is read off the JSA's Japanese rank name and the Sheet shrinks the four
+  characters to fit the band.
 - **Results** (`?results=0` to hide; on by default in season) is the second overlay: `useResults`
   loads `results/{bashoId}.json` when the basho is live, a day before it starts, or finished —
   until the next banzuke replaces it — `Hoshitori` shows the score on the Sheet and the ○●休 strip
   on the List, `Bouts` lists the day's card, selected by who is fighting (cross-division bouts are
   published on the Makuuchi card only). An absence counts
   as a loss for make-koshi. The yusho mark is an ink seal — `--gold` is still the Yokozuna's alone.
-  Kimarite are stored as sumo-api romaji; `src/data/kimarite.ts` supplies the kanji.
+  Kimarite are stored as sumo-api romaji; `src/data/kimarite.ts` supplies the kanji. Before day 1
+  the file is the card only (no 0–0 under seventy names). Above the card, `YushoRace`
+  (`yushoRace()` in `results.ts`) reads the race by losses — the leaders, whoever is within two
+  losses and can still catch them, decided or not, 相星決戦 when the two sole leaders meet next —
+  and `Bouts` shows a playoff (sumo-api's day 16, filed under `playoff` by division; 巴戦 when three
+  fought) beneath senshuraku's card. The wrestler dialog says the next bout, the kinboshi (☆, a
+  Maegashira's fought win over a Yokozuna) and what it still takes for kachi-koshi. In season a
+  `TodayStrip` above the paper carries the day as the calendar names it (初日・中日・千秋楽), how much
+  of today's card is fought, who leads and how fresh the numbers are; once the yusho is decided the
+  Hero headlines the champion with the record, the three sansho and the Juryo yusho. The page
+  re-polls the file every five minutes between 15:00 and 23:00 JST while the tab is visible, and
+  on return (`useResults(id, { live })`). The hoshitori marks are ○ ● □ ■ 休 × △ (fought, forfeit,
+  absent, draw).
 - `public/results/` holds **tournament results** (`src/data/results.ts`): one file per basho of
-  per-wrestler records, per-day cards and the yusho, from sumo-api.com joined by `nskId`. The script
-  fetches only in season (a day before day 1 to three days after senshuraku) and the bot commit ends
-  with `[skip ci]` because deploy-key pushes trigger the push workflow. Results are **not** in the font
-  subset's file set: kimarite are romaji and a visiting Makushita name may fall back.
+  per-wrestler records, per-day cards, the yusho, and (optional, version 1 still) the `playoff`
+  bouts per division and the `sansho`, from sumo-api.com joined by `nskId`. `day` is the latest
+  day **fought** — sumo-api pre-records a withdrawal's absences and fusen for the days ahead, and
+  records are trimmed to `day`. A wrestler without a `nskId` is left out with a warning, never a
+  frozen file; the sansho are written only once senshuraku's Makuuchi card is decided (they can be
+  conditional until then). The script fetches only in season (a day before day 1 to three days
+  after senshuraku), refuses a fetch that is a step backwards from the committed file (exit 3,
+  `resultsRegressed`; `--force` overrides), and the bot commit ends with `[skip ci]` because
+  deploy-key pushes trigger the push workflow. Results are **not** in the font subset's file set:
+  kimarite are romaji and a visiting Makushita name may fall back.
+- **The archive is viewable**: `?basho=<id>` shows an earlier tournament by the same views, read
+  only (`useArchiveViewer` in `src/app/`, `rikishiFromArchived` in `archive.ts` derives the rank
+  names and invents nothing else), with a `BashoPicker` beside the controls. The live tournament's
+  own id, or one the index lacks, means the live sheet.
+- **Share pages**: `scripts/build-stubs.ts` runs after `vite build` and writes `dist/r/<id>/` and
+  `dist/heya/<id>/` — one small page per wrestler and stable with its own title, description and
+  JSA portrait for the unfurl, `noindex`, a canonical to the app and a redirect that keeps `?lang=`
+  — plus the sitemap (with en/ja/x-default alternates) and a `SportsEvent` JSON-LD in `index.html`.
+  The dialog's Copy link hands out the share page. They are build output, never committed.
+- **`App.tsx` is the URL state and the render tree**; each concern is a hook under `src/app/`
+  (`useTournamentPhase`, `useResultsOverlay`, `useSearch`, `useSelection`, `useChanges`, `useGuide`,
+  `useDocumentTitle`, `useArchiveViewer`). `App.test.tsx` is the regression net for all of them.
+- **The smoke spec** (`e2e/smoke.spec.ts`, `npm run test:e2e`) drives the built site in Chromium:
+  print order, band alignment, no horizontal scroll, tab seating, axe, the keyboard walk, the
+  in-season overlays, at three widths in both languages. CI runs it once `docs/ops/ci.yml` is
+  applied; locally `PW_CHROMIUM=<path>` names a browser.
 - **Arrow keys are spatial**, not canonical: on the Sheet ← → walk a half's rank ladder (← is the
   lower rank because each half is `direction: rtl`) and ↑ ↓ cross to the East/West partner; on the
   List ↑ ↓ walk ranks and ← → cross the row. One `keyTarget()` in `src/utils/rovingFocus.ts` serves

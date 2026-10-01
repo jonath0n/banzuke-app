@@ -6,8 +6,12 @@ printed — vertical, read right to left, East on the right, ranked by character
 **List**, a searchable row per rank. Either view can be overlaid with **Changes** (`?diff=1`),
 which marks each name with the rank it held at the previous tournament and lists who left each
 division. During a tournament **Results** lays the hoshitori over both views — each name's
-record, ○● on the List, kachi-koshi and the yusho — with the day's bouts and the leaders beneath
-the paper. Arrow keys move between wrestlers on the Sheet and the List; the wrestler dialog steps
+record, ○● on the List, kachi-koshi and the yusho — with the day's bouts, the yusho race and any
+playoff beneath the paper, a line above it saying which day it is and how much is fought, and the
+champion's headline once it is decided. Open a wrestler mid-basho and the dialog says the next bout,
+the kinboshi and what it still takes for kachi-koshi; an Ozeki on the brink is marked kadoban.
+Changes is on by itself from the banzuke's announcement until day 1, with the record that earned
+each move. `?basho=<id>` shows any earlier tournament from the archive. Arrow keys move between wrestlers on the Sheet and the List; the wrestler dialog steps
 along the banzuke with ‹ › or ← →. Not sure how to read it? `?guide=1` marks the real sheet with
 numbered notes and explains each beneath it, in English and Japanese. Open a wrestler and the
 dialog spells out the ring name character by character, with what each means. Bilingual
@@ -105,8 +109,12 @@ This outputs to `dist/`. Deploy this folder to any static host (GitHub Pages, Ne
 
 ## Data refresh and deployment
 
-A single workflow (`.github/workflows/deploy.yml`) runs on every push to `main`, once a day at
-07:00 JST and again at 19:00 JST, and on demand from the Actions tab. It:
+A single workflow (`.github/workflows/deploy.yml`) runs on every push to `main`, on four daily
+slots (07:13 JST for the banzuke; 18:12, 19:38 and 21:38 JST for the day's results), and on demand
+from the Actions tab. GitHub's scheduler runs the evening slots hours late, so `docs/ops/` carries
+a season-gated version of the workflow and `watch.yml`, a watcher that polls sumo-api through the
+Tokyo evening and starts a results-only deploy the moment the day's results are in; see
+`docs/ops/results-freshness.md`. The workflow:
 
 1. Fetches the English and Japanese banzuke for both divisions from sumo.or.jp and validates
    them (both languages present, same tournament, same wrestlers, sane row counts).
@@ -143,11 +151,13 @@ sides, stable and region for Makuuchi and Juryo), written by `npm run archive-ba
 JSA snapshot. Tournaments before this site kept copies (2025-11 → 2026-07) were filled once from
 [sumo-api.com](https://www.sumo-api.com/), whose rikishi records carry the JSA id (`nskId`), by
 `npm run backfill-archive -- 202511 202601 202603 202605 202607`. `index.json` lists them all.
+Any of them can be viewed in the app with `?basho=<bashoId>`.
 
 ### Results
 
 `public/results/{bashoId}.json` holds one file per basho: every wrestler's record (with ○●休
-bouts and kimarite as sumo-api romaji), each day's card, and the yusho. It is written by
+bouts and kimarite as sumo-api romaji), each day's card, the yusho, and — when they happened —
+the playoff bouts and the three special prizes. It is written by
 `npm run fetch-results` from [sumo-api.com](https://www.sumo-api.com/) only while a tournament
 is in season — from the day before day 1 to three days after senshuraku — and joined to JSA ids
 by `nskId`. The browser never calls sumo-api.com; it reads only this file.
@@ -171,7 +181,8 @@ Live site: https://jonath0n.github.io/banzuke-app/
 ## Tech stack
 
 - **React 19** with TypeScript
-- **Vite** for development and builds
+- **Vite 8** for development and builds, with a hand-written service worker emitted at build time
 - **CSS Modules** for scoped component styles
+- **Vitest** for unit tests and **Playwright** for a Chromium smoke spec of the built site
 - **GitHub Actions** for automated data refresh and deployment
 - **GitHub Pages** for hosting
