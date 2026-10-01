@@ -26,6 +26,8 @@ interface BanzukeSheetProps {
   movements?: Map<number, Movement> | null
   /** This tournament's records, keyed by wrestler id. */
   records?: Record<string, RikishiRecord> | null
+  /** Ids of the Ozeki who are kadoban this tournament. */
+  kadoban?: Set<number>
   /** Tournament champion per division, once decided. */
   champions?: Partial<Record<Division, number>>
   /** Guided-tour marks to overlay, or null/undefined when the guide is off. */
@@ -99,6 +101,7 @@ const Column = memo(function Column({
   movement,
   record,
   champion,
+  kadoban,
   pairKey,
   lit,
   marks,
@@ -108,6 +111,7 @@ const Column = memo(function Column({
   onSelect?: (rikishi: Rikishi) => void
   dimmed: boolean
   movement: Movement | null
+  kadoban: boolean
   record: RikishiRecord | null
   champion: boolean
   pairKey: string
@@ -127,7 +131,7 @@ const Column = memo(function Column({
   const numeral = rikishi.rankCode >= RANK_CODES.MAEGASHIRA ? toKanjiNumber(rikishi.rankNumber) : ''
   // The full rank goes into the accessible name: a screen reader cannot see how
   // large the characters are, or how far along the band the column sits.
-  const label = describeWrestler(rikishi, language, { movement, record, champion })
+  const label = describeWrestler(rikishi, language, { movement, record, champion, kadoban })
 
   const content = (
     <>
@@ -151,7 +155,7 @@ const Column = memo(function Column({
         </span>
         {/* The JSA prints 新入幕 and its kin beside a name on its own banzuke
             page; on the sheet the flag reads down the column under the name. */}
-        <PromotionPill rikishi={rikishi} variant="sheet" />
+        <PromotionPill rikishi={rikishi} variant="sheet" kadoban={kadoban} />
         {movement && (
           <MovementBadge
             movement={movement}
@@ -228,6 +232,7 @@ export function BanzukeSheet({
   movements,
   records,
   champions,
+  kadoban,
   guide,
 }: BanzukeSheetProps) {
   const strings = useStrings()
@@ -297,6 +302,7 @@ export function BanzukeSheet({
               movement={movements?.get(rikishi.id) ?? null}
               record={records?.[String(rikishi.id)] ?? null}
               champion={championIds.has(rikishi.id)}
+              kadoban={kadoban?.has(rikishi.id) ?? false}
               pairKey={group.key}
               lit={active !== null && active.pair === group.key && active.side !== rikishi.side}
               marks={marksById.get(rikishi.id)}

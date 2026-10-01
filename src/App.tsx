@@ -8,6 +8,7 @@ import { useResults } from './hooks/useResults'
 import { previousEntry } from './data/archive'
 import { diffBanzuke, type CurrentRow } from './utils/diff'
 import { buildGuide } from './utils/guide'
+import { kadobanIds } from './utils/stakes'
 import { getTournamentStatus } from './utils/dates'
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
@@ -226,10 +227,12 @@ function AppContent() {
   const changesDefault = tournamentStatus?.kind === 'upcoming' && prevEntry != null
   const diffOn = diffParam === '1' || (diffParam !== '0' && changesDefault)
   const diffWanted = diffOn && prevEntry != null
-  const previous = useArchivedBanzuke(diffWanted ? prevEntry : null)
+  // The previous banzuke and its results are small enough to load whenever
+  // there is one: Changes reads them, and so does the kadoban mark in season.
+  const previous = useArchivedBanzuke(prevEntry)
   // The previous tournament's results explain the moves (▲M5 9–6); the file is
   // optional, like the archive itself.
-  const previousResults = useResults(diffWanted && prevEntry ? prevEntry.bashoId : null)
+  const previousResults = useResults(prevEntry ? prevEntry.bashoId : null)
   const jpEra =
     prevEntry && banzuke && prevEntry.year !== banzuke.basho.year ? jpEraYear(prevEntry.year) : ''
   const sinceLabel = prevEntry
@@ -263,6 +266,16 @@ function AppContent() {
     [currentRows, previous.archive, previousResults.results]
   )
   const movements = diffWanted && diff ? diff.movements : null
+  // 角番: an Ozeki who was Ozeki last time and made make-koshi there.
+  const kadoban = useMemo(
+    () =>
+      kadobanIds(
+        data ? [...data.makuuchi.rikishi, ...(data.juryo?.rikishi ?? [])] : EMPTY,
+        previous.archive ?? null,
+        previousResults.results?.records ?? null
+      ),
+    [data, previous.archive, previousResults.results]
+  )
 
   // The guide annotates the paper, so it exists only on the Sheet with
   // something on it; a search that drops rank groups also drops the marks
@@ -485,6 +498,7 @@ function AppContent() {
                   rows={allRows}
                   highlight={highlight}
                   movements={movements}
+                  kadoban={kadoban}
                   records={records}
                   champions={champions}
                   guide={guide}
@@ -496,6 +510,7 @@ function AppContent() {
                   rows={allRows}
                   highlight={highlight}
                   movements={movements}
+                  kadoban={kadoban}
                   records={records}
                   champions={champions}
                   onSelectRikishi={handleSelectRikishi}
@@ -553,6 +568,7 @@ function AppContent() {
         record={selectedRikishi ? (records?.[String(selectedRikishi.id)] ?? null) : null}
         results={file}
         rankById={rankById}
+        kadoban={selectedRikishi ? kadoban.has(selectedRikishi.id) : false}
         neighbours={neighbours}
         onStep={handleStep}
         onSelectStable={handleSelectStable}
@@ -563,6 +579,7 @@ function AppContent() {
         stable={stable}
         stableLoading={stableLoading}
         movements={movements}
+        kadoban={kadoban}
         records={records}
         champions={champions}
         onClose={handleCloseStable}

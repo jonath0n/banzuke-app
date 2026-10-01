@@ -102,6 +102,49 @@ describe('App', () => {
     await screen.findByRole('button', { name: /Hoshoryu, East/ })
   })
 
+  it('marks a kadoban Ozeki from the previous banzuke and its results, in every view', async () => {
+    const stub = fetch as unknown as Mock<(url: RequestInfo | URL) => Promise<Response>>
+    const fallback = stub.getMockImplementation()!
+    stub.mockImplementation((url) => {
+      if (String(url).includes('banzuke/636.json')) {
+        return Promise.resolve(
+          jsonResponse(
+            makeArchivedBanzuke({
+              rikishi: [
+                { ...makeArchivedBanzuke().rikishi[0], id: 1002, rankCode: 200 },
+                { ...makeArchivedBanzuke().rikishi[0], id: 1003, rankCode: 200 },
+              ],
+            })
+          )
+        )
+      }
+      if (String(url).includes('results/636.json')) {
+        return Promise.resolve(
+          jsonResponse(
+            makeResultsFile({
+              bashoId: 636,
+              day: 15,
+              records: {
+                '1002': { wins: 7, losses: 8, absences: 0, bouts: [] },
+                '1003': { wins: 9, losses: 6, absences: 0, bouts: [] },
+              },
+              torikumi: {},
+            })
+          )
+        )
+      }
+      return fallback(url)
+    })
+    render(<App />)
+    const kirishima = await screen.findByRole('button', { name: /Kirishima, East/ })
+    // (The fixture's rank names are all Maegashira; the code, not the name, decides.)
+    await waitFor(() => expect(kirishima).toHaveAccessibleName(/Kirishima, East\. .*Kadoban\./))
+    expect(screen.getByRole('button', { name: /Kotozakura, West/ })).not.toHaveAccessibleName(
+      /Kadoban/
+    )
+    expect(within(kirishima).getByText('Kadoban')).toBeInTheDocument()
+  })
+
   it('opens a wrestler from the URL and closes without leaving the deep link', async () => {
     const user = userEvent.setup()
     window.history.replaceState(null, '', '/?rikishi=1001')

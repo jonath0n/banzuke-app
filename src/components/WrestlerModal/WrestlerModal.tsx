@@ -40,6 +40,8 @@ interface WrestlerModalProps {
   onStep?: (rikishi: Rikishi) => void
   /** Open the wrestler's stable; without it the Stable row is plain text. */
   onSelectStable?: (heyaId: number) => void
+  /** An Ozeki whose make-koshi would cost the rank. */
+  kadoban?: boolean
 }
 
 /**
@@ -57,6 +59,7 @@ export function WrestlerModal({
   neighbours,
   onStep,
   onSelectStable,
+  kadoban = false,
 }: WrestlerModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
@@ -312,11 +315,11 @@ export function WrestlerModal({
                   </dd>
                 </div>
               )}
-              {rikishi.promotion && (
+              {(rikishi.promotion || kadoban) && (
                 <div className={styles.metaItem}>
                   <dt className={styles.metaLabel}>{strings.status}</dt>
                   <dd className={`${styles.metaValue} ${styles.statusBadge}`}>
-                    {describePromotion(rikishi, language)}
+                    {rikishi.promotion ? describePromotion(rikishi, language) : strings.kadobanLong}
                   </dd>
                 </div>
               )}
