@@ -41,7 +41,9 @@ describe('SideCell', () => {
       </LanguageProvider>
     )
 
-    const button = screen.getByRole('button', { name: 'Test, West. View details' })
+    const button = screen.getByRole('button', {
+      name: 'Test, West. Yokozuna. New to Makuuchi. View details',
+    })
     expect(button.tagName).toBe('BUTTON')
     await user.click(button)
     button.focus()
@@ -147,7 +149,9 @@ describe('SideCell', () => {
         />
       </LanguageProvider>
     )
-    const wrestler = screen.getByRole('button', { name: 'Test, East. View details' })
+    const wrestler = screen.getByRole('button', {
+      name: 'Test, East. Yokozuna. New to Makuuchi. View details',
+    })
     const stable = screen.getByRole('button', { name: 'Test stable', hidden: true })
     expect(wrestler).toHaveAttribute('data-pair', '100-1-1')
     expect(wrestler).toHaveAttribute('data-id', '3842')

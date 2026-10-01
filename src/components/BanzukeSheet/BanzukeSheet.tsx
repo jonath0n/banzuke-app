@@ -6,10 +6,11 @@ import { RANK_CODES, RANK_LEVEL_KANJI } from '../../constants/ranks'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { useStrings } from '../../i18n/useStrings'
 import { langAttr } from '../../i18n/strings'
-import { describeMovement, type Movement } from '../../utils/diff'
+import type { Movement } from '../../utils/diff'
+import { describeWrestler } from '../../utils/describe'
 import { MovementBadge } from '../MovementBadge/MovementBadge'
 import { PromotionPill } from '../PromotionPill/PromotionPill'
-import { describeRecord, type RikishiRecord } from '../../data/results'
+import type { RikishiRecord } from '../../data/results'
 import { Hoshitori } from '../Hoshitori/Hoshitori'
 import { handleRovingKey } from '../../utils/rovingFocus'
 import type { Guide, GuideZone } from '../../utils/guide'
@@ -114,7 +115,6 @@ const Column = memo(function Column({
   marks?: Partial<Record<GuideZone, number>>
 }) {
   const { language } = useLanguage()
-  const strings = useStrings()
   const lang = langAttr(language)
   const name = rikishi.shikona[language] || rikishi.shikona.en
   // The printed sheet prints only the tier — 前頭, never 前頭十七枚目 — because
@@ -125,13 +125,7 @@ const Column = memo(function Column({
   const numeral = rikishi.rankCode >= RANK_CODES.MAEGASHIRA ? toKanjiNumber(rikishi.rankNumber) : ''
   // The full rank goes into the accessible name: a screen reader cannot see how
   // large the characters are, or how far along the band the column sits.
-  const movementText = movement ? describeMovement(movement, language) : ''
-  const recordText = record ? describeRecord(record, language) : ''
-  const label = `${name}, ${strings.side[rikishi.side]}. ${rikishi.rankName[language]}.${
-    movementText ? ` ${movementText}.` : ''
-  }${recordText ? ` ${recordText}` : ''}${champion ? ` ${strings.yusho}.` : ''} ${
-    strings.viewDetails
-  }`
+  const label = describeWrestler(rikishi, language, { movement, record, champion })
 
   const content = (
     <>

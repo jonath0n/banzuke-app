@@ -89,7 +89,7 @@ describe('StableModal', () => {
     })
     const items = screen.getAllByRole('listitem')
     expect(items).toHaveLength(1)
-    const member = screen.getByRole('button', { name: /^Hoshoryu, Yokozuna, East\./ })
+    const member = screen.getByRole('button', { name: /^Hoshoryu, East\. Yokozuna\./ })
     expect(member).toHaveAccessibleName(/Up from O/)
     expect(member).toHaveAccessibleName(/8 wins, 3 losses, 1 absence/)
     expect(member).toHaveAttribute('data-id', '3842')
