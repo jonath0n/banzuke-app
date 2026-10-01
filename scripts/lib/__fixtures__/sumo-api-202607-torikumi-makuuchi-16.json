@@ -1,0 +1,56 @@
+{
+ "date": "202607",
+ "torikumi": [
+  {
+   "id": "202607-16-1-74-7",
+   "bashoId": "202607",
+   "division": "Makuuchi",
+   "day": 16,
+   "matchNo": 1,
+   "eastId": 74,
+   "eastShikona": "Atamifuji",
+   "eastRank": "Sekiwake 1 East",
+   "westId": 7,
+   "westShikona": "Kirishima",
+   "westRank": "Ozeki 1 East",
+   "kimarite": "",
+   "winnerId": 74,
+   "winnerEn": "Atamifuji",
+   "winnerJp": ""
+  },
+  {
+   "id": "202607-16-2-74-8854",
+   "bashoId": "202607",
+   "division": "Makuuchi",
+   "day": 16,
+   "matchNo": 2,
+   "eastId": 74,
+   "eastShikona": "Atamifuji",
+   "eastRank": "Sekiwake 1 East",
+   "westId": 8854,
+   "westShikona": "Aonishiki",
+   "westRank": "Sekiwake 2 West",
+   "kimarite": "",
+   "winnerId": 8854,
+   "winnerEn": "Aonishiki",
+   "winnerJp": "安青錦　新大"
+  },
+  {
+   "id": "202607-16-3-7-8854",
+   "bashoId": "202607",
+   "division": "Makuuchi",
+   "day": 16,
+   "matchNo": 3,
+   "eastId": 7,
+   "eastShikona": "Kirishima",
+   "eastRank": "Ozeki 1 East",
+   "westId": 8854,
+   "westShikona": "Aonishiki",
+   "westRank": "Sekiwake 2 West",
+   "kimarite": "yorikiri",
+   "winnerId": 8854,
+   "winnerEn": "Aonishiki",
+   "winnerJp": "安青錦　新大"
+  }
+ ]
+}

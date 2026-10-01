@@ -37,6 +37,7 @@ import {
 import { bashoIdFromSumoApi, sumoApiBashoId } from '../src/data/bashoIds.ts'
 import {
   MAX_DAYS,
+  PLAYOFF_DAY,
   resultsEqualIgnoringFetchedAt,
   resultsFileName,
   resultsRegressed,
@@ -180,7 +181,9 @@ async function main(): Promise<number> {
     0,
     ...banzuke.flatMap((t) => [...t.east, ...t.west]).map((e) => lastFoughtDay(e.record))
   )
-  const upTo = Math.min(MAX_DAYS, fought + 1)
+  // Once senshuraku is fought, the day after is sumo-api's playoff card: a
+  // 404 when the yusho was decided in regulation, a bout or three otherwise.
+  const upTo = fought >= MAX_DAYS ? PLAYOFF_DAY : Math.min(MAX_DAYS, fought + 1)
 
   // Complete days need no refetch: carry them over already-converted via `keep`.
   // A day being re-fetched replaces the kept copy, so it is excluded here.
@@ -191,6 +194,7 @@ async function main(): Promise<number> {
     if (fetchDays.has(Number(day))) continue
     if (matches.length > 0 && matches.every((m) => m.winnerId !== null)) keep.set(day, matches)
   }
+  // The playoff is never carried over: day 16 is always in the fetch when it applies.
   for (const day of fetchDays) {
     for (const division of DIVISIONS_API) {
       await sleep(delayMs)
@@ -231,7 +235,9 @@ async function main(): Promise<number> {
     return 2
   }
   console.log(
-    `Basho ${bashoId}: day ${results.day}, ${Object.keys(results.records).length} records, cards for days ${Object.keys(results.torikumi).join(', ') || 'none'}`
+    `Basho ${bashoId}: day ${results.day}, ${Object.keys(results.records).length} records, cards for days ${Object.keys(results.torikumi).join(', ') || 'none'}` +
+      (results.playoff ? `, playoff in ${Object.keys(results.playoff).join(', ')}` : '') +
+      (results.sansho ? `, ${results.sansho.length} sansho` : '')
   )
 
   if (previous && resultsEqualIgnoringFetchedAt(previous, results)) {

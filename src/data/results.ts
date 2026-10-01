@@ -7,15 +7,35 @@
 import type { Division, Language, Localized, Rikishi } from '../types/banzuke'
 import { DIVISIONS } from './schema'
 
-export type BoutOutcome = 'win' | 'loss' | 'fusen-win' | 'fusen-loss' | 'absent'
+/**
+ * win/loss: fought. fusen: a forfeit, awarded without a bout. absent: sat out.
+ * draw (引き分け) and injury-draw (痛み分け): a bout nobody won — vanishingly
+ * rare today, but part of the hoshitori's vocabulary, so the file can hold one.
+ */
+export type BoutOutcome =
+  'win' | 'loss' | 'fusen-win' | 'fusen-loss' | 'absent' | 'draw' | 'injury-draw'
 export const BOUT_OUTCOMES: readonly BoutOutcome[] = [
   'win',
   'loss',
   'fusen-win',
   'fusen-loss',
   'absent',
+  'draw',
+  'injury-draw',
 ]
 export const MAX_DAYS = 15
+/** sumo-api serves a playoff (優勝決定戦) as a sixteenth day. */
+export const PLAYOFF_DAY = 16
+
+/** The three special prizes, decided on senshuraku for Maegashira and sanyaku below Ozeki. */
+export type SanshoKind = 'shukun' | 'kanto' | 'gino'
+export const SANSHO_KINDS: readonly SanshoKind[] = ['shukun', 'kanto', 'gino']
+
+export interface Sansho {
+  kind: SanshoKind
+  /** JSA id. */
+  rikishiId: number
+}
 
 export interface Fighter {
   /** JSA id when the wrestler is one we know; null for a visitor from below Juryo. */
@@ -68,6 +88,14 @@ export interface ResultsFile {
   torikumi: Record<string, Match[]>
   /** JSA id of the champion, once decided. */
   yusho: Partial<Record<Division, number>>
+  /**
+   * The playoff bouts after senshuraku, per division, in the order fought —
+   * one bout between two, or a 巴戦 (tomoe-sen) among three where the first
+   * to win twice in a row takes it. Absent when no playoff was needed.
+   */
+  playoff?: Partial<Record<Division, Match[]>>
+  /** The special prizes, once every senshuraku bout is decided. */
+  sansho?: Sansho[]
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -165,6 +193,37 @@ export function validateResults(
     if (!isDivision(division)) return { ok: false, error: `yusho: unknown division ${division}` }
     if (!isInteger(id)) return { ok: false, error: `yusho[${division}] must be an id` }
   }
+  if (input.playoff !== undefined) {
+    if (!isRecord(input.playoff)) return { ok: false, error: 'playoff must be an object' }
+    for (const [division, matches] of Object.entries(input.playoff)) {
+      if (!isDivision(division)) {
+        return { ok: false, error: `playoff: unknown division ${division}` }
+      }
+      if (!Array.isArray(matches) || matches.length === 0) {
+        return { ok: false, error: `playoff[${division}] must be a non-empty array` }
+      }
+      for (const [i, match] of matches.entries()) {
+        const problem = matchProblem(match)
+        if (problem) return { ok: false, error: `playoff[${division}][${i}]: ${problem}` }
+        if ((match as Match).winnerId === null) {
+          return { ok: false, error: `playoff[${division}][${i}]: a playoff bout is decided` }
+        }
+      }
+    }
+  }
+  if (input.sansho !== undefined) {
+    if (!Array.isArray(input.sansho)) return { ok: false, error: 'sansho must be an array' }
+    for (const [i, prize] of input.sansho.entries()) {
+      if (
+        !isRecord(prize) ||
+        !SANSHO_KINDS.includes(prize.kind as SanshoKind) ||
+        !isInteger(prize.rikishiId) ||
+        (prize.rikishiId as number) <= 0
+      ) {
+        return { ok: false, error: `sansho[${i}] must be a kind and a JSA id` }
+      }
+    }
+  }
   return { ok: true, results: input as unknown as ResultsFile }
 }
 
@@ -258,9 +317,36 @@ export function describeRecord(
   return `${parts.join(', ')}.${tail}`
 }
 
-export function boutMark(outcome: BoutOutcome): '○' | '●' | '休' {
-  if (outcome === 'absent') return '休'
-  return outcome === 'win' || outcome === 'fusen-win' ? '○' : '●'
+/**
+ * The hoshitori's marks: ○ win, ● loss, □ fusen win, ■ fusen loss (the square
+ * says no bout was fought), 休 absent, × a draw, △ an injury draw.
+ */
+export function boutMark(outcome: BoutOutcome): '○' | '●' | '□' | '■' | '休' | '×' | '△' {
+  switch (outcome) {
+    case 'win':
+      return '○'
+    case 'loss':
+      return '●'
+    case 'fusen-win':
+      return '□'
+    case 'fusen-loss':
+      return '■'
+    case 'absent':
+      return '休'
+    case 'draw':
+      return '×'
+    case 'injury-draw':
+      return '△'
+  }
+}
+
+/** The playoff is a 巴戦 when three fighters took part. */
+export function playoffFighters(matches: Match[]): Fighter[] {
+  const seen = new Map<string, Fighter>()
+  for (const m of matches) {
+    for (const f of [m.east, m.west]) seen.set(f.id === null ? f.shikona.en : String(f.id), f)
+  }
+  return [...seen.values()]
 }
 
 /** The top two win counts among `rows`, ties in banzuke order. */

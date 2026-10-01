@@ -38,6 +38,43 @@ describe('Bouts', () => {
     expect(onChangeDay).toHaveBeenCalledWith(11)
   })
 
+  it('shows the playoff under senshuraku’s card, named 巴戦 when three fought', () => {
+    const bout = (matchNo: number, eastId: number, westId: number, winnerId: number) => ({
+      division: 'makuuchi' as const,
+      matchNo,
+      east: { id: eastId, shikona: rows.find((r) => r.id === eastId)!.shikona },
+      west: { id: westId, shikona: rows.find((r) => r.id === westId)!.shikona },
+      winnerId,
+      kimarite: matchNo === 3 ? 'yorikiri' : '',
+    })
+    const results = makeResultsFile({
+      day: 15,
+      torikumi: { '15': [bout(1, 3842, 4227, 4227)] },
+      playoff: {
+        makuuchi: [bout(1, 3842, 4227, 3842), bout(2, 3842, 4055, 4055), bout(3, 4227, 4055, 4055)],
+      },
+      yusho: { makuuchi: 4055 },
+    })
+    render(
+      <LanguageProvider>
+        <Bouts results={results} division="makuuchi" rows={rows} day={15} onChangeDay={vi.fn()} />
+      </LanguageProvider>
+    )
+    const playoff = screen.getByRole('region', { name: 'Three-way playoff' })
+    expect(playoff).toHaveTextContent('After senshuraku, for the yusho.')
+    const items = playoff.querySelectorAll('li')
+    expect(items).toHaveLength(3)
+    expect(items[2].querySelector('strong')).toHaveTextContent('Wakatakakage')
+    expect(items[2]).toHaveTextContent('yorikiri')
+    // Not on an earlier day
+    render(
+      <LanguageProvider>
+        <Bouts results={results} division="makuuchi" rows={rows} day={14} onChangeDay={vi.fn()} />
+      </LanguageProvider>
+    )
+    expect(screen.getAllByRole('region', { name: /playoff/i })).toHaveLength(1)
+  })
+
   it('says when a day has no card yet', () => {
     render(
       <LanguageProvider>

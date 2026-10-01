@@ -473,7 +473,11 @@ function RecordSection({ record }: { record: RikishiRecord }) {
         ? strings.fusenWin
         : bout.outcome === 'fusen-loss'
           ? strings.fusenLoss
-          : kimariteLabel(bout.kimarite, language)
+          : bout.outcome === 'draw'
+            ? strings.boutDraw
+            : bout.outcome === 'injury-draw'
+              ? strings.boutInjuryDraw
+              : kimariteLabel(bout.kimarite, language)
   // ○ and ● are hidden from readers; a fought bout says Win or Loss in words,
   // and a forfeit or an absence already says so in its visible text.
   const spokenOutcome = (bout: Bout) =>

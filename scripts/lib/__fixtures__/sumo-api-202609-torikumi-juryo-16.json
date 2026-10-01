@@ -1,0 +1,39 @@
+{
+ "date": "202609",
+ "torikumi": [
+  {
+   "id": "202609-16-1-66-29",
+   "bashoId": "202609",
+   "division": "Juryo",
+   "day": 16,
+   "matchNo": 1,
+   "eastId": 66,
+   "eastShikona": "Kitanowaka",
+   "eastRank": "Juryo 6 East",
+   "westId": 29,
+   "westShikona": "Kagayaki",
+   "westRank": "Juryo 11 East",
+   "kimarite": "tsukiotoshi",
+   "winnerId": 66,
+   "winnerEn": "Kitanowaka",
+   "winnerJp": ""
+  },
+  {
+   "id": "202609-16-2-66-142",
+   "bashoId": "202609",
+   "division": "Juryo",
+   "day": 16,
+   "matchNo": 2,
+   "eastId": 66,
+   "eastShikona": "Kitanowaka",
+   "eastRank": "Juryo 6 East",
+   "westId": 142,
+   "westShikona": "Kayo",
+   "westRank": "Juryo 12 West",
+   "kimarite": "hatakikomi",
+   "winnerId": 66,
+   "winnerEn": "Kitanowaka",
+   "winnerJp": "北の若　大輔"
+  }
+ ]
+}
