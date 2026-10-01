@@ -13,7 +13,7 @@ import type {
   Side,
 } from '../types/banzuke'
 import { getRankLevelFromCode } from '../constants/ranks'
-import { jpNumberKanji, jpRankName } from './kanji'
+import { jpNumberKanji, jpRankName, printedTier } from './kanji'
 import {
   isPlaceholderRow,
   type RawDivisionSnapshot,
@@ -79,6 +79,7 @@ function normalizeRikishi(
       en: cleanText(en.banzuke_name),
       jp: cleanText(jp?.banzuke_name) || jpRankName(rankCode, rankNumber),
     },
+    printedTier: printedTier(cleanText(jp?.banzuke_name), rankCode),
     numberKanji: jpNumberKanjiValue,
     sortKey: en.sort ?? '',
     shikona: {

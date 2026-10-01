@@ -29,6 +29,18 @@ export const RANK_KANJI: Record<number, string> = {
   600: '十両',
 }
 
+/**
+ * The tier the sheet prints at the head of a column. The rank code decides it
+ * (前頭筆頭 → 前頭), with one exception read off the JSA's own Japanese rank
+ * name: 横綱大関, a Yokozuna standing in for a missing Ozeki, printed as a title
+ * at the head of the Ozeki slot whichever code the row carries.
+ */
+export function printedTier(jpRankName: string, rankCode: number): string {
+  const own = RANK_KANJI[rankCode] ?? ''
+  if (jpRankName.startsWith('横綱大関') && (rankCode === 100 || rankCode === 200)) return '横綱大関'
+  return own
+}
+
 /** Position within a numbered rank: 1 → 筆頭 ("top"), 2 → 二枚目, 17 → 十七枚目. */
 export function jpNumberKanji(position: number): string {
   return position === 1 ? '筆頭' : `${toKanjiNumber(position)}枚目`

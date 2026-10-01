@@ -121,7 +121,9 @@ const Column = memo(function Column({
   // position along the band already says which one. Keeping the tier uniform is
   // what makes the rank band read as one heavy rule of characters. The numeral
   // is carried underneath, small, since a screen has no fixed sheet to count on.
-  const tier = RANK_LEVEL_KANJI[rikishi.rankLevel]
+  // 横綱大関 is the one tier the sheet prints at four characters: smaller, so
+  // it still fits the band (see .tier[data-long]).
+  const tier = rikishi.printedTier || RANK_LEVEL_KANJI[rikishi.rankLevel]
   const numeral = rikishi.rankCode >= RANK_CODES.MAEGASHIRA ? toKanjiNumber(rikishi.rankNumber) : ''
   // The full rank goes into the accessible name: a screen reader cannot see how
   // large the characters are, or how far along the band the column sits.
@@ -130,7 +132,7 @@ const Column = memo(function Column({
   const content = (
     <>
       <span className={styles.rank} aria-hidden="true">
-        <span className={styles.tier} lang="ja">
+        <span className={styles.tier} lang="ja" data-long={tier.length > 2 || undefined}>
           {tier}
         </span>
         {numeral && (

@@ -122,6 +122,26 @@ describe('normalizeSnapshot', () => {
     expect(only.makuuchi.rikishi).toHaveLength(24)
   })
 
+  it('keeps the printed tier the JSA writes, and derives it from the rank otherwise', () => {
+    const jp = makeRawPayload('jp')
+    // A Yokozuna filling the second Ozeki slot is printed 横綱大関; the rank stays 100.
+    jp.BanzukeTable[1].banzuke_name = '横綱大関'
+    jp.BanzukeTable[5].banzuke_name = ''
+    const result = normalizeDivision(
+      'makuuchi',
+      makeRawDivision('makuuchi', { payloads: { en: makeRawPayload('en'), jp } }),
+      FETCHED_AT,
+      'live'
+    )
+    const tiers = Object.fromEntries(result.rikishi.map((r) => [r.id, r.printedTier]))
+    expect(tiers[1000]).toBe('横綱')
+    expect(tiers[1001]).toBe('横綱大関')
+    expect(result.rikishi.find((r) => r.id === 1001)?.rankCode).toBe(100)
+    expect(tiers[1002]).toBe('大関')
+    expect(tiers[1004]).toBe('前頭')
+    expect(tiers[1005]).toBe('前頭')
+  })
+
   it('derives Japanese rank names when the JP row is missing one', () => {
     const jp = makeRawPayload('jp')
     jp.BanzukeTable[4].banzuke_name = ''

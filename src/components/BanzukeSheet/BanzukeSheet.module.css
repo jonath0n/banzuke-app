@@ -151,6 +151,12 @@
   text-align: center;
 }
 
+/* 横綱大関: four characters in a band sized for two, so they shrink to fit —
+   the printed sheet squeezes the title the same way */
+.tier[data-long] {
+  font-size: var(--text-base);
+}
+
 .numeral {
   font-family: var(--font-jp-serif);
   font-size: var(--text-xs);

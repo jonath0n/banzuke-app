@@ -246,4 +246,27 @@ describe('BanzukeSheet', () => {
     expect(container.querySelectorAll('[class*="column"]').length).toBeGreaterThan(20)
     expect(container.querySelector('[tabindex]')).toBeNull()
   })
+
+  it('prints the tier the sheet prints, 横綱大関 squeezed to fit its band', () => {
+    const second = makeRikishi({
+      id: 8,
+      side: 'west',
+      rankCode: 100,
+      seat: 2,
+      rankName: { en: 'Yokozuna', jp: '横綱大関' },
+      printedTier: '横綱大関',
+      shikona: { en: 'Kotozakura', jp: '琴櫻' },
+    })
+    const { container } = renderSheet({ rows: [...rows, second], onSelectRikishi: vi.fn() })
+    const tiers = [...container.querySelectorAll('[class*="tier"]')].map((el) => [
+      el.textContent,
+      el.hasAttribute('data-long'),
+    ])
+    expect(tiers).toContainEqual(['横綱', false])
+    expect(tiers).toContainEqual(['横綱大関', true])
+    // The accessible name carries the full printed rank as the JSA writes it
+    expect(screen.getByRole('button', { name: /Kotozakura/ })).toHaveAccessibleName(
+      /Kotozakura, West\. Yokozuna\./
+    )
+  })
 })
