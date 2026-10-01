@@ -4,6 +4,9 @@ import {
   describeRecord,
   kachikoshiState,
   yushoRace,
+  nextBout,
+  isKinboshi,
+  kachikoshiOutlook,
   playoffFighters,
   resultsEqualIgnoringFetchedAt,
   resultsFileName,
@@ -165,6 +168,68 @@ describe('helpers', () => {
     expect(boutMark('absent')).toBe('休')
     expect(boutMark('draw')).toBe('×')
     expect(boutMark('injury-draw')).toBe('△')
+  })
+
+  it('finds the next undecided bout from the current day on', () => {
+    const file = makeResultsFile()
+    // Day 12: Wakatakakage's bout is unfought; Hoshoryu's is decided
+    expect(nextBout(file, 4055)).toMatchObject({
+      day: 12,
+      opponent: { shikona: { en: 'Visitor' } },
+    })
+    expect(nextBout(file, 3842)).toBeNull()
+    const withTomorrow = makeResultsFile({
+      torikumi: {
+        ...file.torikumi,
+        '13': [
+          {
+            division: 'makuuchi',
+            matchNo: 1,
+            east: { id: 3842, shikona: { en: 'Hoshoryu', jp: '豊昇龍' } },
+            west: { id: 4227, shikona: { en: 'Onosato', jp: '大の里' } },
+            winnerId: null,
+            kimarite: '',
+          },
+        ],
+      },
+    })
+    expect(nextBout(withTomorrow, 3842)).toMatchObject({ day: 13, opponent: { id: 4227 } })
+    expect(nextBout(withTomorrow, 4227)).toMatchObject({ day: 13, opponent: { id: 3842 } })
+  })
+
+  it('awards a kinboshi only to a Maegashira who beat a Yokozuna in the ring', () => {
+    const rankOf = (id: number) => ({ 1: 100, 2: 200 })[id]
+    const beat = (id: number, outcome: 'win' | 'fusen-win' | 'loss') => ({
+      outcome,
+      opponent: { id, shikona: { en: 'X', jp: 'X' } },
+    })
+    const maegashira = { rankCode: 500 }
+    expect(isKinboshi(beat(1, 'win'), maegashira, rankOf)).toBe(true)
+    expect(isKinboshi(beat(1, 'fusen-win'), maegashira, rankOf)).toBe(false)
+    expect(isKinboshi(beat(1, 'loss'), maegashira, rankOf)).toBe(false)
+    expect(isKinboshi(beat(2, 'win'), maegashira, rankOf)).toBe(false)
+    expect(isKinboshi(beat(1, 'win'), { rankCode: 300 }, rankOf)).toBe(false)
+    expect(isKinboshi({ outcome: 'win', opponent: null }, maegashira, rankOf)).toBe(false)
+    expect(isKinboshi(beat(1, 'win'), maegashira, () => undefined)).toBe(false)
+  })
+
+  it('says what it still takes for kachi-koshi, with the days left', () => {
+    expect(kachikoshiOutlook({ wins: 6, losses: 5, absences: 0 }, 11)).toEqual({
+      state: 'pending',
+      needed: 2,
+      remaining: 4,
+    })
+    expect(kachikoshiOutlook({ wins: 8, losses: 3, absences: 0 }, 11)).toEqual({
+      state: 'kachikoshi',
+    })
+    expect(kachikoshiOutlook({ wins: 3, losses: 7, absences: 1 }, 11)).toEqual({
+      state: 'makekoshi',
+    })
+    expect(kachikoshiOutlook({ wins: 7, losses: 7, absences: 0 }, 15)).toEqual({
+      state: 'pending',
+      needed: 1,
+      remaining: 0,
+    })
   })
 
   describe('yushoRace', () => {

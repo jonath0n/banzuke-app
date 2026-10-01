@@ -10,7 +10,16 @@ import { useStrings } from '../../i18n/useStrings'
 import { langAttr } from '../../i18n/strings'
 import { useProfileState } from '../../hooks/useProfiles'
 import { ageOn, formatBirthDate, formatMeasure, formatYearMonth } from '../../utils/profile'
-import { boutMark, scoreLabel, type Bout, type RikishiRecord } from '../../data/results'
+import {
+  boutMark,
+  isKinboshi,
+  kachikoshiOutlook,
+  nextBout,
+  scoreLabel,
+  type Bout,
+  type ResultsFile,
+  type RikishiRecord,
+} from '../../data/results'
 import { kimariteLabel } from '../../data/kimarite'
 import { explainShikona } from '../../data/shikona-glossary'
 import { CloseIcon } from '../CloseIcon/CloseIcon'
@@ -21,6 +30,10 @@ interface WrestlerModalProps {
   onClose: () => void
   /** This tournament's record, when the wrestler has fought. */
   record?: RikishiRecord | null
+  /** The whole results file, for the next bout and the day count. */
+  results?: ResultsFile | null
+  /** Every wrestler on the banzuke by id: the opponent's rank says whether a win is a kinboshi. */
+  rankById?: Map<number, Rikishi>
   /** The wrestlers immediately before and after this one on the banzuke. */
   neighbours?: { previous: Rikishi | null; next: Rikishi | null }
   /** Step to a neighbouring wrestler, replacing the current one. */
@@ -39,6 +52,8 @@ export function WrestlerModal({
   rikishi,
   onClose,
   record,
+  results,
+  rankById,
   neighbours,
   onStep,
   onSelectStable,
@@ -309,7 +324,14 @@ export function WrestlerModal({
 
             {profileLoading && <div className={styles.profilePending} aria-busy="true" />}
             {profile && <ProfileRows profile={profile} />}
-            {record && <RecordSection record={record} />}
+            {record && (
+              <RecordSection
+                rikishi={rikishi}
+                record={record}
+                results={results ?? null}
+                rankById={rankById}
+              />
+            )}
 
             <div className={styles.actions}>
               <a
@@ -461,11 +483,25 @@ function CareerLadder({ profile }: { profile: RikishiProfile }) {
   )
 }
 
-/** The tournament so far: score, then every bout as a line. */
-function RecordSection({ record }: { record: RikishiRecord }) {
+/** The tournament so far: score, what is still at stake, then every bout as a line. */
+function RecordSection({
+  rikishi,
+  record,
+  results,
+  rankById,
+}: {
+  rikishi: Rikishi
+  record: RikishiRecord
+  results: ResultsFile | null
+  rankById?: Map<number, Rikishi>
+}) {
   const { language } = useLanguage()
   const strings = useStrings()
   const headingId = useId()
+  const nameOf = (f: { shikona: Rikishi['shikona'] }) => f.shikona[language] || f.shikona.en
+  const outlook = results ? kachikoshiOutlook(record, results.day) : null
+  const next = results ? nextBout(results, rikishi.id) : null
+  const kinboshi = (bout: Bout) => isKinboshi(bout, rikishi, (id) => rankById?.get(id)?.rankCode)
   const outcomeText = (bout: Bout) =>
     bout.outcome === 'absent'
       ? strings.absentDay
@@ -488,6 +524,14 @@ function RecordSection({ record }: { record: RikishiRecord }) {
         {strings.record}
       </h3>
       <p className={styles.score}>{scoreLabel(record, language)}</p>
+      {((outlook?.state === 'pending' && outlook.remaining > 0) || next) && (
+        <p className={styles.stakes}>
+          {outlook?.state === 'pending' && outlook.remaining > 0 && (
+            <span>{strings.outlookNeeds(outlook.needed, outlook.remaining)}</span>
+          )}
+          {next && <span>{strings.nextBout(nameOf(next.opponent), next.day)}</span>}
+        </p>
+      )}
       <ol className={styles.bouts} role="list">
         {record.bouts.map((bout) => (
           <li
@@ -506,7 +550,17 @@ function RecordSection({ record }: { record: RikishiRecord }) {
                 ? strings.boutAgainst(bout.opponent.shikona[language] || bout.opponent.shikona.en)
                 : ''}
             </span>
-            <span className={styles.boutHow}>{outcomeText(bout)}</span>
+            <span className={styles.boutHow}>
+              {kinboshi(bout) && (
+                <>
+                  <span className={styles.kinboshi} lang="ja" aria-hidden="true">
+                    ☆
+                  </span>
+                  <span className="visually-hidden">{strings.kinboshi} </span>
+                </>
+              )}
+              {outcomeText(bout)}
+            </span>
           </li>
         ))}
       </ol>
