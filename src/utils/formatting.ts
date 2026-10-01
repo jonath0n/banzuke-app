@@ -1,3 +1,4 @@
+import { bashoNickname, jpBashoName, jpEraYear } from '../data/kanji'
 import type { Rikishi, RankGroup } from '../types/banzuke'
 import { getRankLabel } from '../constants/ranks'
 
@@ -81,4 +82,15 @@ export function profileUrl(id: number, language: 'en' | 'jp'): string {
   return language === 'jp'
     ? `https://www.sumo.or.jp/ResultRikishiData/profile/${id}/`
     : `https://www.sumo.or.jp/EnSumoDataRikishi/profile/${id}/`
+}
+
+/** A tournament as fans name it: "Jul 2026 (Nagoya)" / 令和八年七月場所. */
+export function bashoLabel(entry: { year: number; month: number }, language: 'en' | 'jp'): string {
+  if (language === 'jp') return `${jpEraYear(entry.year)}${jpBashoName(entry.month)}`
+  const month = new Date(Date.UTC(entry.year, entry.month - 1, 1)).toLocaleString('en-US', {
+    month: 'short',
+    timeZone: 'UTC',
+  })
+  const nickname = bashoNickname(entry.month)
+  return `${month} ${entry.year}${nickname ? ` (${nickname})` : ''}`
 }
