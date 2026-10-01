@@ -96,7 +96,9 @@ function AppContent() {
     (tournamentStatus.kind === 'live' ||
       tournamentStatus.kind === 'finished' ||
       (tournamentStatus.kind === 'upcoming' && tournamentStatus.daysUntil <= 1))
-  const results = useResults(inSeason && banzuke ? banzuke.basho.id : null)
+  const results = useResults(inSeason && banzuke ? banzuke.basho.id : null, {
+    live: tournamentStatus?.kind === 'live',
+  })
   const resultsOn = resultsParam !== '0'
   const file = resultsOn ? results.results : null
   // Before day 1 the file is the card only: every record is 0–0, and seventy

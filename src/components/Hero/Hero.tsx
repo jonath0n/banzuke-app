@@ -8,6 +8,7 @@ import {
 import { getVenue } from '../../constants/venues'
 import { jpBashoName } from '../../data/kanji'
 import { useLanguage } from '../../contexts/LanguageContext'
+import { useNow } from '../../hooks/useNow'
 import { useStrings } from '../../i18n/useStrings'
 import { langAttr } from '../../i18n/strings'
 import { LanguageToggle } from '../LanguageToggle/LanguageToggle'
@@ -60,6 +61,8 @@ const SEPARATOR = ' · '
  * of both.
  */
 export function Hero({ data, resultsFetchedAt = null }: HeroProps) {
+  // "updated 3 minutes ago" keeps counting on an evening the tab stays open.
+  const now = useNow()
   const { language, setLanguage } = useLanguage()
   const strings = useStrings()
   const basho = data?.basho
@@ -78,7 +81,7 @@ export function Hero({ data, resultsFetchedAt = null }: HeroProps) {
     // The snapshot is rewritten only when the sheet itself changes, so in
     // season its stamp reads stale while the results file moves every run;
     // the freshness shown is whichever of the two is being refreshed.
-    const checked = formatRelativeTime(resultsFetchedAt ?? data.fetchedAt, language)
+    const checked = formatRelativeTime(resultsFetchedAt ?? data.fetchedAt, language, now)
     const label = resultsFetchedAt ? strings.resultsUpdated : strings.checked
     const comma = language === 'jp' ? '、' : ', '
     provenance.push(checked ? `${strings.dataFrom}${comma}${label(checked)}` : strings.dataFrom)

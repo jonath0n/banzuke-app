@@ -110,6 +110,16 @@ export function formatDateTime(
   return `${formatted} JST`
 }
 
+/** The hour of the day in JST, 0–23: the results land in the Tokyo evening wherever the visitor is. */
+export function jstHour(date: Date = new Date()): number {
+  const hour = new Intl.DateTimeFormat('en-US', {
+    timeZone: JST_TIME_ZONE,
+    hour: 'numeric',
+    hourCycle: 'h23',
+  }).format(date)
+  return Number(hour)
+}
+
 /** Calendar date of `date` in JST as a day index (days since the epoch). */
 export function jstDayIndex(date: Date): number {
   const { year, month, day } = jstParts(date)
