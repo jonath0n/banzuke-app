@@ -393,7 +393,12 @@ function AppContent() {
       <a href="#main" className="skip-link" data-print="hide">
         {strings.skipLink}
       </a>
-      <Hero data={banzuke} resultsFetchedAt={results.results?.fetchedAt ?? null} />
+      <Hero
+        data={banzuke}
+        resultsFetchedAt={results.results?.fetchedAt ?? null}
+        results={file}
+        rankById={rankById}
+      />
       <main id="main" tabIndex={-1} data-entered={entered || undefined}>
         {banzuke && allRows.length > 0 && (
           <SearchBar

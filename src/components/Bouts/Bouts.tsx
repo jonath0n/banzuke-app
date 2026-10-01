@@ -106,7 +106,7 @@ export function Bouts({ results, division, rows, day, onChangeDay, onSelectRikis
           ‹
         </button>
         <h2 id={headingId} className={styles.heading} aria-live="polite">
-          {strings.boutsHeading(day)}
+          {strings.dayName(day, MAX_DAYS)}
         </h2>
         <button
           type="button"

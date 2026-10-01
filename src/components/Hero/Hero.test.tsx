@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { LanguageProvider } from '../../contexts/LanguageContext'
-import { makeBanzuke } from '../../test/fixtures'
+import { makeBanzuke, makeJuryoBanzuke, makeResultsFile } from '../../test/fixtures'
 import { Hero } from './Hero'
 
 function renderHero(now: string, lang: 'en' | 'jp' = 'en', resultsFetchedAt?: string) {
@@ -31,6 +31,7 @@ describe('Hero', () => {
     renderHero('2026-09-01T12:00:00Z')
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Grand Sumo Banzuke')
     expect(screen.getByText('September Grand Sumo Tournament')).toBeInTheDocument()
+    expect(screen.getByText(/\(Aki\)/)).toBeInTheDocument()
     expect(screen.getByText(/Ryogoku Kokugikan, Tokyo/)).toBeInTheDocument()
     expect(screen.getByText(/Sep 13\s*[–-]\s*27, 2026/)).toBeInTheDocument()
     expect(
@@ -92,6 +93,44 @@ describe('Hero', () => {
     const heading = screen.getByRole('heading', { level: 1 })
     expect(heading).toHaveTextContent('大相撲 番付表')
     expect(heading).toHaveAttribute('lang', 'ja')
+  })
+
+  it('headlines the champion with the record, the prizes and the Juryo yusho once decided', () => {
+    vi.setSystemTime(new Date('2026-09-28T12:00:00Z'))
+    const banzuke = makeBanzuke()
+    const everyone = [...banzuke.rikishi, ...makeJuryoBanzuke().rikishi]
+    const rankById = new Map(everyone.map((r) => [r.id, r]))
+    const results = makeResultsFile({
+      day: 15,
+      yusho: { makuuchi: 4227, juryo: 3842 },
+      sansho: [
+        { kind: 'kanto', rikishiId: 4055 },
+        { kind: 'kanto', rikishiId: 3983 },
+        { kind: 'gino', rikishiId: 4055 },
+      ],
+    })
+    render(
+      <LanguageProvider>
+        <Hero data={banzuke} results={results} rankById={rankById} />
+      </LanguageProvider>
+    )
+    expect(screen.getByText('Yusho: Onosato (10–2)')).toBeInTheDocument()
+    expect(screen.getByText('Fighting Spirit').parentElement).toHaveTextContent(
+      'Fighting Spirit Wakatakakage, Dewanoryu'
+    )
+    expect(screen.getByText('Technique').parentElement).toHaveTextContent('Technique Wakatakakage')
+    expect(screen.queryByText('Outstanding Performance')).toBeNull()
+    expect(screen.getByText('Juryo yusho: Hoshoryu')).toBeInTheDocument()
+  })
+
+  it('shows no headline while the yusho is open', () => {
+    vi.setSystemTime(new Date('2026-09-20T12:00:00Z'))
+    render(
+      <LanguageProvider>
+        <Hero data={makeBanzuke()} results={makeResultsFile()} rankById={new Map()} />
+      </LanguageProvider>
+    )
+    expect(screen.queryByText(/Yusho:/)).toBeNull()
   })
 
   it('renders a placeholder deck without data', () => {

@@ -6,7 +6,9 @@ import {
   getTournamentStatus,
 } from '../../utils/dates'
 import { getVenue } from '../../constants/venues'
-import { jpBashoName } from '../../data/kanji'
+import { bashoNickname, jpBashoName } from '../../data/kanji'
+import { SANSHO_KINDS, scoreLabel, type ResultsFile } from '../../data/results'
+import type { Rikishi } from '../../types/banzuke'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { useNow } from '../../hooks/useNow'
 import { useStrings } from '../../i18n/useStrings'
@@ -18,6 +20,10 @@ interface HeroProps {
   data: Banzuke | null
   /** When the results file is loaded, its own fetch time; it is what moves in season. */
   resultsFetchedAt?: string | null
+  /** The tournament's results, for the champion's line once the yusho is decided. */
+  results?: ResultsFile | null
+  /** Everyone on the banzuke by id, to name the champion and the prize winners. */
+  rankById?: Map<number, Rikishi>
 }
 
 function TournamentStatus({ data }: { data: Banzuke }) {
@@ -60,7 +66,7 @@ const SEPARATOR = ' · '
  * (令和八年九月場所, set vertically in mincho) as a spine down the right edge
  * of both.
  */
-export function Hero({ data, resultsFetchedAt = null }: HeroProps) {
+export function Hero({ data, resultsFetchedAt = null, results = null, rankById }: HeroProps) {
   // "updated 3 minutes ago" keeps counting on an evening the tab stays open.
   const now = useNow()
   const { language, setLanguage } = useLanguage()
@@ -72,6 +78,26 @@ export function Hero({ data, resultsFetchedAt = null }: HeroProps) {
   const announced = basho?.announcedAt ? formatDateTime(basho.announcedAt, language) : ''
   // The masthead as the sheet prints it: era year over month-tournament.
   const masthead = basho ? `${basho.yearJp}${jpBashoName(basho.month)}` : ''
+  // "September Grand Sumo Tournament (Aki)": the season name fans use, English only.
+  const nickname = basho && language === 'en' ? bashoNickname(basho.month) : ''
+
+  // Once the yusho is decided: the champion with the record, the three prizes,
+  // the Juryo champion small. The one line a finished basho is remembered by.
+  const nameOf = (id: number) => {
+    const r = rankById?.get(id)
+    return r ? r.shikona[language] || r.shikona.en : ''
+  }
+  const championId = results?.yusho.makuuchi
+  const champion = championId != null ? nameOf(championId) : ''
+  const championRecord = championId != null ? results?.records[String(championId)] : undefined
+  const prizes = SANSHO_KINDS.flatMap((kind) => {
+    const names = (results?.sansho ?? [])
+      .filter((s) => s.kind === kind)
+      .map((s) => nameOf(s.rikishiId))
+      .filter(Boolean)
+    return names.length > 0 ? [{ kind, names }] : []
+  })
+  const juryoChampion = results?.yusho.juryo != null ? nameOf(results.yusho.juryo) : ''
 
   const provenance: string[] = []
   if (announced) provenance.push(strings.announcedOn(announced))
@@ -114,6 +140,7 @@ export function Hero({ data, resultsFetchedAt = null }: HeroProps) {
         {data ? (
           <>
             <strong>{bashoName}</strong>
+            {nickname ? ` (${nickname})` : ''}
             {venue ? `${SEPARATOR}${venue[language]}` : ''}
             {dates ? `${SEPARATOR}${dates}` : ''}
             <TournamentStatus data={data} />
@@ -122,6 +149,30 @@ export function Hero({ data, resultsFetchedAt = null }: HeroProps) {
           '—'
         )}
       </p>
+
+      {champion && (
+        <p className={styles.headline}>
+          <span className={styles.champion}>
+            {strings.headlineYusho(
+              champion,
+              championRecord ? scoreLabel(championRecord, language) : ''
+            )}
+          </span>
+          {prizes.length > 0 && (
+            <span className={styles.prizes}>
+              {prizes.map(({ kind, names }) => (
+                <span key={kind} className={styles.prize}>
+                  <span className={styles.prizeName}>{strings.sansho[kind]}</span>{' '}
+                  {names.join(language === 'jp' ? '、' : ', ')}
+                </span>
+              ))}
+            </span>
+          )}
+          {juryoChampion && (
+            <span className={styles.juryo}>{strings.headlineJuryoYusho(juryoChampion)}</span>
+          )}
+        </p>
+      )}
 
       {provenance.length > 0 && <p className={styles.provenance}>{provenance.join(SEPARATOR)}</p>}
     </header>

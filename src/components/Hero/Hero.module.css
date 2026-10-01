@@ -127,6 +127,42 @@
 }
 
 /* Announcement, source and freshness */
+/* The champion's line: the record a finished basho is remembered by */
+.headline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-4);
+  margin: var(--space-2) 0 0;
+  font-size: var(--text-base);
+  line-height: 1.4;
+}
+
+.champion {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.prizes {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  color: var(--text);
+}
+
+.prize {
+  white-space: nowrap;
+}
+
+.prizeName {
+  font-weight: var(--label-weight);
+  color: var(--muted);
+}
+
+.juryo {
+  color: var(--muted);
+}
+
 .provenance {
   margin: var(--space-2) 0 0;
   font-size: var(--text-sm);

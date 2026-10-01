@@ -371,7 +371,7 @@ describe('App', () => {
     render(<App />)
     const toggle = await screen.findByRole('button', { name: /Results.*The day 1 card/ })
     expect(toggle).toHaveAttribute('aria-pressed', 'true')
-    expect(screen.getByRole('region', { name: 'Day 1' })).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: 'Day 1 · Shonichi' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Onosato, West/ })).not.toHaveAccessibleName(/wins/)
     expect(screen.queryByText('0–0')).toBeNull()
   })
