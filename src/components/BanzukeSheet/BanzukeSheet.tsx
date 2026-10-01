@@ -8,6 +8,7 @@ import { useStrings } from '../../i18n/useStrings'
 import { langAttr } from '../../i18n/strings'
 import { describeMovement, type Movement } from '../../utils/diff'
 import { MovementBadge } from '../MovementBadge/MovementBadge'
+import { PromotionPill } from '../PromotionPill/PromotionPill'
 import { describeRecord, type RikishiRecord } from '../../data/results'
 import { Hoshitori } from '../Hoshitori/Hoshitori'
 import { handleRovingKey } from '../../utils/rovingFocus'
@@ -152,7 +153,16 @@ const Column = memo(function Column({
         <span className={styles.name} lang={lang}>
           {name}
         </span>
-        {movement && <MovementBadge movement={movement} variant="sheet" />}
+        {/* The JSA prints 新入幕 and its kin beside a name on its own banzuke
+            page; on the sheet the flag reads down the column under the name. */}
+        <PromotionPill rikishi={rikishi} variant="sheet" />
+        {movement && (
+          <MovementBadge
+            movement={movement}
+            variant="sheet"
+            hasPromotion={rikishi.promotion != null}
+          />
+        )}
         {record && <Hoshitori record={record} variant="sheet" champion={champion} />}
       </span>
       {marks &&

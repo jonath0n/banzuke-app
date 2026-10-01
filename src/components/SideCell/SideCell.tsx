@@ -1,11 +1,11 @@
 import { memo } from 'react'
 import type { Language, Rikishi, RankLevel } from '../../types/banzuke'
 import { useLanguage } from '../../contexts/LanguageContext'
-import { describePromotion } from '../../utils/promotion'
 import { SIDE_KANJI } from '../../data/kanji'
 import { useStrings } from '../../i18n/useStrings'
 import { describeMovement, type Movement } from '../../utils/diff'
 import { MovementBadge } from '../MovementBadge/MovementBadge'
+import { PromotionPill } from '../PromotionPill/PromotionPill'
 import { describeRecord, type RikishiRecord } from '../../data/results'
 import { Hoshitori } from '../Hoshitori/Hoshitori'
 import styles from './SideCell.module.css'
@@ -62,17 +62,7 @@ function SideCellInner({
   const { language } = useLanguage()
   const strings = useStrings()
 
-  const promotionLabel = rikishi ? describePromotion(rikishi, language, 'short') : null
-  const badge =
-    rikishi && promotionLabel ? (
-      <span
-        className={styles.pill}
-        title={describePromotion(rikishi, language) ?? undefined}
-        lang={language === 'jp' ? 'ja' : 'en'}
-      >
-        {promotionLabel}
-      </span>
-    ) : null
+  const badge = rikishi ? <PromotionPill rikishi={rikishi} variant="row" /> : null
 
   const displayName = getDisplayName(rikishi, language)
   const langAttr = language === 'jp' ? 'ja' : 'en'

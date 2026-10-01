@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { type Mock, afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
@@ -108,7 +108,9 @@ describe('App', () => {
     window.history.replaceState(null, '', '/?q=ozeki')
     render(<App />)
     await screen.findByRole('searchbox')
-    expect(screen.getByRole('status', { name: '' })).toHaveTextContent('2 of 24 wrestlers')
+    expect(within(screen.getByRole('search')).getByRole('status')).toHaveTextContent(
+      '2 of 24 wrestlers'
+    )
     expect(screen.queryByRole('button', { name: /Hoshoryu/ })).toBeNull()
     await user.click(screen.getByRole('button', { name: 'Clear search' }))
     expect(window.location.search).toBe('')
@@ -177,19 +179,37 @@ describe('App', () => {
     expect(screen.getByRole('tab', { name: /Juryo/ })).toHaveAttribute('aria-selected', 'true')
   })
 
-  it('offers Changes when the archive has a previous tournament, and annotates the sheet with ?diff=1', async () => {
+  it('has Changes on by default before day 1, and ?diff=0 turns it off', async () => {
+    // The default clock is 2026-09-04: the banzuke is out, day 1 is nine days away.
     const user = userEvent.setup()
     render(<App />)
     const toggle = await screen.findByRole('button', { name: /Changes.*since July 2026/ })
-    expect(toggle).toHaveAttribute('aria-pressed', 'false')
-    await user.click(toggle)
-    expect(window.location.search).toBe('?diff=1')
+    expect(toggle).toHaveAttribute('aria-pressed', 'true')
     // Hoshoryu (id 1000 in the raw fixture) is not in the archive fixture → new.
     expect(
       await screen.findByRole('button', { name: /Hoshoryu, East.*New to the sheet/ })
     ).toBeInTheDocument()
     expect(
       screen.getByRole('region', { name: /Left Makuuchi since July 2026/ })
+    ).toBeInTheDocument()
+    await user.click(toggle)
+    expect(window.location.search).toBe('?diff=0')
+    expect(toggle).toHaveAttribute('aria-pressed', 'false')
+    expect(screen.getByRole('button', { name: /Hoshoryu, East/ })).not.toHaveAccessibleName(
+      /New to the sheet/
+    )
+  })
+
+  it('has Changes off by default during the tournament, and ?diff=1 turns it on', async () => {
+    vi.setSystemTime(new Date('2026-09-24T12:00:00+09:00'))
+    const user = userEvent.setup()
+    render(<App />)
+    const toggle = await screen.findByRole('button', { name: /Changes.*since July 2026/ })
+    expect(toggle).toHaveAttribute('aria-pressed', 'false')
+    await user.click(toggle)
+    expect(window.location.search).toBe('?diff=1')
+    expect(
+      await screen.findByRole('button', { name: /Hoshoryu, East.*New to the sheet/ })
     ).toBeInTheDocument()
   })
 

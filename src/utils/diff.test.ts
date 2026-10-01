@@ -131,6 +131,13 @@ describe('labels', () => {
   })
 
   it('describes a movement as a sentence', () => {
+    const previousRecord = { wins: 9, losses: 6, absences: 0, bouts: [] }
+    expect(
+      describeMovement({ kind: 'up', previous: prev, sideChanged: false, previousRecord }, 'en')
+    ).toBe('Up from M5, 9–6')
+    expect(
+      describeMovement({ kind: 'down', previous: prev, sideChanged: false, previousRecord }, 'jp')
+    ).toBe('前頭五（9勝6敗）から')
     expect(describeMovement({ kind: 'up', previous: prev, sideChanged: false }, 'en')).toBe(
       'Up from M5'
     )
@@ -164,5 +171,26 @@ describe('labels', () => {
         'jp'
       )
     ).toBe('西から東へ')
+  })
+})
+
+describe('diffBanzuke with the previous results', () => {
+  it("carries each returning wrestler's previous record on the movement", () => {
+    const previous = makeArchivedBanzuke()
+    const returning = previous.rikishi[0]
+    const current = [
+      {
+        rikishi: makeRikishi({ id: returning.id, rankCode: 500, rankNumber: 1 }),
+        division: 'makuuchi' as const,
+      },
+      { rikishi: makeRikishi({ id: 999 }), division: 'makuuchi' as const },
+    ]
+    const records = { [String(returning.id)]: { wins: 9, losses: 6, absences: 0, bouts: [] } }
+    const diff = diffBanzuke(current, previous, records)
+    expect(diff.movements.get(returning.id)?.previousRecord).toEqual(records[String(returning.id)])
+    expect(diff.movements.get(999)?.previousRecord).toBeUndefined()
+    expect(
+      diffBanzuke(current, previous).movements.get(returning.id)?.previousRecord
+    ).toBeUndefined()
   })
 })

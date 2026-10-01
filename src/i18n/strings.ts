@@ -87,7 +87,7 @@ const en = {
     name: 'The ring name, the shikona, reads top to bottom. A wrestler takes one on joining a stable, and it often shares a character with the stablemaster or the stable’s tradition.',
     gold: 'The gold rule at the head of a column marks a Yokozuna, the one rank this sheet gives a colour of its own.',
     changes:
-      'With Changes on, the small mark under a name is the rank the wrestler held on the previous banzuke: ▲ for a rise, ▼ for a fall, New for a newcomer to the division.',
+      'With Changes on, the small mark under a name is the rank the wrestler held on the previous banzuke: ▲ for a rise, ▼ for a fall, with the record that earned it; New for a newcomer to the division.',
     results:
       'With Results on during a tournament, the score under each name is wins and losses so far. Eight wins is kachi-koshi, a winning record; a hairline 優 marks the champion.',
   } satisfies Record<GuideKey, string>,
@@ -249,7 +249,7 @@ const jp: Strings = {
     name: '四股名は上から下へ読みます。入門時に師匠や部屋の伝統にちなんだ字を受け継ぐことが多く、部屋ごとの字が見て取れます。',
     gold: '列の頭の金の線は横綱の印です。この番付表でただひとつ色を持つ地位です。',
     changes:
-      '「変動」をつけると、四股名の下に前の番付での地位が出ます。▲は昇進、▼は降格、新は新入幕・新十両です。',
+      '「変動」をつけると、四股名の下に前の番付での地位が出ます。▲は番付が上がった力士、▼は下がった力士で、横の数字は前の場所の星取です。新はその段に新しく入った力士です。',
     results:
       '場所中に「星取」をつけると、四股名の下にこれまでの勝敗が出ます。八勝で勝ち越し、優の印は優勝力士です。',
   },

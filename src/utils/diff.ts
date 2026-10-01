@@ -8,6 +8,7 @@
  */
 import type { Division, Language, Rikishi, Side } from '../types/banzuke'
 import type { ArchivedBanzuke, ArchivedRikishi } from '../data/archive'
+import { scoreLabel, type RikishiRecord } from '../data/results'
 import { getRankLabel, getRankLevelFromCode, RANK_LEVEL_KANJI } from '../constants/ranks'
 import { jpRankShort } from '../data/kanji'
 
@@ -27,6 +28,8 @@ export interface Movement {
   previous: PreviousRank | null
   /** East ↔ West at an otherwise identical rank. */
   sideChanged: boolean
+  /** The previous tournament's record, when its results file is on hand. */
+  previousRecord?: RikishiRecord | null
 }
 
 export interface Departure {
@@ -78,7 +81,11 @@ function previousRank(entry: ArchivedRikishi): PreviousRank {
   return { division, rankCode, rankNumber, seat, side }
 }
 
-export function diffBanzuke(current: CurrentRow[], previous: ArchivedBanzuke): BanzukeDiff {
+export function diffBanzuke(
+  current: CurrentRow[],
+  previous: ArchivedBanzuke,
+  previousRecords: Record<string, RikishiRecord> | null = null
+): BanzukeDiff {
   const previousById = new Map(previous.rikishi.map((r) => [r.id, r]))
   const currentById = new Map(current.map((row) => [row.rikishi.id, row]))
 
@@ -94,6 +101,7 @@ export function diffBanzuke(current: CurrentRow[], previous: ArchivedBanzuke): B
       kind,
       previous: previousRank(before),
       sideChanged: kind === 'same' && before.side !== rikishi.side,
+      ...(previousRecords ? { previousRecord: previousRecords[String(rikishi.id)] ?? null } : {}),
     })
   }
 
@@ -128,20 +136,22 @@ const SIDE_JA: Record<Side, string> = { east: '東', west: '西' }
 
 /** A sentence for accessible names and the list view. */
 export function describeMovement(movement: Movement, language: Language): string {
-  const { kind, previous, sideChanged } = movement
+  const { kind, previous, sideChanged, previousRecord } = movement
   if (kind === 'new' || !previous) return language === 'jp' ? '番付外から' : 'New to the sheet'
   const to: Side = previous.side === 'east' ? 'west' : 'east'
+  const score = previousRecord ? scoreLabel(previousRecord, language) : ''
   if (language === 'jp') {
     const from = previousRankLabel(previous, 'jp')
     if (kind === 'same') {
       return sideChanged ? `${SIDE_JA[previous.side]}から${SIDE_JA[to]}へ` : '変動なし'
     }
-    return `${from}から`
+    return score ? `${from}（${score}）から` : `${from}から`
   }
   const from = previousRankLabel(previous, 'en')
   if (kind === 'same') {
     if (!sideChanged) return 'Unchanged'
     return `Unchanged, ${SIDE_EN[previous.side]} to ${SIDE_EN[to]}`
   }
-  return `${kind === 'up' ? 'Up' : 'Down'} from ${from}`
+  const moved = `${kind === 'up' ? 'Up' : 'Down'} from ${from}`
+  return score ? `${moved}, ${score}` : moved
 }

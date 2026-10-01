@@ -206,8 +206,16 @@ function AppContent() {
   // toggle only appears when there is something to diff against.
   const index = useArchiveIndex()
   const prevEntry = banzuke && index ? previousEntry(index, banzuke.basho.id) : null
-  const diffWanted = diffParam === '1' && prevEntry != null
+  // On by default from the banzuke's announcement until day 1 — the fortnight
+  // when the sheet is new and the question is who moved — and off once the
+  // tournament has a story of its own. ?diff=1 / ?diff=0 override either way.
+  const changesDefault = tournamentStatus?.kind === 'upcoming' && prevEntry != null
+  const diffOn = diffParam === '1' || (diffParam !== '0' && changesDefault)
+  const diffWanted = diffOn && prevEntry != null
   const previous = useArchivedBanzuke(diffWanted ? prevEntry : null)
+  // The previous tournament's results explain the moves (▲M5 9–6); the file is
+  // optional, like the archive itself.
+  const previousResults = useResults(diffWanted && prevEntry ? prevEntry.bashoId : null)
   const jpEra =
     prevEntry && banzuke && prevEntry.year !== banzuke.basho.year ? jpEraYear(prevEntry.year) : ''
   const sinceLabel = prevEntry
@@ -234,8 +242,11 @@ function AppContent() {
     [data]
   )
   const diff = useMemo(
-    () => (previous.archive ? diffBanzuke(currentRows, previous.archive) : null),
-    [currentRows, previous.archive]
+    () =>
+      previous.archive
+        ? diffBanzuke(currentRows, previous.archive, previousResults.results?.records ?? null)
+        : null,
+    [currentRows, previous.archive, previousResults.results]
   )
   const movements = diffWanted && diff ? diff.movements : null
 
@@ -378,8 +389,8 @@ function AppContent() {
             <ViewToggle view={view} onViewChange={handleChangeView} />
             {prevEntry && (
               <ChangesToggle
-                on={diffParam === '1'}
-                onChange={(on) => setDiffParam(on ? '1' : null)}
+                on={diffOn}
+                onChange={(on) => setDiffParam(on === changesDefault ? null : on ? '1' : '0')}
                 sinceLabel={sinceLabel}
               />
             )}
