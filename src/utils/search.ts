@@ -1,14 +1,14 @@
 import type { Rikishi } from '../types/banzuke'
 import { getRankLabel, RANK_LEVEL_KANJI, RANK_LEVEL_NAMES, isSanyaku } from '../constants/ranks'
-import { jpRankShort } from '../data/kanji'
+import { foldVariantKanji, jpRankShort } from '../data/kanji'
 
 /**
  * Normalizes text for matching: compatibility forms (full-width → ASCII),
  * lower case, no diacritics (Hōshōryū → hoshoryu), katakana → hiragana,
- * collapsed whitespace.
+ * variant kanji to their common form (琴櫻 → 琴桜), collapsed whitespace.
  */
 export function foldForSearch(value: string): string {
-  return value
+  return foldVariantKanji(value)
     .normalize('NFKC')
     .toLowerCase()
     .normalize('NFD')
@@ -22,6 +22,8 @@ export interface SearchEntry {
   rikishi: Rikishi
   /** Folded, space-separated searchable text. */
   text: string
+  /** The same text as whole words, for terms that must not match inside another. */
+  tokens: Set<string>
 }
 
 function rankTokens(r: Rikishi): string[] {
@@ -47,9 +49,8 @@ function promotionTokens(r: Rikishi): string[] {
 
 /** Precomputes the searchable text for each wrestler. */
 export function buildSearchIndex(rows: Rikishi[]): SearchEntry[] {
-  return rows.map((rikishi) => ({
-    rikishi,
-    text: foldForSearch(
+  return rows.map((rikishi) => {
+    const text = foldForSearch(
       [
         rikishi.shikona.en,
         rikishi.shikona.jp,
@@ -63,16 +64,28 @@ export function buildSearchIndex(rows: Rikishi[]): SearchEntry[] {
         ...rankTokens(rikishi),
         ...promotionTokens(rikishi),
       ].join(' ')
-    ),
-  }))
+    )
+    return { rikishi, text, tokens: new Set(text.split(' ')) }
+  })
 }
 
 function termsOf(query: string): string[] {
   return foldForSearch(query).split(' ').filter(Boolean)
 }
 
+/**
+ * A rank code (m1, j2, s, k…) or a bare number is a whole word: "m1" means
+ * Maegashira 1, not M10 through M17. Everything else matches inside a word,
+ * so "nosato" still finds Onosato.
+ */
+function isWholeWordTerm(term: string): boolean {
+  return /^(?:[ymoskj]\d+|\d+)$/.test(term)
+}
+
 function matches(entry: SearchEntry, terms: string[]): boolean {
-  return terms.every((term) => entry.text.includes(term))
+  return terms.every((term) =>
+    isWholeWordTerm(term) ? entry.tokens.has(term) : entry.text.includes(term)
+  )
 }
 
 /**

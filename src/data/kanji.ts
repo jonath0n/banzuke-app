@@ -68,6 +68,29 @@ export function jpEraYear(year: number): string {
 export const SIDE_KANJI = { east: '東', west: '西' } as const
 
 /**
+ * Variant characters the JSA keeps in ring names, with the common form a
+ * visitor is likely to type: 琴櫻 is found by 琴桜, Takayasu's 高 by its ladder form. The names
+ * themselves are never rewritten — the sheet prints what the banzuke prints.
+ * 龍/竜 are not here: they are different characters in a ring name, not variants.
+ */
+export const VARIANT_KANJI: Record<string, string> = {
+  // Keys are escaped: the font subset covers the source, and these variants need
+  // no glyph of their own — the names that carry them come from the data.
+  '\u{6AFB}': '桜', // 櫻 sakura (琴櫻)
+  '\u{9AD9}': '高', // taka, the "ladder" form (Takayasu)
+  '\u{FA11}': '崎', // saki
+  '\u{5FB7}': '徳', // toku
+  '\u{7028}': '瀬', // se
+}
+
+const VARIANT_PATTERN = new RegExp(`[${Object.keys(VARIANT_KANJI).join('')}]`, 'g')
+
+/** The text with every variant character replaced by its common form. */
+export function foldVariantKanji(text: string): string {
+  return text.replace(VARIANT_PATTERN, (ch) => VARIANT_KANJI[ch])
+}
+
+/**
  * Prefecture as the banzuke prints it, without its administrative suffix:
  * 石川県 → 石川, 大阪府 → 大阪, 東京都 → 東京. Countries are left alone.
  * The sheet has one short band for this, so every character saved counts.
