@@ -202,6 +202,8 @@ const en = {
   errorMessage: 'An unexpected error occurred while displaying this content.',
   errorDetails: 'Error details',
   errorRetry: 'Try again',
+  errorDialog: 'The details could not be loaded. Reload the page to try again.',
+  errorReload: 'Reload',
 
   // Shortcuts
   shortcuts: 'Keyboard shortcuts',
@@ -401,6 +403,8 @@ const jp: Strings = {
   errorMessage: 'この部分の表示中に予期しないエラーが起きました。',
   errorDetails: 'エラーの詳細',
   errorRetry: 'もう一度試す',
+  errorDialog: '詳細を読み込めませんでした。ページを再読み込みしてください。',
+  errorReload: '再読み込み',
 
   shortcuts: 'キーボードショートカット',
   shortcutSearch: '検索欄にフォーカス',
