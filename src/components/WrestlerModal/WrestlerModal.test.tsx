@@ -281,14 +281,18 @@ describe('WrestlerModal', () => {
     try {
       renderModal()
       await user.click(screen.getByRole('button', { name: 'Copy link' }))
-      expect(writeText).toHaveBeenCalledWith(window.location.href)
+      // The share page for this wrestler, which forwards to the app
+      expect(writeText).toHaveBeenCalledWith(`${window.location.origin}/r/4227/`)
       expect(share).not.toHaveBeenCalled()
       expect(screen.getByRole('status')).toHaveTextContent('Link copied')
       expect(screen.getByRole('button', { name: 'Link copied' })).toBeInTheDocument()
 
       matchMedia.mockReturnValue({ matches: true })
       await user.click(screen.getByRole('button', { name: 'Link copied' }))
-      expect(share).toHaveBeenCalledWith({ url: window.location.href, title: document.title })
+      expect(share).toHaveBeenCalledWith({
+        url: `${window.location.origin}/r/4227/`,
+        title: document.title,
+      })
     } finally {
       Reflect.deleteProperty(navigator, 'share')
       Reflect.deleteProperty(navigator, 'clipboard')
