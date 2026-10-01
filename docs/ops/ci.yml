@@ -1,0 +1,99 @@
+name: CI
+
+# Checks for pull requests and non-main branches. Deploys (and the daily data
+# refresh) live in deploy.yml.
+
+on:
+  pull_request:
+  push:
+    branches-ignore: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Validate, test, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate (types, lint, format, CSS modules)
+        run: npm run validate
+
+      - name: Validate committed data snapshot
+        run: npm run validate-data
+
+      - name: Test with coverage
+        run: npm run test:run -- --coverage
+
+      - name: Test under other time zones
+        run: npm run test:tz
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage
+          path: coverage/lcov.info
+          retention-days: 7
+
+      - name: Keep the build for the smoke test
+        uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist
+          retention-days: 1
+
+  # The built site in a real Chromium: geometry (East right of West, bands
+  # in line, tabs seated), no horizontal scroll, axe, the keyboard walk, the
+  # in-season overlays — at three widths in both languages. jsdom cannot see
+  # any of it, and every recent visual regression was geometric.
+  smoke:
+    name: Smoke test in Chromium
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist
+
+      - name: Smoke test
+        run: npm run test:e2e
+
+      - name: Upload the report and screenshots
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 7

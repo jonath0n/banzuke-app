@@ -40,3 +40,7 @@ coverage/
 
 # Workflow scratch output
 .data/
+
+# Playwright
+test-results/
+playwright-report/
