@@ -299,6 +299,9 @@ function AppContent() {
               onPointerEnter={prefetchProfiles}
               onFocus={prefetchProfiles}
             >
+              {/* The division as a heading for readers walking the outline; the
+                  tab already names it for the eye. */}
+              <h2 className="visually-hidden">{strings.division[division]}</h2>
               {/* Both views share the grid's empty state, so the copy and the
                   "show N in Juryo" offer stay identical whichever is showing. */}
               {view === 'sheet' && !nothingToShow ? (

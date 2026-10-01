@@ -124,7 +124,9 @@ export function Bouts({ results, division, rows, day, onChangeDay, onSelectRikis
       {matches.length === 0 ? (
         <p className={styles.none}>{strings.boutsNone}</p>
       ) : (
-        <ol className={styles.list}>{matches.map(matchRow)}</ol>
+        <ol className={styles.list} role="list">
+          {matches.map(matchRow)}
+        </ol>
       )}
       {playoff.length > 0 && (
         <section className={styles.playoff} aria-labelledby={playoffHeadingId}>
@@ -132,7 +134,9 @@ export function Bouts({ results, division, rows, day, onChangeDay, onSelectRikis
             {playoffFighters(playoff).length > 2 ? strings.playoffThreeWay : strings.playoff}
           </h3>
           <p className={styles.playoffNote}>{strings.playoffNote}</p>
-          <ol className={styles.list}>{playoff.map(matchRow)}</ol>
+          <ol className={styles.list} role="list">
+            {playoff.map(matchRow)}
+          </ol>
         </section>
       )}
     </section>

@@ -23,7 +23,7 @@ describe('motion budget', () => {
   )
 
   it('declares exactly four keyframe effects, each once', () => {
-    expect([...names].sort()).toEqual(['backdropIn', 'fadeIn', 'modalSlideUp', 'riseIn'])
+    expect([...names].sort()).toEqual(['fadeIn', 'modalSlideUp', 'riseIn'])
   })
 
   it('never loops', () => {

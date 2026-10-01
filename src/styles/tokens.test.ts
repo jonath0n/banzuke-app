@@ -90,4 +90,11 @@ describe.each([
     const rgb = tokens['accent-rgb'].split(/\s+/).map(Number)
     expect(rgb).toEqual(hexToRgb(tokens.accent))
   })
+
+  it.each(['danger', 'warning'])('keeps --%s-rgb in sync with --%s in both schemes', (name) => {
+    for (const scheme of [light, dark]) {
+      const rgb = scheme[`${name}-rgb`].split(/\s+/).map(Number)
+      expect(rgb).toEqual(hexToRgb(scheme[name]))
+    }
+  })
 })

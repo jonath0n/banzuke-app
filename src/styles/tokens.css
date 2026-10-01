@@ -35,11 +35,12 @@
      did not actually read as a rule. */
   --gold: #9a7615;
 
-  /* Problem colours for data warnings (AA on --bg at small sizes) */
+  /* Problem colours for data warnings (AA on --bg at small sizes). The -rgb
+     triplets are the same colours, for tints; tokens.test.ts keeps them in step. */
   --danger: #b91c1c;
-  --danger-rgb: 220 38 38;
+  --danger-rgb: 185 28 28;
   --warning: #a04a08;
-  --warning-rgb: 217 119 6;
+  --warning-rgb: 160 74 8;
 
   /* Typography ----------------------------------------------------------- */
   /* The wordmark only: FranSans is a poster face whose M and A blur at text sizes */
@@ -167,7 +168,9 @@
     --gold: #e8c547;
 
     --danger: #fca5a5;
+    --danger-rgb: 252 165 165;
     --warning: #fcd34d;
+    --warning-rgb: 252 211 77;
 
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
     --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.3);

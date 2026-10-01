@@ -124,14 +124,16 @@ describe('BanzukeGrid', () => {
         onClearSearch={onClearSearch}
       />
     )
-    expect(screen.getByRole('status')).toHaveTextContent('Nothing on the sheet for “mongolia”.')
+    // Not a live region: the search bar's own count announces the zero
+    expect(screen.queryByRole('status')).toBeNull()
+    expect(screen.getByText('Nothing on the sheet for “mongolia”.')).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Show all wrestlers' }))
     expect(onClearSearch).toHaveBeenCalled()
   })
 
   it('shows the no-data message by default', () => {
     renderGrid(<BanzukeGrid rows={[]} />)
-    expect(screen.getByRole('status')).toHaveTextContent('No rikishi available right now.')
+    expect(screen.getByText('No rikishi available right now.')).toBeInTheDocument()
   })
 
   it('announces loading', () => {
