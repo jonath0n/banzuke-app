@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useBanzuke } from './hooks/useBanzuke'
 import { loadProfiles } from './hooks/useProfiles'
 import { loadStables, useStableState } from './hooks/useStables'
@@ -31,8 +31,16 @@ import { Guide, GuideLink } from './components/Guide/Guide'
 import { Departed } from './components/Departed/Departed'
 import { Bouts } from './components/Bouts/Bouts'
 import { TodayStrip } from './components/TodayStrip/TodayStrip'
-import { WrestlerModal } from './components/WrestlerModal/WrestlerModal'
-import { StableModal } from './components/StableModal/StableModal'
+// The two dialogs are not on the first paint: each arrives as its own chunk
+// the first time it is needed (the wrestler dialog carries the glossary and
+// kimarite tables with it). The guide's legend shares a module with the link
+// beside the controls, so it stays in the main chunk.
+const WrestlerModal = lazy(() =>
+  import('./components/WrestlerModal/WrestlerModal').then((m) => ({ default: m.WrestlerModal }))
+)
+const StableModal = lazy(() =>
+  import('./components/StableModal/StableModal').then((m) => ({ default: m.StableModal }))
+)
 import { Footer } from './components/Footer/Footer'
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary'
 import { ScrollToTop } from './components/ScrollToTop/ScrollToTop'
@@ -562,30 +570,32 @@ function AppContent() {
       </main>
       <Footer helpOpen={helpOpen} onToggleHelp={setHelpOpen} />
       <ScrollToTop />
-      <WrestlerModal
-        rikishi={selectedRikishi}
-        onClose={handleCloseModal}
-        record={selectedRikishi ? (records?.[String(selectedRikishi.id)] ?? null) : null}
-        results={file}
-        rankById={rankById}
-        kadoban={selectedRikishi ? kadoban.has(selectedRikishi.id) : false}
-        neighbours={neighbours}
-        onStep={handleStep}
-        onSelectStable={handleSelectStable}
-      />
-      <StableModal
-        heyaId={selectedHeyaId}
-        roster={roster}
-        stable={stable}
-        stableLoading={stableLoading}
-        movements={movements}
-        kadoban={kadoban}
-        records={records}
-        champions={champions}
-        onClose={handleCloseStable}
-        onSelectRikishi={handleSelectMember}
-        onShowOnBanzuke={handleShowOnBanzuke}
-      />
+      <Suspense fallback={null}>
+        <WrestlerModal
+          rikishi={selectedRikishi}
+          onClose={handleCloseModal}
+          record={selectedRikishi ? (records?.[String(selectedRikishi.id)] ?? null) : null}
+          results={file}
+          rankById={rankById}
+          kadoban={selectedRikishi ? kadoban.has(selectedRikishi.id) : false}
+          neighbours={neighbours}
+          onStep={handleStep}
+          onSelectStable={handleSelectStable}
+        />
+        <StableModal
+          heyaId={selectedHeyaId}
+          roster={roster}
+          stable={stable}
+          stableLoading={stableLoading}
+          movements={movements}
+          kadoban={kadoban}
+          records={records}
+          champions={champions}
+          onClose={handleCloseStable}
+          onSelectRikishi={handleSelectMember}
+          onShowOnBanzuke={handleShowOnBanzuke}
+        />
+      </Suspense>
     </>
   )
 }
