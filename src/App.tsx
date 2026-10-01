@@ -1,29 +1,24 @@
-import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { useBanzuke } from './hooks/useBanzuke'
 import { loadProfiles } from './hooks/useProfiles'
-import { loadStables, useStableState } from './hooks/useStables'
-import { rosterFor } from './utils/stables'
-import { useArchiveIndex, useArchivedBanzuke } from './hooks/useArchive'
-import { useResults } from './hooks/useResults'
-import { previousEntry } from './data/archive'
-import { diffBanzuke, type CurrentRow } from './utils/diff'
-import { buildGuide } from './utils/guide'
-import { kadobanIds } from './utils/stakes'
-import { getTournamentStatus } from './utils/dates'
+import { loadStables } from './hooks/useStables'
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
-import { clearUrlParam, setUrlParam, setUrlParams, useUrlParam } from './hooks/useUrlState'
+import { useUrlParam } from './hooks/useUrlState'
 import { useStrings } from './i18n/useStrings'
-import { buildSearchIndex, matchingIds } from './utils/search'
-import { formatYearMonth } from './utils/profile'
-import { jpBashoName, jpEraYear } from './data/kanji'
+import { useTournamentPhase } from './app/useTournamentPhase'
+import { useResultsOverlay } from './app/useResultsOverlay'
+import { useSearch } from './app/useSearch'
+import { useSelection } from './app/useSelection'
+import { useChanges } from './app/useChanges'
+import { useGuide } from './app/useGuide'
+import { useDocumentTitle } from './app/useDocumentTitle'
 import { Hero } from './components/Hero/Hero'
 import { SearchBar } from './components/SearchBar/SearchBar'
 import { DivisionTabs } from './components/DivisionTabs/DivisionTabs'
 import { PANEL_ID, tabId } from './components/DivisionTabs/ids'
 import { BanzukeGrid, BanzukeGridSkeleton } from './components/BanzukeGrid/BanzukeGrid'
-import { BanzukeSheetSkeleton } from './components/BanzukeSheet/BanzukeSheet'
-import { BanzukeSheet } from './components/BanzukeSheet/BanzukeSheet'
+import { BanzukeSheet, BanzukeSheetSkeleton } from './components/BanzukeSheet/BanzukeSheet'
 import { ViewToggle, type View } from './components/ViewToggle/ViewToggle'
 import { ChangesToggle } from './components/ChangesToggle/ChangesToggle'
 import { ResultsToggle } from './components/ResultsToggle/ResultsToggle'
@@ -31,6 +26,12 @@ import { Guide, GuideLink } from './components/Guide/Guide'
 import { Departed } from './components/Departed/Departed'
 import { Bouts } from './components/Bouts/Bouts'
 import { TodayStrip } from './components/TodayStrip/TodayStrip'
+import { Footer } from './components/Footer/Footer'
+import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary'
+import { ScrollToTop } from './components/ScrollToTop/ScrollToTop'
+import type { BanzukeSet, Division, Rikishi } from './types/banzuke'
+import styles from './App.module.css'
+
 // The two dialogs are not on the first paint: each arrives as its own chunk
 // the first time it is needed (the wrestler dialog carries the glossary and
 // kimarite tables with it). The guide's legend shares a module with the link
@@ -41,11 +42,6 @@ const WrestlerModal = lazy(() =>
 const StableModal = lazy(() =>
   import('./components/StableModal/StableModal').then((m) => ({ default: m.StableModal }))
 )
-import { Footer } from './components/Footer/Footer'
-import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary'
-import { ScrollToTop } from './components/ScrollToTop/ScrollToTop'
-import type { BanzukeSet, Division, Rikishi } from './types/banzuke'
-import styles from './App.module.css'
 
 function App() {
   return (
@@ -67,6 +63,11 @@ function resolveDivision(param: string | null, data: BanzukeSet | null): Divisio
   return param === 'juryo' && data?.juryo ? 'juryo' : 'makuuchi'
 }
 
+/**
+ * The page: URL state in, the hooks under src/app/ for each concern, and the
+ * render tree. Nothing here reads upstream fields or decides a tournament
+ * rule; those live in the hooks and the utilities they call.
+ */
 function AppContent() {
   const { data, status, problem } = useBanzuke()
   const { language, setLanguage } = useLanguage()
@@ -84,7 +85,6 @@ function AppContent() {
   // Entrance animations play once, on the first sheet; later renders (tab
   // switches, search) must not replay the cascade.
   const [entered, setEntered] = useState(false)
-
   useEffect(() => {
     if (!data || entered) return
     const timer = window.setTimeout(() => setEntered(true), ENTRANCE_MS)
@@ -98,234 +98,54 @@ function AppContent() {
   const allRows = banzuke?.rikishi ?? EMPTY
   const query = searchQuery ?? ''
 
-  // Results only make sense while the tournament is running or has just
-  // finished (until the next banzuke replaces it) or is about to start.
-  const tournamentStatus = banzuke ? getTournamentStatus(banzuke.basho) : null
-  const inSeason =
-    tournamentStatus != null &&
-    (tournamentStatus.kind === 'live' ||
-      tournamentStatus.kind === 'finished' ||
-      (tournamentStatus.kind === 'upcoming' && tournamentStatus.daysUntil <= 1))
-  const results = useResults(inSeason && banzuke ? banzuke.basho.id : null, {
-    live: tournamentStatus?.kind === 'live',
-  })
-  const resultsOn = resultsParam !== '0'
-  const file = resultsOn ? results.results : null
-  // Before day 1 the file is the card only: every record is 0–0, and seventy
-  // copies of that under the names would say nothing a fan does not know.
-  const records = file && file.day > 0 ? file.records : null
-  const champions = file?.yusho
+  const phase = useTournamentPhase(banzuke)
+  const tournamentStatus = phase.status
+  const {
+    results,
+    file,
+    records,
+    champions,
+    on: resultsOn,
+  } = useResultsOverlay(banzuke, phase, resultsParam)
   // Defaults to the latest fought day; the stepper's › reaches a later
   // published card via lastSteppableDay inside Bouts.
   const day = boutsDay ?? (results.results ? Math.max(1, results.results.day) : 1)
 
-  // The search runs over both divisions so the tabs can say where the matches are.
-  const indexes = useMemo(
-    () => ({
-      makuuchi: buildSearchIndex(data?.makuuchi.rikishi ?? EMPTY),
-      juryo: buildSearchIndex(data?.juryo?.rikishi ?? EMPTY),
-    }),
-    [data]
-  )
-  const matches = useMemo(
-    () => ({
-      makuuchi: matchingIds(indexes.makuuchi, query),
-      juryo: data?.juryo ? matchingIds(indexes.juryo, query) : null,
-    }),
-    [indexes, query, data]
-  )
-  const highlight = matches[division]
-  const isFiltering = highlight !== null
-  const matchedCount = highlight ? highlight.size : allRows.length
-  const otherDivision: Division = division === 'makuuchi' ? 'juryo' : 'makuuchi'
-  const otherHits = matches[otherDivision]?.size ?? 0
-
-  // Everyone on the banzuke by id: the dialog reads an opponent's rank off it.
-  const rankById = useMemo(() => {
-    const everyone = data ? [...data.makuuchi.rikishi, ...(data.juryo?.rikishi ?? [])] : []
-    return new Map(everyone.map((r) => [r.id, r]))
-  }, [data])
-
-  // A deep link may point at a wrestler in either division.
-  const selectedRikishi = useMemo(() => {
-    if (!selectedId || !data) return null
-    const everyone = data.juryo ? [...data.makuuchi.rikishi, ...data.juryo.rikishi] : allRows
-    return everyone.find((r) => String(r.id) === selectedId) ?? null
-  }, [allRows, data, selectedId])
-
-  // Previous and next in banzuke order (East then West at each rank), within
-  // the selected wrestler's own division — the walk never crosses the Juryo line.
-  const neighbours = useMemo(() => {
-    if (!selectedRikishi || !data) return undefined
-    const rows = data.makuuchi.rikishi.includes(selectedRikishi)
-      ? data.makuuchi.rikishi
-      : (data.juryo?.rikishi ?? [])
-    const i = rows.indexOf(selectedRikishi)
-    return { previous: rows[i - 1] ?? null, next: rows[i + 1] ?? null }
-  }, [data, selectedRikishi])
-
-  // Stepping replaces the dialog's history entry, so Back still closes it in one step.
-  const handleStep = useCallback(
-    (rikishi: Rikishi) => setUrlParam('rikishi', String(rikishi.id), 'replace'),
-    []
-  )
-
-  // The stable dialog. One dialog at a time: the wrestler wins when a URL
-  // carries both. Membership is read off the loaded set; the master comes from
-  // the optional stables file.
-  const selectedHeyaId = useMemo(() => {
-    if (selectedRikishi || !data) return null
-    const id = Number(heyaParam)
-    return Number.isInteger(id) && id > 0 ? id : null
-  }, [data, heyaParam, selectedRikishi])
-  const roster = useMemo(
-    () => (data && selectedHeyaId != null ? rosterFor(data, selectedHeyaId) : null),
-    [data, selectedHeyaId]
-  )
-  const { loading: stableLoading, stable } = useStableState(selectedHeyaId)
-
-  // A link to a wrestler not on this banzuke, or to a stable neither the banzuke
-  // nor the file knows: nothing to show, so the parameter goes.
-  useEffect(() => {
-    if (selectedId && data && !selectedRikishi) clearUrlParam('rikishi')
-  }, [data, selectedId, selectedRikishi])
-  useEffect(() => {
-    if (selectedHeyaId != null && !roster && !stableLoading && !stable) clearUrlParam('heya')
-  }, [selectedHeyaId, roster, stableLoading, stable])
-
-  // Opening a stable from a wrestler (or a wrestler from a stable) swaps the
-  // dialog and pushes an entry, so Back returns to where the chain came from.
-  const handleSelectStable = useCallback(
-    (heyaId: number) => setUrlParams({ rikishi: null, heya: String(heyaId) }, 'push'),
-    []
-  )
-  const handleSelectMember = useCallback(
-    (rikishi: Rikishi) => setUrlParams({ heya: null, rikishi: String(rikishi.id) }, 'push'),
-    []
-  )
-  const handleCloseStable = useCallback(() => clearUrlParam('heya'), [])
-  // The way out to the sheet: the search filters to the stable's members and
-  // the dialog's entry becomes the filtered sheet, so one Back undoes both.
-  const handleShowOnBanzuke = useCallback(
-    (name: string) => setUrlParams({ heya: null, q: name }, 'replace'),
-    []
-  )
-
-  const counts = useMemo(
-    () => ({
-      makuuchi: data?.makuuchi.rikishi.length,
-      juryo: data?.juryo?.rikishi.length,
-    }),
-    [data]
-  )
-  const matchedByDivision = isFiltering
-    ? { makuuchi: matches.makuuchi?.size, juryo: matches.juryo?.size }
-    : undefined
+  const search = useSearch(data, division, query)
+  const { highlight, isFiltering, matchedCount, otherDivision, otherHits, counts } = search
   const showTabs = data?.juryo != null
   // Nothing on the sheet: no data at all, or a search this division cannot answer.
   const nothingToShow = allRows.length === 0 || (highlight !== null && highlight.size === 0)
 
-  // The archive index says which tournament preceded this one, if any; the
-  // toggle only appears when there is something to diff against.
-  const index = useArchiveIndex()
-  const prevEntry = banzuke && index ? previousEntry(index, banzuke.basho.id) : null
-  // On by default from the banzuke's announcement until day 1 — the fortnight
-  // when the sheet is new and the question is who moved — and off once the
-  // tournament has a story of its own. ?diff=1 / ?diff=0 override either way.
-  const changesDefault = tournamentStatus?.kind === 'upcoming' && prevEntry != null
-  const diffOn = diffParam === '1' || (diffParam !== '0' && changesDefault)
-  const diffWanted = diffOn && prevEntry != null
-  // The previous banzuke and its results are small enough to load whenever
-  // there is one: Changes reads them, and so does the kadoban mark in season.
-  const previous = useArchivedBanzuke(prevEntry)
-  // The previous tournament's results explain the moves (▲M5 9–6); the file is
-  // optional, like the archive itself.
-  const previousResults = useResults(prevEntry ? prevEntry.bashoId : null)
-  const jpEra =
-    prevEntry && banzuke && prevEntry.year !== banzuke.basho.year ? jpEraYear(prevEntry.year) : ''
-  const sinceLabel = prevEntry
-    ? language === 'jp'
-      ? `${jpEra}${jpBashoName(prevEntry.month)}`
-      : formatYearMonth(
-          `${prevEntry.year}-${String(prevEntry.month).padStart(2, '0')}`,
-          'en',
-          'long'
-        )
-    : ''
+  const selection = useSelection(data, selectedId, heyaParam)
+  const { rankById, selectedRikishi, neighbours, selectedHeyaId, roster, stable, stableLoading } =
+    selection
 
-  const currentRows: CurrentRow[] = useMemo(
-    () =>
-      data
-        ? [
-            ...data.makuuchi.rikishi.map((rikishi) => ({ rikishi, division: 'makuuchi' as const })),
-            ...(data.juryo?.rikishi ?? []).map((rikishi) => ({
-              rikishi,
-              division: 'juryo' as const,
-            })),
-          ]
-        : [],
-    [data]
-  )
-  const diff = useMemo(
-    () =>
-      previous.archive
-        ? diffBanzuke(currentRows, previous.archive, previousResults.results?.records ?? null)
-        : null,
-    [currentRows, previous.archive, previousResults.results]
-  )
-  const movements = diffWanted && diff ? diff.movements : null
-  // 角番: an Ozeki who was Ozeki last time and made make-koshi there.
-  const kadoban = useMemo(
-    () =>
-      kadobanIds(
-        data ? [...data.makuuchi.rikishi, ...(data.juryo?.rikishi ?? [])] : EMPTY,
-        previous.archive ?? null,
-        previousResults.results?.records ?? null
-      ),
-    [data, previous.archive, previousResults.results]
-  )
+  const changes = useChanges(data, banzuke, phase, diffParam, language)
+  const { prevEntry, changesDefault, diffOn, diffWanted, previous, sinceLabel, diff } = changes
+  const { movements, kadoban } = changes
 
-  // The guide annotates the paper, so it exists only on the Sheet with
-  // something on it; a search that drops rank groups also drops the marks
-  // the legend numbers, so filtering hides it too.
-  const guideOn = guideParam === '1' && view === 'sheet' && !nothingToShow && !isFiltering
-  const guide = useMemo(
-    () =>
-      guideOn
-        ? buildGuide(allRows, { movements: movements != null, records: records != null })
-        : null,
-    [guideOn, allRows, movements, records]
+  const guideState = useGuide(
+    guideParam,
+    setGuideParam,
+    view === 'sheet' && !nothingToShow && !isFiltering,
+    allRows,
+    movements != null,
+    records != null
   )
-  // Opened from the link (as against a deep link): the legend then takes focus,
-  // because the link is above the paper and the legend lands beneath it.
-  const [guideOpenedHere, setGuideOpenedHere] = useState(false)
-  const handleToggleGuide = useCallback(
-    (on: boolean) => {
-      setGuideOpenedHere(on)
-      setGuideParam(on ? '1' : null)
-    },
-    [setGuideParam]
-  )
-
-  // Closing the guide from the legend unmounts its own Close link; return
-  // focus to the controls-row link that reopens it rather than dropping it.
-  const guideLinkRef = useRef<HTMLAnchorElement>(null)
-  const wasGuideOn = useRef(guideOn)
-  useEffect(() => {
-    if (wasGuideOn.current && !guideOn) guideLinkRef.current?.focus()
-    wasGuideOn.current = guideOn
-  }, [guideOn])
+  const {
+    on: guideOn,
+    guide,
+    linkRef: guideLinkRef,
+    onToggle: handleToggleGuide,
+    openedHere: guideOpenedHere,
+  } = guideState
 
   const handleSelectRikishi = useCallback(
     (rikishi: Rikishi) => setSelectedId(String(rikishi.id)),
     [setSelectedId]
   )
-
-  // Undo the pushed entry (or replace a deep link) so Back never reopens it.
-  const handleCloseModal = useCallback(() => clearUrlParam('rikishi'), [])
-
   const handleClearSearch = useCallback(() => setSearchQuery(null), [setSearchQuery])
-
   const handleChangeDivision = useCallback(
     (next: Division) => {
       setDivisionParam(next === 'makuuchi' ? null : next)
@@ -333,13 +153,11 @@ function AppContent() {
     },
     [setDivisionParam]
   )
-
   // 'sheet' is the default, so it stays out of the URL.
   const handleChangeView = useCallback(
     (next: View) => setViewParam(next === 'sheet' ? null : next),
     [setViewParam]
   )
-
   const otherMatches = useMemo(
     () =>
       isFiltering && otherHits > 0
@@ -355,21 +173,24 @@ function AppContent() {
   const handleToggleLanguage = useCallback(() => {
     setLanguage(language === 'en' ? 'jp' : 'en')
   }, [language, setLanguage])
-
   const handleFocusSearch = useCallback(() => {
     const input = document.querySelector<HTMLInputElement>('[data-search-input]')
     input?.focus()
     input?.select()
   }, [])
-
   const handleEscape = useCallback(() => {
     // The native <dialog> closes itself on Escape and reports through onClose.
     if (selectedRikishi || selectedHeyaId != null) return
     if (helpOpen) setHelpOpen(false)
     else if (query) setSearchQuery(null)
   }, [selectedRikishi, selectedHeyaId, helpOpen, query, setSearchQuery])
-
   const handleToggleHelp = useCallback(() => setHelpOpen((open) => !open), [])
+  useKeyboardShortcuts({
+    onToggleLanguage: handleToggleLanguage,
+    onFocusSearch: handleFocusSearch,
+    onEscape: handleEscape,
+    onToggleHelp: handleToggleHelp,
+  })
 
   // Warm the profiles file on the first sign of interest in a wrestler, so the
   // dialog almost always opens with the profile already there.
@@ -378,27 +199,7 @@ function AppContent() {
     void loadStables()
   }, [])
 
-  useKeyboardShortcuts({
-    onToggleLanguage: handleToggleLanguage,
-    onFocusSearch: handleFocusSearch,
-    onEscape: handleEscape,
-    onToggleHelp: handleToggleHelp,
-  })
-
-  // The tab reads what is on screen: the open dialog's subject first, then the app.
-  useEffect(() => {
-    const bashoName = banzuke ? banzuke.basho.name[language] || banzuke.basho.name.en : ''
-    const subject = selectedRikishi
-      ? selectedRikishi.shikona[language] || selectedRikishi.shikona.en
-      : roster
-        ? strings.openStable(roster.name[language] || roster.name.en)
-        : ''
-    document.title = subject
-      ? `${subject} · ${strings.appTitle}`
-      : bashoName
-        ? `${strings.appTitle} · ${bashoName}`
-        : strings.appTitle
-  }, [banzuke, language, roster, selectedRikishi, strings])
+  useDocumentTitle(banzuke, selectedRikishi, roster, language, strings)
 
   const problemMessage =
     problem === 'sample'
@@ -485,7 +286,7 @@ function AppContent() {
             value={division}
             onChange={handleChangeDivision}
             counts={counts}
-            matched={matchedByDivision}
+            matched={search.matchedByDivision}
           />
         )}
         {banzuke && (
@@ -522,7 +323,7 @@ function AppContent() {
                   records={records}
                   champions={champions}
                   onSelectRikishi={handleSelectRikishi}
-                  onSelectStable={handleSelectStable}
+                  onSelectStable={selection.onSelectStable}
                   emptyReason={isFiltering ? 'no-matches' : 'no-data'}
                   query={query}
                   otherMatches={otherMatches}
@@ -573,14 +374,14 @@ function AppContent() {
       <Suspense fallback={null}>
         <WrestlerModal
           rikishi={selectedRikishi}
-          onClose={handleCloseModal}
+          onClose={selection.onCloseWrestler}
           record={selectedRikishi ? (records?.[String(selectedRikishi.id)] ?? null) : null}
           results={file}
           rankById={rankById}
           kadoban={selectedRikishi ? kadoban.has(selectedRikishi.id) : false}
           neighbours={neighbours}
-          onStep={handleStep}
-          onSelectStable={handleSelectStable}
+          onStep={selection.onStep}
+          onSelectStable={selection.onSelectStable}
         />
         <StableModal
           heyaId={selectedHeyaId}
@@ -591,9 +392,9 @@ function AppContent() {
           kadoban={kadoban}
           records={records}
           champions={champions}
-          onClose={handleCloseStable}
-          onSelectRikishi={handleSelectMember}
-          onShowOnBanzuke={handleShowOnBanzuke}
+          onClose={selection.onCloseStable}
+          onSelectRikishi={selection.onSelectMember}
+          onShowOnBanzuke={selection.onShowOnBanzuke}
         />
       </Suspense>
     </>
