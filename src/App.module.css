@@ -3,8 +3,11 @@
    width of its own frame — `--frame`, declared by the sheet and the list on
    themselves — so the selected tab breaks that frame and the others stand on
    it. Its usual top margin (which collapses through this wrapper) would
-   otherwise hold it clear. */
-.seated > :first-child {
+   otherwise hold it clear. The panel opens with a visually-hidden heading
+   (absolute, out of flow), so the pull-up targets the first *visible* child —
+   the Chromium smoke spec measures exactly this seating. */
+.seated > :first-child:not(:global(.visually-hidden)),
+.seated > :global(.visually-hidden):first-child + * {
   margin-top: calc(-1 * var(--frame, 1px));
 }
 
