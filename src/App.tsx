@@ -130,6 +130,12 @@ function AppContent() {
   const otherDivision: Division = division === 'makuuchi' ? 'juryo' : 'makuuchi'
   const otherHits = matches[otherDivision]?.size ?? 0
 
+  // Everyone on the banzuke by id: the dialog reads an opponent's rank off it.
+  const rankById = useMemo(() => {
+    const everyone = data ? [...data.makuuchi.rikishi, ...(data.juryo?.rikishi ?? [])] : []
+    return new Map(everyone.map((r) => [r.id, r]))
+  }, [data])
+
   // A deep link may point at a wrestler in either division.
   const selectedRikishi = useMemo(() => {
     if (!selectedId || !data) return null
@@ -529,6 +535,8 @@ function AppContent() {
         rikishi={selectedRikishi}
         onClose={handleCloseModal}
         record={selectedRikishi ? (records?.[String(selectedRikishi.id)] ?? null) : null}
+        results={file}
+        rankById={rankById}
         neighbours={neighbours}
         onStep={handleStep}
         onSelectStable={handleSelectStable}

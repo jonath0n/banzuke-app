@@ -349,6 +349,58 @@ export function playoffFighters(matches: Match[]): Fighter[] {
   return [...seen.values()]
 }
 
+export interface NextBout {
+  day: number
+  opponent: Fighter
+  match: Match
+}
+
+/**
+ * The wrestler's next bout on a published card: the first undecided match
+ * with them in it, from the current day on (today's bout before it is fought,
+ * or tomorrow's once the card is out). Null between cards or after a withdrawal.
+ */
+export function nextBout(
+  results: Pick<ResultsFile, 'day' | 'torikumi'>,
+  rikishiId: number
+): NextBout | null {
+  for (let day = Math.max(1, results.day); day <= MAX_DAYS; day++) {
+    for (const match of results.torikumi[String(day)] ?? []) {
+      if (match.winnerId !== null) continue
+      if (match.east.id === rikishiId) return { day, opponent: match.west, match }
+      if (match.west.id === rikishiId) return { day, opponent: match.east, match }
+    }
+  }
+  return null
+}
+
+/**
+ * A gold star: a Maegashira beating a Yokozuna in the ring. A forfeit is no
+ * kinboshi, and nor is a sanyaku win — those are the ranks expected to fight
+ * the Yokozuna.
+ */
+export function isKinboshi(
+  bout: Pick<Bout, 'outcome' | 'opponent'>,
+  rikishi: Pick<Rikishi, 'rankCode'>,
+  rankCodeOf: (id: number) => number | undefined
+): boolean {
+  if (bout.outcome !== 'win' || rikishi.rankCode !== 500 || bout.opponent?.id == null) return false
+  return rankCodeOf(bout.opponent.id) === 100
+}
+
+export type KachikoshiOutlook =
+  { state: 'kachikoshi' | 'makekoshi' } | { state: 'pending'; needed: number; remaining: number }
+
+/** What it still takes to reach eight wins, with the days left in the tournament. */
+export function kachikoshiOutlook(
+  r: Pick<RikishiRecord, 'wins' | 'losses' | 'absences'>,
+  day: number
+): KachikoshiOutlook {
+  const state = kachikoshiState(r)
+  if (state !== 'pending') return { state }
+  return { state, needed: 8 - r.wins, remaining: Math.max(0, MAX_DAYS - day) }
+}
+
 /** One rung of the race: everyone on the same number of losses, in banzuke order. */
 export interface RaceTier {
   /** Losses and absences together: an absence is a loss in the race. */

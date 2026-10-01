@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ComponentProps } from 'react'
 import { LanguageProvider } from '../../contexts/LanguageContext'
-import { makeRikishi, makeRecord } from '../../test/fixtures'
+import { makeBanzuke, makeRikishi, makeRecord, makeResultsFile } from '../../test/fixtures'
 import { onosatoProfile } from '../../data/profiles.test'
 import { resetProfilesCache } from '../../hooks/useProfiles'
 import { WrestlerModal } from './WrestlerModal'
@@ -205,6 +205,59 @@ describe('WrestlerModal', () => {
     expect(bouts[7]).not.toHaveTextContent(/Win|Loss/)
     // Safari keeps list semantics only with an explicit role once bullets are off.
     expect(bouts[0].parentElement).toHaveAttribute('role', 'list')
+  })
+
+  it('says what is at stake: the next bout, the wins still needed, and a kinboshi', () => {
+    const rows = makeBanzuke().rikishi
+    const rankById = new Map(rows.map((r) => [r.id, r]))
+    // Wakatakakage, M1, at 6–6 after day 12 with a day-1 win over Hoshoryu (Y)
+    const wakatakakage = rows.find((r) => r.id === 4055)!
+    const record = makeRecord({
+      wins: 6,
+      losses: 6,
+      absences: 0,
+      bouts: Array.from({ length: 12 }, (_, i) => ({
+        day: i + 1,
+        outcome: i % 2 === 0 ? ('win' as const) : ('loss' as const),
+        opponent:
+          i === 0
+            ? { id: 3842, shikona: { en: 'Hoshoryu', jp: '豊昇龍' } }
+            : { id: 3983, shikona: { en: 'Dewanoryu', jp: '出羽ノ龍' } },
+        kimarite: 'yorikiri',
+      })),
+    })
+    const results = makeResultsFile({
+      torikumi: {
+        '12': [],
+        '13': [
+          {
+            division: 'makuuchi',
+            matchNo: 1,
+            east: { id: 4055, shikona: { en: 'Wakatakakage', jp: '若隆景' } },
+            west: { id: 4227, shikona: { en: 'Onosato', jp: '大の里' } },
+            winnerId: null,
+            kimarite: '',
+          },
+        ],
+      },
+    })
+    render(
+      <LanguageProvider>
+        <WrestlerModal
+          rikishi={wakatakakage}
+          onClose={vi.fn()}
+          record={record}
+          results={results}
+          rankById={rankById}
+        />
+      </LanguageProvider>
+    )
+    expect(screen.getByText('Needs 2 of the last 3 for kachi-koshi')).toBeInTheDocument()
+    expect(screen.getByText('Next: vs Onosato, day 13')).toBeInTheDocument()
+    const bouts = screen.getAllByRole('listitem').filter((li) => li.hasAttribute('data-day'))
+    expect(bouts[0]).toHaveTextContent('☆')
+    expect(bouts[0]).toHaveTextContent('Kinboshi')
+    expect(bouts[2]).not.toHaveTextContent('Kinboshi')
   })
 
   it('moves focus to the wrestler name when it opens', () => {

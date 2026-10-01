@@ -75,6 +75,10 @@ const en = {
   fusenLoss: 'Forfeit loss',
   boutDraw: 'Draw',
   boutInjuryDraw: 'Injury draw',
+  kinboshi: 'Kinboshi',
+  nextBout: (opponent: string, day: number) => `Next: vs ${opponent}, day ${day}`,
+  outlookNeeds: (needed: number, remaining: number) =>
+    `Needs ${needed} of the last ${remaining} for kachi-koshi`,
   playoff: 'Playoff',
   playoffThreeWay: 'Three-way playoff',
   playoffNote: 'After senshuraku, for the yusho.',
@@ -258,6 +262,10 @@ const jp: Strings = {
   fusenLoss: '不戦敗',
   boutDraw: '引き分け',
   boutInjuryDraw: '痛み分け',
+  kinboshi: '金星',
+  nextBout: (opponent: string, day: number) => `次の取組：${day}日目 対 ${opponent}`,
+  outlookNeeds: (needed: number, remaining: number) =>
+    `勝ち越しまであと${needed}勝（残り${remaining}番）`,
   playoff: '優勝決定戦',
   playoffThreeWay: '優勝決定巴戦',
   playoffNote: '千秋楽の全取組終了後。',
