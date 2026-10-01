@@ -102,7 +102,8 @@ export const KIMARITE: Record<string, { jp: string; en: string }> = {
   tsukihiza: { jp: 'つきひざ', en: 'knee touch down' },
   fumidashi: { jp: '踏み出し', en: 'rear step out' },
   hansoku: { jp: '反則', en: 'foul' },
-  fusen: { jp: '不戦', en: 'forfeit' },
+  // The card's decision column belongs to the winner, so a forfeit reads 不戦勝 there.
+  fusen: { jp: '不戦勝', en: 'forfeit' },
 }
 
 /** Kanji in Japanese, romaji in English; unknown keys pass through. */

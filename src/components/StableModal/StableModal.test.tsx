@@ -47,7 +47,7 @@ describe('StableModal', () => {
   it('reads in Japanese with kanji numerals', () => {
     renderModal({}, 'jp')
     expect(screen.getByRole('dialog')).toHaveAccessibleName('立浪')
-    expect(screen.getByText('関取一人 · 幕内一人')).toBeInTheDocument()
+    expect(screen.getByText('関取1人 · 幕内1人')).toBeInTheDocument()
     expect(screen.getByText('師匠 立浪 耐治（元小結 旭豊）')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: '部屋の詳細を閉じる' })).toBeInTheDocument()
   })

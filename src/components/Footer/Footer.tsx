@@ -49,14 +49,19 @@ function FontCredit({
 }
 
 export function Footer({ helpOpen = false, onToggleHelp }: FooterProps) {
+  const { language } = useLanguage()
   const strings = useStrings()
+  // A full-width colon carries its own spacing; a half-width one needs a space after it.
+  const gap = language === 'jp' ? '' : ' '
+  const comma = language === 'jp' ? '、' : ', '
   const currentYear = new Date().getFullYear()
 
   return (
     <footer className={styles.footer}>
       <p className={styles.line}>
         <span className={styles.credit}>
-          {strings.footerMadeBy}{' '}
+          {strings.footerMadeBy}
+          {gap}
           <ExternalLink href="https://www.linkedin.com/in/jonathon2">Jon Allen</ExternalLink>
           <span className={styles.hanko} aria-hidden="true" />
         </span>
@@ -64,23 +69,25 @@ export function Footer({ helpOpen = false, onToggleHelp }: FooterProps) {
           ·
         </span>
         <span className={styles.credit}>
-          {strings.footerDataSource}{' '}
+          {strings.footerDataSource}
+          {gap}
           <ExternalLink href="https://sumo.or.jp/">{strings.footerJsa}</ExternalLink>
-          {', '}
+          {comma}
           <ExternalLink href="https://www.sumo-api.com/">{strings.footerSumoApi}</ExternalLink>
         </span>
         <span className={styles.separator} aria-hidden="true">
           ·
         </span>
         <span className={styles.credit}>
-          {strings.footerType}{' '}
+          {strings.footerType}
+          {gap}
           <FontCredit
             name="Fran Sans"
             className={styles.franSans}
             author="Emily Sneddon"
             href="https://emilysneddon.com"
           />
-          {', '}
+          {comma}
           <FontCredit
             name="Archivo"
             className={styles.archivo}

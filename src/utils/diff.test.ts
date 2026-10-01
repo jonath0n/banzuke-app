@@ -163,7 +163,7 @@ describe('labels', () => {
       /^前頭.*から$/
     )
     expect(describeMovement({ kind: 'new', previous: null, sideChanged: false }, 'jp')).toBe(
-      '番付外から'
+      '新顔'
     )
     expect(
       describeMovement(

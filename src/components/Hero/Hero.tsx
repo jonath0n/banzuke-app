@@ -80,7 +80,8 @@ export function Hero({ data, resultsFetchedAt = null }: HeroProps) {
     // the freshness shown is whichever of the two is being refreshed.
     const checked = formatRelativeTime(resultsFetchedAt ?? data.fetchedAt, language)
     const label = resultsFetchedAt ? strings.resultsUpdated : strings.checked
-    provenance.push(checked ? `${strings.dataFrom}, ${label(checked)}` : strings.dataFrom)
+    const comma = language === 'jp' ? '、' : ', '
+    provenance.push(checked ? `${strings.dataFrom}${comma}${label(checked)}` : strings.dataFrom)
   }
 
   return (
