@@ -1,0 +1,62 @@
+/* The race line above the day's card: a sentence in the sheet's small hand */
+.race {
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--muted);
+  margin: var(--space-2) 0;
+}
+
+.label {
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+  font-weight: var(--label-weight);
+}
+
+.label:lang(ja) {
+  text-transform: none;
+  letter-spacing: 0.1em;
+}
+
+.tier {
+  color: var(--text);
+}
+
+.losses {
+  font-weight: var(--label-weight);
+}
+
+.separator {
+  color: var(--muted);
+}
+
+.name {
+  font: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font-family: var(--font-names);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.name:lang(ja) {
+  font-family: var(--font-jp-serif);
+  font-weight: 700;
+}
+
+.decided {
+  color: var(--text);
+}
+
+.decided .name {
+  font-weight: 800;
+}
+
+.score {
+  font-variant-numeric: tabular-nums;
+}
+
+.note {
+  color: var(--muted);
+}

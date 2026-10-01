@@ -3,7 +3,7 @@ import {
   boutMark,
   describeRecord,
   kachikoshiState,
-  leaders,
+  yushoRace,
   playoffFighters,
   resultsEqualIgnoringFetchedAt,
   resultsFileName,
@@ -167,17 +167,118 @@ describe('helpers', () => {
     expect(boutMark('injury-draw')).toBe('△')
   })
 
-  it('lists the leaders in two tiers, ties in banzuke order, ignoring wrestlers without a record', () => {
+  describe('yushoRace', () => {
     const rows = [
-      ...makeBanzuke().rikishi, // 3842 (8 wins), 4227 (10), 4055 (3)
+      ...makeBanzuke().rikishi, // 3842 (8–3–1), 4227 (10–2), 4055 (3–9), 3983 (7–5)
       makeRikishi({ id: 9999, shikona: { en: 'Nobody', jp: '無' } }),
     ]
-    const result = leaders(makeResultsFile().records, rows)
-    expect(result.map((tier) => [tier.wins, tier.rikishi.map((r) => r.id)])).toEqual([
-      [10, [4227]],
-      [8, [3842]],
-    ])
-    expect(leaders({}, rows)).toEqual([])
+    const ids = (race: ReturnType<typeof yushoRace>) =>
+      race.tiers.map((tier) => [tier.losses, tier.rikishi.map((r) => r.id)])
+
+    it('rungs the leaders and chasers by losses, absences counted, within two of the lead', () => {
+      const race = yushoRace(makeResultsFile(), 'makuuchi', rows)
+      expect(race.day).toBe(12)
+      expect(ids(race)).toEqual([
+        [2, [4227]],
+        [4, [3842]],
+      ])
+      expect(race.decided).toBe(false)
+      expect(race.champion).toBeNull()
+      expect(yushoRace(makeResultsFile({ records: {} }), 'makuuchi', rows).tiers).toEqual([])
+    })
+
+    it('drops a wrestler who has withdrawn, and one who can no longer catch the leader', () => {
+      const file = makeResultsFile({
+        records: {
+          ...makeResultsFile().records,
+          // Dewanoryu 7–5 but his last entry is an absence: out of the race
+          '3983': {
+            ...makeResultsFile().records['3983'],
+            bouts: [
+              ...makeResultsFile().records['3983'].bouts.slice(0, 11),
+              { day: 12, outcome: 'absent', opponent: null, kimarite: '' },
+            ],
+          },
+        },
+      })
+      expect(ids(yushoRace(file, 'makuuchi', rows)).flatMap(([, who]) => who)).not.toContain(3983)
+    })
+
+    it('is decided when the nearest chaser cannot catch up, and by the file’s yusho', () => {
+      // Day 13: Onosato 11–2, Hoshoryu 8–4–1 → 8 + 2 < 11
+      const base = makeResultsFile()
+      const file = makeResultsFile({
+        day: 13,
+        records: {
+          ...base.records,
+          '4227': {
+            ...base.records['4227'],
+            wins: 11,
+            losses: 2,
+            bouts: [
+              ...base.records['4227'].bouts,
+              { day: 13, outcome: 'win', opponent: null, kimarite: 'yorikiri' },
+            ],
+          },
+          '3842': {
+            ...base.records['3842'],
+            wins: 8,
+            losses: 4,
+            bouts: [
+              ...base.records['3842'].bouts,
+              { day: 13, outcome: 'loss', opponent: null, kimarite: 'yorikiri' },
+            ],
+          },
+          '3983': {
+            ...base.records['3983'],
+            bouts: [
+              ...base.records['3983'].bouts,
+              { day: 13, outcome: 'loss', opponent: null, kimarite: 'yorikiri' },
+            ],
+            losses: 6,
+          },
+          '4055': {
+            ...base.records['4055'],
+            bouts: [
+              ...base.records['4055'].bouts,
+              { day: 13, outcome: 'loss', opponent: null, kimarite: 'yorikiri' },
+            ],
+            losses: 10,
+          },
+        },
+      })
+      expect(yushoRace(file, 'makuuchi', rows).decided).toBe(true)
+      const settled = yushoRace(makeResultsFile({ yusho: { makuuchi: 4227 } }), 'makuuchi', rows)
+      expect(settled.champion?.id).toBe(4227)
+      expect(settled.decided).toBe(true)
+    })
+
+    it('spots the co-leaders meeting on the next card', () => {
+      const base = makeResultsFile()
+      const file = makeResultsFile({
+        records: {
+          ...base.records,
+          '3842': { ...base.records['3842'], wins: 10, losses: 2, absences: 0 },
+        },
+        torikumi: {
+          ...base.torikumi,
+          '13': [
+            {
+              division: 'makuuchi',
+              matchNo: 1,
+              east: { id: 3842, shikona: { en: 'Hoshoryu', jp: '豊昇龍' } },
+              west: { id: 4227, shikona: { en: 'Onosato', jp: '大の里' } },
+              winnerId: null,
+              kimarite: '',
+            },
+          ],
+        },
+      })
+      const race = yushoRace(file, 'makuuchi', rows)
+      expect(race.tiers[0].rikishi.map((r) => r.id)).toEqual([3842, 4227])
+      expect(race.coLeaderBout?.matchNo).toBe(1)
+      expect(yushoRace(base, 'makuuchi', rows).coLeaderBout).toBeNull()
+    })
   })
 })
 

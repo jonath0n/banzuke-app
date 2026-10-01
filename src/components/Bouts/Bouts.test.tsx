@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { Bouts } from './Bouts'
@@ -23,15 +23,16 @@ describe('Bouts', () => {
       </LanguageProvider>
     )
     expect(screen.getByRole('region', { name: 'Day 12' })).toBeInTheDocument()
-    expect(screen.getByText(/Leaders after day 12/)).toHaveTextContent(
-      'Onosato 10–2 · Hoshoryu 8–3–1'
+    expect(screen.getByText(/Yusho race after day 12/).closest('p')).toHaveTextContent(
+      '2 losses Onosato · 4 losses Hoshoryu'
     )
     const items = screen.getAllByRole('listitem')
     expect(items).toHaveLength(2)
     expect(items[0]).toHaveTextContent('Not yet fought')
     expect(items[1].querySelector('strong')).toHaveTextContent('Onosato')
     expect(items[1]).toHaveTextContent('yorikiri')
-    await userEvent.click(screen.getByRole('button', { name: /Hoshoryu/ }))
+    // The card's own button, not the race line's
+    await userEvent.click(within(items[1]).getByRole('button', { name: /Hoshoryu/ }))
     expect(onSelect).toHaveBeenCalledWith(rows[0])
     expect(screen.getByRole('button', { name: 'Next day' })).toBeDisabled()
     await userEvent.click(screen.getByRole('button', { name: 'Previous day' }))
