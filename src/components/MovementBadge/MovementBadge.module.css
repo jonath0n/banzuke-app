@@ -32,7 +32,7 @@
 .sheet {
   display: block;
   margin-top: var(--space-1);
-  font-size: 0.6rem;
+  font-size: var(--text-2xs);
   text-align: center;
 }
 

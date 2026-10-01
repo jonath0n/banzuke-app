@@ -32,7 +32,7 @@
   align-items: center;
   gap: 0.2em;
   margin-top: var(--space-1);
-  font-size: 0.6rem;
+  font-size: var(--text-2xs);
   writing-mode: horizontal-tb;
 }
 

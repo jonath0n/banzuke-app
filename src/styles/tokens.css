@@ -61,6 +61,8 @@
   --font-jp-serif:
     'Noto Serif JP', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', 'YuMincho',
     'Noto Serif CJK JP', 'MS PMincho', serif;
+  /* The smallest text on the page: the province band, the strip under a name. */
+  --text-2xs: 0.6rem;
   --text-xs: 0.65rem;
   --text-sm: 0.75rem;
   --text-base: 0.875rem;

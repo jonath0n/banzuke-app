@@ -165,7 +165,7 @@
 /* Home province, in the small band the sheet gives it */
 .origin {
   grid-area: 2 / 1;
-  font-size: 0.6rem;
+  font-size: var(--text-2xs);
   font-family: var(--font-jp);
   line-height: 1.1;
   letter-spacing: 0;
@@ -268,7 +268,7 @@
   height: 1.1rem;
   margin: -0.2rem;
   font-family: var(--font-names);
-  font-size: 0.7rem;
+  font-size: var(--text-xs);
   font-weight: 700;
   line-height: 1;
   color: var(--text);

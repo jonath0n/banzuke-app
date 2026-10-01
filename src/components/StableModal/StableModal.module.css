@@ -206,7 +206,7 @@
   width: 1.35rem;
   height: 1.35rem;
   font-family: var(--font-jp-serif);
-  font-size: 0.8rem;
+  font-size: var(--text-sm);
   font-weight: 700;
   line-height: 1;
   color: var(--muted);
