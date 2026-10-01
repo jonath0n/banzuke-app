@@ -65,9 +65,9 @@ describe('BanzukeGrid', () => {
     expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(1)
     const names = screen.getAllByRole('button').map((b) => b.getAttribute('aria-label'))
     expect(names).toEqual([
-      'Kirishima, East. View details',
-      'Kotozakura, West. View details',
-      'Aonishiki, East. View details',
+      'Kirishima, East. Ozeki. View details',
+      'Kotozakura, West. Ozeki. View details',
+      'Aonishiki, East. Ozeki. View details',
     ])
     // The vacant West seat beside the third Ozeki is shown as such
     expect(screen.getByText('—')).toBeInTheDocument()

@@ -426,7 +426,8 @@ describe('App', () => {
       await screen.findByText('Stablemaster Tatsunami Taiji, former Komusubi Asahiyutaka')
     ).toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: /^Onosato, .*, West\./ }))
+    // The member row inside the dialog, not Onosato's column on the sheet behind it
+    await user.click(within(stableDialog).getByRole('button', { name: /^Onosato, West\./ }))
     await waitFor(() => expect(screen.getByRole('dialog')).toHaveAccessibleName('Onosato'))
     expect(window.location.search).toBe('?rikishi=1001')
     expect(window.history.length).toBe(depth + 2)

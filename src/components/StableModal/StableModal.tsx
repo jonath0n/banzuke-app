@@ -7,8 +7,9 @@ import { SIDE_KANJI } from '../../data/kanji'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { useStrings } from '../../i18n/useStrings'
 import { langAttr } from '../../i18n/strings'
-import { describeMovement, type Movement } from '../../utils/diff'
-import { describeRecord, type RikishiRecord } from '../../data/results'
+import type { Movement } from '../../utils/diff'
+import { describeWrestler } from '../../utils/describe'
+import type { RikishiRecord } from '../../data/results'
 import { MovementBadge } from '../MovementBadge/MovementBadge'
 import { Hoshitori } from '../Hoshitori/Hoshitori'
 import { CloseIcon } from '../CloseIcon/CloseIcon'
@@ -213,17 +214,10 @@ interface MemberRowProps {
  */
 function MemberRow({ rikishi, movement, record, champion, onSelect }: MemberRowProps) {
   const { language } = useLanguage()
-  const strings = useStrings()
   const lang = langAttr(language)
   const name = rikishi.shikona[language] || rikishi.shikona.en
   const rank = rikishi.rankName[language] || rikishi.rankName.en
-  const movementText = movement ? describeMovement(movement, language) : ''
-  const recordText = record ? describeRecord(record, language) : ''
-  const label = `${name}, ${rank}, ${strings.side[rikishi.side]}.${
-    movementText ? ` ${movementText}.` : ''
-  }${recordText ? ` ${recordText}` : ''}${champion ? ` ${strings.yusho}.` : ''} ${
-    strings.viewDetails
-  }`
+  const label = describeWrestler(rikishi, language, { movement, record, champion })
   return (
     <li className={styles.member}>
       <button

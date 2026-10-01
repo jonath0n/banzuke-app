@@ -3,10 +3,11 @@ import type { Language, Rikishi, RankLevel } from '../../types/banzuke'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { SIDE_KANJI } from '../../data/kanji'
 import { useStrings } from '../../i18n/useStrings'
-import { describeMovement, type Movement } from '../../utils/diff'
+import type { Movement } from '../../utils/diff'
+import { describeWrestler } from '../../utils/describe'
 import { MovementBadge } from '../MovementBadge/MovementBadge'
 import { PromotionPill } from '../PromotionPill/PromotionPill'
-import { describeRecord, type RikishiRecord } from '../../data/results'
+import type { RikishiRecord } from '../../data/results'
 import { Hoshitori } from '../Hoshitori/Hoshitori'
 import styles from './SideCell.module.css'
 
@@ -118,13 +119,8 @@ function SideCellInner({
   ].join(' ')
 
   if (rikishi && onSelect) {
-    const movementText = movement ? describeMovement(movement, language) : ''
-    const recordText = record ? describeRecord(record, language) : ''
-    const label = `${displayName}, ${strings.side[side]}.${
-      movementText ? ` ${movementText}.` : ''
-    }${recordText ? ` ${recordText}` : ''}${champion ? ` ${strings.yusho}.` : ''} ${
-      strings.viewDetails
-    }`
+    // The cell's side wins over the wrestler's: a vacant-seat guard, never a disagreement.
+    const label = describeWrestler({ ...rikishi, side }, language, { movement, record, champion })
     return (
       <div
         className={className}
