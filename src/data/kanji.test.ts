@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   VARIANT_KANJI,
+  bashoNickname,
   foldVariantKanji,
   fromKanjiNumber,
   jpBashoName,
@@ -151,5 +152,19 @@ describe('printedTier', () => {
     expect(printedTier('前頭筆頭', 100)).toBe('横綱')
     expect(printedTier('横綱大関', 300)).toBe('関脇')
     expect(printedTier('', 999)).toBe('')
+  })
+})
+
+describe('bashoNickname', () => {
+  it('names the six tournaments the way fans do, and nothing else', () => {
+    expect([1, 3, 5, 7, 9, 11].map(bashoNickname)).toEqual([
+      'Hatsu',
+      'Haru',
+      'Natsu',
+      'Nagoya',
+      'Aki',
+      'Kyushu',
+    ])
+    expect(bashoNickname(2)).toBe('')
   })
 })

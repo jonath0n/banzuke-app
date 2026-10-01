@@ -65,6 +65,14 @@ export function jpRankShort(rankCode: number, position: number): string {
   return position === 1 ? `${base}筆頭` : `${base}${toKanjiNumber(position)}`
 }
 
+/**
+ * The name fans use for a tournament in English: by season for the Tokyo
+ * ones and by city for the rest. The Japanese side keeps the official 九月場所.
+ */
+export function bashoNickname(month: number): string {
+  return { 1: 'Hatsu', 3: 'Haru', 5: 'Natsu', 7: 'Nagoya', 9: 'Aki', 11: 'Kyushu' }[month] ?? ''
+}
+
 /** Tournament name by month: 1 → 一月場所, 11 → 十一月場所. */
 export function jpBashoName(month: number): string {
   return `${toKanjiNumber(month)}月場所`
