@@ -222,12 +222,16 @@ export function kachikoshiState(
   return 'pending'
 }
 
-/** '8–3' / '8–3–1' in English; 8勝3敗 / 8勝3敗1休 in Japanese. */
+/**
+ * '8–3' / '8–3–1' in English; 8勝3敗 / 8勝3敗1休 in Japanese, and 全休 for a wrestler
+ * who sat out all fifteen days — the only time the Japanese column drops the counts.
+ */
 export function scoreLabel(
   r: Pick<RikishiRecord, 'wins' | 'losses' | 'absences'>,
   language: Language
 ): string {
   if (language === 'jp') {
+    if (r.absences >= 15 && r.wins === 0 && r.losses === 0) return '全休'
     return `${r.wins}勝${r.losses}敗${r.absences > 0 ? `${r.absences}休` : ''}`
   }
   return `${r.wins}–${r.losses}${r.absences > 0 ? `–${r.absences}` : ''}`

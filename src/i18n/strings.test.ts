@@ -32,6 +32,29 @@ describe('STRINGS', () => {
     expect(STRINGS.jp.statusLive(8)).toBe('8日目')
   })
 
+  it('keeps the Japanese copy in its own register', () => {
+    const texts: string[] = []
+    const collect = (value: unknown) => {
+      if (typeof value === 'string') texts.push(value)
+      else if (typeof value === 'function')
+        texts.push(
+          String(
+            (value as (...a: never[]) => unknown)(3 as never, '前頭五' as never, '大の里' as never)
+          )
+        )
+      else if (value && typeof value === 'object') Object.values(value).forEach(collect)
+    }
+    collect(STRINGS.jp)
+    for (const text of texts) {
+      // Half-width punctuation is a tell: Japanese prose uses ： and 、 and 。.
+      expect(text, text).not.toMatch(/[^\s\d\w()…·←→©.–-]:\s|[ぁ-んァ-ン一-龥]:/)
+      expect(text, text).not.toMatch(/[ぁ-んァ-ン一-龥], /)
+      // 番付外 is mae-zumo (unranked), not "left the sheet"; 首位 is league-table talk;
+      // 未了 is a form's word for "pending".
+      expect(text, text).not.toMatch(/番付外|首位|未了/)
+    }
+  })
+
   it('maps languages to lang attributes', () => {
     expect(langAttr('en')).toBe('en')
     expect(langAttr('jp')).toBe('ja')

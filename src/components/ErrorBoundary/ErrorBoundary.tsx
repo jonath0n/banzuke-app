@@ -1,4 +1,5 @@
 import { Component, ReactNode } from 'react'
+import { useStrings } from '../../i18n/useStrings'
 import styles from './ErrorBoundary.module.css'
 
 interface Props {
@@ -26,6 +27,26 @@ function toError(value: unknown): Error {
     return new Error(String(value.message))
   }
   return new Error(String(value))
+}
+
+/** The default fallback, in the UI language: the boundary sits inside LanguageProvider. */
+function ErrorFallback({ error, onRetry }: { error: Error | null; onRetry: () => void }) {
+  const strings = useStrings()
+  return (
+    <div className={styles['error-container']} role="alert">
+      <h2 className={styles.title}>{strings.errorTitle}</h2>
+      <p className={styles.message}>{strings.errorMessage}</p>
+      {error && (
+        <details className={styles.details}>
+          <summary>{strings.errorDetails}</summary>
+          <pre className={styles['error-text']}>{error.message}</pre>
+        </details>
+      )}
+      <button className={styles['retry-button']} onClick={onRetry} type="button">
+        {strings.errorRetry}
+      </button>
+    </div>
+  )
 }
 
 /**
@@ -59,23 +80,7 @@ export class ErrorBoundary extends Component<Props, State> {
         return this.props.fallback
       }
 
-      return (
-        <div className={styles['error-container']} role="alert">
-          <h2 className={styles.title}>Something went wrong</h2>
-          <p className={styles.message}>
-            An unexpected error occurred while displaying this content.
-          </p>
-          {this.state.error && (
-            <details className={styles.details}>
-              <summary>Error details</summary>
-              <pre className={styles['error-text']}>{this.state.error.message}</pre>
-            </details>
-          )}
-          <button className={styles['retry-button']} onClick={this.handleRetry} type="button">
-            Try again
-          </button>
-        </div>
-      )
+      return <ErrorFallback error={this.state.error} onRetry={this.handleRetry} />
     }
 
     return this.props.children

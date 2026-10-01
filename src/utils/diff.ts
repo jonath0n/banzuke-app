@@ -137,7 +137,7 @@ const SIDE_JA: Record<Side, string> = { east: '東', west: '西' }
 /** A sentence for accessible names and the list view. */
 export function describeMovement(movement: Movement, language: Language): string {
   const { kind, previous, sideChanged, previousRecord } = movement
-  if (kind === 'new' || !previous) return language === 'jp' ? '番付外から' : 'New to the sheet'
+  if (kind === 'new' || !previous) return language === 'jp' ? '新顔' : 'New to the sheet'
   const to: Side = previous.side === 'east' ? 'west' : 'east'
   const score = previousRecord ? scoreLabel(previousRecord, language) : ''
   if (language === 'jp') {

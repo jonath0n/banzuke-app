@@ -9,7 +9,7 @@ describe('kimarite', () => {
     expect(kimariteLabel('yorikiri', 'jp')).toBe('寄り切り')
     expect(kimariteLabel('yorikiri', 'en')).toBe('yorikiri')
     expect(kimariteLabel('oshidashi', 'jp')).toBe('押し出し')
-    expect(kimariteLabel('fusen', 'jp')).toBe('不戦')
+    expect(kimariteLabel('fusen', 'jp')).toBe('不戦勝')
     expect(kimariteLabel('mystery', 'jp')).toBe('mystery')
     expect(kimariteLabel('', 'jp')).toBe('')
   })

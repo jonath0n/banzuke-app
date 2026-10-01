@@ -72,7 +72,7 @@ describe('Hero', () => {
 
   it('reports the results freshness in Japanese', () => {
     renderHero('2026-09-20T03:00:00Z', 'jp', '2026-09-20T01:00:00Z')
-    expect(screen.getByText(/星取は2\s?時間前に確認/)).toBeInTheDocument()
+    expect(screen.getByText(/星取は2\s?時間前に更新/)).toBeInTheDocument()
   })
 
   it('names the bundled sample data as such', () => {

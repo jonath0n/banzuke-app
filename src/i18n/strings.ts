@@ -5,7 +5,6 @@
  * `jp` is typed as `Strings` (derived from `en`), so a missing key is a type
  * error, and `strings.test.ts` checks the two tables stay in step.
  */
-import { toKanjiNumber } from '../data/kanji'
 import type { CareerStep } from '../data/profiles'
 import type { GuideKey } from '../utils/guide'
 import type { Division, Language, Side } from '../types/banzuke'
@@ -155,6 +154,10 @@ const en = {
   errorSample: 'Live data unavailable. Showing bundled sample data.',
   errorStale: 'Could not refresh the banzuke. Showing the last saved copy.',
   errorNone: 'Could not load the banzuke. Please check your connection and refresh to try again.',
+  errorTitle: 'Something went wrong',
+  errorMessage: 'An unexpected error occurred while displaying this content.',
+  errorDetails: 'Error details',
+  errorRetry: 'Try again',
 
   // Shortcuts
   shortcuts: 'Keyboard shortcuts',
@@ -190,9 +193,9 @@ const jp: Strings = {
   statusUpcomingTomorrow: '明日初日',
   statusUpcoming: (days: number) => `初日まであと${days}日`,
   statusCompleted: '終了',
-  dataFrom: 'データ提供: 日本相撲協会',
-  checked: (relative: string) => `${relative}に確認`,
-  resultsUpdated: (relative: string) => `星取は${relative}に確認`,
+  dataFrom: '出典：日本相撲協会',
+  checked: (relative: string) => `${relative}に更新`,
+  resultsUpdated: (relative: string) => `星取は${relative}に更新`,
   sampleData: 'サンプルデータを表示中',
   division: { makuuchi: '幕内', juryo: '十両' },
   divisionGroup: '階級',
@@ -200,7 +203,7 @@ const jp: Strings = {
   viewGroup: '表示',
   viewSheet: '番付表',
   viewList: '一覧',
-  sheetLabel: '実際の番付の形式。右が東、左が西、番付順に字が大きくなります。',
+  sheetLabel: '実際の番付の形式。右が東、左が西、上位ほど字が大きくなります。',
 
   changes: '変動',
   changesSince: (basho: string) => `${basho}からの変動`,
@@ -211,7 +214,7 @@ const jp: Strings = {
   since: (basho: string) => `${basho}から`,
   departedHeading: (division: string, basho: string) => `${basho}から${division}を離れた力士`,
   departedMovedTo: (division: string) => `${division}へ`,
-  departedGone: '番付外へ',
+  departedGone: '幕下以下・引退など',
   departedWas: (rank: string) => `旧 ${rank}`,
   departedNow: (rank: string) => `現 ${rank}`,
   departedNone: '該当なし',
@@ -227,8 +230,8 @@ const jp: Strings = {
   boutsNone: 'この日の取組はまだ発表されていません。',
   previousDay: '前日',
   nextDay: '翌日',
-  leadersAfter: (day: number) => `${day}日目終了時の首位`,
-  undecided: '未了',
+  leadersAfter: (day: number) => `${day}日目終了時の優勝争い`,
+  undecided: '取組前',
   boutAgainst: (opponent: string) => `対 ${opponent}`,
   absentDay: '休場',
   fusenWin: '不戦勝',
@@ -270,7 +273,7 @@ const jp: Strings = {
   viewDetails: '詳細を見る',
   closeDetails: '力士の詳細を閉じる',
   nameMeaning: '四股名の字',
-  rank: '番付',
+  rank: '地位',
   sideLabel: '東西',
   stable: '部屋',
   from: '出身地',
@@ -278,14 +281,14 @@ const jp: Strings = {
   copyLink: 'リンクをコピー',
   linkCopied: 'コピーしました',
   officialProfile: '公式プロフィール',
-  previousWrestler: (name: string) => `前へ: ${name}`,
-  nextWrestler: (name: string) => `次へ: ${name}`,
+  previousWrestler: (name: string) => `前へ：${name}`,
+  nextWrestler: (name: string) => `次へ：${name}`,
 
   openStable: (name: string) => `${name}部屋`,
   closeStable: '部屋の詳細を閉じる',
-  sekitoriCount: (n: number) => `関取${toKanjiNumber(n)}人`,
-  inMakuuchi: (n: number) => `幕内${toKanjiNumber(n)}人`,
-  inJuryo: (n: number) => `十両${toKanjiNumber(n)}人`,
+  sekitoriCount: (n: number) => `関取${n}人`,
+  inMakuuchi: (n: number) => `幕内${n}人`,
+  inJuryo: (n: number) => `十両${n}人`,
   stablemaster: (name: string, rank: string, shikona: string) =>
     `師匠 ${name}（元${rank} ${shikona}）`,
   stablemasterUnranked: (name: string) => `師匠 ${name}`,
@@ -312,6 +315,10 @@ const jp: Strings = {
   errorSample: '最新データを取得できないため、サンプルデータを表示しています。',
   errorStale: '最新データを取得できないため、保存済みの番付を表示しています。',
   errorNone: '番付を読み込めませんでした。接続を確認して再読み込みしてください。',
+  errorTitle: '表示できませんでした',
+  errorMessage: 'この部分の表示中に予期しないエラーが起きました。',
+  errorDetails: 'エラーの詳細',
+  errorRetry: 'もう一度試す',
 
   shortcuts: 'キーボードショートカット',
   shortcutSearch: '検索欄にフォーカス',
@@ -320,11 +327,11 @@ const jp: Strings = {
   shortcutHelp: 'このヘルプの表示・非表示',
   shortcutArrows: '力士の間を移動（ダイアログ内は ← →）',
 
-  footerMadeBy: '制作:',
-  footerDataSource: 'データ提供:',
+  footerMadeBy: '制作：',
+  footerDataSource: '出典：',
   footerJsa: '日本相撲協会',
   footerSumoApi: '星取は sumo-api.com より',
-  footerType: '書体:',
+  footerType: '書体：',
   footerFontBy: '作',
   footerDisclaimer: '本サイトは非公式のファンプロジェクトであり、日本相撲協会とは関係ありません。',
   footerRights: (year: number) => `© ${year} Jon Allen. All Rights Reserved.`,
