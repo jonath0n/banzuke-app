@@ -127,6 +127,13 @@ runs the checks on pull requests. There is no separate refresh workflow.
   or source gains a character the faces lack — the fix is `npm run subset-fonts`, which the
   deploy job also runs whenever the banzuke changes. `'Noto Serif JP'` is first in
   `--font-jp-serif` on purpose, so Windows and Android render the Sheet the same as macOS.
+- **The service worker is hand-written** (`src/sw/sw.ts`, decisions in `src/sw/strategy.ts` with
+  tests) and emitted as `dist/sw.js` by `scripts/lib/vite-plugin-sw.ts`, which fills in the
+  precache list from the files Vite produced and a version hashed from it. Shell and fonts are
+  precached (cache-first), data files are stale-while-revalidate, a page load is network-first,
+  and a `cache: 'no-cache'` request (the results re-poll) goes to the network. Registered in
+  production only. The localStorage banzuke cache (`CACHE_KEY`) stays until the worker has
+  survived a tournament.
 - `public/banzuke/` is the **archive**: one small validated file per tournament
   (`src/data/archive.ts`), keyed by JSA rikishi id, plus `index.json`. JSA-sourced files come
   from `scripts/archive-banzuke.ts`; 2025-11 → 2026-07 came from sumo-api.com via `nskId` (its
