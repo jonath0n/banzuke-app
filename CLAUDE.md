@@ -29,6 +29,7 @@ npm run validate-data  # validate the committed snapshot
 npm run archive-banzuke # write public/banzuke/{id}.json + index from the snapshot
 npm run fetch-results  # in season, write public/results/{id}.json from sumo-api
 npm run glossary-gaps  # list ring-name kanji the shikona glossary lacks
+npx tsx scripts/measure-upstream.ts  # on a tournament evening: CSV of when sumo-api and the site get the day (read-only)
 ```
 
 Every change must pass `npm run validate && npm run test:run && npm run build` before commit.

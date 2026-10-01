@@ -107,6 +107,10 @@ push to a branch and open the PR from there. CI on that PR does not exercise eit
 
 ## Measurements worth taking on day 1 (they feed the next round)
 
+`npx tsx scripts/measure-upstream.ts` from about 17:30 JST on a tournament day appends a CSV line
+every two minutes — the Tokyo time, how much of today's Makuuchi card sumo-api has decided, and how
+much the live site shows with its `last-modified` — until both carry the whole card. Read-only.
+
 1. First time the musubi's `winnerId` appears on sumo-api (the watcher's log shows the step).
 2. Dispatch → `data` start → deploy end → first `last-modified` move on the site.
 3. Whether the pre-recorded absences at 18:30 JST still read as day 1 (`day` in the file).
