@@ -1,0 +1,47 @@
+/* Vermilion on ink: the one place the sheet's accent marks a wrestler, and
+   the movement badge borrows it for "new" so the two agree. */
+.pill {
+  flex-shrink: 0;
+  padding: 0.2rem 0.4rem;
+  font-family: var(--font-names);
+  font-weight: 700;
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.1;
+  color: var(--on-accent);
+  background: var(--accent);
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+
+.pill:lang(ja) {
+  font-family: var(--font-jp-serif);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: none;
+}
+
+/* Beside the name on a row */
+.row {
+  flex-shrink: 0;
+}
+
+/* Under the name on the sheet: read down like the numeral band. Padding is
+   turned with the text, so the pill stays a narrow ribbon in the column. */
+.sheet {
+  display: block;
+  margin-top: var(--space-1);
+  margin-inline: auto;
+  padding: 0.4rem 0.2rem;
+  writing-mode: vertical-rl;
+}
+
+.sheet:lang(ja) {
+  text-orientation: upright;
+}
+
+/* Latin has no vertical form; it turns on its side, as the ring names do */
+.sheet:lang(en) {
+  text-orientation: sideways;
+}

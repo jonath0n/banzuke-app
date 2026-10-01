@@ -200,28 +200,6 @@
 }
 
 /* Promotion seal: 新入幕 / New */
-.pill {
-  flex-shrink: 0;
-  padding: 0.2rem 0.4rem;
-  font-family: var(--font-names);
-  font-weight: 700;
-  font-size: var(--text-xs);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  line-height: 1.1;
-  color: var(--on-accent);
-  background: var(--accent);
-  border-radius: var(--radius-sm);
-  white-space: nowrap;
-}
-
-.pill:lang(ja) {
-  font-family: var(--font-jp-serif);
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: none;
-}
-
 @media (max-width: 600px) {
   .clickable .wrestler {
     padding: var(--space-1);

@@ -119,6 +119,18 @@ describe('BanzukeSheet', () => {
     expect(screen.queryByRole('button')).toBeNull()
   })
 
+  it('prints a promotion pill beneath the name of a promoted wrestler', () => {
+    const returner = makeRikishi({
+      ...maegashira(7, 'east', 3, 'Daieisho'),
+      promotion: { kind: 'returning', raw: '再入幕' },
+    })
+    renderSheet({ rows: [...rows, returner], onSelectRikishi: vi.fn() })
+    const pill = screen.getByText('Back')
+    expect(pill).toHaveAttribute('title', 'Back in Makuuchi')
+    expect(screen.getByRole('button', { name: /Daieisho/ })).toContainElement(pill)
+    expect(screen.queryByText('New')).toBeNull()
+  })
+
   it("carries each wrestler's movement in the badge and the accessible name when given", () => {
     const movements = new Map([
       [

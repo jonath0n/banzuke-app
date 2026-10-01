@@ -42,6 +42,36 @@ describe('MovementBadge', () => {
     expect(el).toHaveAttribute('data-kind', 'up')
   })
 
+  it('adds the record that earned the move when the previous results are on hand', () => {
+    const previousRecord = { wins: 9, losses: 6, absences: 0, bouts: [] }
+    expect(
+      wrap({ kind: 'up', previous: prev, sideChanged: false, previousRecord })
+    ).toHaveTextContent('▲M5 9–6')
+    window.history.replaceState(null, '', '/?lang=jp')
+    expect(
+      wrap({
+        kind: 'down',
+        previous: prev,
+        sideChanged: false,
+        previousRecord: { ...previousRecord, absences: 1 },
+      })
+    ).toHaveTextContent('▼前頭五 9勝6敗1休')
+  })
+
+  it('stays silent for a newcomer whose promotion pill already says so', () => {
+    expect(
+      render(
+        <LanguageProvider>
+          <MovementBadge
+            movement={{ kind: 'new', previous: null, sideChanged: false }}
+            variant="sheet"
+            hasPromotion
+          />
+        </LanguageProvider>
+      ).container.firstElementChild
+    ).toBeNull()
+  })
+
   it('shows a down arrow', () => {
     expect(
       wrap({ kind: 'down', previous: { ...prev, rankCode: 400 }, sideChanged: false })
