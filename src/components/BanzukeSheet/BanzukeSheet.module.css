@@ -242,7 +242,9 @@
 }
 
 .column[data-dimmed] {
-  opacity: 0.35;
+  /* Faded, not faint: at 0.62 the ink still reads at 4.5:1 on the paper, so a
+     dimmed name is legible to the eye that is looking for it */
+  opacity: 0.62;
   transition: opacity var(--dur-fast) ease;
 }
 

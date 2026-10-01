@@ -140,7 +140,8 @@
 
 /* The partner of a search match stays for context, faded until pointed at */
 .cell[data-dimmed] {
-  opacity: 0.4;
+  /* Faded, not faint: 0.62 keeps the ink at 4.5:1 on the card */
+  opacity: 0.62;
   transition: opacity var(--dur-fast) ease;
 }
 

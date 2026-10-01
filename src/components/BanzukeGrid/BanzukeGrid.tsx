@@ -135,7 +135,9 @@ function EmptyState({
   const strings = useStrings()
   const { language } = useLanguage()
   return (
-    <div role="status" className={styles.emptyState} lang={langAttr(language)}>
+    // Not a live region: the search bar's count already announces the zero, and
+    // two announcements for one keystroke is one too many.
+    <div className={styles.emptyState} lang={langAttr(language)}>
       <div className={styles.emptyIcon}>
         <EnsoIcon />
       </div>

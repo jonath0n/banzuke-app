@@ -65,7 +65,8 @@ runs the checks on pull requests. There is no separate refresh workflow.
 - **The palette is six values plus `--gold`.** Rank is expressed by type size, never by hue;
   `--gold` marks the Yokozuna and nothing else. `src/styles/tokens.test.ts` enforces contrast on
   every pair, so adding a colour means adding it there too.
-- **Motion budget: four keyframe effects in the whole app**, and no infinite animations — this is
+- **Motion budget: four keyframe effects in the whole app** (three in use: `fadeIn`, `modalSlideUp`,
+  `riseIn`; one slot free), and no infinite animations — this is
   a printed document. Adding one means removing one. Entrance animation plays once per page load
   (the `data-entered` gate on `<main>`); tab switches and searches settle in place.
 - Tests use the fixtures in `src/test/fixtures.ts`; add cases there rather than inventing new
@@ -114,8 +115,8 @@ runs the checks on pull requests. There is no separate refresh workflow.
   (a button cannot hold a button): keyboard users reach the stable from the wrestler dialog, and a
   Tab stop on every cell would double the walk down the list. "Show on the banzuke" leaves the
   dialog by writing `?q=<stable name>` in place of `?heya`, so the sheet stays filtered and one Back
-  undoes it. The two dialog keyframes live in `base.css` and both modals reference them as
-  `global(...)`; the budget is still four.
+  undoes it. The dialog keyframes live in `base.css` and both modals reference them as
+  `global(...)`: `fadeIn` for the backdrop, `modalSlideUp` for the panel.
 - Photos are hot-linked from the JSA CDN with `referrerPolicy="no-referrer"`; only the `60x60`
   and `270x474` sizes exist upstream.
 - The Sheet's mincho is a **self-hosted subset in two faces**: `NotoSerifJP-700-core.woff2`
