@@ -1,4 +1,4 @@
-import { forwardRef, useId, type MouseEvent } from 'react'
+import { forwardRef, useEffect, useId, useRef, type MouseEvent } from 'react'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { useStrings } from '../../i18n/useStrings'
 import { langAttr } from '../../i18n/strings'
@@ -52,6 +52,12 @@ interface GuideProps {
   /** Legend items in mark order: item i carries mark i + 1. */
   items: GuideKey[]
   onClose: () => void
+  /**
+   * Move focus to the legend and bring it into view when it mounts. Set when a
+   * visitor opened the guide from the link, which sits above the paper while
+   * the legend lands beneath it; a deep link leaves the page where it loaded.
+   */
+  focusOnOpen?: boolean
 }
 
 /**
@@ -59,13 +65,24 @@ interface GuideProps {
  * circle the sheet carries, so a reader matches mark to meaning by eye; the
  * list is real content, and reads on its own when the marks are out of view.
  */
-export function Guide({ items, onClose }: GuideProps) {
+export function Guide({ items, onClose, focusOnOpen = false }: GuideProps) {
   const { language } = useLanguage()
   const strings = useStrings()
   const headingId = useId()
+  const headingRef = useRef<HTMLHeadingElement>(null)
+  useEffect(() => {
+    if (!focusOnOpen) return
+    const heading = headingRef.current
+    if (!heading) return
+    heading.focus({ preventScroll: true })
+    const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
+    heading.scrollIntoView?.({ block: 'start', behavior: reduced ? 'auto' : 'smooth' })
+    // Once, on mount: the legend is one element, and stepping marks does not re-open it.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   return (
     <section className={styles.guide} aria-labelledby={headingId} lang={langAttr(language)}>
-      <h2 id={headingId} className={styles.heading}>
+      <h2 id={headingId} ref={headingRef} tabIndex={-1} className={styles.heading}>
         {strings.guideTitle}
       </h2>
       <p className={styles.intro}>{strings.guideIntro}</p>

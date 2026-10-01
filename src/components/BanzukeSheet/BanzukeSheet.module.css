@@ -321,6 +321,35 @@
   text-indent: 0;
 }
 
+/*
+ * Loading: the same paper, halves and bands, with each column's three bands
+ * blocked in at the size its rank will take. Still, like the paper it stands
+ * in for — a skeleton that shimmers would be the only thing on the page that moves.
+ */
+.ghost {
+  display: block;
+  background: rgb(var(--ink-rgb) / 0.06);
+  border-radius: 2px;
+}
+
+.ghostRank {
+  grid-area: 1 / 1;
+  width: 1.4rem;
+  height: 2.6rem;
+}
+
+.ghostOrigin {
+  grid-area: 2 / 1;
+  width: 0.9rem;
+  height: 2.4rem;
+}
+
+.ghostName {
+  grid-area: 3 / 1;
+  width: calc(var(--col-scale, 1) * 1.05rem);
+  height: calc(var(--col-scale, 1) * 4rem);
+}
+
 @media (max-width: 600px) {
   .sheet {
     --rank-band: 3.9rem;

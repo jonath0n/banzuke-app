@@ -1,7 +1,7 @@
 import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
-import { BanzukeSheet } from './BanzukeSheet'
+import { BanzukeSheet, BanzukeSheetSkeleton } from './BanzukeSheet'
 import { LanguageProvider } from '../../contexts/LanguageContext'
 import { makeRikishi } from '../../test/fixtures'
 import type { Rikishi } from '../../types/banzuke'
@@ -230,5 +230,20 @@ describe('BanzukeSheet', () => {
     expect(screen.getByRole('button', { name: /Onosato/ })).toHaveAccessibleName(
       /^Onosato, East\. Yokozuna\./
     )
+  })
+
+  it('loads as the same paper with the columns blocked in, announced once', () => {
+    const { container } = render(
+      <LanguageProvider>
+        <BanzukeSheetSkeleton />
+      </LanguageProvider>
+    )
+    expect(screen.getByRole('status')).toHaveAttribute('aria-busy', 'true')
+    expect(screen.getByRole('status')).toHaveTextContent('Loading the banzuke')
+    expect(screen.queryByRole('button')).toBeNull()
+    // Two halves, each a ladder of columns, none of them focusable
+    expect(container.querySelectorAll('[class*="half"]')).toHaveLength(2)
+    expect(container.querySelectorAll('[class*="column"]').length).toBeGreaterThan(20)
+    expect(container.querySelector('[tabindex]')).toBeNull()
   })
 })
