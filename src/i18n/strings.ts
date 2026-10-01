@@ -54,6 +54,7 @@ const en = {
   // Tournament results
   results: 'Results',
   resultsThrough: (day: number) => `Results through day ${day}`,
+  resultsCardOnly: 'The day 1 card',
   kachikoshi: 'Kachi-koshi',
   makekoshi: 'Make-koshi',
   yusho: 'Yusho',
@@ -217,6 +218,7 @@ const jp: Strings = {
 
   results: '星取',
   resultsThrough: (day: number) => `${day}日目までの星取`,
+  resultsCardOnly: '初日の取組',
   kachikoshi: '勝ち越し',
   makekoshi: '負け越し',
   yusho: '優勝',

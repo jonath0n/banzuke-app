@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { type Mock, afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   makeArchiveIndex,
   makeArchivedBanzuke,
@@ -273,6 +273,45 @@ describe('App', () => {
     expect(window.location.search).toBe('?results=0')
     expect(screen.queryByRole('region', { name: 'Day 12' })).toBeNull()
     expect(screen.getByRole('button', { name: /Onosato, West/ })).not.toHaveAccessibleName(/wins/)
+  })
+
+  it('shows only the card before day 1, with no 0–0 under every name', async () => {
+    // The eve of day 1: the day-1 card is out, every record is empty.
+    vi.setSystemTime(new Date('2026-09-12T20:00:00+09:00'))
+    const empty = { wins: 0, losses: 0, absences: 0, bouts: [] }
+    const stub = fetch as unknown as Mock<(url: RequestInfo | URL) => Promise<Response>>
+    const fallback = stub.getMockImplementation()!
+    stub.mockImplementation((url) =>
+      String(url).includes('results/637.json')
+        ? Promise.resolve(
+            jsonResponse(
+              makeResultsFile({
+                day: 0,
+                records: { '1000': empty, '1001': empty },
+                torikumi: {
+                  '1': [
+                    {
+                      division: 'makuuchi',
+                      matchNo: 1,
+                      east: { id: 1000, shikona: { en: 'Hoshoryu', jp: '豊昇龍' } },
+                      west: { id: 1001, shikona: { en: 'Onosato', jp: '大の里' } },
+                      winnerId: null,
+                      kimarite: '',
+                    },
+                  ],
+                },
+                yusho: {},
+              })
+            )
+          )
+        : fallback(url)
+    )
+    render(<App />)
+    const toggle = await screen.findByRole('button', { name: /Results.*The day 1 card/ })
+    expect(toggle).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('region', { name: 'Day 1' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Onosato, West/ })).not.toHaveAccessibleName(/wins/)
+    expect(screen.queryByText('0–0')).toBeNull()
   })
 
   it('offers no results toggle out of season or when the file is missing', async () => {

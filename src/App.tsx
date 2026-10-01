@@ -98,7 +98,9 @@ function AppContent() {
   const results = useResults(inSeason && banzuke ? banzuke.basho.id : null)
   const resultsOn = resultsParam !== '0'
   const file = resultsOn ? results.results : null
-  const records = file?.records ?? null
+  // Before day 1 the file is the card only: every record is 0–0, and seventy
+  // copies of that under the names would say nothing a fan does not know.
+  const records = file && file.day > 0 ? file.records : null
   const champions = file?.yusho
   // Defaults to the latest fought day; the stepper's › reaches a later
   // published card via lastSteppableDay inside Bouts.
