@@ -204,6 +204,8 @@ const en = {
   shortcutEscape: 'Close the dialog or clear the search',
   shortcutHelp: 'Show or hide this help',
   shortcutArrows: 'Move between wrestlers; ← → in the dialog',
+  shortcutsSingleKey: 'Single-key shortcuts (L, /, ?)',
+  shortcutsSingleKeyHint: 'Turn off if your speech or assistive software types these keys',
 
   // Footer
   footerMadeBy: 'Made by',
@@ -394,6 +396,8 @@ const jp: Strings = {
   shortcutEscape: 'ダイアログを閉じる / 検索をクリア',
   shortcutHelp: 'このヘルプの表示・非表示',
   shortcutArrows: '力士の間を移動（ダイアログ内は ← →）',
+  shortcutsSingleKey: '1キーのショートカット（L、/、?）',
+  shortcutsSingleKeyHint: '音声入力や支援技術がこれらのキーを文字として送る場合はオフに',
 
   footerMadeBy: '制作：',
   footerDataSource: '出典：',

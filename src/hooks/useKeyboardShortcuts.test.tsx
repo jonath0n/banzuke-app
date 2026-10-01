@@ -64,4 +64,22 @@ describe('useKeyboardShortcuts', () => {
     press('l')
     expect(onToggleLanguage).not.toHaveBeenCalled()
   })
+
+  it('keeps only Escape when the single-key shortcuts are off', () => {
+    const actions = {
+      onToggleLanguage: vi.fn(),
+      onFocusSearch: vi.fn(),
+      onEscape: vi.fn(),
+      onToggleHelp: vi.fn(),
+    }
+    renderHook(() => useKeyboardShortcuts({ ...actions, singleKeys: false }))
+    expect(press('l').defaultPrevented).toBe(false)
+    expect(press('/').defaultPrevented).toBe(false)
+    press('?')
+    expect(actions.onToggleLanguage).not.toHaveBeenCalled()
+    expect(actions.onFocusSearch).not.toHaveBeenCalled()
+    expect(actions.onToggleHelp).not.toHaveBeenCalled()
+    press('Escape')
+    expect(actions.onEscape).toHaveBeenCalledTimes(1)
+  })
 })

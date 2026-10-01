@@ -269,4 +269,17 @@ describe('BanzukeSheet', () => {
       /Kotozakura, West\. Yokozuna\./
     )
   })
+
+  it('keeps one column in the Tab order and moves it to the last focused column', () => {
+    const { container } = renderSheet({ onSelectRikishi: vi.fn() })
+    const tabbable = () =>
+      [...container.querySelectorAll('button[data-id]')].filter(
+        (b) => b.getAttribute('tabindex') === '0'
+      )
+    expect(tabbable()).toHaveLength(1)
+    expect(tabbable()[0]).toHaveAccessibleName(/Onosato/)
+    act(() => screen.getByRole('button', { name: /Ura/ }).focus())
+    expect(tabbable()).toHaveLength(1)
+    expect(tabbable()[0]).toHaveAccessibleName(/Ura/)
+  })
 })

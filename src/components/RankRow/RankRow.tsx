@@ -24,6 +24,8 @@ interface RankRowProps {
   records?: Record<string, RikishiRecord> | null
   /** Ids of the Ozeki who are kadoban this tournament. */
   kadoban?: Set<number>
+  /** The one wrestler in the Tab order (roving tabindex). */
+  tabbableId?: number
   /** Ids of the tournament champions, across every division. */
   championIds?: ReadonlySet<number>
 }
@@ -41,6 +43,7 @@ export const RankRow = memo(function RankRow({
   movements,
   records,
   kadoban,
+  tabbableId,
   championIds,
 }: RankRowProps) {
   const short = jpRankShort(group.rankCode, group.rankNumber) || group.name.jp
@@ -68,6 +71,7 @@ export const RankRow = memo(function RankRow({
           dimmed={isDimmed(group.east, highlight)}
           movement={group.east ? (movements?.get(group.east.id) ?? null) : null}
           kadoban={group.east ? (kadoban?.has(group.east.id) ?? false) : false}
+          tabbable={group.east != null && group.east.id === tabbableId}
           record={group.east ? (records?.[String(group.east.id)] ?? null) : null}
           champion={!!group.east && !!championIds?.has(group.east.id)}
           pairKey={group.key}
@@ -98,6 +102,7 @@ export const RankRow = memo(function RankRow({
           dimmed={isDimmed(group.west, highlight)}
           movement={group.west ? (movements?.get(group.west.id) ?? null) : null}
           kadoban={group.west ? (kadoban?.has(group.west.id) ?? false) : false}
+          tabbable={group.west != null && group.west.id === tabbableId}
           record={group.west ? (records?.[String(group.west.id)] ?? null) : null}
           champion={!!group.west && !!championIds?.has(group.west.id)}
           pairKey={group.key}

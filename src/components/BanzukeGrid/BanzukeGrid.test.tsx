@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { act, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { LanguageProvider } from '../../contexts/LanguageContext'
@@ -158,5 +158,15 @@ describe('BanzukeGrid', () => {
     expect(wakatakakage).toHaveFocus()
     await user.keyboard('{End}')
     expect(wakatakakage).toHaveFocus()
+  })
+
+  it('keeps one wrestler in the Tab order and moves it to the last focused one', () => {
+    renderGrid(<BanzukeGrid rows={makeBanzuke().rikishi} onSelectRikishi={vi.fn()} />)
+    const tabbable = () =>
+      screen.getAllByRole('button').filter((b) => b.hasAttribute('data-pair') && b.tabIndex === 0)
+    expect(tabbable()).toHaveLength(1)
+    const west = screen.getByRole('button', { name: /Onosato, West/ })
+    act(() => west.focus())
+    expect(tabbable()).toEqual([west])
   })
 })

@@ -4,6 +4,7 @@ import { loadProfiles } from './hooks/useProfiles'
 import { loadStables } from './hooks/useStables'
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
+import { useShortcutSetting } from './hooks/useShortcutSetting'
 import { useUrlParam } from './hooks/useUrlState'
 import { useStrings } from './i18n/useStrings'
 import { useTournamentPhase } from './app/useTournamentPhase'
@@ -82,6 +83,7 @@ function AppContent() {
   const [heyaParam] = useUrlParam('heya', 'push')
   const [boutsDay, setBoutsDay] = useState<number | null>(null)
   const [helpOpen, setHelpOpen] = useState(false)
+  const [singleKeys, setSingleKeys] = useShortcutSetting()
   // Entrance animations play once, on the first sheet; later renders (tab
   // switches, search) must not replay the cascade.
   const [entered, setEntered] = useState(false)
@@ -190,6 +192,7 @@ function AppContent() {
     onFocusSearch: handleFocusSearch,
     onEscape: handleEscape,
     onToggleHelp: handleToggleHelp,
+    singleKeys,
   })
 
   // Warm the profiles file on the first sign of interest in a wrestler, so the
@@ -372,7 +375,12 @@ function AppContent() {
           </ErrorBoundary>
         )}
       </main>
-      <Footer helpOpen={helpOpen} onToggleHelp={setHelpOpen} />
+      <Footer
+        helpOpen={helpOpen}
+        onToggleHelp={setHelpOpen}
+        singleKeys={singleKeys}
+        onSingleKeysChange={setSingleKeys}
+      />
       <ScrollToTop />
       <Suspense fallback={null}>
         <WrestlerModal

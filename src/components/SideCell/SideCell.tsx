@@ -29,6 +29,8 @@ interface SideCellProps {
   champion?: boolean
   /** An Ozeki whose make-koshi would cost the rank. */
   kadoban?: boolean
+  /** In the Tab order (roving tabindex); the arrows reach the others. */
+  tabbable?: boolean
   /** Pair key for keyboard navigation (shared by east/west partners). */
   pairKey?: string
 }
@@ -61,6 +63,7 @@ function SideCellInner({
   record = null,
   champion = false,
   kadoban = false,
+  tabbable = true,
   pairKey,
 }: SideCellProps) {
   const { language } = useLanguage()
@@ -143,6 +146,7 @@ function SideCellInner({
           data-dimmed={dimmed || undefined}
           data-id={rikishi.id}
           data-pair={pairKey}
+          tabIndex={tabbable ? 0 : -1}
           onClick={() => onSelect(rikishi)}
           aria-label={label}
         >

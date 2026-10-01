@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import type { Division, RankGroup, RankLevel, Rikishi } from '../../types/banzuke'
 import { groupRowsByRank } from '../../utils/formatting'
 import { RANK_LEVEL_NAMES, RANK_LEVEL_KANJI } from '../../constants/ranks'
@@ -196,6 +196,7 @@ export function BanzukeGrid({
   kadoban,
 }: BanzukeGridProps) {
   const grouped = visibleGroups(groupRowsByRank(rows), highlight)
+  const [activeId, setActiveId] = useState<number | null>(null)
   const championIds = useMemo(() => new Set(Object.values(champions ?? {})), [champions])
 
   if (grouped.length === 0) {
@@ -210,11 +211,21 @@ export function BanzukeGrid({
   }
 
   let rowIndex = 0
+  // Roving tabindex: one wrestler in the Tab order, the arrows reach the rest.
+  const tabbableId =
+    activeId !== null && rows.some((r) => r.id === activeId) ? activeId : rows[0]?.id
 
   return (
     /* eslint-disable-next-line jsx-a11y/no-static-element-interactions --
        keyboard delegation for the buttons inside; not itself interactive */
-    <div className={styles.grid} onKeyDown={(e) => handleRovingKey(e.currentTarget, e, 'list')}>
+    <div
+      className={styles.grid}
+      onKeyDown={(e) => handleRovingKey(e.currentTarget, e, 'list')}
+      onFocus={(e) => {
+        const id = Number((e.target as HTMLElement).dataset.id)
+        if (Number.isInteger(id) && id !== activeId) setActiveId(id)
+      }}
+    >
       {splitIntoTiers(grouped).map((tier) => (
         <section
           key={tier.level}
@@ -244,6 +255,7 @@ export function BanzukeGrid({
               movements={movements}
               records={records}
               kadoban={kadoban}
+              tabbableId={tabbableId}
               championIds={championIds}
             />
           ))}
