@@ -14,6 +14,9 @@ import { useSelection } from './app/useSelection'
 import { useChanges } from './app/useChanges'
 import { useGuide } from './app/useGuide'
 import { useDocumentTitle } from './app/useDocumentTitle'
+import { useArchiveViewer } from './app/useArchiveViewer'
+import { useArchiveIndex } from './hooks/useArchive'
+import { BashoPicker } from './components/BashoPicker/BashoPicker'
 import { Hero } from './components/Hero/Hero'
 import { SearchBar } from './components/SearchBar/SearchBar'
 import { DivisionTabs } from './components/DivisionTabs/DivisionTabs'
@@ -70,7 +73,7 @@ function resolveDivision(param: string | null, data: BanzukeSet | null): Divisio
  * rule; those live in the hooks and the utilities they call.
  */
 function AppContent() {
-  const { data, status, problem } = useBanzuke()
+  const live = useBanzuke()
   const { language, setLanguage } = useLanguage()
   const strings = useStrings()
   const [searchQuery, setSearchQuery] = useUrlParam('q')
@@ -81,12 +84,25 @@ function AppContent() {
   const [resultsParam, setResultsParam] = useUrlParam('results')
   const [guideParam, setGuideParam] = useUrlParam('guide')
   const [heyaParam] = useUrlParam('heya', 'push')
+  const [bashoParam, setBashoParam] = useUrlParam('basho')
   const [boutsDay, setBoutsDay] = useState<number | null>(null)
   const [helpOpen, setHelpOpen] = useState(false)
   const [singleKeys, setSingleKeys] = useShortcutSetting()
   // Entrance animations play once, on the first sheet; later renders (tab
   // switches, search) must not replay the cascade.
   const [entered, setEntered] = useState(false)
+
+  // ?basho= shows an earlier tournament from the archive in place of the live one.
+  const archiveIndex = useArchiveIndex()
+  const archive = useArchiveViewer(bashoParam, archiveIndex, live.data?.makuuchi.basho.id ?? null)
+  const data = archive.entry ? archive.data : live.data
+  const status = archive.entry ? (archive.loading ? 'loading' : live.status) : live.status
+  const problem = archive.entry ? null : live.problem
+  const handleChangeBasho = useCallback(
+    (id: number | null) => setBashoParam(id === null ? null : String(id)),
+    [setBashoParam]
+  )
+
   useEffect(() => {
     if (!data || entered) return
     const timer = window.setTimeout(() => setEntered(true), ENTRANCE_MS)
@@ -267,6 +283,15 @@ function AppContent() {
                 doubling it. */}
             {view === 'sheet' && !nothingToShow && !isFiltering && !guideOn && (
               <GuideLink ref={guideLinkRef} on={false} onToggle={handleToggleGuide} />
+            )}
+            {archiveIndex && archiveIndex.basho.length > 0 && (
+              <BashoPicker
+                current={archive.entry}
+                previous={archive.entry ? archive.previous : (archiveIndex.basho.at(-1) ?? null)}
+                next={archive.next}
+                nextIsLive={archive.nextIsLive}
+                onChange={handleChangeBasho}
+              />
             )}
           </div>
         )}

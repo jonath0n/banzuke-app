@@ -2,8 +2,10 @@ import { describe, expect, it } from 'vitest'
 import {
   archiveFileName,
   archiveFromBanzukeSet,
+  banzukeSetFromArchive,
   buildIndex,
   previousEntry,
+  rikishiFromArchived,
   validateArchive,
   validateArchiveIndex,
 } from './archive'
@@ -131,5 +133,39 @@ describe('index', () => {
   it('rejects a malformed index', () => {
     expect(validateArchiveIndex({ version: 1, basho: 'x' }).ok).toBe(false)
     expect(validateArchiveIndex({ ...makeArchiveIndex(), basho: [{ bashoId: 1 }] }).ok).toBe(false)
+  })
+})
+
+describe('the archive as the app sees it', () => {
+  it('derives what the archive does not keep: rank names, numeral, printed tier, sort key', () => {
+    const [hoshoryu, , wakatakakage, dewanoryu] =
+      makeArchivedBanzuke().rikishi.map(rikishiFromArchived)
+    expect(hoshoryu.rankName).toEqual({ en: 'Yokozuna', jp: '横綱' })
+    expect(hoshoryu.printedTier).toBe('横綱')
+    expect(wakatakakage.rankName).toEqual({ en: 'Maegashira #3', jp: '前頭三枚目' })
+    expect(wakatakakage.numberKanji).toBe('三枚目')
+    expect(wakatakakage.rankLevel).toBe('maegashira')
+    expect(dewanoryu.rankName.en).toBe('Juryo #1')
+    expect(hoshoryu.sortKey < wakatakakage.sortKey).toBe(true)
+    expect(wakatakakage.sortKey < dewanoryu.sortKey).toBe(true)
+    // Nothing the file lacks is invented
+    expect(hoshoryu.photo).toBeNull()
+    expect(hoshoryu.promotion).toBeNull()
+    expect(hoshoryu.reading).toBeNull()
+    expect(hoshoryu.heya).toEqual({ id: 0, en: 'Tatsunami', jp: '立浪' })
+  })
+
+  it('builds a BanzukeSet with both divisions and the tournament named in both languages', () => {
+    const set = banzukeSetFromArchive(makeArchivedBanzuke())
+    expect(set.makuuchi.basho).toMatchObject({
+      id: 636,
+      name: { en: 'July Grand Sumo Tournament', jp: '七月場所' },
+      yearJp: '令和八年',
+      startDate: '2026-07-12',
+      endDate: '2026-07-26',
+    })
+    expect(set.makuuchi.rikishi.map((r) => r.id)).toEqual([3842, 4227, 4055])
+    expect(set.juryo?.rikishi.map((r) => r.id)).toEqual([3983])
+    expect(banzukeSetFromArchive(makeArchivedBanzuke({ divisions: ['makuuchi'] })).juryo).toBeNull()
   })
 })

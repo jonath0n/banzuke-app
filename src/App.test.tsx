@@ -145,6 +145,27 @@ describe('App', () => {
     expect(within(kirishima).getByText('Kadoban')).toBeInTheDocument()
   })
 
+  it('shows an archived tournament from ?basho=, with a way back to the live sheet', async () => {
+    window.history.replaceState(null, '', '/?basho=636')
+    render(<App />)
+    // The archived July rows, not the live September ones
+    expect(await screen.findByRole('button', { name: /Wakatakakage, East/ })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Kirishima/ })).toBeNull()
+    expect(screen.getByText('July Grand Sumo Tournament')).toBeInTheDocument()
+    const nav = screen.getByRole('navigation', { name: 'Earlier tournaments' })
+    expect(nav).toHaveTextContent('Archived banzuke: Jul 2026 (Nagoya)')
+    await userEvent.setup().click(screen.getAllByRole('link', { name: 'Current banzuke' })[0])
+    expect(await screen.findByRole('button', { name: /Hoshoryu, East/ })).toBeInTheDocument()
+    expect(window.location.search).toBe('')
+  })
+
+  it('ignores a ?basho= the archive does not know', async () => {
+    window.history.replaceState(null, '', '/?basho=600')
+    render(<App />)
+    expect(await screen.findByRole('button', { name: /Hoshoryu, East/ })).toBeInTheDocument()
+    await waitFor(() => expect(window.location.search).toBe(''))
+  })
+
   it('opens a wrestler from the URL and closes without leaving the deep link', async () => {
     const user = userEvent.setup()
     window.history.replaceState(null, '', '/?rikishi=1001')

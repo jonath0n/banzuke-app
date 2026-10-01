@@ -7,9 +7,11 @@
  *
  * Free of DOM and React imports so the scripts can share it.
  */
-import type { BanzukeSet, Division, Localized, Rikishi, Side } from '../types/banzuke'
+import type { Banzuke, BanzukeSet, Division, Localized, Rikishi, Side } from '../types/banzuke'
+import { getRankLevelFromCode, isSanyaku, RANK_LEVEL_NAMES } from '../constants/ranks'
 import { DIVISIONS } from './schema'
 import { bashoYearMonth } from './bashoIds'
+import { jpBashoName, jpEraYear, jpNumberKanji, jpRankName, printedTier } from './kanji'
 
 export type ArchiveSource = 'jsa' | 'sumo-api'
 
@@ -235,4 +237,76 @@ export function previousEntry(index: ArchiveIndex, bashoId: number): ArchiveInde
     else break
   }
   return found
+}
+
+const MONTH_NAMES: Record<number, string> = {
+  1: 'January',
+  3: 'March',
+  5: 'May',
+  7: 'July',
+  9: 'September',
+  11: 'November',
+}
+
+/** The JSA's English name for a tournament by month: "September Grand Sumo Tournament". */
+export function enBashoName(month: number): string {
+  return `${MONTH_NAMES[month] ?? ''} Grand Sumo Tournament`.trim()
+}
+
+/**
+ * An archived row as the components expect a wrestler: the fields the
+ * archive does not keep are derived from the rank (names, numeral, printed
+ * tier, sort key) or left empty (reading, photo, promotion). The stable's
+ * id is 0, so nothing offers to open a stable the file cannot name.
+ */
+export function rikishiFromArchived(row: ArchivedRikishi): Rikishi {
+  const level = getRankLevelFromCode(row.rankCode)
+  const numbered = !isSanyaku(row.rankCode)
+  return {
+    id: row.id,
+    side: row.side,
+    rankCode: row.rankCode,
+    rankLevel: level,
+    rankNumber: row.rankNumber,
+    seat: row.seat,
+    rankName: {
+      en: numbered ? `${RANK_LEVEL_NAMES[level]} #${row.rankNumber}` : RANK_LEVEL_NAMES[level],
+      jp: jpRankName(row.rankCode, row.rankNumber),
+    },
+    printedTier: printedTier('', row.rankCode),
+    numberKanji: jpNumberKanji(row.rankNumber),
+    sortKey: `${String(row.rankCode / 100).padStart(3, '0')}${String(row.rankNumber).padStart(7, '0')}${String(row.seat).padStart(5, '0')}`,
+    shikona: row.shikona,
+    reading: null,
+    heya: { id: 0, en: row.heya?.en ?? '', jp: row.heya?.jp || (row.heya?.en ?? '') },
+    pref: { id: 0, en: row.pref?.en ?? '', jp: row.pref?.jp || (row.pref?.en ?? '') },
+    photo: null,
+    promotion: null,
+  }
+}
+
+/** The archived tournament as a BanzukeSet, so every view can show it as it shows the live one. */
+export function banzukeSetFromArchive(archive: ArchivedBanzuke): BanzukeSet {
+  const basho: Banzuke['basho'] = {
+    id: archive.bashoId,
+    name: { en: enBashoName(archive.month), jp: jpBashoName(archive.month) },
+    year: archive.year,
+    yearJp: jpEraYear(archive.year),
+    month: archive.month,
+    startDate: archive.startDate,
+    endDate: archive.endDate,
+    announcedAt: null,
+    venueId: null,
+  }
+  const division = (name: Division): Banzuke => ({
+    division: name,
+    basho,
+    rikishi: archive.rikishi.filter((r) => r.division === name).map(rikishiFromArchived),
+    fetchedAt: `${archive.startDate}T00:00:00+09:00`,
+    source: 'live',
+  })
+  return {
+    makuuchi: division('makuuchi'),
+    juryo: archive.divisions.includes('juryo') ? division('juryo') : null,
+  }
 }
