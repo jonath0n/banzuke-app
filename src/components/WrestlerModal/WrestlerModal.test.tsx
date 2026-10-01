@@ -198,6 +198,49 @@ describe('WrestlerModal', () => {
     expect(bouts[0]).toHaveTextContent('vs Wakatakakage')
     expect(bouts[0]).toHaveTextContent('yorikiri')
     expect(bouts[7]).toHaveTextContent('Absent')
+    // The ○● marks are decorative: a fought bout says its outcome in words,
+    // an absence or a forfeit already does in its visible text.
+    expect(bouts[0]).toHaveTextContent(/^1○Win vs Wakatakakage/)
+    expect(bouts[2]).toHaveTextContent(/^3●Loss /)
+    expect(bouts[7]).not.toHaveTextContent(/Win|Loss/)
+    // Safari keeps list semantics only with an explicit role once bullets are off.
+    expect(bouts[0].parentElement).toHaveAttribute('role', 'list')
+  })
+
+  it('moves focus to the wrestler name when it opens', () => {
+    render(
+      <LanguageProvider>
+        <button type="button">opener</button>
+        <WrestlerModal rikishi={onosato} onClose={vi.fn()} />
+      </LanguageProvider>
+    )
+    expect(screen.getByRole('heading', { name: 'Onosato' })).toHaveFocus()
+  })
+
+  it('copies the link and announces it; the share sheet is for touch devices only', async () => {
+    const user = userEvent.setup()
+    const writeText = vi.fn().mockResolvedValue(undefined)
+    const share = vi.fn().mockResolvedValue(undefined)
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true })
+    Object.defineProperty(navigator, 'share', { value: share, configurable: true })
+    const matchMedia = vi.fn().mockReturnValue({ matches: false })
+    Object.defineProperty(window, 'matchMedia', { value: matchMedia, configurable: true })
+    try {
+      renderModal()
+      await user.click(screen.getByRole('button', { name: 'Copy link' }))
+      expect(writeText).toHaveBeenCalledWith(window.location.href)
+      expect(share).not.toHaveBeenCalled()
+      expect(screen.getByRole('status')).toHaveTextContent('Link copied')
+      expect(screen.getByRole('button', { name: 'Link copied' })).toBeInTheDocument()
+
+      matchMedia.mockReturnValue({ matches: true })
+      await user.click(screen.getByRole('button', { name: 'Link copied' }))
+      expect(share).toHaveBeenCalledWith({ url: window.location.href, title: document.title })
+    } finally {
+      Reflect.deleteProperty(navigator, 'share')
+      Reflect.deleteProperty(navigator, 'clipboard')
+      Reflect.deleteProperty(window, 'matchMedia')
+    }
   })
 
   it('steps to the neighbours by button and by arrow key, and hides an absent side', async () => {

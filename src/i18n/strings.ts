@@ -66,6 +66,8 @@ const en = {
   undecided: 'Not yet fought',
   boutAgainst: (opponent: string) => `vs ${opponent}`,
   absentDay: 'Absent',
+  boutWin: 'Win',
+  boutLoss: 'Loss',
   fusenWin: 'Forfeit win',
   fusenLoss: 'Forfeit loss',
 
@@ -234,6 +236,8 @@ const jp: Strings = {
   undecided: '取組前',
   boutAgainst: (opponent: string) => `対 ${opponent}`,
   absentDay: '休場',
+  boutWin: '勝ち',
+  boutLoss: '負け',
   fusenWin: '不戦勝',
   fusenLoss: '不戦敗',
 

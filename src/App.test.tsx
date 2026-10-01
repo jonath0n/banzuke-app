@@ -95,6 +95,30 @@ describe('App', () => {
     expect(window.location.search).toBe('')
   })
 
+  it('clears a deep link to a wrestler who is not on this banzuke', async () => {
+    window.history.replaceState(null, '', '/?rikishi=424242')
+    render(<App />)
+    await screen.findByRole('button', { name: /Onosato, West/ })
+    await waitFor(() => expect(window.location.search).toBe(''))
+    expect(screen.queryByRole('dialog')).toBeNull()
+  })
+
+  it('names the tab after the open dialog, then after the tournament again', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.click(await screen.findByRole('button', { name: /Hoshoryu, East/ }))
+    await waitFor(() => expect(document.title).toBe('Hoshoryu · Grand Sumo Banzuke'))
+    await user.click(screen.getByRole('button', { name: 'Tatsunami stable' }))
+    await waitFor(() => expect(document.title).toBe('Tatsunami stable · Grand Sumo Banzuke'))
+    // Closing the stable walks Back to the wrestler; closing the wrestler leaves the chain.
+    await user.click(screen.getByRole('button', { name: 'Close stable details' }))
+    await waitFor(() => expect(document.title).toBe('Hoshoryu · Grand Sumo Banzuke'))
+    await user.click(screen.getByRole('button', { name: 'Close wrestler details' }))
+    await waitFor(() =>
+      expect(document.title).toBe('Grand Sumo Banzuke · September Grand Sumo Tournament')
+    )
+  })
+
   it('selecting a wrestler writes the deep link', async () => {
     const user = userEvent.setup()
     render(<App />)

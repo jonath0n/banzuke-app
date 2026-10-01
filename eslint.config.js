@@ -8,7 +8,14 @@ import globals from 'globals'
 export default tseslint.config(
   // Global ignores
   {
-    ignores: ['dist/**', 'node_modules/**', 'design/**', 'coverage/**', '*.config.js', '*.config.ts'],
+    ignores: [
+      'dist/**',
+      'node_modules/**',
+      'design/**',
+      'coverage/**',
+      '*.config.js',
+      '*.config.ts',
+    ],
   },
 
   // Base recommended configs
@@ -35,6 +42,12 @@ export default tseslint.config(
   {
     ...jsxA11y.flatConfigs.recommended,
     files: ['src/**/*.tsx'],
+    rules: {
+      ...jsxA11y.flatConfigs.recommended.rules,
+      // Safari drops list semantics from a list whose bullets are off unless the
+      // role is explicit; an ordered list needs the same escape hatch as `ul`.
+      'jsx-a11y/no-redundant-roles': ['error', { nav: ['navigation'], ul: ['list'], ol: ['list'] }],
+    },
   },
 
   // React configuration for app TypeScript/TSX files
@@ -57,10 +70,7 @@ export default tseslint.config(
       ...reactHooks.configs.recommended.rules,
 
       // React refresh rules
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
+      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
 
       // TypeScript rules
       '@typescript-eslint/no-unused-vars': [
