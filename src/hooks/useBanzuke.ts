@@ -8,6 +8,9 @@ const DATA_URL = `${import.meta.env.BASE_URL}latest-banzuke.json`
 const SAMPLE_URL = `${import.meta.env.BASE_URL}sample-data.json`
 const MAX_RETRIES = 3
 const RETRY_DELAY_MS = 1000
+/** A tab that comes back after this long asks for the snapshot again: banzuke day happens while tabs are open. */
+export const REFRESH_AFTER_MS = 10 * 60_000
+
 /** localStorage key for the last good banzuke; bump when the model changes. */
 export const CACHE_KEY = 'banzuke:v3'
 
@@ -219,11 +222,13 @@ export function useBanzuke(): BanzukeState {
 
     const cached = readCachedBanzuke()
     if (cached) dispatch({ type: 'cached', data: cached })
+    let loadedAt = 0
 
     async function load() {
       try {
         const live = await loadSnapshot(DATA_URL, 'live', controller.signal)
         if (cancelled) return
+        loadedAt = Date.now()
         writeCachedBanzuke(live)
         dispatch({ type: 'loaded', data: live })
         return
@@ -249,9 +254,28 @@ export function useBanzuke(): BanzukeState {
 
     load()
 
+    // A tab left open across a banzuke morning: on coming back after ten
+    // minutes or more, ask again; a failure keeps what is on screen.
+    const onVisible = () => {
+      if (document.visibilityState !== 'visible' || loadedAt === 0) return
+      if (Date.now() - loadedAt < REFRESH_AFTER_MS) return
+      loadedAt = Date.now()
+      loadSnapshot(DATA_URL, 'live', controller.signal)
+        .then((live) => {
+          if (cancelled) return
+          writeCachedBanzuke(live)
+          dispatch({ type: 'loaded', data: live })
+        })
+        .catch((err: unknown) => {
+          if (!isAbort(err)) console.warn('Banzuke refresh failed:', describeError(err))
+        })
+    }
+    document.addEventListener('visibilitychange', onVisible)
+
     return () => {
       cancelled = true
       controller.abort()
+      document.removeEventListener('visibilitychange', onVisible)
     }
   }, [])
 

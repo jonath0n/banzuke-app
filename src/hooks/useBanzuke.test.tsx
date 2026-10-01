@@ -162,4 +162,29 @@ describe('useBanzuke', () => {
 
     expect(warnSpy).not.toHaveBeenCalled()
   })
+
+  it('asks for the snapshot again when the tab comes back after ten minutes', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+    try {
+      vi.setSystemTime(new Date('2026-10-26T06:00:00+09:00'))
+      const fetchSpy = vi.fn().mockResolvedValue(jsonResponse(makeRawSnapshot()))
+      vi.stubGlobal('fetch', fetchSpy)
+      const { result } = renderHook(() => useBanzuke())
+      await waitFor(() => expect(result.current.status).toBe('ready'))
+      expect(fetchSpy).toHaveBeenCalledTimes(1)
+
+      // Back within the window: nothing
+      vi.setSystemTime(new Date('2026-10-26T06:05:00+09:00'))
+      document.dispatchEvent(new Event('visibilitychange'))
+      expect(fetchSpy).toHaveBeenCalledTimes(1)
+
+      // Back after it: one request
+      vi.setSystemTime(new Date('2026-10-26T06:12:00+09:00'))
+      document.dispatchEvent(new Event('visibilitychange'))
+      await waitFor(() => expect(fetchSpy).toHaveBeenCalledTimes(2))
+      expect(String(fetchSpy.mock.calls[1][0])).toMatch(/latest-banzuke\.json$/)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
 })
