@@ -11,6 +11,37 @@ updates:
       # One PR for all routine bumps; majors get their own PRs.
       minor-and-patch:
         update-types: ['minor', 'patch']
+    # Majors of the build and test toolchain are taken by hand, not by bot:
+    # eslint 10 (#75, #69) merged without a green check and stopped every
+    # deploy for three days, because jsx-a11y still peers on eslint 9. A
+    # major here is a migration, with its own PR written by a person.
+    ignore:
+      - dependency-name: eslint
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@eslint/js'
+        update-types: ['version-update:semver-major']
+      - dependency-name: eslint-plugin-jsx-a11y
+        update-types: ['version-update:semver-major']
+      - dependency-name: typescript-eslint
+        update-types: ['version-update:semver-major']
+      - dependency-name: vite
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@vitejs/plugin-react'
+        update-types: ['version-update:semver-major']
+      - dependency-name: vitest
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@vitest/coverage-v8'
+        update-types: ['version-update:semver-major']
+      - dependency-name: jsdom
+        update-types: ['version-update:semver-major']
+      - dependency-name: typescript
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+      - dependency-name: react
+        update-types: ['version-update:semver-major']
+      - dependency-name: react-dom
+        update-types: ['version-update:semver-major']
     open-pull-requests-limit: 5
 
   - package-ecosystem: github-actions
@@ -18,3 +49,7 @@ updates:
     schedule:
       interval: weekly
       day: monday
+    groups:
+      # upload-artifact and download-artifact must move together
+      actions:
+        patterns: ['*']
