@@ -349,21 +349,88 @@ export function playoffFighters(matches: Match[]): Fighter[] {
   return [...seen.values()]
 }
 
-/** The top two win counts among `rows`, ties in banzuke order. */
-export function leaders(
-  records: Record<string, RikishiRecord>,
+/** One rung of the race: everyone on the same number of losses, in banzuke order. */
+export interface RaceTier {
+  /** Losses and absences together: an absence is a loss in the race. */
+  losses: number
+  wins: number
+  rikishi: Rikishi[]
+}
+
+export interface YushoRace {
+  /** The day the race stands after. */
+  day: number
+  /** Still in it: the leaders and, within two losses, whoever can still catch them. */
+  tiers: RaceTier[]
+  /** The champion, once the race is decided — in regulation or by playoff. */
+  champion: Rikishi | null
+  /** Nobody can catch the leader any more, though senshuraku may be unfought. */
+  decided: boolean
+  /** The two sole leaders meet on the next card: 相星決戦. */
+  coLeaderBout: Match | null
+}
+
+/**
+ * The yusho race as a fan reads it off the hoshitori: the leaders by losses,
+ * then whoever is within two losses and can still catch them, and whether it
+ * is already over. A wrestler who has withdrawn (last entry an absence, or
+ * fewer bouts than days) is out. Ties in banzuke order, so the East Yokozuna
+ * heads a rung he shares.
+ */
+export function yushoRace(
+  results: Pick<ResultsFile, 'day' | 'records' | 'torikumi' | 'yusho' | 'playoff'>,
+  division: Division,
   rows: Rikishi[]
-): Array<{ wins: number; rikishi: Rikishi[] }> {
-  const byWins = new Map<number, Rikishi[]>()
-  for (const rikishi of rows) {
-    const record = records[String(rikishi.id)]
-    if (!record) continue
-    const list = byWins.get(record.wins) ?? []
-    list.push(rikishi)
-    byWins.set(record.wins, list)
+): YushoRace {
+  const day = results.day
+  const remaining = Math.max(0, MAX_DAYS - day)
+  const byId = new Map(rows.map((r) => [r.id, r]))
+  const champion =
+    results.yusho[division] != null ? (byId.get(results.yusho[division]!) ?? null) : null
+
+  const standing = rows.flatMap((rikishi) => {
+    const record = results.records[String(rikishi.id)]
+    if (!record || record.bouts.length === 0) return []
+    const last = record.bouts[record.bouts.length - 1]
+    const withdrawn = last.outcome === 'absent' || record.bouts.length < day
+    if (withdrawn) return []
+    return [{ rikishi, wins: record.wins, losses: record.losses + record.absences }]
+  })
+  if (standing.length === 0) {
+    return { day, tiers: [], champion, decided: champion !== null, coLeaderBout: null }
   }
-  return [...byWins.keys()]
-    .sort((a, b) => b - a)
-    .slice(0, 2)
-    .map((wins) => ({ wins, rikishi: byWins.get(wins)! }))
+
+  const leaderWins = Math.max(...standing.map((s) => s.wins))
+  const leaderLosses = Math.min(...standing.map((s) => s.losses))
+  const alive = standing.filter(
+    (s) => s.wins + remaining >= leaderWins && s.losses <= leaderLosses + 2
+  )
+  const byLosses = new Map<number, RaceTier>()
+  for (const s of alive) {
+    const tier = byLosses.get(s.losses) ?? { losses: s.losses, wins: s.wins, rikishi: [] }
+    tier.rikishi.push(s.rikishi)
+    byLosses.set(s.losses, tier)
+  }
+  const tiers = [...byLosses.values()].sort((a, b) => a.losses - b.losses)
+
+  const leaders = standing.filter((s) => s.wins === leaderWins)
+  const chasers = standing.filter((s) => s.wins < leaderWins)
+  const bestChase = chasers.length > 0 ? Math.max(...chasers.map((s) => s.wins)) : -1
+  const decided =
+    champion !== null ||
+    (leaders.length === 1 && (remaining === 0 || bestChase + remaining < leaderWins))
+
+  let coLeaderBout: Match | null = null
+  if (leaders.length === 2 && remaining > 0) {
+    const [a, b] = leaders.map((s) => s.rikishi.id)
+    const next = results.torikumi[String(day + 1)] ?? []
+    coLeaderBout =
+      next.find(
+        (m) =>
+          m.winnerId === null &&
+          ((m.east.id === a && m.west.id === b) || (m.east.id === b && m.west.id === a))
+      ) ?? null
+  }
+
+  return { day, tiers, champion, decided, coLeaderBout }
 }

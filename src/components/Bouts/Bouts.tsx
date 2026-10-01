@@ -5,14 +5,14 @@ import { useStrings } from '../../i18n/useStrings'
 import { langAttr } from '../../i18n/strings'
 import { kimariteGloss, kimariteLabel } from '../../data/kimarite'
 import {
-  leaders,
   MAX_DAYS,
   playoffFighters,
-  scoreLabel,
+  yushoRace,
   type Fighter,
   type Match,
   type ResultsFile,
 } from '../../data/results'
+import { YushoRace } from '../YushoRace/YushoRace'
 import styles from './Bouts.module.css'
 
 interface BoutsProps {
@@ -56,7 +56,7 @@ export function Bouts({ results, division, rows, day, onChangeDay, onSelectRikis
       return own(a) - own(b) || a.matchNo - b.matchNo
     })
   const last = lastSteppableDay(results)
-  const tiers = results.day >= 1 ? leaders(results.records, rows) : []
+  const race = results.day >= 1 ? yushoRace(results, division, rows) : null
   // The playoff follows senshuraku's card: the bouts after the fifteen days.
   const playoff = day === MAX_DAYS ? (results.playoff?.[division] ?? []) : []
   const playoffHeadingId = `${headingId}-playoff`
@@ -118,17 +118,8 @@ export function Bouts({ results, division, rows, day, onChangeDay, onSelectRikis
           ›
         </button>
       </div>
-      {tiers.length > 0 && (
-        <p className={`${styles.leaders} ${styles.leadersLabel}`}>
-          {strings.leadersAfter(results.day)}{' '}
-          {tiers.map((tier, i) => (
-            <span key={tier.wins} className={styles.tier}>
-              {i > 0 && ' · '}
-              {tier.rikishi.map((r) => r.shikona[language] || r.shikona.en).join(', ')}{' '}
-              {scoreLabel(results.records[String(tier.rikishi[0].id)], language)}
-            </span>
-          ))}
-        </p>
+      {race && (
+        <YushoRace race={race} records={results.records} onSelectRikishi={onSelectRikishi} />
       )}
       {matches.length === 0 ? (
         <p className={styles.none}>{strings.boutsNone}</p>

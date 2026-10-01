@@ -45,31 +45,6 @@
   color: var(--text);
 }
 
-.leaders {
-  text-align: center;
-  font-size: var(--text-sm);
-  color: var(--muted);
-  margin: var(--space-2) 0;
-}
-
-.leadersLabel {
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-caps);
-  font-weight: var(--label-weight);
-}
-
-.leadersLabel:lang(ja) {
-  text-transform: none;
-  letter-spacing: 0.1em;
-}
-
-.tier {
-  color: var(--text);
-  text-transform: none;
-  letter-spacing: normal;
-  font-weight: normal;
-}
-
 .list {
   list-style: none;
   display: grid;
