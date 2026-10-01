@@ -10,16 +10,27 @@
  * scripts/lib/font-coverage.test.ts checks against the current data.
  *
  * Usage:
- *   tsx scripts/subset-fonts.ts [--snapshot <path>] [--archive-dir <dir>] [--out-dir <dir>] [--cache <path>]
+ *   tsx scripts/subset-fonts.ts [--snapshot <path>] [--archive-dir <dir>] [--stables <path>]
+ *                               [--out-dir <dir>] [--cache <path>]
  *
  * --snapshot    Banzuke snapshot to draw glyphs from (default: public/latest-banzuke.json).
  * --archive-dir Directory of archived banzuke JSON files (default: public/banzuke).
+ * --stables     Stables file to draw glyphs from (default: public/stables.json). The deploy
+ *               job passes the freshly fetched one, so a new stablemaster's kanji is in the
+ *               subset the build job then tests against.
  * --out-dir     Where to write the woff2, manifest and licence (default: public/assets/fonts).
  * --cache       Where to keep the downloaded variable TTF (default: .data/NotoSerifJP[wght].ttf).
  *
- * Exit codes: 0 success, 1 download failure, 2 subsetting failure.
+ * The source font is pinned: a fixed google/fonts commit, and the SHA-256 of
+ * the bytes it serves. Google updates Noto now and then, and a subset cut
+ * from a font nobody reviewed must not reach the site by accident — a
+ * mismatch is a failure, and the deploy job keeps the committed subset.
+ *
+ * Exit codes: 0 success, 1 download failure or a source font that is not the
+ * pinned one, 2 subsetting failure.
  */
-import { access, mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises'
+import { createHash } from 'node:crypto'
+import { access, mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { parseArgs } from 'node:util'
@@ -33,8 +44,11 @@ const FILE = `NotoSerifJP-${WEIGHT}-subset.woff2`
 const MANIFEST = 'NotoSerifJP-subset.json'
 const LICENSE = 'NotoSerifJP-OFL.txt'
 
-const GOOGLE_FONTS = 'https://raw.githubusercontent.com/google/fonts/main/ofl/notoserifjp'
+// google/fonts main as of 2026-10-01. Move the commit and the hash together.
+const GOOGLE_FONTS_COMMIT = '9710da1eacb3be272583c3224dcb70f9da6eadbb'
+const GOOGLE_FONTS = `https://raw.githubusercontent.com/google/fonts/${GOOGLE_FONTS_COMMIT}/ofl/notoserifjp`
 const SOURCE_URL = `${GOOGLE_FONTS}/NotoSerifJP%5Bwght%5D.ttf`
+const SOURCE_SHA256 = '2fd527ba12b6a44ec30d796d633360da0aeba6c5d4af1304ce12bb4dc15a7dfc'
 const LICENSE_URL = `${GOOGLE_FONTS}/OFL.txt`
 
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
@@ -43,10 +57,13 @@ const { values: args } = parseArgs({
   options: {
     snapshot: { type: 'string', default: resolve(rootDir, 'public/latest-banzuke.json') },
     'archive-dir': { type: 'string', default: resolve(rootDir, 'public/banzuke') },
+    stables: { type: 'string', default: resolve(rootDir, 'public/stables.json') },
     'out-dir': { type: 'string', default: resolve(rootDir, 'public/assets/fonts') },
     cache: { type: 'string', default: resolve(rootDir, '.data/NotoSerifJP[wght].ttf') },
   },
 })
+
+const sha256 = (bytes: Uint8Array): string => createHash('sha256').update(bytes).digest('hex')
 
 async function exists(path: string): Promise<boolean> {
   try {
@@ -70,14 +87,18 @@ async function sourceFiles(dir: string): Promise<string[]> {
 }
 
 /** Everything Japanese the app can show: the snapshot plus every source literal. */
-async function gatherTexts(snapshotPath: string, archiveDir: string): Promise<string[]> {
+async function gatherTexts(
+  snapshotPath: string,
+  archiveDir: string,
+  stablesPath: string
+): Promise<string[]> {
   const texts = [await readFile(snapshotPath, 'utf8')]
   // The fallback sheet must render in the same face, and it is frozen at an
   // older basho than the live file.
   texts.push(await readFile(resolve(rootDir, 'public/sample-data.json'), 'utf8'))
   // Stablemasters' names render in the serif in the stable dialog.
   try {
-    texts.push(await readFile(resolve(rootDir, 'public/stables.json'), 'utf8'))
+    texts.push(await readFile(stablesPath, 'utf8'))
   } catch {
     // No stables file yet: nothing to add.
   }
@@ -98,14 +119,22 @@ async function gatherTexts(snapshotPath: string, archiveDir: string): Promise<st
 }
 
 /** The variable TTF, downloaded once and kept under .data/ (gitignored). */
+/** The pinned font, from the cache when its bytes match and from the pinned URL otherwise. */
 async function loadSourceFont(cachePath: string): Promise<Uint8Array> {
   if (await exists(cachePath)) {
-    const size = (await stat(cachePath)).size
-    console.log(`Using cached ${cachePath} (${(size / 1e6).toFixed(1)} MB)`)
-    return new Uint8Array(await readFile(cachePath))
+    const cached = new Uint8Array(await readFile(cachePath))
+    if (sha256(cached) === SOURCE_SHA256) {
+      console.log(`Using cached ${cachePath} (${(cached.length / 1e6).toFixed(1)} MB)`)
+      return cached
+    }
+    console.log(`Cached ${cachePath} is not the pinned font; downloading`)
   }
   console.log(`Downloading ${SOURCE_URL}`)
   const bytes = await fetchBytes(SOURCE_URL, { timeoutMs: 120_000 })
+  const digest = sha256(bytes)
+  if (digest !== SOURCE_SHA256) {
+    throw new Error(`source font SHA-256 ${digest} is not the pinned ${SOURCE_SHA256}`)
+  }
   await mkdir(dirname(cachePath), { recursive: true })
   await writeFile(cachePath, bytes)
   console.log(`Saved ${(bytes.length / 1e6).toFixed(1)} MB to ${cachePath}`)
@@ -115,7 +144,11 @@ async function loadSourceFont(cachePath: string): Promise<Uint8Array> {
 async function main(): Promise<number> {
   const outDir = resolve(args['out-dir'] as string)
   const glyphs = collectGlyphs(
-    await gatherTexts(resolve(args.snapshot as string), resolve(args['archive-dir'] as string))
+    await gatherTexts(
+      resolve(args.snapshot as string),
+      resolve(args['archive-dir'] as string),
+      resolve(args.stables as string)
+    )
   )
   const glyphCount = [...glyphs].length
   console.log(`Glyph set: ${glyphCount} characters`)

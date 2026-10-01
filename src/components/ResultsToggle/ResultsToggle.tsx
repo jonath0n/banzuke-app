@@ -6,7 +6,7 @@ import styles from './ResultsToggle.module.css'
 interface ResultsToggleProps {
   on: boolean
   onChange: (on: boolean) => void
-  /** The latest day with a decided bout. */
+  /** The latest day with a decided bout; 0 while only the day-1 card is out. */
   day: number
 }
 
@@ -14,7 +14,7 @@ interface ResultsToggleProps {
 export function ResultsToggle({ on, onChange, day }: ResultsToggleProps) {
   const { language } = useLanguage()
   const strings = useStrings()
-  const through = strings.resultsThrough(day)
+  const through = day > 0 ? strings.resultsThrough(day) : strings.resultsCardOnly
   return (
     <button
       type="button"
