@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 637,
- "fetchedAt": "2026-09-27T14:40:22.449Z",
+ "fetchedAt": "2026-10-01T05:50:05.966Z",
  "day": 15,
  "divisions": [
   "makuuchi",
@@ -22974,5 +22974,59 @@
  "yusho": {
   "makuuchi": 4227,
   "juryo": 3939
- }
+ },
+ "playoff": {
+  "juryo": [
+   {
+    "division": "juryo",
+    "matchNo": 1,
+    "east": {
+     "id": 3939,
+     "shikona": {
+      "en": "Kitanowaka",
+      "jp": "北の若"
+     }
+    },
+    "west": {
+     "id": 3255,
+     "shikona": {
+      "en": "Kagayaki",
+      "jp": "輝"
+     }
+    },
+    "winnerId": 3939,
+    "kimarite": "tsukiotoshi"
+   },
+   {
+    "division": "juryo",
+    "matchNo": 2,
+    "east": {
+     "id": 3939,
+     "shikona": {
+      "en": "Kitanowaka",
+      "jp": "北の若"
+     }
+    },
+    "west": {
+     "id": 4165,
+     "shikona": {
+      "en": "Kayo",
+      "jp": "嘉陽"
+     }
+    },
+    "winnerId": 3939,
+    "kimarite": "hatakikomi"
+   }
+  ]
+ },
+ "sansho": [
+  {
+   "kind": "kanto",
+   "rikishiId": 4191
+  },
+  {
+   "kind": "kanto",
+   "rikishiId": 3711
+  }
+ ]
 }

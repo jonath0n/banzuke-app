@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 636,
- "fetchedAt": "2026-09-07T12:05:33.079Z",
+ "fetchedAt": "2026-10-01T05:50:03.007Z",
  "day": 15,
  "divisions": [
   "makuuchi",
@@ -22940,5 +22940,153 @@
  "yusho": {
   "makuuchi": 4230,
   "juryo": 3553
- }
+ },
+ "playoff": {
+  "makuuchi": [
+   {
+    "division": "makuuchi",
+    "matchNo": 1,
+    "east": {
+     "id": 4055,
+     "shikona": {
+      "en": "Atamifuji",
+      "jp": "熱海富士"
+     }
+    },
+    "west": {
+     "id": 3622,
+     "shikona": {
+      "en": "Kirishima",
+      "jp": "霧島"
+     }
+    },
+    "winnerId": 4055,
+    "kimarite": ""
+   },
+   {
+    "division": "makuuchi",
+    "matchNo": 2,
+    "east": {
+     "id": 4055,
+     "shikona": {
+      "en": "Atamifuji",
+      "jp": "熱海富士"
+     }
+    },
+    "west": {
+     "id": 4230,
+     "shikona": {
+      "en": "Aonishiki",
+      "jp": "安青錦"
+     }
+    },
+    "winnerId": 4230,
+    "kimarite": ""
+   },
+   {
+    "division": "makuuchi",
+    "matchNo": 3,
+    "east": {
+     "id": 3622,
+     "shikona": {
+      "en": "Kirishima",
+      "jp": "霧島"
+     }
+    },
+    "west": {
+     "id": 4230,
+     "shikona": {
+      "en": "Aonishiki",
+      "jp": "安青錦"
+     }
+    },
+    "winnerId": 4230,
+    "kimarite": "yorikiri"
+   }
+  ],
+  "juryo": [
+   {
+    "division": "juryo",
+    "matchNo": 1,
+    "east": {
+     "id": 3553,
+     "shikona": {
+      "en": "Shonannoumi",
+      "jp": "湘南乃海"
+     }
+    },
+    "west": {
+     "id": 4285,
+     "shikona": {
+      "en": "Asasuiryu",
+      "jp": "朝翠龍"
+     }
+    },
+    "winnerId": 3553,
+    "kimarite": "hatakikomi"
+   },
+   {
+    "division": "juryo",
+    "matchNo": 2,
+    "east": {
+     "id": 4243,
+     "shikona": {
+      "en": "Toshinofuji",
+      "jp": "寿之富士"
+     }
+    },
+    "west": {
+     "id": 4267,
+     "shikona": {
+      "en": "Arashifuji",
+      "jp": "嵐富士"
+     }
+    },
+    "winnerId": 4243,
+    "kimarite": "oshidashi"
+   },
+   {
+    "division": "juryo",
+    "matchNo": 3,
+    "east": {
+     "id": 3553,
+     "shikona": {
+      "en": "Shonannoumi",
+      "jp": "湘南乃海"
+     }
+    },
+    "west": {
+     "id": 4243,
+     "shikona": {
+      "en": "Toshinofuji",
+      "jp": "寿之富士"
+     }
+    },
+    "winnerId": 3553,
+    "kimarite": "yorikiri"
+   }
+  ]
+ },
+ "sansho": [
+  {
+   "kind": "shukun",
+   "rikishiId": 4191
+  },
+  {
+   "kind": "kanto",
+   "rikishiId": 4055
+  },
+  {
+   "kind": "kanto",
+   "rikishiId": 4120
+  },
+  {
+   "kind": "kanto",
+   "rikishiId": 2775
+  },
+  {
+   "kind": "gino",
+   "rikishiId": 4230
+  }
+ ]
 }

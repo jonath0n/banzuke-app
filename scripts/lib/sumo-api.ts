@@ -20,7 +20,10 @@ import type {
   Match,
   ResultsFile,
   RikishiRecord,
+  Sansho,
+  SanshoKind,
 } from '../../src/data/results.ts'
+import { PLAYOFF_DAY } from '../../src/data/results.ts'
 
 export interface SumoApiBanzukeEntry {
   side: 'East' | 'West'
@@ -58,6 +61,22 @@ export interface SumoApiBasho {
   startDate: string
   endDate: string
   yusho?: SumoApiYusho[]
+  /** The sansho, present once the JSA has announced them on senshuraku. */
+  specialPrizes?: SumoApiSpecialPrize[]
+}
+
+export interface SumoApiSpecialPrize {
+  /** 'Shukun-sho' | 'Kanto-sho' | 'Gino-sho' */
+  type: string
+  rikishiId: number
+  shikonaEn: string
+  shikonaJp: string
+}
+
+const SANSHO_OF: Record<string, SanshoKind> = {
+  'Shukun-sho': 'shukun',
+  'Kanto-sho': 'kanto',
+  'Gino-sho': 'gino',
 }
 
 const TIERS: Record<string, number> = {
@@ -246,12 +265,18 @@ function fighter(
 
 function recordFromEntry(
   entry: SumoApiBanzukeEntry,
-  rikishi: Map<number, SumoApiRikishi>
+  rikishi: Map<number, SumoApiRikishi>,
+  warn: (message: string) => void
 ): RikishiRecord {
   const bouts: Bout[] = []
   for (const [i, raw] of (entry.record ?? []).entries()) {
     const outcome = parseOutcome(raw.result)
-    if (!outcome) continue
+    if (!outcome) {
+      // An unfought day is '' and normal; any other word is one we do not
+      // know (a draw, say) and must not vanish without a trace.
+      if (raw.result) warn(`${entry.shikonaEn} day ${i + 1}: unknown result "${raw.result}"`)
+      continue
+    }
     bouts.push({
       day: i + 1,
       outcome,
@@ -300,13 +325,16 @@ export function resultsFromSumoApi(input: {
         )
         continue
       }
-      const record = recordFromEntry(entry, input.rikishi)
+      const record = recordFromEntry(entry, input.rikishi, (w) => warnings.push(w))
       untrimmed.set(person.nskId, record)
       day = Math.max(day, foughtDay(record.bouts))
     }
   }
 
   const torikumi: ResultsFile['torikumi'] = {}
+  // Day 16 is sumo-api's name for the playoff: a card after senshuraku, kept
+  // apart from the fifteen days and filed by division.
+  const playoff: NonNullable<ResultsFile['playoff']> = {}
   for (const [dayNumber, card] of [...input.torikumi.entries()].sort((a, b) => a[0] - b[0])) {
     const matches = card.torikumi ?? []
     if (matches.length === 0) continue
@@ -326,7 +354,7 @@ export function resultsFromSumoApi(input: {
           warnings.push(
             `day ${dayNumber} match ${m.matchNo}: winner ${m.winnerEn} (sumo-api ${m.winnerId}) has no JSA id`
           )
-        } else if (m.kimarite !== 'fusen') {
+        } else if (m.kimarite !== 'fusen' && dayNumber <= 15) {
           // A fusen is on the card the moment the withdrawal is announced,
           // usually the morning before; only a bout fought moves the day.
           day = Math.max(day, dayNumber)
@@ -340,6 +368,16 @@ export function resultsFromSumoApi(input: {
         winnerId,
         kimarite: m.kimarite ?? '',
       })
+    }
+    if (dayNumber === PLAYOFF_DAY) {
+      for (const match of mapped) {
+        if (match.winnerId === null) {
+          warnings.push(`playoff ${match.division} bout ${match.matchNo}: undecided; left out`)
+          continue
+        }
+        ;(playoff[match.division] ??= []).push(match)
+      }
+      continue
     }
     torikumi[String(dayNumber)] = mapped
   }
@@ -358,6 +396,28 @@ export function resultsFromSumoApi(input: {
     if (division && id) yusho[division] = id
   }
 
+  // The prizes can be conditional ("if he wins today") until the last bout
+  // of senshuraku is decided; sumo-api lists them as soon as announced, so
+  // they are written only once the Makuuchi card of day 15 is complete.
+  const senshuraku = torikumi['15']?.filter((m) => m.division === 'makuuchi') ?? []
+  const senshurakuDecided = senshuraku.length > 0 && senshuraku.every((m) => m.winnerId !== null)
+  const sansho: Sansho[] = []
+  if (senshurakuDecided) {
+    for (const prize of input.basho.specialPrizes ?? []) {
+      const kind = SANSHO_OF[prize.type]
+      const id = input.rikishi.get(prize.rikishiId)?.nskId
+      if (!kind) {
+        warnings.push(`special prize "${prize.type}" for ${prize.shikonaEn}: unknown kind`)
+      } else if (!id) {
+        warnings.push(
+          `${prize.type} for ${prize.shikonaEn} (sumo-api ${prize.rikishiId}): no JSA id`
+        )
+      } else {
+        sansho.push({ kind, rikishiId: id })
+      }
+    }
+  }
+
   const divisions = input.banzuke.map((table) => DIVISION_OF[table.division])
   return {
     results: {
@@ -369,6 +429,8 @@ export function resultsFromSumoApi(input: {
       records,
       torikumi,
       yusho,
+      ...(Object.keys(playoff).length > 0 ? { playoff } : {}),
+      ...(sansho.length > 0 ? { sansho } : {}),
     },
     problems,
     warnings,

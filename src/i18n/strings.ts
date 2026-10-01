@@ -70,6 +70,16 @@ const en = {
   boutLoss: 'Loss',
   fusenWin: 'Forfeit win',
   fusenLoss: 'Forfeit loss',
+  boutDraw: 'Draw',
+  boutInjuryDraw: 'Injury draw',
+  playoff: 'Playoff',
+  playoffThreeWay: 'Three-way playoff',
+  playoffNote: 'After senshuraku, for the yusho.',
+  sansho: {
+    shukun: 'Outstanding Performance',
+    kanto: 'Fighting Spirit',
+    gino: 'Technique',
+  },
 
   // How to read a banzuke
   guideTitle: 'How to read a banzuke',
@@ -240,6 +250,16 @@ const jp: Strings = {
   boutLoss: '負け',
   fusenWin: '不戦勝',
   fusenLoss: '不戦敗',
+  boutDraw: '引き分け',
+  boutInjuryDraw: '痛み分け',
+  playoff: '優勝決定戦',
+  playoffThreeWay: '優勝決定巴戦',
+  playoffNote: '千秋楽の全取組終了後。',
+  sansho: {
+    shukun: '殊勲賞',
+    kanto: '敢闘賞',
+    gino: '技能賞',
+  },
 
   guideTitle: '番付の読み方',
   guideOpen: '番付の読み方',

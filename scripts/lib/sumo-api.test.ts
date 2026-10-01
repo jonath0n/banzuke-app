@@ -315,6 +315,94 @@ describe('resultsFromSumoApi (July 2026)', () => {
     expect(results.records[String(results.yusho.makuuchi)].wins).toBeGreaterThanOrEqual(12)
   })
 
+  it('files day 16 as the playoff: July’s Makuuchi 巴戦, Aonishiki winning the last two', () => {
+    const withPlayoff = resultsFromSumoApi({
+      bashoId: 636,
+      fetchedAt: '2026-09-07T00:00:00.000Z',
+      basho,
+      banzuke,
+      torikumi: new Map([
+        ...torikumi,
+        [16, load<SumoApiTorikumi>('sumo-api-202607-torikumi-makuuchi-16.json')],
+      ]),
+      rikishi,
+    })
+    expect(withPlayoff.problems).toEqual([])
+    expect(validateResults(withPlayoff.results).ok).toBe(true)
+    expect(withPlayoff.results.torikumi['16']).toBeUndefined()
+    expect(withPlayoff.results.day).toBe(15)
+    const playoff = withPlayoff.results.playoff?.makuuchi
+    expect(playoff).toHaveLength(3)
+    expect(playoff!.map((m) => m.matchNo)).toEqual([1, 2, 3])
+    // A playoff bout may carry no kimarite upstream; the winner still does
+    expect(playoff![0].kimarite).toBe('')
+    expect(playoff!.every((m) => m.winnerId !== null)).toBe(true)
+    const champion = withPlayoff.results.yusho.makuuchi
+    expect(playoff![1].winnerId).toBe(champion)
+    expect(playoff![2].winnerId).toBe(champion)
+    expect(withPlayoff.results.playoff?.juryo).toBeUndefined()
+  })
+
+  it('writes the sansho only once senshuraku’s Makuuchi card is decided', () => {
+    const september = load<SumoApiBasho>('sumo-api-202609-basho.json')
+    const juryoPlayoff = load<SumoApiTorikumi>('sumo-api-202609-torikumi-juryo-16.json')
+    const decided = resultsFromSumoApi({
+      bashoId: 636,
+      fetchedAt: '2026-09-07T00:00:00.000Z',
+      basho: september,
+      banzuke,
+      torikumi: new Map([...torikumi, [16, juryoPlayoff]]),
+      rikishi,
+    })
+    expect(decided.results.sansho).toEqual([
+      { kind: 'kanto', rikishiId: rikishi.get(615)!.nskId },
+      { kind: 'kanto', rikishiId: rikishi.get(71)!.nskId },
+    ])
+    expect(decided.results.playoff?.juryo).toHaveLength(2)
+    expect(decided.results.playoff?.makuuchi).toBeUndefined()
+
+    // The same prizes with day 15 still open: conditional until the last bout
+    const day15 = load<SumoApiTorikumi>('sumo-api-202607-torikumi-makuuchi-15.json')
+    const open = {
+      ...day15,
+      torikumi: day15.torikumi!.map((m, i) =>
+        i === day15.torikumi!.length - 1 ? { ...m, winnerId: 0, kimarite: '' } : m
+      ),
+    }
+    const pending = resultsFromSumoApi({
+      bashoId: 636,
+      fetchedAt: '2026-09-07T00:00:00.000Z',
+      basho: september,
+      banzuke,
+      torikumi: new Map([[15, open]]),
+      rikishi,
+    })
+    expect(pending.results.sansho).toBeUndefined()
+    expect(validateResults(pending.results).ok).toBe(true)
+  })
+
+  it('warns about a result word it does not know instead of dropping it silently', () => {
+    const odd: SumoApiBanzuke = {
+      ...banzuke[0],
+      east: [
+        {
+          ...banzuke[0].east[0],
+          record: [{ ...banzuke[0].east[0].record![0], result: 'draw' }],
+        },
+      ],
+      west: [],
+    }
+    const { warnings } = resultsFromSumoApi({
+      bashoId: 636,
+      fetchedAt: '2026-09-07T00:00:00.000Z',
+      basho,
+      banzuke: [odd],
+      torikumi: new Map(),
+      rikishi,
+    })
+    expect(warnings).toContainEqual(expect.stringMatching(/day 1: unknown result "draw"/))
+  })
+
   it('tolerates an unpublished torikumi and a partial record', () => {
     const partial: SumoApiBanzuke = {
       ...banzuke[0],

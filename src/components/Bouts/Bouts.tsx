@@ -7,6 +7,7 @@ import { kimariteGloss, kimariteLabel } from '../../data/kimarite'
 import {
   leaders,
   MAX_DAYS,
+  playoffFighters,
   scoreLabel,
   type Fighter,
   type Match,
@@ -56,6 +57,9 @@ export function Bouts({ results, division, rows, day, onChangeDay, onSelectRikis
     })
   const last = lastSteppableDay(results)
   const tiers = results.day >= 1 ? leaders(results.records, rows) : []
+  // The playoff follows senshuraku's card: the bouts after the fifteen days.
+  const playoff = day === MAX_DAYS ? (results.playoff?.[division] ?? []) : []
+  const playoffHeadingId = `${headingId}-playoff`
 
   const name = (f: Fighter) => f.shikona[language] || f.shikona.en
   const fighter = (f: Fighter, winner: boolean) => {
@@ -74,6 +78,20 @@ export function Bouts({ results, division, rows, day, onChangeDay, onSelectRikis
     }
     return <span className={styles.fighter}>{text}</span>
   }
+
+  const matchRow = (m: Match) => (
+    <li key={`${m.division}-${m.matchNo}`} className={styles.match}>
+      <span className={styles.east}>
+        {fighter(m.east, m.winnerId !== null && m.winnerId === m.east.id)}
+      </span>
+      <span className={styles.result} title={kimariteGloss(m.kimarite) ?? undefined}>
+        {m.winnerId === null ? strings.undecided : kimariteLabel(m.kimarite, language)}
+      </span>
+      <span className={styles.west}>
+        {fighter(m.west, m.winnerId !== null && m.winnerId === m.west.id)}
+      </span>
+    </li>
+  )
 
   return (
     <section className={styles.bouts} aria-labelledby={headingId} lang={lang}>
@@ -115,21 +133,16 @@ export function Bouts({ results, division, rows, day, onChangeDay, onSelectRikis
       {matches.length === 0 ? (
         <p className={styles.none}>{strings.boutsNone}</p>
       ) : (
-        <ol className={styles.list}>
-          {matches.map((m) => (
-            <li key={`${m.division}-${m.matchNo}`} className={styles.match}>
-              <span className={styles.east}>
-                {fighter(m.east, m.winnerId !== null && m.winnerId === m.east.id)}
-              </span>
-              <span className={styles.result} title={kimariteGloss(m.kimarite) ?? undefined}>
-                {m.winnerId === null ? strings.undecided : kimariteLabel(m.kimarite, language)}
-              </span>
-              <span className={styles.west}>
-                {fighter(m.west, m.winnerId !== null && m.winnerId === m.west.id)}
-              </span>
-            </li>
-          ))}
-        </ol>
+        <ol className={styles.list}>{matches.map(matchRow)}</ol>
+      )}
+      {playoff.length > 0 && (
+        <section className={styles.playoff} aria-labelledby={playoffHeadingId}>
+          <h3 id={playoffHeadingId} className={styles.playoffHeading}>
+            {playoffFighters(playoff).length > 2 ? strings.playoffThreeWay : strings.playoff}
+          </h3>
+          <p className={styles.playoffNote}>{strings.playoffNote}</p>
+          <ol className={styles.list}>{playoff.map(matchRow)}</ol>
+        </section>
       )}
     </section>
   )

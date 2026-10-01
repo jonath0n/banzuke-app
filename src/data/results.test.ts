@@ -4,11 +4,13 @@ import {
   describeRecord,
   kachikoshiState,
   leaders,
+  playoffFighters,
   resultsEqualIgnoringFetchedAt,
   resultsFileName,
   resultsRegressed,
   scoreLabel,
   validateResults,
+  type Fighter,
 } from './results'
 import { makeBanzuke, makeRecord, makeResultsFile, makeRikishi } from '../test/fixtures'
 
@@ -31,7 +33,7 @@ describe('validateResults', () => {
         records: {
           '1': {
             ...makeRecord(),
-            bouts: [{ day: 1, outcome: 'draw', opponent: null, kimarite: '' }],
+            bouts: [{ day: 1, outcome: 'tie', opponent: null, kimarite: '' }],
           },
         },
       },
@@ -55,8 +57,41 @@ describe('validateResults', () => {
       { ...makeResultsFile(), torikumi: { '1': [{ division: 'makuuchi', matchNo: 1 }] } },
     ],
     ['yusho for unknown division', { ...makeResultsFile(), yusho: { makushita: 1 } }],
+    ['playoff for unknown division', { ...makeResultsFile(), playoff: { makushita: [] } }],
+    ['empty playoff', { ...makeResultsFile(), playoff: { makuuchi: [] } }],
+    [
+      'undecided playoff bout',
+      {
+        ...makeResultsFile(),
+        playoff: { makuuchi: [{ ...makeResultsFile().torikumi['12'][0] }] },
+      },
+    ],
+    ['sansho of unknown kind', { ...makeResultsFile(), sansho: [{ kind: 'x', rikishiId: 1 }] }],
+    ['sansho without an id', { ...makeResultsFile(), sansho: [{ kind: 'kanto' }] }],
   ])('rejects %s', (_label, input) => {
     expect(validateResults(input).ok).toBe(false)
+  })
+
+  it('accepts a decided playoff, the sansho and the draw outcomes', () => {
+    const decided = makeResultsFile().torikumi['12'][1]
+    const file = {
+      ...makeResultsFile(),
+      records: {
+        '1': {
+          ...makeRecord(),
+          bouts: [
+            { day: 1, outcome: 'draw', opponent: null, kimarite: '' },
+            { day: 2, outcome: 'injury-draw', opponent: null, kimarite: '' },
+          ],
+        },
+      },
+      playoff: { makuuchi: [decided, { ...decided, matchNo: 2 }] },
+      sansho: [
+        { kind: 'shukun', rikishiId: 4055 },
+        { kind: 'kanto', rikishiId: 3983 },
+      ],
+    }
+    expect(validateResults(file)).toEqual({ ok: true, results: file })
   })
 
   it('names the first problem', () => {
@@ -105,12 +140,31 @@ describe('helpers', () => {
     expect(describeRecord({ wins: 7, losses: 7, absences: 0 }, 'jp')).toBe('7勝7敗')
   })
 
+  it('tells a 巴戦 from a two-man playoff by who took part', () => {
+    const a: Fighter = { id: 1, shikona: { en: 'A', jp: 'あ' } }
+    const b: Fighter = { id: 2, shikona: { en: 'B', jp: 'い' } }
+    const c: Fighter = { id: null, shikona: { en: 'C', jp: 'う' } }
+    const bout = (east: Fighter, west: Fighter, matchNo: number) => ({
+      division: 'makuuchi' as const,
+      matchNo,
+      east,
+      west,
+      winnerId: east.id,
+      kimarite: '',
+    })
+    expect(playoffFighters([bout(a, b, 1)])).toHaveLength(2)
+    expect(playoffFighters([bout(a, b, 1), bout(a, c, 2), bout(b, c, 3)])).toHaveLength(3)
+  })
+
   it('marks bouts the way a hoshitori does', () => {
     expect(boutMark('win')).toBe('○')
-    expect(boutMark('fusen-win')).toBe('○')
     expect(boutMark('loss')).toBe('●')
-    expect(boutMark('fusen-loss')).toBe('●')
+    // Squares say no bout was fought
+    expect(boutMark('fusen-win')).toBe('□')
+    expect(boutMark('fusen-loss')).toBe('■')
     expect(boutMark('absent')).toBe('休')
+    expect(boutMark('draw')).toBe('×')
+    expect(boutMark('injury-draw')).toBe('△')
   })
 
   it('lists the leaders in two tiers, ties in banzuke order, ignoring wrestlers without a record', () => {
