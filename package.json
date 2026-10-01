@@ -22,8 +22,8 @@
     "test:tz": "TZ=America/Los_Angeles vitest run src/utils/dates.test.ts src/components/Hero && TZ=Pacific/Kiritimati vitest run src/utils/dates.test.ts",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"scripts/**/*.ts\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" \"scripts/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"scripts/**/*.{ts,mjs}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" \"scripts/**/*.{ts,mjs}\"",
     "type-check": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.scripts.json",
     "check:css": "tsx scripts/check-css-modules.ts",
     "validate": "npm run type-check && npm run lint && npm run format:check && npm run check:css"

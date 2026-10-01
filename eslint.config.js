@@ -24,7 +24,7 @@ export default tseslint.config(
 
   // Node.js scripts configuration (TypeScript, run with tsx)
   {
-    files: ['scripts/**/*.ts'],
+    files: ['scripts/**/*.{ts,mjs}'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',

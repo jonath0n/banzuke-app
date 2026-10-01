@@ -1,0 +1,367 @@
+name: Build & Deploy
+
+# One pipeline does everything:
+#   gate   – where today stands relative to the tournament, and what this run
+#            is for (a full refresh, or the day's results only)
+#   data   – fetch the latest banzuke from sumo.or.jp, validate it, commit it
+#            to main when the tournament data changed, and hand it to the build
+#   build  – validate, test and build the site with that data
+#   deploy – publish to GitHub Pages
+#
+# It runs on every push to main, on demand (mode=full, or mode=results from
+# the watcher in watch.yml), and on the schedule below: one morning slot for
+# the banzuke (the JSA publishes it around 06:00 JST on the release day in its
+# own calendar — usually, not always, the Monday thirteen days before the
+# tournament) and three in the evening for the day's results as a backstop
+# behind the watcher. If sumo.or.jp is unreachable the committed snapshot is
+# deployed instead, so a data hiccup never breaks a deploy.
+#
+# The evening crons run only in season: the gate skips the data job when no
+# tournament is on, and a results-only run that finds nothing new skips the
+# build and the deploy too.
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    # 22:13 UTC = 07:13 JST, after the banzuke is published
+    - cron: '13 22 * * *'
+    # 09:12 UTC = 18:12 JST, as the Makuuchi card finishes
+    - cron: '12 9 * * *'
+    # 10:38 UTC = 19:38 JST, after the day's last bout for a card that ran late
+    - cron: '38 10 * * *'
+    # 12:38 UTC = 21:38 JST, the last pass of the day
+    - cron: '38 12 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'full: banzuke, archive, fonts, stables, profiles and results. results: the day’s results only.'
+        type: choice
+        options: [full, results]
+        default: full
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  # The gate re-seeds the watcher during a tournament (see watch.yml)
+  actions: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  gate:
+    name: Season gate
+    runs-on: ubuntu-latest
+    outputs:
+      mode: ${{ steps.mode.outputs.mode }}
+      run_data: ${{ steps.mode.outputs.run_data }}
+      phase: ${{ steps.season.outputs.phase }}
+      in_season: ${{ steps.season.outputs.in_season }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+
+      # Plain Node, no install: the answer takes seconds.
+      - name: Where today stands
+        id: season
+        run: node scripts/season-gate.mjs
+
+      - name: What this run is for
+        id: mode
+        env:
+          EVENT: ${{ github.event_name }}
+          SCHEDULE: ${{ github.event.schedule }}
+          INPUT_MODE: ${{ github.event.inputs.mode }}
+          IN_SEASON: ${{ steps.season.outputs.in_season }}
+        run: |
+          mode=full
+          if [ "$EVENT" = "workflow_dispatch" ] && [ "$INPUT_MODE" = "results" ]; then mode=results; fi
+          if [ "$EVENT" = "schedule" ] && [ "$SCHEDULE" != "13 22 * * *" ]; then mode=results; fi
+          run_data=true
+          if [ "$mode" = "results" ] && [ "$IN_SEASON" != "true" ]; then run_data=false; fi
+          echo "mode=$mode" >> "$GITHUB_OUTPUT"
+          echo "run_data=$run_data" >> "$GITHUB_OUTPUT"
+          echo "mode=$mode run_data=$run_data (event=$EVENT schedule='$SCHEDULE' in_season=$IN_SEASON)"
+
+      # During a tournament exactly one watcher should be alive (watch.yml
+      # chains itself); if the chain broke, start it again from here.
+      - name: Re-seed the watcher
+        if: steps.season.outputs.phase == 'live'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          alive=$(gh run list --workflow watch.yml --status in_progress --json databaseId --jq 'length')
+          queued=$(gh run list --workflow watch.yml --status queued --json databaseId --jq 'length')
+          if [ "${alive:-0}" = "0" ] && [ "${queued:-0}" = "0" ]; then
+            echo "No watcher running; starting one."
+            gh workflow run watch.yml --ref main
+          else
+            echo "Watcher already running."
+          fi
+
+  data:
+    name: Refresh banzuke data
+    needs: gate
+    if: needs.gate.outputs.run_data == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.fetch.outputs.changed }}
+      basho_id: ${{ steps.fetch.outputs.basho_id }}
+      deploy_needed: ${{ steps.summary.outputs.deploy_needed }}
+    env:
+      MODE: ${{ needs.gate.outputs.mode }}
+    steps:
+      # Checked out over SSH with the deploy key so the data commit below can
+      # push to main past the "changes via pull request" ruleset, which the
+      # default GITHUB_TOKEN cannot (deploy keys are the only bypass actor a
+      # personal repo allows).
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Fetch latest banzuke
+        id: fetch
+        if: env.MODE == 'full'
+        continue-on-error: true
+        run: |
+          npx tsx scripts/fetch-banzuke.ts \
+            --out .data/latest-banzuke.json \
+            --previous public/latest-banzuke.json \
+            --if-changed
+
+      - name: Fall back to the committed snapshot
+        if: env.MODE == 'full' && steps.fetch.outcome != 'success'
+        run: |
+          echo "::warning::Could not refresh data from sumo.or.jp; deploying the committed snapshot."
+          mkdir -p .data
+          cp public/latest-banzuke.json .data/latest-banzuke.json
+
+      # Nothing changed, or a results-only run: the committed snapshot ships.
+      - name: Use the committed snapshot when nothing changed
+        if: steps.fetch.outputs.changed != 'true'
+        run: |
+          mkdir -p .data
+          cp public/latest-banzuke.json .data/latest-banzuke.json
+
+      - name: Validate the snapshot that will ship
+        run: npx tsx scripts/validate-banzuke.ts .data/latest-banzuke.json
+
+      # Every tournament the site has shown stays available under
+      # public/banzuke/, which is what "changes since last basho" reads.
+      - name: Archive the banzuke
+        if: steps.fetch.outputs.changed == 'true'
+        run: |
+          mkdir -p .data/banzuke
+          cp public/banzuke/*.json .data/banzuke/
+          npx tsx scripts/archive-banzuke.ts \
+            --snapshot .data/latest-banzuke.json \
+            --out-dir .data/banzuke
+
+      # A new wrestler can bring a kanji the shikona glossary lacks. Never a
+      # failure — the dialog shows the bare character — but worth a warning on
+      # the run summary so the table gets written.
+      - name: Report shikona glossary gaps
+        if: env.MODE == 'full'
+        continue-on-error: true
+        run: npx tsx scripts/glossary-gaps.ts --snapshot .data/latest-banzuke.json
+
+      # Stables before the font: one entry per stable on the sheet, refreshed
+      # once per tournament, kept on failure. The subset below is cut from the
+      # file that will ship, so a new stablemaster's kanji is in it.
+      - name: Refresh stables
+        id: stables
+        if: env.MODE == 'full'
+        continue-on-error: true
+        run: |
+          if [ -f public/stables.json ]; then cp public/stables.json .data/stables.json; fi
+          npx tsx scripts/fetch-stables.ts \
+            --snapshot .data/latest-banzuke.json \
+            --previous public/stables.json \
+            --out .data/stables.json
+
+      # The source font is pinned to one google/fonts commit (and its SHA-256)
+      # in scripts/subset-fonts.ts; cache the 13.6 MB file between runs so a
+      # banzuke day does not depend on a download.
+      - name: Cache the source font
+        if: steps.fetch.outputs.changed == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/NotoSerifJP-wght.ttf
+          key: noto-serif-jp-9710da1eacb3be272583c3224dcb70f9da6eadbb
+
+      # New wrestlers can bring new kanji; keep the self-hosted mincho in step
+      # with the data so the coverage test passes in the build job.
+      - name: Regenerate the mincho subset
+        id: subset
+        if: steps.fetch.outputs.changed == 'true'
+        continue-on-error: true
+        run: |
+          mkdir -p .data/assets/fonts
+          cp public/assets/fonts/NotoSerifJP-OFL.txt .data/assets/fonts/
+          npx tsx scripts/subset-fonts.ts \
+            --snapshot .data/latest-banzuke.json \
+            --out-dir .data/assets/fonts \
+            --archive-dir .data/banzuke \
+            --stables .data/stables.json \
+            --cache "$RUNNER_TEMP/NotoSerifJP-wght.ttf"
+
+      # A failed cut must not fail the run: ship the committed subset and say
+      # so. If the data really needed a new glyph, the build job's coverage
+      # test says which, and the fix is `npm run subset-fonts` locally.
+      - name: Keep the committed subset when the cut failed
+        if: steps.fetch.outputs.changed == 'true' && steps.subset.outcome != 'success'
+        run: |
+          echo "::warning::The font subset could not be regenerated; shipping the committed subset."
+          mkdir -p .data/assets/fonts
+          cp public/assets/fonts/NotoSerifJP-700-subset.woff2 public/assets/fonts/NotoSerifJP-subset.json .data/assets/fonts/
+
+      # Profiles are re-scraped only when stale (the script skips any profile
+      # already carrying the current basho id); a scraping failure keeps the
+      # previous file and never blocks the deploy.
+      - name: Refresh wrestler profiles
+        id: profiles
+        if: env.MODE == 'full'
+        continue-on-error: true
+        run: |
+          if [ -f public/rikishi-profiles.json ]; then cp public/rikishi-profiles.json .data/rikishi-profiles.json; fi
+          npx tsx scripts/fetch-profiles.ts \
+            --snapshot .data/latest-banzuke.json \
+            --previous public/rikishi-profiles.json \
+            --out .data/rikishi-profiles.json
+
+      # During a tournament, every wrestler's record and each day's card; out
+      # of season the script exits without fetching. A failure keeps the
+      # previous file and never blocks the deploy.
+      - name: Fetch tournament results
+        id: results
+        continue-on-error: true
+        run: |
+          mkdir -p .data/results
+          if [ -d public/results ]; then cp public/results/*.json .data/results/ 2>/dev/null || true; fi
+          npx tsx scripts/fetch-results.ts \
+            --snapshot .data/latest-banzuke.json \
+            --out-dir .data/results \
+            --previous-dir public/results
+
+      - name: Commit refreshed data to main
+        if: steps.fetch.outputs.changed == 'true' || steps.profiles.outputs.changed == 'true' || steps.stables.outputs.changed == 'true' || steps.results.outputs.changed == 'true'
+        run: |
+          cp .data/latest-banzuke.json public/latest-banzuke.json
+          if [ -f .data/rikishi-profiles.json ]; then cp .data/rikishi-profiles.json public/rikishi-profiles.json; fi
+          if [ -f .data/stables.json ]; then cp .data/stables.json public/stables.json; fi
+          if [ -d .data/assets/fonts ]; then cp .data/assets/fonts/* public/assets/fonts/; fi
+          if [ -d .data/banzuke ]; then cp .data/banzuke/*.json public/banzuke/; fi
+          if [ -d .data/results ]; then mkdir -p public/results && cp .data/results/*.json public/results/ 2>/dev/null || true; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/latest-banzuke.json public/assets/fonts public/banzuke public/results
+          if [ -f public/rikishi-profiles.json ]; then git add public/rikishi-profiles.json; fi
+          if [ -f public/stables.json ]; then git add public/stables.json; fi
+          if git diff --cached --quiet; then
+            echo "Nothing to commit."
+            exit 0
+          fi
+          subject="data: refresh"
+          if [ "${{ steps.fetch.outputs.changed }}" = "true" ]; then
+            subject="data: banzuke ${{ steps.fetch.outputs.basho_id }} (${{ steps.fetch.outputs.start_date }})"
+          fi
+          if [ "${{ steps.results.outputs.changed }}" = "true" ]; then
+            subject="$subject, results"
+          fi
+          if [ "${{ steps.profiles.outputs.changed }}" = "true" ]; then
+            subject="$subject, profiles"
+          fi
+          if [ "${{ steps.stables.outputs.changed }}" = "true" ]; then
+            subject="$subject, stables"
+          fi
+          # [skip ci]: this push goes over the deploy key, which (unlike GITHUB_TOKEN) triggers the push workflow — without it every data commit would start a redundant second run.
+          git commit -m "$subject [skip ci]"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      # A results-only run deploys only when the results moved; a full run
+      # always deploys (a push to main may have changed the site itself).
+      - name: Is a deploy needed
+        id: summary
+        env:
+          RESULTS_CHANGED: ${{ steps.results.outputs.changed }}
+        run: |
+          if [ "$MODE" = "full" ] || [ "$RESULTS_CHANGED" = "true" ]; then
+            echo "deploy_needed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "deploy_needed=false" >> "$GITHUB_OUTPUT"
+            echo "Nothing new to deploy."
+          fi
+
+      - name: Upload data artifact
+        if: steps.summary.outputs.deploy_needed == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: banzuke-data
+          path: .data/
+          retention-days: 7
+          # .data/ is a dot-directory; upload-artifact skips hidden paths unless told otherwise
+          include-hidden-files: true
+
+  build:
+    name: Build site
+    needs: [gate, data]
+    if: needs.data.result == 'success' && needs.data.outputs.deploy_needed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Use refreshed data
+        uses: actions/download-artifact@v8
+        with:
+          name: banzuke-data
+          path: public
+
+      - name: Validate
+        run: npm run validate
+
+      - name: Test
+        run: npm run test:run
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v5

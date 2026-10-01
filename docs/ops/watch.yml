@@ -1,0 +1,63 @@
+name: Watch for results
+
+# The in-season watcher. GitHub's shared cron scheduler runs evening slots
+# three to seven hours late, which is why a day's results used to reach the
+# site around midnight JST. A workflow_dispatch starts in seconds, and the
+# docs guarantee that dispatches fired with GITHUB_TOKEN always create a run,
+# so one long job can stand in for a cron: it polls sumo-api through the
+# Tokyo evening and dispatches deploy.yml (mode=results) the moment more of
+# the day's bouts are decided than the live site shows. Before its six-hour
+# limit it dispatches its own successor, so the chain runs all tournament.
+#
+# Out of season the job exits in seconds without a successor, and the daily
+# seed below starts nothing. The chain is (re)started by the seed cron, by
+# hand, or by deploy.yml's gate whenever it finds no watcher alive during a
+# tournament. `concurrency` keeps it to exactly one.
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 05:17 UTC = 14:17 JST. The seed only has to start the chain before the
+    # evening; the scheduler's lateness is harmless here.
+    - cron: '17 5 * * *'
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: watcher
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    name: Watch the Tokyo evening
+    runs-on: ubuntu-latest
+    # Comfortably inside GitHub's 360-minute job limit, with the handover after.
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Polls every five minutes between 15:00 and 23:00 JST for up to 5 h 30 m,
+      # dispatching a results-only deploy when upstream is ahead of the site.
+      - name: Watch
+        id: watch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: npx tsx scripts/watch-results.ts --max-minutes 330
+
+      - name: Hand over to the next watcher
+        if: steps.watch.outputs.in_season == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run watch.yml --ref main
