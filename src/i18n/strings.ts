@@ -5,6 +5,7 @@
  * `jp` is typed as `Strings` (derived from `en`), so a missing key is a type
  * error, and `strings.test.ts` checks the two tables stay in step.
  */
+import { jpDayName } from '../data/kanji'
 import type { CareerStep } from '../data/profiles'
 import type { GuideKey } from '../utils/guide'
 import type { Division, Language, Side } from '../types/banzuke'
@@ -63,6 +64,21 @@ const en = {
   previousDay: 'Previous day',
   nextDay: 'Next day',
   raceAfter: (day: number) => `Yusho race after day ${day}`,
+  dayName: (day: number, totalDays: number) =>
+    day === 1
+      ? 'Day 1 · Shonichi'
+      : day === totalDays
+        ? `Day ${day} · Senshuraku`
+        : day === Math.ceil(totalDays / 2)
+          ? `Day ${day} · Nakabi`
+          : `Day ${day}`,
+  todayLabel: 'Today',
+  todayFought: (fought: number, total: number) => `${fought} of ${total} bouts fought`,
+  todayNoCard: 'Today’s card is not published yet',
+  todayLeads: (names: string, losses: string) => `Leads: ${names}, ${losses}`,
+  todayChampion: (name: string) => `Yusho: ${name}`,
+  todayUpdated: (relative: string) => `updated ${relative}`,
+  todayToCard: 'Today’s card',
   raceLosses: (n: number) => `${n} ${n === 1 ? 'loss' : 'losses'}`,
   raceDecided: 'decided',
   raceCoLeaders: 'the co-leaders meet next',
@@ -250,6 +266,14 @@ const jp: Strings = {
   previousDay: '前日',
   nextDay: '翌日',
   raceAfter: (day: number) => `${day}日目終了時の優勝争い`,
+  dayName: (day: number, totalDays: number) => jpDayName(day, totalDays),
+  todayLabel: '本日',
+  todayFought: (fought: number, total: number) => `${total}番中${fought}番終了`,
+  todayNoCard: '本日の取組は未発表',
+  todayLeads: (names: string, losses: string) => `トップ：${names}（${losses}）`,
+  todayChampion: (name: string) => `優勝：${name}`,
+  todayUpdated: (relative: string) => `${relative}に更新`,
+  todayToCard: '本日の取組へ',
   raceLosses: (n: number) => `${n}敗`,
   raceDecided: '優勝決定',
   raceCoLeaders: '次は相星決戦',
