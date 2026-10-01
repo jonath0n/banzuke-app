@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest'
 import {
   archiveFromSumoApi,
   cleanShikonaJp,
+  foughtDay,
   parseOutcome,
   parseRank,
   resultsFromSumoApi,
@@ -443,7 +444,108 @@ describe('resultsFromSumoApi (July 2026)', () => {
     expect(out.results.torikumi['4']).toEqual([])
   })
 
-  it('reports a wrestler without a JSA id instead of guessing', () => {
+  // A withdrawal is written into sumo-api for the days ahead the moment the
+  // JSA announces it: on the morning of day 3 a kyujo wrestler already shows
+  // absences through day 15, and his day-3 opponent a fusen win. None of
+  // that has happened yet.
+  const bout = (result: string, opponentID = 8850, kimarite = 'yorikiri') => ({
+    result,
+    opponentShikonaEn: 'Onosato',
+    opponentShikonaJp: '大の里',
+    opponentID,
+    kimarite,
+  })
+  const entry = (
+    rikishiID: number,
+    shikonaEn: string,
+    rank: string,
+    record: ReturnType<typeof bout>[]
+  ) => ({ side: 'East' as const, rikishiID, shikonaEn, rank, record })
+  const morningOfDay3 = (): SumoApiBanzuke => ({
+    bashoId: '202607',
+    division: 'Makuuchi',
+    east: [
+      entry(19, 'Hoshoryu', 'Yokozuna 1 East', [
+        bout('win'),
+        bout('loss'),
+        bout('absent', 0, ''),
+        bout('absent', 0, ''),
+        bout('absent', 0, ''),
+      ]),
+    ],
+    west: [entry(8850, 'Onosato', 'Yokozuna 1 West', [bout('loss', 19), bout('win', 19)])],
+  })
+
+  it('reads the day from bouts fought, not from absences written for the days ahead', () => {
+    const out = resultsFromSumoApi({
+      bashoId: 636,
+      fetchedAt: 'x',
+      basho: { date: '202607', startDate: '', endDate: '' },
+      banzuke: [morningOfDay3()],
+      torikumi: new Map(),
+      rikishi,
+    })
+    expect(out.results.day).toBe(2)
+    const hoshoryu = out.results.records[String(rikishi.get(19)!.nskId)]
+    expect(hoshoryu.bouts.map((b) => b.day)).toEqual([1, 2])
+    expect([hoshoryu.wins, hoshoryu.losses, hoshoryu.absences]).toEqual([1, 1, 0])
+  })
+
+  it("does not let a fusen already on tomorrow's card move the day", () => {
+    const card: SumoApiTorikumi = {
+      date: '202607',
+      torikumi: [
+        {
+          division: 'Makuuchi',
+          day: 3,
+          matchNo: 1,
+          eastId: 19,
+          eastShikona: 'Hoshoryu',
+          eastRank: 'Yokozuna 1 East',
+          westId: 8850,
+          westShikona: 'Onosato',
+          westRank: 'Yokozuna 1 West',
+          kimarite: 'fusen',
+          winnerId: 8850,
+          winnerEn: 'Onosato',
+          winnerJp: '',
+        },
+      ],
+    }
+    const banzuke = morningOfDay3()
+    banzuke.west[0].record!.push(bout('fusen win', 19, 'fusen'))
+    const out = resultsFromSumoApi({
+      bashoId: 636,
+      fetchedAt: 'x',
+      basho: { date: '202607', startDate: '', endDate: '' },
+      banzuke: [banzuke],
+      torikumi: new Map([[3, card]]),
+      rikishi,
+    })
+    expect(out.results.day).toBe(2)
+    const onosato = out.results.records[String(rikishi.get(8850)!.nskId)]
+    expect(onosato.bouts).toHaveLength(2)
+    // The card itself is kept: it is tomorrow's, winner and all.
+    expect(out.results.torikumi['3'][0].winnerId).toBe(rikishi.get(8850)!.nskId)
+  })
+
+  it("keeps a wrestler's absences once their day has come", () => {
+    const banzuke = morningOfDay3()
+    banzuke.west[0].record!.push(bout('fusen win', 19, 'fusen'), bout('win', 19))
+    const out = resultsFromSumoApi({
+      bashoId: 636,
+      fetchedAt: 'x',
+      basho: { date: '202607', startDate: '', endDate: '' },
+      banzuke: [banzuke],
+      torikumi: new Map(),
+      rikishi,
+    })
+    expect(out.results.day).toBe(4)
+    const hoshoryu = out.results.records[String(rikishi.get(19)!.nskId)]
+    expect([hoshoryu.wins, hoshoryu.losses, hoshoryu.absences]).toEqual([1, 1, 2])
+  })
+
+  it('leaves out a wrestler without a JSA id with a warning, and still writes everyone else', () => {
     const stranger: SumoApiBanzuke = {
       bashoId: '202607',
       division: 'Juryo',
@@ -469,7 +571,26 @@ describe('resultsFromSumoApi (July 2026)', () => {
       torikumi: new Map(),
       rikishi,
     })
-    expect(out.problems).toEqual(['Juryo: Nobody (sumo-api 999999) has no JSA id'])
+    expect(out.problems).toEqual([])
+    expect(out.warnings).toEqual(['Juryo: Nobody (sumo-api 999999) has no JSA id; left out'])
     expect(out.results.records).toEqual({})
+    expect(validateResults(out.results).ok).toBe(true)
+  })
+})
+
+describe('foughtDay', () => {
+  const b = (day: number, outcome: 'win' | 'loss' | 'fusen-win' | 'fusen-loss' | 'absent') => ({
+    day,
+    outcome,
+    opponent: null,
+    kimarite: '',
+  })
+
+  it('is the last day decided in the ring', () => {
+    expect(foughtDay([b(1, 'win'), b(2, 'loss')])).toBe(2)
+    expect(foughtDay([b(1, 'win'), b(2, 'absent'), b(3, 'absent')])).toBe(1)
+    expect(foughtDay([b(1, 'loss'), b(2, 'fusen-win')])).toBe(1)
+    expect(foughtDay([b(1, 'absent')])).toBe(0)
+    expect(foughtDay([])).toBe(0)
   })
 })

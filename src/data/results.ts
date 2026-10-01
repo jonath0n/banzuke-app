@@ -177,6 +177,40 @@ export function resultsEqualIgnoringFetchedAt(a: ResultsFile, b: ResultsFile): b
   return JSON.stringify(strip(a)) === JSON.stringify(strip(b))
 }
 
+/**
+ * Why writing `next` over `previous` would lose something a visitor has
+ * already seen: the day going backwards, a wrestler's record shrinking or
+ * vanishing, or a decided bout becoming undecided. Empty when it is safe.
+ * An upstream hiccup — an empty response, a half-ingested day — must never
+ * overwrite a good file; the fetch script refuses unless forced.
+ */
+export function resultsRegressed(previous: ResultsFile, next: ResultsFile): string[] {
+  const reasons: string[] = []
+  if (next.day < previous.day) reasons.push(`day ${next.day} is behind ${previous.day}`)
+  for (const [id, before] of Object.entries(previous.records)) {
+    const after = next.records[id]
+    const was = before.wins + before.losses + before.absences
+    if (!after) {
+      reasons.push(`record ${id} is gone (had ${was} bouts)`)
+      continue
+    }
+    const now = after.wins + after.losses + after.absences
+    if (now < was) reasons.push(`record ${id} shrank from ${was} to ${now} bouts`)
+  }
+  for (const [day, matches] of Object.entries(previous.torikumi)) {
+    for (const match of matches) {
+      if (match.winnerId === null) continue
+      const same = next.torikumi[day]?.find(
+        (m) => m.division === match.division && m.matchNo === match.matchNo
+      )
+      if (!same || same.winnerId === null) {
+        reasons.push(`day ${day} ${match.division} match ${match.matchNo} lost its winner`)
+      }
+    }
+  }
+  return reasons
+}
+
 export type KachikoshiState = 'kachikoshi' | 'makekoshi' | 'pending'
 
 /** Eight wins is kachi-koshi; eight losses (an absence counts as one) is make-koshi. */
