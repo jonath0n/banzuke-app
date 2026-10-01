@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
+  VARIANT_KANJI,
+  foldVariantKanji,
   fromKanjiNumber,
   jpBashoName,
   jpEraYear,
@@ -119,5 +121,15 @@ describe('parseJpDate', () => {
     expect(parseJpDate('令和元年12月31日')).toBe('2019-12-31')
     expect(parseJpDate('昭和64年1月7日')).toBe('1989-01-07')
     expect(parseJpDate('2000-06-07')).toBeNull()
+  })
+})
+
+describe('foldVariantKanji', () => {
+  it('maps every listed variant to its common form and leaves the rest alone', () => {
+    expect(foldVariantKanji('琴櫻 \u{9AD9}安 大\u{FA11} \u{5FB7}勝龍 \u{7028}川')).toBe(
+      '琴桜 高安 大崎 徳勝龍 瀬川'
+    )
+    expect(foldVariantKanji('豊昇龍 竜電')).toBe('豊昇龍 竜電')
+    expect(Object.keys(VARIANT_KANJI)).toHaveLength(5)
   })
 })
