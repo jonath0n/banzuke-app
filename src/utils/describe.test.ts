@@ -26,6 +26,16 @@ describe('describeWrestler', () => {
     )
   })
 
+  it('says kadoban between the promotion and the movement', () => {
+    const ozeki = makeRikishi({ rankName: { en: 'Ozeki', jp: '大関' } })
+    expect(describeWrestler(ozeki, 'en', { kadoban: true, movement: up })).toBe(
+      'Hoshoryu, East. Ozeki. Kadoban. Up from O. View details'
+    )
+    expect(describeWrestler(ozeki, 'jp', { kadoban: true })).toBe(
+      '豊昇龍、東、大関。角番。詳細を見る'
+    )
+  })
+
   it('can leave the action off for a name that is not a button', () => {
     expect(describeWrestler(makeRikishi(), 'en', { action: false })).toBe(
       'Hoshoryu, East. Yokozuna.'

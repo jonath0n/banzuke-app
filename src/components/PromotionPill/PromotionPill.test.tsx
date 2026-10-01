@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { LanguageProvider } from '../../contexts/LanguageContext'
 import { PromotionPill } from './PromotionPill'
+import { makeRikishi } from '../../test/fixtures'
 
 const newcomer = {
   promotion: { kind: 'new-to-division' as const, raw: '新入幕' },
@@ -36,5 +37,29 @@ describe('PromotionPill', () => {
 
   it('renders nothing without a promotion', () => {
     expect(wrap({ promotion: null, rankName: newcomer.rankName }).firstElementChild).toBeNull()
+  })
+
+  it('marks a kadoban Ozeki in ink when the JSA prints no flag, and never over a flag', () => {
+    const ozeki = makeRikishi({ promotion: null, rankName: { en: 'Ozeki', jp: '大関' } })
+    const { rerender } = render(
+      <LanguageProvider>
+        <PromotionPill rikishi={ozeki} variant="row" kadoban />
+      </LanguageProvider>
+    )
+    expect(screen.getByText('Kadoban')).toHaveAttribute(
+      'title',
+      'Kadoban: an eighth loss drops him from Ozeki'
+    )
+    rerender(
+      <LanguageProvider>
+        <PromotionPill
+          rikishi={{ ...ozeki, promotion: { kind: 'new-rank', raw: '新大関' } }}
+          variant="row"
+          kadoban
+        />
+      </LanguageProvider>
+    )
+    expect(screen.queryByText('Kadoban')).toBeNull()
+    expect(screen.getByText('New Ozeki')).toBeInTheDocument()
   })
 })

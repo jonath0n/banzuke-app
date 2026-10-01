@@ -27,6 +27,8 @@ interface SideCellProps {
   record?: RikishiRecord | null
   /** Tournament champion, once decided. */
   champion?: boolean
+  /** An Ozeki whose make-koshi would cost the rank. */
+  kadoban?: boolean
   /** Pair key for keyboard navigation (shared by east/west partners). */
   pairKey?: string
 }
@@ -58,12 +60,13 @@ function SideCellInner({
   movement = null,
   record = null,
   champion = false,
+  kadoban = false,
   pairKey,
 }: SideCellProps) {
   const { language } = useLanguage()
   const strings = useStrings()
 
-  const badge = rikishi ? <PromotionPill rikishi={rikishi} variant="row" /> : null
+  const badge = rikishi ? <PromotionPill rikishi={rikishi} variant="row" kadoban={kadoban} /> : null
 
   const displayName = getDisplayName(rikishi, language)
   const langAttr = language === 'jp' ? 'ja' : 'en'
@@ -120,7 +123,12 @@ function SideCellInner({
 
   if (rikishi && onSelect) {
     // The cell's side wins over the wrestler's: a vacant-seat guard, never a disagreement.
-    const label = describeWrestler({ ...rikishi, side }, language, { movement, record, champion })
+    const label = describeWrestler({ ...rikishi, side }, language, {
+      movement,
+      record,
+      champion,
+      kadoban,
+    })
     return (
       <div
         className={className}

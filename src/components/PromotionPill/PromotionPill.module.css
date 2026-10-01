@@ -45,3 +45,10 @@
 .sheet:lang(en) {
   text-orientation: sideways;
 }
+
+/* Kadoban: ink and a hairline, since the sheet prints no such flag */
+.kadoban {
+  color: var(--text);
+  background: none;
+  border: 1px solid var(--text);
+}

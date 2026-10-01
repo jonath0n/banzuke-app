@@ -12,6 +12,8 @@ export interface DescribeOptions {
   record?: RikishiRecord | null
   /** Holder of the yusho. */
   champion?: boolean
+  /** An Ozeki whose make-koshi would cost the rank. */
+  kadoban?: boolean
   /** Append the "View details" affordance; off for a name that is not a button. */
   action?: boolean
 }
@@ -30,7 +32,7 @@ export interface DescribeOptions {
 export function describeWrestler(
   rikishi: Pick<Rikishi, 'shikona' | 'rankName' | 'side' | 'promotion'>,
   language: Language,
-  { movement, record, champion = false, action = true }: DescribeOptions = {}
+  { movement, record, champion = false, kadoban = false, action = true }: DescribeOptions = {}
 ): string {
   const strings = STRINGS[language]
   const name = rikishi.shikona[language] || rikishi.shikona.en
@@ -38,6 +40,7 @@ export function describeWrestler(
   const side = strings.side[rikishi.side]
   const sentences = [
     describePromotion(rikishi, language, 'long'),
+    kadoban ? strings.kadoban : null,
     movement ? describeMovement(movement, language) : null,
     record ? describeRecord(record, language) : null,
     champion ? strings.yusho : null,

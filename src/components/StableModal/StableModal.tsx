@@ -28,6 +28,7 @@ interface StableModalProps {
   records?: Record<string, RikishiRecord> | null
   /** Tournament champion per division, once decided. */
   champions?: Partial<Record<Division, number>>
+  kadoban?: Set<number>
   onClose: () => void
   onSelectRikishi: (rikishi: Rikishi) => void
   /** Leave the dialog with the sheet filtered to this stable's members. */
@@ -48,6 +49,7 @@ export function StableModal({
   movements,
   records,
   champions,
+  kadoban,
   onClose,
   onSelectRikishi,
   onShowOnBanzuke,
@@ -169,6 +171,7 @@ export function StableModal({
                     key={rikishi.id}
                     rikishi={rikishi}
                     movement={movements?.get(rikishi.id) ?? null}
+                    kadoban={kadoban?.has(rikishi.id) ?? false}
                     record={records?.[String(rikishi.id)] ?? null}
                     champion={championIds.has(rikishi.id)}
                     onSelect={handleSelect}
@@ -199,6 +202,7 @@ export function StableModal({
 }
 
 interface MemberRowProps {
+  kadoban: boolean
   rikishi: Rikishi
   movement: Movement | null
   record: RikishiRecord | null
@@ -212,12 +216,12 @@ interface MemberRowProps {
  * spells them out, as the List's cell does. No data-pair: the arrow keys do
  * not travel here.
  */
-function MemberRow({ rikishi, movement, record, champion, onSelect }: MemberRowProps) {
+function MemberRow({ rikishi, movement, record, champion, kadoban, onSelect }: MemberRowProps) {
   const { language } = useLanguage()
   const lang = langAttr(language)
   const name = rikishi.shikona[language] || rikishi.shikona.en
   const rank = rikishi.rankName[language] || rikishi.rankName.en
-  const label = describeWrestler(rikishi, language, { movement, record, champion })
+  const label = describeWrestler(rikishi, language, { movement, record, champion, kadoban })
   return (
     <li className={styles.member}>
       <button

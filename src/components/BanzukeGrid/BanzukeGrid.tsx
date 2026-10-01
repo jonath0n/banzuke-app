@@ -43,6 +43,8 @@ interface BanzukeGridProps {
   records?: Record<string, RikishiRecord> | null
   /** Tournament champion per division, once decided. */
   champions?: Partial<Record<Division, number>>
+  /** Ids of the Ozeki who are kadoban this tournament. */
+  kadoban?: Set<number>
 }
 
 /** Tiers whose single row already stamps the rank on its rail need no band. */
@@ -189,6 +191,7 @@ export function BanzukeGrid({
   movements,
   records,
   champions,
+  kadoban,
 }: BanzukeGridProps) {
   const grouped = visibleGroups(groupRowsByRank(rows), highlight)
   const championIds = useMemo(() => new Set(Object.values(champions ?? {})), [champions])
@@ -238,6 +241,7 @@ export function BanzukeGrid({
               highlight={highlight}
               movements={movements}
               records={records}
+              kadoban={kadoban}
               championIds={championIds}
             />
           ))}
