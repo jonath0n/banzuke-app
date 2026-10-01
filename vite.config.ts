@@ -29,6 +29,8 @@ export default defineConfig({
   },
   test: {
     environment: 'jsdom',
+    // The Playwright spec runs under its own runner, not Vitest
+    exclude: ['node_modules/**', 'dist/**', 'e2e/**'],
     setupFiles: './src/setupTests.ts',
     css: true,
     coverage: {

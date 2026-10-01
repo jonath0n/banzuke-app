@@ -16,6 +16,7 @@ npm run dev            # Vite dev server
 npm run validate       # type-check (app + scripts), eslint (incl. jsx-a11y), prettier --check
 npm run test:run       # vitest, single run
 npm run test:tz        # date tests under non-JST time zones
+npm run test:e2e       # Playwright smoke spec in Chromium against `vite preview` (build first; PW_CHROMIUM=<path> to use a local browser)
 npm run build          # tsc -b && vite build → dist/
 npm run fetch-remote   # fetch + validate the latest banzuke into public/latest-banzuke.json
 npm run fetch-profiles # scrape wrestler profiles into public/rikishi-profiles.json (optional)

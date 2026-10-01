@@ -15,6 +15,8 @@ export default tseslint.config(
       'coverage/**',
       '*.config.js',
       '*.config.ts',
+      'playwright-report/**',
+      'test-results/**',
     ],
   },
 
@@ -24,13 +26,15 @@ export default tseslint.config(
 
   // Node.js scripts configuration (TypeScript, run with tsx)
   {
-    files: ['scripts/**/*.{ts,mjs}'],
+    files: ['scripts/**/*.{ts,mjs}', 'e2e/**/*.ts', 'playwright.config.ts'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
       globals: {
         ...globals.node,
         ...globals.es2022,
+        // page.evaluate callbacks in the e2e spec run in the browser
+        ...globals.browser,
       },
     },
     rules: {
