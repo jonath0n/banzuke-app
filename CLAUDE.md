@@ -117,12 +117,15 @@ runs the checks on pull requests. There is no separate refresh workflow.
   `global(...)`; the budget is still four.
 - Photos are hot-linked from the JSA CDN with `referrerPolicy="no-referrer"`; only the `60x60`
   and `270x474` sizes exist upstream.
-- The Sheet's mincho is a **self-hosted subset**: `public/assets/fonts/NotoSerifJP-700-subset.woff2`
-  carries only the Japanese characters found in the snapshot and the source, plus the kana
-  blocks, at weight 700 (the only weight shipped; 600 requests resolve to it).
-  `NotoSerifJP-subset.json` lists the glyphs and `scripts/lib/font-coverage.test.ts` fails when
-  data or source gains a character the subset lacks — the fix is `npm run subset-fonts`, which
-  the deploy job also runs whenever the banzuke changes. `'Noto Serif JP'` is first in
+- The Sheet's mincho is a **self-hosted subset in two faces**: `NotoSerifJP-700-core.woff2`
+  (the kana blocks and every Japanese character in the source — rank kanji, masthead, UI) and
+  `NotoSerifJP-700-names.woff2` (what only the data brings: ring names, stables, birthplaces),
+  at weight 700 (the only weight shipped; 600 requests resolve to it). `scripts/subset-fonts.ts`
+  writes both, the manifest `NotoSerifJP-subset.json`, and the two `@font-face` rules with
+  `unicode-range` in `src/styles/fonts-jp.css` (generated, never edited by hand), so an English
+  reader's browser fetches the core alone. `scripts/lib/font-coverage.test.ts` fails when data
+  or source gains a character the faces lack — the fix is `npm run subset-fonts`, which the
+  deploy job also runs whenever the banzuke changes. `'Noto Serif JP'` is first in
   `--font-jp-serif` on purpose, so Windows and Android render the Sheet the same as macOS.
 - `public/banzuke/` is the **archive**: one small validated file per tournament
   (`src/data/archive.ts`), keyed by JSA rikishi id, plus `index.json`. JSA-sourced files come

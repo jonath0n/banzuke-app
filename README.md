@@ -57,7 +57,8 @@ public/
     FranSans-Solid.otf         # Wordmark font
     fonts/
       Archivo-latin.woff2            # Ring names and labels (Latin)
-      NotoSerifJP-700-subset.woff2   # The Sheet's mincho, subset to the glyphs in use
+      NotoSerifJP-700-core.woff2     # The Sheet's mincho: kana and the source's kanji
+      NotoSerifJP-700-names.woff2    # … and the glyphs only the data brings
       NotoSerifJP-subset.json        # Which glyphs; checked by a test
 scripts/
   fetch-banzuke.ts             # Fetches + validates the latest data from sumo.or.jp
