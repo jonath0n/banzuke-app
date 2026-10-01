@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { serviceWorker } from './scripts/lib/vite-plugin-sw.ts'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), serviceWorker()],
   // GitHub Pages serves the site from /banzuke-app/
   base: '/banzuke-app/',
   build: {
