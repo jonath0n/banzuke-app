@@ -1,6 +1,6 @@
 {
  "version": 1,
- "generatedAt": "2026-09-07T05:55:54.903Z",
+ "generatedAt": "2026-10-26T00:20:05.436Z",
  "basho": [
   {
    "bashoId": 632,
@@ -68,6 +68,18 @@
    "month": 9,
    "startDate": "2026-09-13",
    "file": "637.json",
+   "source": "jsa",
+   "divisions": [
+    "makuuchi",
+    "juryo"
+   ]
+  },
+  {
+   "bashoId": 638,
+   "year": 2026,
+   "month": 11,
+   "startDate": "2026-11-08",
+   "file": "638.json",
    "source": "jsa",
    "divisions": [
     "makuuchi",

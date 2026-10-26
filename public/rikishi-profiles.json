@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "fetchedAt": "2026-09-04T17:39:56.442Z",
+  "fetchedAt": "2026-10-26T00:21:16.641Z",
   "profiles": {
     "2565": {
       "id": 2565,
@@ -28,7 +28,7 @@
         "juryo": "2010-07",
         "makuuchi": "2014-05"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "2629": {
       "id": 2629,
@@ -57,7 +57,7 @@
         "makuuchi": "2008-09",
         "sanyaku": "2015-03"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "2775": {
       "id": 2775,
@@ -87,7 +87,7 @@
         "sanyaku": "2013-09",
         "ozeki": "2017-07"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "2890": {
       "id": 2890,
@@ -116,36 +116,7 @@
         "makuuchi": "2018-01",
         "sanyaku": "2019-07"
       },
-      "bashoId": 637
-    },
-    "2892": {
-      "id": 2892,
-      "realName": {
-        "en": "Tetsuya Kumagai",
-        "jp": "熊谷 徹也"
-      },
-      "birthDate": "1990-08-25",
-      "birthplace": {
-        "en": "Iwate",
-        "jp": "岩手県盛岡市"
-      },
-      "heightCm": 186,
-      "weightKg": 184,
-      "kimarite": {
-        "en": "oshi",
-        "jp": "押し"
-      },
-      "debut": "2006-03",
-      "highestRank": {
-        "en": "Komusubi",
-        "jp": "小結"
-      },
-      "milestones": {
-        "juryo": "2015-05",
-        "makuuchi": "2016-05",
-        "sanyaku": "2023-09"
-      },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3207": {
       "id": 3207,
@@ -173,7 +144,7 @@
         "juryo": "2016-01",
         "makuuchi": "2016-09"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3255": {
       "id": 3255,
@@ -201,7 +172,7 @@
         "juryo": "2014-11",
         "makuuchi": "2016-01"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3265": {
       "id": 3265,
@@ -230,7 +201,7 @@
         "makuuchi": "2018-09",
         "sanyaku": "2020-11"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3337": {
       "id": 3337,
@@ -259,7 +230,7 @@
         "makuuchi": "2018-07",
         "sanyaku": "2021-07"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3367": {
       "id": 3367,
@@ -287,7 +258,7 @@
         "juryo": "2023-03",
         "makuuchi": "2025-01"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3371": {
       "id": 3371,
@@ -316,7 +287,7 @@
         "makuuchi": "2022-01",
         "sanyaku": "2023-01"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3376": {
       "id": 3376,
@@ -345,7 +316,7 @@
         "makuuchi": "2015-09",
         "sanyaku": "2020-01"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3485": {
       "id": 3485,
@@ -374,7 +345,7 @@
         "makuuchi": "2018-01",
         "sanyaku": "2019-07"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3521": {
       "id": 3521,
@@ -404,7 +375,7 @@
         "sanyaku": "2017-01",
         "ozeki": "2020-11"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3553": {
       "id": 3553,
@@ -432,7 +403,7 @@
         "juryo": "2023-01",
         "makuuchi": "2023-07"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3594": {
       "id": 3594,
@@ -461,7 +432,7 @@
         "makuuchi": "2020-09",
         "sanyaku": "2022-11"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3616": {
       "id": 3616,
@@ -490,7 +461,7 @@
         "makuuchi": "2017-03",
         "sanyaku": "2024-01"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3620": {
       "id": 3620,
@@ -520,7 +491,7 @@
         "sanyaku": "2016-11",
         "ozeki": "2022-03"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3622": {
       "id": 3622,
@@ -550,7 +521,7 @@
         "sanyaku": "2021-11",
         "ozeki": "2023-07"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3661": {
       "id": 3661,
@@ -580,7 +551,7 @@
         "sanyaku": "2023-01",
         "ozeki": "2024-03"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3682": {
       "id": 3682,
@@ -610,7 +581,7 @@
         "sanyaku": "2019-11",
         "ozeki": "2020-07"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3705": {
       "id": 3705,
@@ -639,7 +610,7 @@
         "makuuchi": "2022-09",
         "sanyaku": "2024-07"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3711": {
       "id": 3711,
@@ -660,14 +631,15 @@
       },
       "debut": "2016-03",
       "highestRank": {
-        "en": "Maegashira #2",
-        "jp": "前頭二枚目"
+        "en": "Komusubi",
+        "jp": "小結"
       },
       "milestones": {
         "juryo": "2018-07",
-        "makuuchi": "2023-11"
+        "makuuchi": "2023-11",
+        "sanyaku": "2026-11"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3742": {
       "id": 3742,
@@ -695,7 +667,7 @@
         "juryo": "2020-09",
         "makuuchi": "2022-07"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3743": {
       "id": 3743,
@@ -723,7 +695,7 @@
         "juryo": "2020-03",
         "makuuchi": "2021-01"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3753": {
       "id": 3753,
@@ -751,7 +723,7 @@
         "juryo": "2019-07",
         "makuuchi": "2021-07"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3761": {
       "id": 3761,
@@ -780,7 +752,7 @@
         "makuuchi": "2019-11",
         "sanyaku": "2021-07"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3803": {
       "id": 3803,
@@ -808,7 +780,7 @@
         "juryo": "2018-03",
         "makuuchi": "2019-05"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3818": {
       "id": 3818,
@@ -836,35 +808,7 @@
         "juryo": "2018-11",
         "makuuchi": "2019-03"
       },
-      "bashoId": 637
-    },
-    "3839": {
-      "id": 3839,
-      "realName": {
-        "en": "Takaaki Tsukahara",
-        "jp": "塚原 隆明"
-      },
-      "birthDate": "1999-10-12",
-      "birthplace": {
-        "en": "Saitama",
-        "jp": "埼玉県越谷市"
-      },
-      "heightCm": 193,
-      "weightKg": 161,
-      "kimarite": {
-        "en": "tsuki, oshi",
-        "jp": "突き・押し"
-      },
-      "debut": "2017-11",
-      "highestRank": {
-        "en": "Maegashira #18",
-        "jp": "前頭十八枚目"
-      },
-      "milestones": {
-        "juryo": "2024-05",
-        "makuuchi": "2025-05"
-      },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3840": {
       "id": 3840,
@@ -893,7 +837,7 @@
         "makuuchi": "2020-07",
         "sanyaku": "2026-05"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3842": {
       "id": 3842,
@@ -924,7 +868,7 @@
         "ozeki": "2023-09",
         "yokozuna": "2025-03"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3844": {
       "id": 3844,
@@ -953,7 +897,7 @@
         "makuuchi": "2022-01",
         "sanyaku": "2025-03"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3907": {
       "id": 3907,
@@ -981,7 +925,7 @@
         "juryo": "2022-11",
         "makuuchi": "2023-11"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3927": {
       "id": 3927,
@@ -1008,7 +952,7 @@
       "milestones": {
         "juryo": "2026-09"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3933": {
       "id": 3933,
@@ -1036,7 +980,7 @@
         "juryo": "2023-05",
         "makuuchi": "2024-05"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3939": {
       "id": 3939,
@@ -1064,7 +1008,7 @@
         "juryo": "2022-01",
         "makuuchi": "2023-11"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3969": {
       "id": 3969,
@@ -1092,7 +1036,7 @@
         "juryo": "2021-01",
         "makuuchi": "2023-11"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3983": {
       "id": 3983,
@@ -1113,13 +1057,14 @@
       },
       "debut": "2019-11",
       "highestRank": {
-        "en": "Juryo #1",
-        "jp": "十両筆頭"
+        "en": "Maegashira #14",
+        "jp": "前頭十四枚目"
       },
       "milestones": {
-        "juryo": "2026-01"
+        "juryo": "2026-01",
+        "makuuchi": "2026-11"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3988": {
       "id": 3988,
@@ -1146,7 +1091,7 @@
       "milestones": {
         "juryo": "2024-07"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "3990": {
       "id": 3990,
@@ -1174,7 +1119,7 @@
         "juryo": "2023-07",
         "makuuchi": "2024-11"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4055": {
       "id": 4055,
@@ -1203,7 +1148,7 @@
         "makuuchi": "2022-11",
         "sanyaku": "2026-03"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4079": {
       "id": 4079,
@@ -1231,7 +1176,7 @@
         "juryo": "2022-07",
         "makuuchi": "2023-07"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4093": {
       "id": 4093,
@@ -1252,14 +1197,14 @@
       },
       "debut": "2021-03",
       "highestRank": {
-        "en": "Maegashira #6",
-        "jp": "前頭六枚目"
+        "en": "Maegashira #2",
+        "jp": "前頭二枚目"
       },
       "milestones": {
         "juryo": "2023-05",
         "makuuchi": "2026-03"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4095": {
       "id": 4095,
@@ -1287,7 +1232,7 @@
         "juryo": "2023-11",
         "makuuchi": "2025-09"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4101": {
       "id": 4101,
@@ -1315,7 +1260,7 @@
         "juryo": "2023-09",
         "makuuchi": "2024-11"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4108": {
       "id": 4108,
@@ -1344,7 +1289,7 @@
         "makuuchi": "2024-05",
         "sanyaku": "2025-07"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4112": {
       "id": 4112,
@@ -1372,7 +1317,7 @@
         "juryo": "2022-09",
         "makuuchi": "2023-03"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4116": {
       "id": 4116,
@@ -1400,7 +1345,7 @@
         "juryo": "2024-09",
         "makuuchi": "2026-07"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4120": {
       "id": 4120,
@@ -1428,7 +1373,7 @@
         "juryo": "2024-11",
         "makuuchi": "2025-07"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4121": {
       "id": 4121,
@@ -1456,7 +1401,7 @@
         "juryo": "2025-03",
         "makuuchi": "2026-05"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4124": {
       "id": 4124,
@@ -1484,7 +1429,7 @@
         "juryo": "2025-01",
         "makuuchi": "2026-01"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4142": {
       "id": 4142,
@@ -1505,13 +1450,13 @@
       },
       "debut": "2022-03",
       "highestRank": {
-        "en": "Juryo #10",
-        "jp": "十両十枚目"
+        "en": "Juryo #7",
+        "jp": "十両七枚目"
       },
       "milestones": {
         "juryo": "2026-09"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4158": {
       "id": 4158,
@@ -1532,13 +1477,13 @@
       },
       "debut": "2022-03",
       "highestRank": {
-        "en": "Juryo #4",
-        "jp": "十両四枚目"
+        "en": "Juryo #2",
+        "jp": "十両二枚目"
       },
       "milestones": {
         "juryo": "2024-05"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4164": {
       "id": 4164,
@@ -1566,7 +1511,7 @@
         "juryo": "2023-09",
         "makuuchi": "2024-09"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4165": {
       "id": 4165,
@@ -1594,7 +1539,7 @@
         "juryo": "2024-07",
         "makuuchi": "2025-05"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4171": {
       "id": 4171,
@@ -1622,7 +1567,7 @@
         "juryo": "2024-01",
         "makuuchi": "2024-03"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4175": {
       "id": 4175,
@@ -1650,7 +1595,7 @@
         "juryo": "2025-09",
         "makuuchi": "2026-01"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4187": {
       "id": 4187,
@@ -1679,7 +1624,7 @@
         "makuuchi": "2023-07",
         "sanyaku": "2026-09"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4191": {
       "id": 4191,
@@ -1708,7 +1653,7 @@
         "makuuchi": "2025-07",
         "sanyaku": "2026-09"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4227": {
       "id": 4227,
@@ -1739,7 +1684,7 @@
         "ozeki": "2024-11",
         "yokozuna": "2025-07"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4230": {
       "id": 4230,
@@ -1769,7 +1714,7 @@
         "sanyaku": "2025-09",
         "ozeki": "2026-01"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4231": {
       "id": 4231,
@@ -1797,7 +1742,7 @@
         "juryo": "2024-05",
         "makuuchi": "2024-09"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4232": {
       "id": 4232,
@@ -1818,13 +1763,14 @@
       },
       "debut": "2023-11",
       "highestRank": {
-        "en": "Juryo #1",
-        "jp": "十両筆頭"
+        "en": "Maegashira #16",
+        "jp": "前頭十六枚目"
       },
       "milestones": {
-        "juryo": "2025-09"
+        "juryo": "2025-09",
+        "makuuchi": "2026-11"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4243": {
       "id": 4243,
@@ -1845,14 +1791,14 @@
       },
       "debut": "2024-03",
       "highestRank": {
-        "en": "Maegashira #16",
-        "jp": "前頭十六枚目"
+        "en": "Maegashira #13",
+        "jp": "前頭十三枚目"
       },
       "milestones": {
         "juryo": "2026-03",
         "makuuchi": "2026-09"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4267": {
       "id": 4267,
@@ -1873,13 +1819,14 @@
       },
       "debut": "2024-03",
       "highestRank": {
-        "en": "Juryo #5",
-        "jp": "十両五枚目"
+        "en": "Maegashira #16",
+        "jp": "前頭十六枚目"
       },
       "milestones": {
-        "juryo": "2026-07"
+        "juryo": "2026-07",
+        "makuuchi": "2026-11"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4279": {
       "id": 4279,
@@ -1908,7 +1855,7 @@
         "makuuchi": "2025-07",
         "sanyaku": "2026-07"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4285": {
       "id": 4285,
@@ -1929,14 +1876,14 @@
       },
       "debut": "2024-07",
       "highestRank": {
-        "en": "Maegashira #15",
-        "jp": "前頭十五枚目"
+        "en": "Maegashira #13",
+        "jp": "前頭十三枚目"
       },
       "milestones": {
         "juryo": "2025-09",
         "makuuchi": "2026-09"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4287": {
       "id": 4287,
@@ -1964,7 +1911,7 @@
         "juryo": "2026-01",
         "makuuchi": "2026-07"
       },
-      "bashoId": 637
+      "bashoId": 638
     },
     "4336": {
       "id": 4336,
@@ -1985,14 +1932,68 @@
       },
       "debut": "2025-03",
       "highestRank": {
-        "en": "Maegashira #4",
-        "jp": "前頭四枚目"
+        "en": "Maegashira #1",
+        "jp": "前頭筆頭"
       },
       "milestones": {
         "juryo": "2025-11",
         "makuuchi": "2026-03"
       },
-      "bashoId": 637
+      "bashoId": 638
+    },
+    "4356": {
+      "id": 4356,
+      "realName": {
+        "en": "Kazuma Nishimura",
+        "jp": "西村 和真"
+      },
+      "birthDate": "2007-06-12",
+      "birthplace": {
+        "en": "Kyoto",
+        "jp": "京都府宇治市"
+      },
+      "heightCm": 175,
+      "weightKg": 160,
+      "kimarite": {
+        "en": "hidari-yotsu, yori",
+        "jp": "左四つ・寄り"
+      },
+      "debut": "2025-07",
+      "highestRank": {
+        "en": "Juryo #14",
+        "jp": "十両十四枚目"
+      },
+      "milestones": {
+        "juryo": "2026-11"
+      },
+      "bashoId": 638
+    },
+    "4358": {
+      "id": 4358,
+      "realName": {
+        "en": "Battsetseg Ochirsaikhan",
+        "jp": "バトツェツェゲ・オチルサイハン"
+      },
+      "birthDate": "2002-05-17",
+      "birthplace": {
+        "en": "Mongolia",
+        "jp": "モンゴル・ウランバートル"
+      },
+      "heightCm": 187,
+      "weightKg": 152,
+      "kimarite": {
+        "en": "moro-yotsu, uwatenage",
+        "jp": "両四つ・上手投げ"
+      },
+      "debut": "2025-11",
+      "highestRank": {
+        "en": "Juryo #12",
+        "jp": "十両十二枚目"
+      },
+      "milestones": {
+        "juryo": "2026-11"
+      },
+      "bashoId": 638
     }
   }
 }
