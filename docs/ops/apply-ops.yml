@@ -1,0 +1,119 @@
+name: Apply ops workflows
+
+# Copies workflow files from docs/ops/ into .github/workflows/ and pushes the
+# result to main, so that a change to a workflow can be delivered, reviewed
+# and merged like any other change, then applied with one dispatch.
+#
+# Why this exists: the sessions that write this repository's code push over
+# a GitHub App token that lacks the `workflow` permission, so any push that
+# touches .github/workflows/ is refused. Workflow changes therefore arrive as
+# whole files under docs/ops/ (see docs/ops/README.md). The owner used to copy
+# them by hand; this job does the copy. It reads docs/ops/ from main only, so
+# a workflow change has to pass CI and be merged before it can be applied.
+#
+# The push goes over the deploy key: SSH deploy keys are not subject to the
+# `workflow` token scope, and the key already bypasses the "changes via pull
+# request" ruleset for the bot's data commits. The commit deliberately carries
+# no [skip ci], so applying deploy.yml starts a deploy run of the new file,
+# which is the check that it took.
+
+on:
+  workflow_dispatch:
+    inputs:
+      files:
+        description: >-
+          Space-separated file names under docs/ops/ to apply (each must be a
+          .yml that also exists under .github/workflows/, or a new one you mean
+          to add). Default: every .yml in docs/ops/.
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: apply-ops
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    name: Copy docs/ops/*.yml into .github/workflows/
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Choose the files
+        id: pick
+        env:
+          FILES: ${{ inputs.files }}
+        run: |
+          set -eu
+          cd docs/ops
+          if [ -n "$FILES" ]; then
+            list="$FILES"
+          else
+            list=$(ls *.yml | tr '\n' ' ')
+          fi
+          for f in $list; do
+            case "$f" in
+              */*|*..*) echo "::error::'$f' must be a bare file name under docs/ops/"; exit 1 ;;
+              *.yml) ;;
+              *) echo "::error::'$f' is not a .yml file"; exit 1 ;;
+            esac
+            if [ ! -f "$f" ]; then
+              echo "::error::docs/ops/$f does not exist"; exit 1
+            fi
+            # Every file must at least parse as YAML and declare a workflow.
+            python3 - "$f" <<'PY'
+          import sys, yaml
+          doc = yaml.safe_load(open(sys.argv[1]))
+          # PyYAML reads the bare key `on` as boolean True.
+          if not isinstance(doc, dict) or not ({"on", True} & set(doc)) or "jobs" not in doc:
+              sys.exit(f"{sys.argv[1]}: not a workflow (needs 'on' and 'jobs')")
+          PY
+          done
+          echo "list=$list" >> "$GITHUB_OUTPUT"
+          echo "Applying: $list"
+
+      - name: Copy and show the diff
+        id: copy
+        env:
+          LIST: ${{ steps.pick.outputs.list }}
+        run: |
+          set -eu
+          for f in $LIST; do
+            cp "docs/ops/$f" ".github/workflows/$f"
+          done
+          git add .github/workflows
+          if git diff --cached --quiet; then
+            echo "Already applied: .github/workflows/ matches docs/ops/ for $LIST"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          {
+            echo '## Applied'
+            echo
+            echo '```diff'
+            git diff --cached --stat
+            echo
+            git diff --cached
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit and push to main
+        if: steps.copy.outputs.changed == 'true'
+        env:
+          LIST: ${{ steps.pick.outputs.list }}
+        run: |
+          set -eu
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "ops: apply $(echo $LIST | sed 's/ /, /g') from docs/ops"
+          git pull --rebase origin main
+          git push origin HEAD:main
