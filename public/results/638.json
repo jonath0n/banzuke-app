@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-11T06:51:29.735Z",
+ "fetchedAt": "2026-11-11T07:16:41.559Z",
  "day": 4,
  "divisions": [
   "makuuchi",
@@ -205,7 +205,7 @@
    ]
   },
   "3207": {
-   "wins": 0,
+   "wins": 1,
    "losses": 3,
    "absences": 0,
    "bouts": [
@@ -244,6 +244,18 @@
       }
      },
      "kimarite": "hatakikomi"
+    },
+    {
+     "day": 4,
+     "outcome": "win",
+     "opponent": {
+      "id": 4116,
+      "shikona": {
+       "en": "Daiseizan",
+       "jp": "大青山"
+      }
+     },
+     "kimarite": "shitatenage"
     }
    ]
   },
@@ -2180,7 +2192,7 @@
   },
   "4116": {
    "wins": 0,
-   "losses": 3,
+   "losses": 4,
    "absences": 0,
    "bouts": [
     {
@@ -2218,6 +2230,18 @@
       }
      },
      "kimarite": "oshidashi"
+    },
+    {
+     "day": 4,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3207,
+      "shikona": {
+       "en": "Chiyoshoma",
+       "jp": "千代翔馬"
+      }
+     },
+     "kimarite": "shitatenage"
     }
    ]
   },
@@ -5424,8 +5448,8 @@
       "jp": "千代翔馬"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 3207,
+    "kimarite": "shitatenage"
    },
    {
     "division": "juryo",
