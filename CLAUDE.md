@@ -51,17 +51,28 @@ and formats in `Asia/Tokyo`.
 The deploy workflow (`.github/workflows/deploy.yml`) refreshes data on every push to `main`,
 on demand, and on four daily slots — 07:13 JST for the banzuke, then 18:12, 19:38 and 21:38
 JST for the day's results. GitHub's shared scheduler creates the evening runs three to seven
-hours late, which is why `docs/ops/` carries the next version of the workflow for the owner to
-apply (sessions cannot push `.github/workflows/`): a season gate (`scripts/season-gate.mjs`),
-results-only runs, and `watch.yml`, a self-chaining watcher that polls sumo-api through the
-Tokyo evening (`scripts/watch-results.ts`) and dispatches a results-only deploy the moment more
-of the day is decided than the site shows. When the tournament data changed the data job also
-archives the banzuke under `public/banzuke/` and regenerates the mincho subset (stables are
-refreshed first, so a new stablemaster's kanji is in it); profiles are re-scraped only when
-stale; whatever changed is committed to `main` before building. During a tournament it also
-fetches results into `public/results/`. `ci.yml` runs the checks on pull requests (and, once
-`docs/ops/ci.yml` is applied, the Chromium smoke spec). Workflow changes are delivered as whole
-files under `docs/ops/` with a note saying why and how to check they took.
+hours late, so the cron is only a backstop: a season gate (`scripts/season-gate.mjs`) decides
+what each run is for, results-only runs skip the banzuke work, and `watch.yml` is a
+self-chaining watcher that polls sumo-api through the Tokyo evening (`scripts/watch-results.ts`)
+and dispatches a results-only deploy the moment more of the day is decided than the site shows.
+When the tournament data changed the data job also archives the banzuke under `public/banzuke/`
+and regenerates the mincho subset (stables are refreshed first, so a new stablemaster's kanji is
+in it); profiles are re-scraped only when stale; whatever changed is committed to `main` before
+building. During a tournament it also fetches results into `public/results/`. `ci.yml` runs the
+checks and the Chromium smoke spec on pull requests.
+
+**Workflow changes go through `docs/ops/`, never `.github/workflows/` directly.** Sessions push
+over a token without the `workflow` permission, so a push that touches `.github/workflows/` is
+refused and no token with that permission can be given to a session. The source of truth for
+every workflow is the whole file under `docs/ops/` (`deploy.yml`, `watch.yml`, `ci.yml`,
+`apply-ops.yml`); edit it there, with a note beside it saying why and how to check it took, and
+land it on `main` by pull request like any other change. Then apply it by dispatching
+**Apply ops workflows** (`apply-ops.yml`, `workflow_dispatch`, input `files` = space-separated
+names under `docs/ops/`, empty for all) — a session can fire that dispatch itself through the
+GitHub Actions tool and read the run. The job checks out `main` over the deploy key, copies the
+files into `.github/workflows/`, and pushes a commit without `[skip ci]`, so applying
+`deploy.yml` starts a deploy run of the new file, which is the check. Repository settings
+(rulesets, secrets, Pages) are still the owner's by hand; `docs/ops/README.md` lists those.
 
 ## Conventions
 
@@ -215,8 +226,8 @@ files under `docs/ops/` with a note saying why and how to check they took.
   `useDocumentTitle`, `useArchiveViewer`). `App.test.tsx` is the regression net for all of them.
 - **The smoke spec** (`e2e/smoke.spec.ts`, `npm run test:e2e`) drives the built site in Chromium:
   print order, band alignment, no horizontal scroll, tab seating, axe, the keyboard walk, the
-  in-season overlays, at three widths in both languages. CI runs it once `docs/ops/ci.yml` is
-  applied; locally `PW_CHROMIUM=<path>` names a browser.
+  in-season overlays, at three widths in both languages. CI runs it on pull requests; locally
+  `PW_CHROMIUM=<path>` names a browser.
 - **Arrow keys are spatial**, not canonical: on the Sheet ← → walk a half's rank ladder (← is the
   lower rank because each half is `direction: rtl`) and ↑ ↓ cross to the East/West partner; on the
   List ↑ ↓ walk ranks and ← → cross the row. One `keyTarget()` in `src/utils/rovingFocus.ts` serves
