@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-11T06:26:14.568Z",
+ "fetchedAt": "2026-11-11T06:31:31.959Z",
  "day": 4,
  "divisions": [
   "makuuchi",
@@ -1059,7 +1059,7 @@
   },
   "3743": {
    "wins": 2,
-   "losses": 1,
+   "losses": 2,
    "absences": 0,
    "bouts": [
     {
@@ -1097,6 +1097,18 @@
       }
      },
      "kimarite": "watashikomi"
+    },
+    {
+     "day": 4,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3761,
+      "shikona": {
+       "en": "Wakatakakage",
+       "jp": "若隆景"
+      }
+     },
+     "kimarite": "okuridashi"
     }
    ]
   },
@@ -1144,7 +1156,7 @@
    ]
   },
   "3761": {
-   "wins": 3,
+   "wins": 4,
    "losses": 0,
    "absences": 0,
    "bouts": [
@@ -1183,6 +1195,18 @@
       }
      },
      "kimarite": "yorikiri"
+    },
+    {
+     "day": 4,
+     "outcome": "win",
+     "opponent": {
+      "id": 3743,
+      "shikona": {
+       "en": "Midorifuji",
+       "jp": "翠富士"
+      }
+     },
+     "kimarite": "okuridashi"
     }
    ]
   },
@@ -1708,7 +1732,7 @@
    ]
   },
   "3988": {
-   "wins": 1,
+   "wins": 2,
    "losses": 2,
    "absences": 0,
    "bouts": [
@@ -1747,6 +1771,18 @@
       }
      },
      "kimarite": "tsukiotoshi"
+    },
+    {
+     "day": 4,
+     "outcome": "win",
+     "opponent": {
+      "id": 4142,
+      "shikona": {
+       "en": "Tanji",
+       "jp": "丹治"
+      }
+     },
+     "kimarite": "hikiotoshi"
     }
    ]
   },
@@ -2298,7 +2334,7 @@
   },
   "4142": {
    "wins": 2,
-   "losses": 1,
+   "losses": 2,
    "absences": 0,
    "bouts": [
     {
@@ -2336,6 +2372,18 @@
       }
      },
      "kimarite": "watashikomi"
+    },
+    {
+     "day": 4,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3988,
+      "shikona": {
+       "en": "Nabatame",
+       "jp": "生田目"
+      }
+     },
+     "kimarite": "hikiotoshi"
     }
    ]
   },
@@ -5620,8 +5668,8 @@
       "jp": "若隆景"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 3761,
+    "kimarite": "okuridashi"
    },
    {
     "division": "makuuchi",
