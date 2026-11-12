@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-12T07:50:58.260Z",
+ "fetchedAt": "2026-11-12T07:55:59.244Z",
  "day": 5,
  "divisions": [
   "makuuchi",
@@ -1778,7 +1778,7 @@
   },
   "3840": {
    "wins": 3,
-   "losses": 1,
+   "losses": 2,
    "absences": 0,
    "bouts": [
     {
@@ -1828,6 +1828,18 @@
       }
      },
      "kimarite": "tsukidashi"
+    },
+    {
+     "day": 5,
+     "outcome": "loss",
+     "opponent": {
+      "id": 4112,
+      "shikona": {
+       "en": "Kinbozan",
+       "jp": "金峰山"
+      }
+     },
+     "kimarite": "oshidashi"
     }
    ]
   },
@@ -1954,7 +1966,7 @@
    ]
   },
   "3907": {
-   "wins": 1,
+   "wins": 2,
    "losses": 3,
    "absences": 0,
    "bouts": [
@@ -2005,6 +2017,18 @@
       }
      },
      "kimarite": "yorikiri"
+    },
+    {
+     "day": 5,
+     "outcome": "win",
+     "opponent": {
+      "id": 4101,
+      "shikona": {
+       "en": "Asakoryu",
+       "jp": "朝紅龍"
+      }
+     },
+     "kimarite": "kimedashi"
     }
    ]
   },
@@ -2699,7 +2723,7 @@
   },
   "4101": {
    "wins": 1,
-   "losses": 3,
+   "losses": 4,
    "absences": 0,
    "bouts": [
     {
@@ -2749,6 +2773,18 @@
       }
      },
      "kimarite": "hatakikomi"
+    },
+    {
+     "day": 5,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3907,
+      "shikona": {
+       "en": "Roga",
+       "jp": "狼雅"
+      }
+     },
+     "kimarite": "kimedashi"
     }
    ]
   },
@@ -2820,7 +2856,7 @@
    ]
   },
   "4112": {
-   "wins": 3,
+   "wins": 4,
    "losses": 1,
    "absences": 0,
    "bouts": [
@@ -2871,6 +2907,18 @@
       }
      },
      "kimarite": "tsukiotoshi"
+    },
+    {
+     "day": 5,
+     "outcome": "win",
+     "opponent": {
+      "id": 3840,
+      "shikona": {
+       "en": "Kotoshoho",
+       "jp": "琴勝峰"
+      }
+     },
+     "kimarite": "oshidashi"
     }
    ]
   },
@@ -7550,8 +7598,8 @@
       "jp": "金峰山"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 4112,
+    "kimarite": "oshidashi"
    },
    {
     "division": "juryo",
