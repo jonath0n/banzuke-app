@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-12T07:45:48.103Z",
+ "fetchedAt": "2026-11-12T07:50:58.260Z",
  "day": 5,
  "divisions": [
   "makuuchi",
@@ -7470,8 +7470,8 @@
       "jp": "錦富士"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 3742,
+    "kimarite": "uwatenage"
    },
    {
     "division": "juryo",
@@ -7510,8 +7510,8 @@
       "jp": "朝紅龍"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 3907,
+    "kimarite": "kimedashi"
    },
    {
     "division": "juryo",
