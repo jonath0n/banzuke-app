@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-12T07:40:50.108Z",
+ "fetchedAt": "2026-11-12T07:45:48.103Z",
  "day": 5,
  "divisions": [
   "makuuchi",
@@ -1375,7 +1375,7 @@
    ]
   },
   "3742": {
-   "wins": 2,
+   "wins": 3,
    "losses": 2,
    "absences": 0,
    "bouts": [
@@ -1426,6 +1426,18 @@
       }
      },
      "kimarite": "yorikiri"
+    },
+    {
+     "day": 5,
+     "outcome": "win",
+     "opponent": {
+      "id": 3990,
+      "shikona": {
+       "en": "Shishi",
+       "jp": "獅司"
+      }
+     },
+     "kimarite": "uwatenage"
     }
    ]
   },
@@ -1876,7 +1888,7 @@
   },
   "3844": {
    "wins": 3,
-   "losses": 1,
+   "losses": 2,
    "absences": 0,
    "bouts": [
     {
@@ -1926,6 +1938,18 @@
       }
      },
      "kimarite": "yorikiri"
+    },
+    {
+     "day": 5,
+     "outcome": "loss",
+     "opponent": {
+      "id": 4108,
+      "shikona": {
+       "en": "Oshoma",
+       "jp": "欧勝馬"
+      }
+     },
+     "kimarite": "uwatenage"
     }
    ]
   },
@@ -2388,7 +2412,7 @@
   },
   "3990": {
    "wins": 0,
-   "losses": 4,
+   "losses": 5,
    "absences": 0,
    "bouts": [
     {
@@ -2438,6 +2462,18 @@
       }
      },
      "kimarite": "yorikiri"
+    },
+    {
+     "day": 5,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3742,
+      "shikona": {
+       "en": "Nishikifuji",
+       "jp": "錦富士"
+      }
+     },
+     "kimarite": "uwatenage"
     }
    ]
   },
@@ -2717,7 +2753,7 @@
    ]
   },
   "4108": {
-   "wins": 3,
+   "wins": 4,
    "losses": 1,
    "absences": 0,
    "bouts": [
@@ -2768,6 +2804,18 @@
       }
      },
      "kimarite": "hatakikomi"
+    },
+    {
+     "day": 5,
+     "outcome": "win",
+     "opponent": {
+      "id": 3844,
+      "shikona": {
+       "en": "Oho",
+       "jp": "王鵬"
+      }
+     },
+     "kimarite": "uwatenage"
     }
    ]
   },
@@ -7382,8 +7430,8 @@
       "jp": "王鵬"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 4108,
+    "kimarite": "uwatenage"
    },
    {
     "division": "juryo",
