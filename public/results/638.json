@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-12T06:45:39.586Z",
+ "fetchedAt": "2026-11-12T07:15:42.295Z",
  "day": 5,
  "divisions": [
   "makuuchi",
@@ -2060,7 +2060,7 @@
   },
   "3939": {
    "wins": 1,
-   "losses": 3,
+   "losses": 4,
    "absences": 0,
    "bouts": [
     {
@@ -2110,6 +2110,18 @@
       }
      },
      "kimarite": "uwatedashinage"
+    },
+    {
+     "day": 5,
+     "outcome": "loss",
+     "opponent": {
+      "id": 4116,
+      "shikona": {
+       "en": "Daiseizan",
+       "jp": "大青山"
+      }
+     },
+     "kimarite": "yorikiri"
     }
    ]
   },
@@ -2743,7 +2755,7 @@
    ]
   },
   "4116": {
-   "wins": 0,
+   "wins": 1,
    "losses": 4,
    "absences": 0,
    "bouts": [
@@ -2794,6 +2806,18 @@
       }
      },
      "kimarite": "shitatenage"
+    },
+    {
+     "day": 5,
+     "outcome": "win",
+     "opponent": {
+      "id": 3939,
+      "shikona": {
+       "en": "Kitanowaka",
+       "jp": "北の若"
+      }
+     },
+     "kimarite": "yorikiri"
     }
    ]
   },
@@ -3562,7 +3586,7 @@
   },
   "4231": {
    "wins": 1,
-   "losses": 3,
+   "losses": 4,
    "absences": 0,
    "bouts": [
     {
@@ -3612,11 +3636,23 @@
       }
      },
      "kimarite": "oshidashi"
+    },
+    {
+     "day": 5,
+     "outcome": "loss",
+     "opponent": {
+      "id": 4232,
+      "shikona": {
+       "en": "Kyokukaiyu",
+       "jp": "旭海雄"
+      }
+     },
+     "kimarite": "yorikiri"
     }
    ]
   },
   "4232": {
-   "wins": 2,
+   "wins": 3,
    "losses": 2,
    "absences": 0,
    "bouts": [
@@ -3667,6 +3703,18 @@
       }
      },
      "kimarite": "oshitaoshi"
+    },
+    {
+     "day": 5,
+     "outcome": "win",
+     "opponent": {
+      "id": 4231,
+      "shikona": {
+       "en": "Onokatsu",
+       "jp": "阿武剋"
+      }
+     },
+     "kimarite": "yorikiri"
     }
    ]
   },
@@ -6934,8 +6982,8 @@
       "jp": "旭海雄"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 4232,
+    "kimarite": "yorikiri"
    },
    {
     "division": "juryo",
