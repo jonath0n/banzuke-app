@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-13T08:49:25.897Z",
+ "fetchedAt": "2026-11-13T08:54:24.249Z",
  "day": 6,
  "divisions": [
   "makuuchi",
@@ -4350,7 +4350,7 @@
   },
   "4187": {
    "wins": 2,
-   "losses": 3,
+   "losses": 4,
    "absences": 0,
    "bouts": [
     {
@@ -4412,6 +4412,18 @@
       }
      },
      "kimarite": "shitatenage"
+    },
+    {
+     "day": 6,
+     "outcome": "loss",
+     "opponent": {
+      "id": 4227,
+      "shikona": {
+       "en": "Onosato",
+       "jp": "大の里"
+      }
+     },
+     "kimarite": "oshitaoshi"
     }
    ]
   },
@@ -4495,7 +4507,7 @@
    ]
   },
   "4227": {
-   "wins": 4,
+   "wins": 5,
    "losses": 1,
    "absences": 0,
    "bouts": [
@@ -4558,6 +4570,18 @@
       }
      },
      "kimarite": "hatakikomi"
+    },
+    {
+     "day": 6,
+     "outcome": "win",
+     "opponent": {
+      "id": 4187,
+      "shikona": {
+       "en": "Hakunofuji",
+       "jp": "伯乃富士"
+      }
+     },
+     "kimarite": "oshitaoshi"
     }
    ]
   },
@@ -9540,8 +9564,8 @@
       "jp": "伯乃富士"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 4227,
+    "kimarite": "oshitaoshi"
    },
    {
     "division": "makuuchi",
