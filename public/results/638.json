@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-13T06:23:41.607Z",
+ "fetchedAt": "2026-11-13T06:28:38.412Z",
  "day": 6,
  "divisions": [
   "makuuchi",
@@ -223,7 +223,7 @@
   },
   "2890": {
    "wins": 2,
-   "losses": 3,
+   "losses": 4,
    "absences": 0,
    "bouts": [
     {
@@ -282,6 +282,18 @@
       "shikona": {
        "en": "Hitoshi",
        "jp": "日翔志"
+      }
+     },
+     "kimarite": "yorikiri"
+    },
+    {
+     "day": 6,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3743,
+      "shikona": {
+       "en": "Midorifuji",
+       "jp": "翠富士"
       }
      },
      "kimarite": "yorikiri"
@@ -1598,7 +1610,7 @@
    ]
   },
   "3743": {
-   "wins": 2,
+   "wins": 3,
    "losses": 3,
    "absences": 0,
    "bouts": [
@@ -1661,6 +1673,18 @@
       }
      },
      "kimarite": "tsukidashi"
+    },
+    {
+     "day": 6,
+     "outcome": "win",
+     "opponent": {
+      "id": 2890,
+      "shikona": {
+       "en": "Ryuden",
+       "jp": "竜電"
+      }
+     },
+     "kimarite": "yorikiri"
     }
    ]
   },
@@ -8600,8 +8624,8 @@
       "jp": "翠富士"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 3743,
+    "kimarite": "yorikiri"
    },
    {
     "division": "makuuchi",
@@ -8640,8 +8664,8 @@
       "jp": "若隆景"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 3761,
+    "kimarite": "tsukiotoshi"
    },
    {
     "division": "makuuchi",
