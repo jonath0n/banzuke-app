@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-14T06:46:57.870Z",
+ "fetchedAt": "2026-11-14T07:16:55.524Z",
  "day": 7,
  "divisions": [
   "makuuchi",
@@ -349,7 +349,7 @@
    ]
   },
   "3207": {
-   "wins": 2,
+   "wins": 3,
    "losses": 4,
    "absences": 0,
    "bouts": [
@@ -424,6 +424,18 @@
       }
      },
      "kimarite": "yorikiri"
+    },
+    {
+     "day": 7,
+     "outcome": "win",
+     "opponent": {
+      "id": 3521,
+      "shikona": {
+       "en": "Shodai",
+       "jp": "正代"
+      }
+     },
+     "kimarite": "oshidashi"
     }
    ]
   },
@@ -1018,7 +1030,7 @@
   },
   "3521": {
    "wins": 1,
-   "losses": 5,
+   "losses": 6,
    "absences": 0,
    "bouts": [
     {
@@ -1092,6 +1104,18 @@
       }
      },
      "kimarite": "yorikiri"
+    },
+    {
+     "day": 7,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3207,
+      "shikona": {
+       "en": "Chiyoshoma",
+       "jp": "千代翔馬"
+      }
+     },
+     "kimarite": "oshidashi"
     }
    ]
   },
@@ -1188,7 +1212,7 @@
   },
   "3594": {
    "wins": 5,
-   "losses": 1,
+   "losses": 2,
    "absences": 0,
    "bouts": [
     {
@@ -1259,6 +1283,18 @@
       "shikona": {
        "en": "Kagayaki",
        "jp": "輝"
+      }
+     },
+     "kimarite": "yorikiri"
+    },
+    {
+     "day": 7,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3939,
+      "shikona": {
+       "en": "Kitanowaka",
+       "jp": "北の若"
       }
      },
      "kimarite": "yorikiri"
@@ -2839,7 +2875,7 @@
    ]
   },
   "3939": {
-   "wins": 2,
+   "wins": 3,
    "losses": 4,
    "absences": 0,
    "bouts": [
@@ -2914,6 +2950,18 @@
       }
      },
      "kimarite": "oshidashi"
+    },
+    {
+     "day": 7,
+     "outcome": "win",
+     "opponent": {
+      "id": 3594,
+      "shikona": {
+       "en": "Tobizaru",
+       "jp": "翔猿"
+      }
+     },
+     "kimarite": "yorikiri"
     }
    ]
   },
@@ -9930,8 +9978,8 @@
       "jp": "北の若"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 3939,
+    "kimarite": "yorikiri"
    },
    {
     "division": "juryo",
