@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-14T07:32:16.444Z",
+ "fetchedAt": "2026-11-14T07:36:59.036Z",
  "day": 7,
  "divisions": [
   "makuuchi",
@@ -100,7 +100,7 @@
    ]
   },
   "2629": {
-   "wins": 3,
+   "wins": 4,
    "losses": 3,
    "absences": 0,
    "bouts": [
@@ -175,6 +175,18 @@
       }
      },
      "kimarite": "oshidashi"
+    },
+    {
+     "day": 7,
+     "outcome": "win",
+     "opponent": {
+      "id": 4243,
+      "shikona": {
+       "en": "Toshinofuji",
+       "jp": "寿之富士"
+      }
+     },
+     "kimarite": "oshitaoshi"
     }
    ]
   },
@@ -950,7 +962,7 @@
    ]
   },
   "3485": {
-   "wins": 1,
+   "wins": 2,
    "losses": 5,
    "absences": 0,
    "bouts": [
@@ -1022,6 +1034,18 @@
       "shikona": {
        "en": "Dewanoryu",
        "jp": "出羽ノ龍"
+      }
+     },
+     "kimarite": "oshidashi"
+    },
+    {
+     "day": 7,
+     "outcome": "win",
+     "opponent": {
+      "id": 3844,
+      "shikona": {
+       "en": "Oho",
+       "jp": "王鵬"
       }
      },
      "kimarite": "oshidashi"
@@ -2548,7 +2572,7 @@
   },
   "3844": {
    "wins": 4,
-   "losses": 2,
+   "losses": 3,
    "absences": 0,
    "bouts": [
     {
@@ -2622,6 +2646,18 @@
       }
      },
      "kimarite": "hikiotoshi"
+    },
+    {
+     "day": 7,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3485,
+      "shikona": {
+       "en": "Abi",
+       "jp": "阿炎"
+      }
+     },
+     "kimarite": "oshidashi"
     }
    ]
   },
@@ -5208,7 +5244,7 @@
   },
   "4243": {
    "wins": 2,
-   "losses": 4,
+   "losses": 5,
    "absences": 0,
    "bouts": [
     {
@@ -5282,6 +5318,18 @@
       }
      },
      "kimarite": "tsukite"
+    },
+    {
+     "day": 7,
+     "outcome": "loss",
+     "opponent": {
+      "id": 2629,
+      "shikona": {
+       "en": "Tamawashi",
+       "jp": "玉鷲"
+      }
+     },
+     "kimarite": "oshitaoshi"
     }
    ]
   },
@@ -10250,8 +10298,8 @@
       "jp": "王鵬"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 3485,
+    "kimarite": "oshidashi"
    },
    {
     "division": "juryo",
