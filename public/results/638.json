@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-14T06:12:05.708Z",
+ "fetchedAt": "2026-11-14T06:21:52.487Z",
  "day": 7,
  "divisions": [
   "makuuchi",
@@ -1072,7 +1072,7 @@
    ]
   },
   "3553": {
-   "wins": 3,
+   "wins": 4,
    "losses": 3,
    "absences": 0,
    "bouts": [
@@ -1147,6 +1147,18 @@
       }
      },
      "kimarite": "okuridashi"
+    },
+    {
+     "day": 7,
+     "outcome": "win",
+     "opponent": {
+      "id": 3743,
+      "shikona": {
+       "en": "Midorifuji",
+       "jp": "翠富士"
+      }
+     },
+     "kimarite": "hatakikomi"
     }
    ]
   },
@@ -1863,7 +1875,7 @@
   },
   "3743": {
    "wins": 3,
-   "losses": 3,
+   "losses": 4,
    "absences": 0,
    "bouts": [
     {
@@ -1937,6 +1949,18 @@
       }
      },
      "kimarite": "yorikiri"
+    },
+    {
+     "day": 7,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3553,
+      "shikona": {
+       "en": "Shonannoumi",
+       "jp": "湘南乃海"
+      }
+     },
+     "kimarite": "hatakikomi"
     }
    ]
   },
@@ -2099,7 +2123,7 @@
    ]
   },
   "3803": {
-   "wins": 5,
+   "wins": 6,
    "losses": 1,
    "absences": 0,
    "bouts": [
@@ -2174,6 +2198,18 @@
       }
      },
      "kimarite": "shitatenage"
+    },
+    {
+     "day": 7,
+     "outcome": "win",
+     "opponent": {
+      "id": 4142,
+      "shikona": {
+       "en": "Tanji",
+       "jp": "丹治"
+      }
+     },
+     "kimarite": "tottari"
     }
    ]
   },
@@ -4032,7 +4068,7 @@
   },
   "4142": {
    "wins": 4,
-   "losses": 2,
+   "losses": 3,
    "absences": 0,
    "bouts": [
     {
@@ -4106,6 +4142,18 @@
       }
      },
      "kimarite": "yorikiri"
+    },
+    {
+     "day": 7,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3803,
+      "shikona": {
+       "en": "Enho",
+       "jp": "炎鵬"
+      }
+     },
+     "kimarite": "tottari"
     }
    ]
   },
@@ -9982,8 +10030,8 @@
       "jp": "炎鵬"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 3803,
+    "kimarite": "tottari"
    },
    {
     "division": "makuuchi",
