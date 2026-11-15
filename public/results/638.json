@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-15T07:15:30.025Z",
+ "fetchedAt": "2026-11-15T07:20:42.191Z",
  "day": 8,
  "divisions": [
   "makuuchi",
@@ -11552,8 +11552,8 @@
       "jp": "出羽ノ龍"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 3983,
+    "kimarite": "yorikiri"
    },
    {
     "division": "juryo",
@@ -11592,8 +11592,8 @@
       "jp": "大青山"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 4243,
+    "kimarite": "oshidashi"
    },
    {
     "division": "juryo",
