@@ -1,8 +1,8 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-14T15:45:58.201Z",
- "day": 7,
+ "fetchedAt": "2026-11-15T06:04:57.183Z",
+ "day": 8,
  "divisions": [
   "makuuchi",
   "juryo"
@@ -10,7 +10,7 @@
  "records": {
   "2565": {
    "wins": 2,
-   "losses": 5,
+   "losses": 6,
    "absences": 0,
    "bouts": [
     {
@@ -96,6 +96,18 @@
       }
      },
      "kimarite": "yorikiri"
+    },
+    {
+     "day": 8,
+     "outcome": "loss",
+     "opponent": {
+      "id": 4356,
+      "shikona": {
+       "en": "Ryuho",
+       "jp": "竜鳳"
+      }
+     },
+     "kimarite": "kimedashi"
     }
    ]
   },
@@ -2376,7 +2388,7 @@
   },
   "3803": {
    "wins": 6,
-   "losses": 1,
+   "losses": 2,
    "absences": 0,
    "bouts": [
     {
@@ -2462,6 +2474,18 @@
       }
      },
      "kimarite": "tottari"
+    },
+    {
+     "day": 8,
+     "outcome": "loss",
+     "opponent": {
+      "id": 4124,
+      "shikona": {
+       "en": "Hatsuyama",
+       "jp": "羽出山"
+      }
+     },
+     "kimarite": "hatakikomi"
     }
    ]
   },
@@ -2922,7 +2946,7 @@
   },
   "3927": {
    "wins": 4,
-   "losses": 3,
+   "losses": 4,
    "absences": 0,
    "bouts": [
     {
@@ -3008,6 +3032,18 @@
       }
      },
      "kimarite": "shitatenage"
+    },
+    {
+     "day": 8,
+     "outcome": "loss",
+     "opponent": {
+      "id": 4358,
+      "shikona": {
+       "en": "Asahifuji",
+       "jp": "旭富士"
+      }
+     },
+     "kimarite": "yorikiri"
     }
    ]
   },
@@ -4276,7 +4312,7 @@
   "4120": {
    "wins": 1,
    "losses": 2,
-   "absences": 4,
+   "absences": 5,
    "bouts": [
     {
      "day": 1,
@@ -4334,6 +4370,12 @@
     },
     {
      "day": 7,
+     "outcome": "absent",
+     "opponent": null,
+     "kimarite": ""
+    },
+    {
+     "day": 8,
      "outcome": "absent",
      "opponent": null,
      "kimarite": ""
@@ -4432,7 +4474,7 @@
    ]
   },
   "4124": {
-   "wins": 1,
+   "wins": 2,
    "losses": 6,
    "absences": 0,
    "bouts": [
@@ -4519,6 +4561,18 @@
       }
      },
      "kimarite": "yorikiri"
+    },
+    {
+     "day": 8,
+     "outcome": "win",
+     "opponent": {
+      "id": 3803,
+      "shikona": {
+       "en": "Enho",
+       "jp": "炎鵬"
+      }
+     },
+     "kimarite": "hatakikomi"
     }
    ]
   },
@@ -4707,7 +4761,7 @@
   "4164": {
    "wins": 0,
    "losses": 1,
-   "absences": 6,
+   "absences": 7,
    "bouts": [
     {
      "day": 1,
@@ -4753,6 +4807,12 @@
     },
     {
      "day": 7,
+     "outcome": "absent",
+     "opponent": null,
+     "kimarite": ""
+    },
+    {
+     "day": 8,
      "outcome": "absent",
      "opponent": null,
      "kimarite": ""
@@ -6125,7 +6185,7 @@
    ]
   },
   "4356": {
-   "wins": 4,
+   "wins": 5,
    "losses": 3,
    "absences": 0,
    "bouts": [
@@ -6212,11 +6272,23 @@
       }
      },
      "kimarite": "kotenage"
+    },
+    {
+     "day": 8,
+     "outcome": "win",
+     "opponent": {
+      "id": 2565,
+      "shikona": {
+       "en": "Sadanoumi",
+       "jp": "佐田の海"
+      }
+     },
+     "kimarite": "kimedashi"
     }
    ]
   },
   "4358": {
-   "wins": 6,
+   "wins": 7,
    "losses": 1,
    "absences": 0,
    "bouts": [
@@ -6303,6 +6375,18 @@
       }
      },
      "kimarite": "kotenage"
+    },
+    {
+     "day": 8,
+     "outcome": "win",
+     "opponent": {
+      "id": 3927,
+      "shikona": {
+       "en": "Tokifudo",
+       "jp": "時不動"
+      }
+     },
+     "kimarite": "yorikiri"
     }
    ]
   }
@@ -11160,8 +11244,8 @@
       "jp": "時不動"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 4358,
+    "kimarite": "yorikiri"
    },
    {
     "division": "makuuchi",
@@ -11200,8 +11284,8 @@
       "jp": "佐田の海"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 4356,
+    "kimarite": "kimedashi"
    },
    {
     "division": "makuuchi",
@@ -11240,8 +11324,8 @@
       "jp": "羽出山"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 4124,
+    "kimarite": "hatakikomi"
    },
    {
     "division": "makuuchi",
