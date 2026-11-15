@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-15T08:16:08.320Z",
+ "fetchedAt": "2026-11-15T08:21:02.606Z",
  "day": 8,
  "divisions": [
   "makuuchi",
@@ -2125,7 +2125,7 @@
   },
   "3711": {
    "wins": 1,
-   "losses": 6,
+   "losses": 7,
    "absences": 0,
    "bouts": [
     {
@@ -2211,6 +2211,18 @@
       }
      },
      "kimarite": "yorikiri"
+    },
+    {
+     "day": 8,
+     "outcome": "loss",
+     "opponent": {
+      "id": 4336,
+      "shikona": {
+       "en": "Fujiryoga",
+       "jp": "藤凌駕"
+      }
+     },
+     "kimarite": "oshidashi"
     }
    ]
   },
@@ -6670,7 +6682,7 @@
    ]
   },
   "4336": {
-   "wins": 4,
+   "wins": 5,
    "losses": 3,
    "absences": 0,
    "bouts": [
@@ -6757,6 +6769,18 @@
       }
      },
      "kimarite": "yorikiri"
+    },
+    {
+     "day": 8,
+     "outcome": "win",
+     "opponent": {
+      "id": 3711,
+      "shikona": {
+       "en": "Churanoumi",
+       "jp": "美ノ海"
+      }
+     },
+     "kimarite": "oshidashi"
     }
    ]
   },
@@ -12340,8 +12364,8 @@
       "jp": "藤凌駕"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 4336,
+    "kimarite": "oshidashi"
    },
    {
     "division": "makuuchi",
