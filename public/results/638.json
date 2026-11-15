@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-15T07:40:43.300Z",
+ "fetchedAt": "2026-11-15T07:45:58.293Z",
  "day": 8,
  "divisions": [
   "makuuchi",
@@ -1106,7 +1106,7 @@
    ]
   },
   "3485": {
-   "wins": 2,
+   "wins": 3,
    "losses": 5,
    "absences": 0,
    "bouts": [
@@ -1193,6 +1193,18 @@
       }
      },
      "kimarite": "oshidashi"
+    },
+    {
+     "day": 8,
+     "outcome": "win",
+     "opponent": {
+      "id": 4101,
+      "shikona": {
+       "en": "Asakoryu",
+       "jp": "朝紅龍"
+      }
+     },
+     "kimarite": "okuridashi"
     }
    ]
   },
@@ -2155,7 +2167,7 @@
    ]
   },
   "3742": {
-   "wins": 4,
+   "wins": 5,
    "losses": 3,
    "absences": 0,
    "bouts": [
@@ -2242,6 +2254,18 @@
       }
      },
      "kimarite": "oshidashi"
+    },
+    {
+     "day": 8,
+     "outcome": "win",
+     "opponent": {
+      "id": 3933,
+      "shikona": {
+       "en": "Tokihayate",
+       "jp": "時疾風"
+      }
+     },
+     "kimarite": "yorikiri"
     }
    ]
   },
@@ -3241,7 +3265,7 @@
   },
   "3933": {
    "wins": 2,
-   "losses": 5,
+   "losses": 6,
    "absences": 0,
    "bouts": [
     {
@@ -3324,6 +3348,18 @@
       "shikona": {
        "en": "Kyokukaiyu",
        "jp": "旭海雄"
+      }
+     },
+     "kimarite": "yorikiri"
+    },
+    {
+     "day": 8,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3742,
+      "shikona": {
+       "en": "Nishikifuji",
+       "jp": "錦富士"
       }
      },
      "kimarite": "yorikiri"
@@ -4211,7 +4247,7 @@
   },
   "4101": {
    "wins": 1,
-   "losses": 6,
+   "losses": 7,
    "absences": 0,
    "bouts": [
     {
@@ -4297,6 +4333,18 @@
       }
      },
      "kimarite": "oshidashi"
+    },
+    {
+     "day": 8,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3485,
+      "shikona": {
+       "en": "Abi",
+       "jp": "阿炎"
+      }
+     },
+     "kimarite": "okuridashi"
     }
    ]
   },
@@ -11912,8 +11960,8 @@
       "jp": "朝紅龍"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 3485,
+    "kimarite": "okuridashi"
    },
    {
     "division": "juryo",
