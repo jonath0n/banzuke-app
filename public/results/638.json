@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-16T07:18:57.080Z",
+ "fetchedAt": "2026-11-16T07:24:08.821Z",
  "day": 9,
  "divisions": [
   "makuuchi",
@@ -1214,7 +1214,7 @@
    ]
   },
   "3485": {
-   "wins": 3,
+   "wins": 4,
    "losses": 5,
    "absences": 0,
    "bouts": [
@@ -1313,6 +1313,18 @@
       }
      },
      "kimarite": "okuridashi"
+    },
+    {
+     "day": 9,
+     "outcome": "win",
+     "opponent": {
+      "id": 4116,
+      "shikona": {
+       "en": "Daiseizan",
+       "jp": "大青山"
+      }
+     },
+     "kimarite": "hikiotoshi"
     }
    ]
   },
@@ -2613,7 +2625,7 @@
    ]
   },
   "3753": {
-   "wins": 5,
+   "wins": 6,
    "losses": 3,
    "absences": 0,
    "bouts": [
@@ -2712,6 +2724,18 @@
       }
      },
      "kimarite": "yorikiri"
+    },
+    {
+     "day": 9,
+     "outcome": "win",
+     "opponent": {
+      "id": 3933,
+      "shikona": {
+       "en": "Tokihayate",
+       "jp": "時疾風"
+      }
+     },
+     "kimarite": "hikiotoshi"
     }
    ]
   },
@@ -3589,7 +3613,7 @@
   },
   "3933": {
    "wins": 2,
-   "losses": 6,
+   "losses": 7,
    "absences": 0,
    "bouts": [
     {
@@ -3687,6 +3711,18 @@
       }
      },
      "kimarite": "yorikiri"
+    },
+    {
+     "day": 9,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3753,
+      "shikona": {
+       "en": "Ichiyamamoto",
+       "jp": "一山本"
+      }
+     },
+     "kimarite": "hikiotoshi"
     }
    ]
   },
@@ -4964,7 +5000,7 @@
   },
   "4116": {
    "wins": 2,
-   "losses": 6,
+   "losses": 7,
    "absences": 0,
    "bouts": [
     {
@@ -5062,6 +5098,18 @@
       }
      },
      "kimarite": "oshidashi"
+    },
+    {
+     "day": 9,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3485,
+      "shikona": {
+       "en": "Abi",
+       "jp": "阿炎"
+      }
+     },
+     "kimarite": "hikiotoshi"
     }
    ]
   },
@@ -13102,8 +13150,8 @@
       "jp": "阿炎"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 3485,
+    "kimarite": "hikiotoshi"
    },
    {
     "division": "juryo",
@@ -13142,8 +13190,8 @@
       "jp": "時疾風"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 3753,
+    "kimarite": "hikiotoshi"
    },
    {
     "division": "juryo",
