@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-16T07:39:08.423Z",
+ "fetchedAt": "2026-11-16T07:49:20.812Z",
  "day": 9,
  "divisions": [
   "makuuchi",
@@ -3316,7 +3316,7 @@
   },
   "3844": {
    "wins": 5,
-   "losses": 3,
+   "losses": 4,
    "absences": 0,
    "bouts": [
     {
@@ -3414,11 +3414,23 @@
       }
      },
      "kimarite": "kotenage"
+    },
+    {
+     "day": 9,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3907,
+      "shikona": {
+       "en": "Roga",
+       "jp": "狼雅"
+      }
+     },
+     "kimarite": "yorikiri"
     }
    ]
   },
   "3907": {
-   "wins": 5,
+   "wins": 6,
    "losses": 3,
    "absences": 0,
    "bouts": [
@@ -3514,6 +3526,18 @@
       "shikona": {
        "en": "Hiradoumi",
        "jp": "平戸海"
+      }
+     },
+     "kimarite": "yorikiri"
+    },
+    {
+     "day": 9,
+     "outcome": "win",
+     "opponent": {
+      "id": 3844,
+      "shikona": {
+       "en": "Oho",
+       "jp": "王鵬"
       }
      },
      "kimarite": "yorikiri"
@@ -4739,7 +4763,7 @@
   },
   "4101": {
    "wins": 1,
-   "losses": 7,
+   "losses": 8,
    "absences": 0,
    "bouts": [
     {
@@ -4837,6 +4861,18 @@
       }
      },
      "kimarite": "okuridashi"
+    },
+    {
+     "day": 9,
+     "outcome": "loss",
+     "opponent": {
+      "id": 4243,
+      "shikona": {
+       "en": "Toshinofuji",
+       "jp": "寿之富士"
+      }
+     },
+     "kimarite": "yorikiri"
     }
    ]
   },
@@ -6743,7 +6779,7 @@
    ]
   },
   "4243": {
-   "wins": 3,
+   "wins": 4,
    "losses": 5,
    "absences": 0,
    "bouts": [
@@ -6842,6 +6878,18 @@
       }
      },
      "kimarite": "oshidashi"
+    },
+    {
+     "day": 9,
+     "outcome": "win",
+     "opponent": {
+      "id": 4101,
+      "shikona": {
+       "en": "Asakoryu",
+       "jp": "朝紅龍"
+      }
+     },
+     "kimarite": "yorikiri"
     }
    ]
   },
@@ -13422,8 +13470,8 @@
       "jp": "朝紅龍"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 4243,
+    "kimarite": "yorikiri"
    },
    {
     "division": "juryo",
@@ -13462,8 +13510,8 @@
       "jp": "王鵬"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 3907,
+    "kimarite": "yorikiri"
    },
    {
     "division": "juryo",
