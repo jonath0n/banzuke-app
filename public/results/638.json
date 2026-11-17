@@ -1,8 +1,8 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-16T19:32:35.152Z",
- "day": 9,
+ "fetchedAt": "2026-11-17T06:02:23.927Z",
+ "day": 10,
  "divisions": [
   "makuuchi",
   "juryo"
@@ -815,7 +815,7 @@
   },
   "3337": {
    "wins": 3,
-   "losses": 6,
+   "losses": 7,
    "absences": 0,
    "bouts": [
     {
@@ -925,6 +925,18 @@
       }
      },
      "kimarite": "shitatenage"
+    },
+    {
+     "day": 10,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3818,
+      "shikona": {
+       "en": "Tomokaze",
+       "jp": "友風"
+      }
+     },
+     "kimarite": "hatakikomi"
     }
    ]
   },
@@ -3114,7 +3126,7 @@
    ]
   },
   "3818": {
-   "wins": 2,
+   "wins": 3,
    "losses": 7,
    "absences": 0,
    "bouts": [
@@ -3222,6 +3234,18 @@
       "shikona": {
        "en": "Ryuho",
        "jp": "竜鳳"
+      }
+     },
+     "kimarite": "hatakikomi"
+    },
+    {
+     "day": 10,
+     "outcome": "win",
+     "opponent": {
+      "id": 3337,
+      "shikona": {
+       "en": "Meisei",
+       "jp": "明生"
       }
      },
      "kimarite": "hatakikomi"
@@ -5596,7 +5620,7 @@
    ]
   },
   "4124": {
-   "wins": 2,
+   "wins": 3,
    "losses": 7,
    "absences": 0,
    "bouts": [
@@ -5707,6 +5731,18 @@
       }
      },
      "kimarite": "oshidashi"
+    },
+    {
+     "day": 10,
+     "outcome": "win",
+     "opponent": {
+      "id": 2892,
+      "shikona": {
+       "en": "Nishikigi",
+       "jp": "錦木"
+      }
+     },
+     "kimarite": "okuridashi"
     }
    ]
   },
@@ -5943,7 +5979,7 @@
   "4164": {
    "wins": 0,
    "losses": 1,
-   "absences": 8,
+   "absences": 9,
    "bouts": [
     {
      "day": 1,
@@ -6001,6 +6037,12 @@
     },
     {
      "day": 9,
+     "outcome": "absent",
+     "opponent": null,
+     "kimarite": ""
+    },
+    {
+     "day": 10,
      "outcome": "absent",
      "opponent": null,
      "kimarite": ""
@@ -14180,8 +14222,8 @@
       "jp": "錦木"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 4124,
+    "kimarite": "okuridashi"
    },
    {
     "division": "makuuchi",
@@ -14220,8 +14262,8 @@
       "jp": "明生"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 3818,
+    "kimarite": "hatakikomi"
    },
    {
     "division": "makuuchi",
