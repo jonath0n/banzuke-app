@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-17T07:32:44.859Z",
+ "fetchedAt": "2026-11-17T07:37:55.775Z",
  "day": 10,
  "divisions": [
   "makuuchi",
@@ -3664,7 +3664,7 @@
   },
   "3844": {
    "wins": 5,
-   "losses": 4,
+   "losses": 5,
    "absences": 0,
    "bouts": [
     {
@@ -3774,6 +3774,18 @@
       }
      },
      "kimarite": "yorikiri"
+    },
+    {
+     "day": 10,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3983,
+      "shikona": {
+       "en": "Dewanoryu",
+       "jp": "出羽ノ龍"
+      }
+     },
+     "kimarite": "uwatenage"
     }
    ]
   },
@@ -4401,7 +4413,7 @@
    ]
   },
   "3983": {
-   "wins": 7,
+   "wins": 8,
    "losses": 2,
    "absences": 0,
    "bouts": [
@@ -4512,6 +4524,18 @@
       }
      },
      "kimarite": "yorikiri"
+    },
+    {
+     "day": 10,
+     "outcome": "win",
+     "opponent": {
+      "id": 3844,
+      "shikona": {
+       "en": "Oho",
+       "jp": "王鵬"
+      }
+     },
+     "kimarite": "uwatenage"
     }
    ]
   },
@@ -14810,8 +14834,8 @@
       "jp": "王鵬"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 3983,
+    "kimarite": "uwatenage"
    },
    {
     "division": "juryo",
