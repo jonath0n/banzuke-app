@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-17T07:22:54.786Z",
+ "fetchedAt": "2026-11-17T07:27:57.186Z",
  "day": 10,
  "divisions": [
   "makuuchi",
@@ -136,7 +136,7 @@
    ]
   },
   "2629": {
-   "wins": 6,
+   "wins": 7,
    "losses": 3,
    "absences": 0,
    "bouts": [
@@ -247,6 +247,18 @@
       }
      },
      "kimarite": "oshitaoshi"
+    },
+    {
+     "day": 10,
+     "outcome": "win",
+     "opponent": {
+      "id": 3485,
+      "shikona": {
+       "en": "Abi",
+       "jp": "阿炎"
+      }
+     },
+     "kimarite": "oshidashi"
     }
    ]
   },
@@ -1347,7 +1359,7 @@
   },
   "3485": {
    "wins": 4,
-   "losses": 5,
+   "losses": 6,
    "absences": 0,
    "bouts": [
     {
@@ -1457,6 +1469,18 @@
       }
      },
      "kimarite": "hikiotoshi"
+    },
+    {
+     "day": 10,
+     "outcome": "loss",
+     "opponent": {
+      "id": 2629,
+      "shikona": {
+       "en": "Tamawashi",
+       "jp": "玉鷲"
+      }
+     },
+     "kimarite": "oshidashi"
     }
    ]
   },
@@ -14682,8 +14706,8 @@
       "jp": "阿炎"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 2629,
+    "kimarite": "oshidashi"
    },
    {
     "division": "juryo",
