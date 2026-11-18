@@ -1,8 +1,8 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-17T09:03:49.206Z",
- "day": 10,
+ "fetchedAt": "2026-11-18T06:01:40.991Z",
+ "day": 11,
  "divisions": [
   "makuuchi",
   "juryo"
@@ -899,7 +899,7 @@
   },
   "3337": {
    "wins": 3,
-   "losses": 7,
+   "losses": 8,
    "absences": 0,
    "bouts": [
     {
@@ -1021,12 +1021,24 @@
       }
      },
      "kimarite": "hatakikomi"
+    },
+    {
+     "day": 11,
+     "outcome": "loss",
+     "opponent": {
+      "id": 4302,
+      "shikona": {
+       "en": "Ikarigata",
+       "jp": "碇潟"
+      }
+     },
+     "kimarite": "uwatenage"
     }
    ]
   },
   "3367": {
    "wins": 9,
-   "losses": 1,
+   "losses": 2,
    "absences": 0,
    "bouts": [
     {
@@ -1145,6 +1157,18 @@
       "shikona": {
        "en": "Enho",
        "jp": "炎鵬"
+      }
+     },
+     "kimarite": "tsukiotoshi"
+    },
+    {
+     "day": 11,
+     "outcome": "loss",
+     "opponent": {
+      "id": 4121,
+      "shikona": {
+       "en": "Wakanosho",
+       "jp": "若ノ勝"
       }
      },
      "kimarite": "tsukiotoshi"
@@ -3311,7 +3335,7 @@
    ]
   },
   "3803": {
-   "wins": 8,
+   "wins": 9,
    "losses": 2,
    "absences": 0,
    "bouts": [
@@ -3434,6 +3458,18 @@
       }
      },
      "kimarite": "tsukiotoshi"
+    },
+    {
+     "day": 11,
+     "outcome": "win",
+     "opponent": {
+      "id": 4356,
+      "shikona": {
+       "en": "Ryuho",
+       "jp": "竜鳳"
+      }
+     },
+     "kimarite": "okuridashi"
     }
    ]
   },
@@ -6057,7 +6093,7 @@
    ]
   },
   "4121": {
-   "wins": 7,
+   "wins": 8,
    "losses": 3,
    "absences": 0,
    "bouts": [
@@ -6177,6 +6213,18 @@
       "shikona": {
        "en": "Tohakuryu",
        "jp": "東白龍"
+      }
+     },
+     "kimarite": "tsukiotoshi"
+    },
+    {
+     "day": 11,
+     "outcome": "win",
+     "opponent": {
+      "id": 3367,
+      "shikona": {
+       "en": "Tamashoho",
+       "jp": "玉正鳳"
       }
      },
      "kimarite": "tsukiotoshi"
@@ -6567,7 +6615,7 @@
   "4164": {
    "wins": 0,
    "losses": 1,
-   "absences": 9,
+   "absences": 10,
    "bouts": [
     {
      "day": 1,
@@ -6631,6 +6679,12 @@
     },
     {
      "day": 10,
+     "outcome": "absent",
+     "opponent": null,
+     "kimarite": ""
+    },
+    {
+     "day": 11,
      "outcome": "absent",
      "opponent": null,
      "kimarite": ""
@@ -8544,7 +8598,7 @@
   },
   "4356": {
    "wins": 6,
-   "losses": 4,
+   "losses": 5,
    "absences": 0,
    "bouts": [
     {
@@ -8666,6 +8720,18 @@
       }
      },
      "kimarite": "yorikiri"
+    },
+    {
+     "day": 11,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3803,
+      "shikona": {
+       "en": "Enho",
+       "jp": "炎鵬"
+      }
+     },
+     "kimarite": "okuridashi"
     }
    ]
   },
@@ -15716,8 +15782,8 @@
       "jp": "碇潟"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 4302,
+    "kimarite": "uwatenage"
    },
    {
     "division": "makuuchi",
@@ -15756,8 +15822,8 @@
       "jp": "若ノ勝"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 4121,
+    "kimarite": "tsukiotoshi"
    },
    {
     "division": "makuuchi",
@@ -15796,8 +15862,8 @@
       "jp": "竜鳳"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 3803,
+    "kimarite": "okuridashi"
    },
    {
     "division": "makuuchi",
