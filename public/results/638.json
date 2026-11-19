@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-19T08:10:33.230Z",
+ "fetchedAt": "2026-11-19T08:20:26.297Z",
  "day": 12,
  "divisions": [
   "makuuchi",
@@ -2830,7 +2830,7 @@
    ]
   },
   "3682": {
-   "wins": 7,
+   "wins": 8,
    "losses": 4,
    "absences": 0,
    "bouts": [
@@ -2965,6 +2965,18 @@
       }
      },
      "kimarite": "yorikiri"
+    },
+    {
+     "day": 12,
+     "outcome": "win",
+     "opponent": {
+      "id": 4093,
+      "shikona": {
+       "en": "Fujiseiun",
+       "jp": "藤青雲"
+      }
+     },
+     "kimarite": "tsukiotoshi"
     }
    ]
   },
@@ -6099,7 +6111,7 @@
   },
   "4093": {
    "wins": 5,
-   "losses": 6,
+   "losses": 7,
    "absences": 0,
    "bouts": [
     {
@@ -6233,6 +6245,18 @@
       }
      },
      "kimarite": "shitatenage"
+    },
+    {
+     "day": 12,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3682,
+      "shikona": {
+       "en": "Asanoyama",
+       "jp": "朝乃山"
+      }
+     },
+     "kimarite": "tsukiotoshi"
     }
    ]
   },
@@ -18342,8 +18366,8 @@
       "jp": "藤青雲"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 3682,
+    "kimarite": "tsukiotoshi"
    },
    {
     "division": "juryo",
@@ -18382,8 +18406,8 @@
       "jp": "藤凌駕"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 4336,
+    "kimarite": "tsukiotoshi"
    },
    {
     "division": "juryo",
