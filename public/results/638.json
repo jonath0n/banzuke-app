@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-19T07:40:18.571Z",
+ "fetchedAt": "2026-11-19T07:45:05.916Z",
  "day": 12,
  "divisions": [
   "makuuchi",
@@ -161,7 +161,7 @@
   },
   "2629": {
    "wins": 8,
-   "losses": 3,
+   "losses": 4,
    "absences": 0,
    "bouts": [
     {
@@ -295,6 +295,18 @@
       }
      },
      "kimarite": "oshidashi"
+    },
+    {
+     "day": 12,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3840,
+      "shikona": {
+       "en": "Kotoshoho",
+       "jp": "琴勝峰"
+      }
+     },
+     "kimarite": "tsukiotoshi"
     }
    ]
   },
@@ -4117,7 +4129,7 @@
    ]
   },
   "3840": {
-   "wins": 6,
+   "wins": 7,
    "losses": 5,
    "absences": 0,
    "bouts": [
@@ -4252,6 +4264,18 @@
       }
      },
      "kimarite": "fusen"
+    },
+    {
+     "day": 12,
+     "outcome": "win",
+     "opponent": {
+      "id": 2629,
+      "shikona": {
+       "en": "Tamawashi",
+       "jp": "玉鷲"
+      }
+     },
+     "kimarite": "tsukiotoshi"
     }
    ]
   },
@@ -5290,7 +5314,7 @@
   },
   "3983": {
    "wins": 8,
-   "losses": 3,
+   "losses": 4,
    "absences": 0,
    "bouts": [
     {
@@ -5424,6 +5448,18 @@
       }
      },
      "kimarite": "uwatehineri"
+    },
+    {
+     "day": 12,
+     "outcome": "loss",
+     "opponent": {
+      "id": 4112,
+      "shikona": {
+       "en": "Kinbozan",
+       "jp": "金峰山"
+      }
+     },
+     "kimarite": "shitatedashinage"
     }
    ]
   },
@@ -6576,7 +6612,7 @@
    ]
   },
   "4112": {
-   "wins": 9,
+   "wins": 10,
    "losses": 2,
    "absences": 0,
    "bouts": [
@@ -6711,6 +6747,18 @@
       }
      },
      "kimarite": "oshidashi"
+    },
+    {
+     "day": 12,
+     "outcome": "win",
+     "opponent": {
+      "id": 3983,
+      "shikona": {
+       "en": "Dewanoryu",
+       "jp": "出羽ノ龍"
+      }
+     },
+     "kimarite": "shitatedashinage"
     }
    ]
   },
@@ -17958,8 +18006,8 @@
       "jp": "金峰山"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 4112,
+    "kimarite": "shitatedashinage"
    },
    {
     "division": "juryo",
