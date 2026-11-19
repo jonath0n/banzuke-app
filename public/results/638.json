@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-19T08:20:26.297Z",
+ "fetchedAt": "2026-11-19T08:30:18.059Z",
  "day": 12,
  "divisions": [
   "makuuchi",
@@ -2263,7 +2263,7 @@
   },
   "3616": {
    "wins": 5,
-   "losses": 6,
+   "losses": 7,
    "absences": 0,
    "bouts": [
     {
@@ -2397,6 +2397,18 @@
       }
      },
      "kimarite": "okuridashi"
+    },
+    {
+     "day": 12,
+     "outcome": "loss",
+     "opponent": {
+      "id": 4336,
+      "shikona": {
+       "en": "Fujiryoga",
+       "jp": "藤凌駕"
+      }
+     },
+     "kimarite": "tsukiotoshi"
     }
    ]
   },
@@ -3132,7 +3144,7 @@
    ]
   },
   "3711": {
-   "wins": 2,
+   "wins": 3,
    "losses": 9,
    "absences": 0,
    "bouts": [
@@ -3267,6 +3279,18 @@
       }
      },
      "kimarite": "oshidashi"
+    },
+    {
+     "day": 12,
+     "outcome": "win",
+     "opponent": {
+      "id": 4187,
+      "shikona": {
+       "en": "Hakunofuji",
+       "jp": "伯乃富士"
+      }
+     },
+     "kimarite": "yorikiri"
     }
    ]
   },
@@ -8244,7 +8268,7 @@
   },
   "4187": {
    "wins": 5,
-   "losses": 6,
+   "losses": 7,
    "absences": 0,
    "bouts": [
     {
@@ -8378,6 +8402,18 @@
       }
      },
      "kimarite": "okuridashi"
+    },
+    {
+     "day": 12,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3711,
+      "shikona": {
+       "en": "Churanoumi",
+       "jp": "美ノ海"
+      }
+     },
+     "kimarite": "yorikiri"
     }
    ]
   },
@@ -9844,7 +9880,7 @@
    ]
   },
   "4336": {
-   "wins": 5,
+   "wins": 6,
    "losses": 6,
    "absences": 0,
    "bouts": [
@@ -9979,6 +10015,18 @@
       }
      },
      "kimarite": "yorikiri"
+    },
+    {
+     "day": 12,
+     "outcome": "win",
+     "opponent": {
+      "id": 3616,
+      "shikona": {
+       "en": "Ura",
+       "jp": "宇良"
+      }
+     },
+     "kimarite": "tsukiotoshi"
     }
    ]
   },
@@ -18446,8 +18494,8 @@
       "jp": "伯乃富士"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 3711,
+    "kimarite": "yorikiri"
    },
    {
     "division": "makuuchi",
