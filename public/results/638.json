@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-20T06:18:29.560Z",
+ "fetchedAt": "2026-11-20T06:23:41.579Z",
  "day": 13,
  "divisions": [
   "makuuchi",
@@ -4007,7 +4007,7 @@
    ]
   },
   "3803": {
-   "wins": 9,
+   "wins": 10,
    "losses": 3,
    "absences": 0,
    "bouts": [
@@ -4154,6 +4154,18 @@
       }
      },
      "kimarite": "yoritaoshi"
+    },
+    {
+     "day": 13,
+     "outcome": "win",
+     "opponent": {
+      "id": 4287,
+      "shikona": {
+       "en": "Kazuma",
+       "jp": "一意"
+      }
+     },
+     "kimarite": "yorikiri"
     }
    ]
   },
@@ -10000,7 +10012,7 @@
   },
   "4287": {
    "wins": 1,
-   "losses": 11,
+   "losses": 12,
    "absences": 0,
    "bouts": [
     {
@@ -10146,6 +10158,18 @@
       }
      },
      "kimarite": "tsukidashi"
+    },
+    {
+     "day": 13,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3803,
+      "shikona": {
+       "en": "Enho",
+       "jp": "炎鵬"
+      }
+     },
+     "kimarite": "yorikiri"
     }
    ]
   },
@@ -19210,8 +19234,8 @@
       "jp": "炎鵬"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 3803,
+    "kimarite": "yorikiri"
    },
    {
     "division": "makuuchi",
