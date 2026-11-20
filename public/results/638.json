@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-20T08:44:28.376Z",
+ "fetchedAt": "2026-11-20T08:49:34.840Z",
  "day": 13,
  "divisions": [
   "makuuchi",
@@ -4724,7 +4724,7 @@
    ]
   },
   "3842": {
-   "wins": 7,
+   "wins": 8,
    "losses": 5,
    "absences": 0,
    "bouts": [
@@ -4871,6 +4871,18 @@
       }
      },
      "kimarite": "kotenage"
+    },
+    {
+     "day": 13,
+     "outcome": "win",
+     "opponent": {
+      "id": 4230,
+      "shikona": {
+       "en": "Aonishiki",
+       "jp": "安青錦"
+      }
+     },
+     "kimarite": "okurinage"
     }
    ]
   },
@@ -9447,7 +9459,7 @@
   },
   "4230": {
    "wins": 6,
-   "losses": 6,
+   "losses": 7,
    "absences": 0,
    "bouts": [
     {
@@ -9593,6 +9605,18 @@
       }
      },
      "kimarite": "oshidashi"
+    },
+    {
+     "day": 13,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3842,
+      "shikona": {
+       "en": "Hoshoryu",
+       "jp": "豊昇龍"
+      }
+     },
+     "kimarite": "okurinage"
     }
    ]
   },
@@ -20150,8 +20174,8 @@
       "jp": "豊昇龍"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 3842,
+    "kimarite": "okurinage"
    },
    {
     "division": "makuuchi",
