@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-20T08:14:00.841Z",
+ "fetchedAt": "2026-11-20T08:19:15.721Z",
  "day": 13,
  "divisions": [
   "makuuchi",
@@ -173,7 +173,7 @@
   },
   "2629": {
    "wins": 8,
-   "losses": 4,
+   "losses": 5,
    "absences": 0,
    "bouts": [
     {
@@ -319,6 +319,18 @@
       }
      },
      "kimarite": "tsukiotoshi"
+    },
+    {
+     "day": 13,
+     "outcome": "loss",
+     "opponent": {
+      "id": 4279,
+      "shikona": {
+       "en": "Yoshinofuji",
+       "jp": "義ノ富士"
+      }
+     },
+     "kimarite": "sukuinage"
     }
    ]
   },
@@ -10117,7 +10129,7 @@
    ]
   },
   "4279": {
-   "wins": 6,
+   "wins": 7,
    "losses": 6,
    "absences": 0,
    "bouts": [
@@ -10264,6 +10276,18 @@
       }
      },
      "kimarite": "yorikiri"
+    },
+    {
+     "day": 13,
+     "outcome": "win",
+     "opponent": {
+      "id": 2629,
+      "shikona": {
+       "en": "Tamawashi",
+       "jp": "玉鷲"
+      }
+     },
+     "kimarite": "sukuinage"
     }
    ]
   },
@@ -19846,8 +19870,8 @@
       "jp": "義ノ富士"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 4279,
+    "kimarite": "sukuinage"
    },
    {
     "division": "juryo",
