@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-20T07:28:59.154Z",
+ "fetchedAt": "2026-11-20T07:34:12.134Z",
  "day": 13,
  "divisions": [
   "makuuchi",
@@ -5371,7 +5371,7 @@
    ]
   },
   "3939": {
-   "wins": 6,
+   "wins": 7,
    "losses": 6,
    "absences": 0,
    "bouts": [
@@ -5518,6 +5518,18 @@
       }
      },
      "kimarite": "yorikiri"
+    },
+    {
+     "day": 13,
+     "outcome": "win",
+     "opponent": {
+      "id": 4108,
+      "shikona": {
+       "en": "Oshoma",
+       "jp": "欧勝馬"
+      }
+     },
+     "kimarite": "oshidashi"
     }
    ]
   },
@@ -6906,7 +6918,7 @@
   },
   "4108": {
    "wins": 7,
-   "losses": 5,
+   "losses": 6,
    "absences": 0,
    "bouts": [
     {
@@ -7052,6 +7064,18 @@
       }
      },
      "kimarite": "hatakikomi"
+    },
+    {
+     "day": 13,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3939,
+      "shikona": {
+       "en": "Kitanowaka",
+       "jp": "北の若"
+      }
+     },
+     "kimarite": "oshidashi"
     }
    ]
   },
@@ -7370,7 +7394,7 @@
    ]
   },
   "4120": {
-   "wins": 4,
+   "wins": 5,
    "losses": 2,
    "absences": 6,
    "bouts": [
@@ -7481,6 +7505,18 @@
       }
      },
      "kimarite": "yorikiri"
+    },
+    {
+     "day": 13,
+     "outcome": "win",
+     "opponent": {
+      "id": 4285,
+      "shikona": {
+       "en": "Asasuiryu",
+       "jp": "朝翠龍"
+      }
+     },
+     "kimarite": "kotenage"
     }
    ]
   },
@@ -10101,7 +10137,7 @@
   },
   "4285": {
    "wins": 4,
-   "losses": 8,
+   "losses": 9,
    "absences": 0,
    "bouts": [
     {
@@ -10247,6 +10283,18 @@
       }
      },
      "kimarite": "hatakikomi"
+    },
+    {
+     "day": 13,
+     "outcome": "loss",
+     "opponent": {
+      "id": 4120,
+      "shikona": {
+       "en": "Kotoeiho",
+       "jp": "琴栄峰"
+      }
+     },
+     "kimarite": "kotenage"
     }
    ]
   },
@@ -19374,8 +19422,8 @@
       "jp": "琴栄峰"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 4120,
+    "kimarite": "kotenage"
    },
    {
     "division": "juryo",
