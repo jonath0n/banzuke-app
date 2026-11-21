@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-21T08:53:18.270Z",
+ "fetchedAt": "2026-11-21T08:58:32.316Z",
  "day": 14,
  "divisions": [
   "makuuchi",
@@ -3160,7 +3160,7 @@
   },
   "3661": {
    "wins": 8,
-   "losses": 5,
+   "losses": 6,
    "absences": 0,
    "bouts": [
     {
@@ -3318,6 +3318,18 @@
       }
      },
      "kimarite": "tsukiotoshi"
+    },
+    {
+     "day": 14,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3842,
+      "shikona": {
+       "en": "Hoshoryu",
+       "jp": "豊昇龍"
+      }
+     },
+     "kimarite": "sotogake"
     }
    ]
   },
@@ -5072,7 +5084,7 @@
    ]
   },
   "3842": {
-   "wins": 8,
+   "wins": 9,
    "losses": 5,
    "absences": 0,
    "bouts": [
@@ -5231,6 +5243,18 @@
       }
      },
      "kimarite": "okurinage"
+    },
+    {
+     "day": 14,
+     "outcome": "win",
+     "opponent": {
+      "id": 3661,
+      "shikona": {
+       "en": "Kotozakura",
+       "jp": "琴櫻"
+      }
+     },
+     "kimarite": "sotogake"
     }
    ]
   },
@@ -21698,8 +21722,8 @@
       "jp": "豊昇龍"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 3842,
+    "kimarite": "sotogake"
    }
   ]
  },
