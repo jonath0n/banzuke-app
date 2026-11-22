@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-22T08:11:16.714Z",
+ "fetchedAt": "2026-11-22T08:21:36.404Z",
  "day": 15,
  "divisions": [
   "makuuchi",
@@ -3188,7 +3188,7 @@
    ]
   },
   "3622": {
-   "wins": 9,
+   "wins": 10,
    "losses": 5,
    "absences": 0,
    "bouts": [
@@ -3359,12 +3359,24 @@
       }
      },
      "kimarite": "sukuinage"
+    },
+    {
+     "day": 15,
+     "outcome": "win",
+     "opponent": {
+      "id": 4191,
+      "shikona": {
+       "en": "Fujinokawa",
+       "jp": "藤ノ川"
+      }
+     },
+     "kimarite": "kotenage"
     }
    ]
   },
   "3661": {
    "wins": 8,
-   "losses": 6,
+   "losses": 7,
    "absences": 0,
    "bouts": [
     {
@@ -3534,6 +3546,18 @@
       }
      },
      "kimarite": "sotogake"
+    },
+    {
+     "day": 15,
+     "outcome": "loss",
+     "opponent": {
+      "id": 4230,
+      "shikona": {
+       "en": "Aonishiki",
+       "jp": "安青錦"
+      }
+     },
+     "kimarite": "kotenage"
     }
    ]
   },
@@ -10453,7 +10477,7 @@
   },
   "4191": {
    "wins": 7,
-   "losses": 7,
+   "losses": 8,
    "absences": 0,
    "bouts": [
     {
@@ -10623,6 +10647,18 @@
       }
      },
      "kimarite": "sukuinage"
+    },
+    {
+     "day": 15,
+     "outcome": "loss",
+     "opponent": {
+      "id": 3622,
+      "shikona": {
+       "en": "Kirishima",
+       "jp": "霧島"
+      }
+     },
+     "kimarite": "kotenage"
     }
    ]
   },
@@ -10802,7 +10838,7 @@
    ]
   },
   "4230": {
-   "wins": 6,
+   "wins": 7,
    "losses": 8,
    "absences": 0,
    "bouts": [
@@ -10973,6 +11009,18 @@
       }
      },
      "kimarite": "yoritaoshi"
+    },
+    {
+     "day": 15,
+     "outcome": "win",
+     "opponent": {
+      "id": 3661,
+      "shikona": {
+       "en": "Kotozakura",
+       "jp": "琴櫻"
+      }
+     },
+     "kimarite": "kotenage"
     }
    ]
   },
@@ -23114,8 +23162,8 @@
       "jp": "藤ノ川"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 3622,
+    "kimarite": "kotenage"
    },
    {
     "division": "makuuchi",
@@ -23134,8 +23182,8 @@
       "jp": "琴櫻"
      }
     },
-    "winnerId": null,
-    "kimarite": ""
+    "winnerId": 4230,
+    "kimarite": "kotenage"
    },
    {
     "division": "makuuchi",
