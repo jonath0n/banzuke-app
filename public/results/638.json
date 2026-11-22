@@ -1,7 +1,7 @@
 {
  "version": 1,
  "bashoId": 638,
- "fetchedAt": "2026-11-22T08:31:39.690Z",
+ "fetchedAt": "2026-11-22T17:05:36.681Z",
  "day": 15,
  "divisions": [
   "makuuchi",
@@ -23231,5 +23231,50 @@
    }
   ]
  },
- "yusho": {}
+ "yusho": {
+  "makuuchi": 4227,
+  "juryo": 3761
+ },
+ "playoff": {
+  "makuuchi": [
+   {
+    "division": "makuuchi",
+    "matchNo": 1,
+    "east": {
+     "id": 4227,
+     "shikona": {
+      "en": "Onosato",
+      "jp": "大の里"
+     }
+    },
+    "west": {
+     "id": 3371,
+     "shikona": {
+      "en": "Wakamotoharu",
+      "jp": "若元春"
+     }
+    },
+    "winnerId": 4227,
+    "kimarite": "watashikomi"
+   }
+  ]
+ },
+ "sansho": [
+  {
+   "kind": "shukun",
+   "rikishiId": 4055
+  },
+  {
+   "kind": "kanto",
+   "rikishiId": 4112
+  },
+  {
+   "kind": "kanto",
+   "rikishiId": 2629
+  },
+  {
+   "kind": "gino",
+   "rikishiId": 3371
+  }
+ ]
 }
