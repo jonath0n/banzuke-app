@@ -195,7 +195,7 @@ jobs:
       # banzuke day does not depend on a download.
       - name: Cache the source font
         if: steps.fetch.outputs.changed == 'true'
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ${{ runner.temp }}/NotoSerifJP-wght.ttf
           key: noto-serif-jp-9710da1eacb3be272583c3224dcb70f9da6eadbb
