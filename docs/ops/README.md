@@ -10,4 +10,8 @@ The `.yml` files here are the source copies of `.github/workflows/`. To change a
    that run going green is the check that it took.
 
 `diff docs/ops/deploy.yml .github/workflows/deploy.yml` (and likewise for the others) should
-print nothing once a change is applied.
+print nothing once a change is applied. The git remote is SSH, so the owner can also push a
+change to both copies in one PR, and the new workflow runs when it merges.
+
+Also here: [`cloudflare.md`](cloudflare.md), how the site is hosted at banzuke.app, and
+`pages-redirect/`, what the old github.io address serves.

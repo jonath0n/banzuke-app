@@ -1,0 +1,20 @@
+// The site on Cloudflare: Workers static assets, no Worker code. `wrangler deploy`
+// uploads dist/ (run `npm run build` first); the deploy workflow does this on every
+// data refresh. See docs/ops/cloudflare.md for the zone, token and redirects.
+{
+  "$schema": "https://unpkg.com/wrangler/config-schema.json",
+  "name": "banzuke",
+  "compatibility_date": "2026-11-23",
+  "assets": {
+    "directory": "./dist",
+    // The share pages are dist/r/<id>/index.html: serve them at /r/<id>/
+    "html_handling": "auto-trailing-slash",
+  },
+  // www.banzuke.app is attached so it gets a certificate; a zone Redirect Rule
+  // sends it to the apex before it reaches the Worker.
+  "routes": [
+    { "pattern": "banzuke.app", "custom_domain": true },
+    { "pattern": "www.banzuke.app", "custom_domain": true },
+  ],
+  "workers_dev": true,
+}

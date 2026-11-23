@@ -42,6 +42,15 @@ export default tseslint.config(
     },
   },
 
+  // The self-removing service worker the old github.io address serves
+  {
+    files: ['docs/ops/pages-redirect/*.js'],
+    languageOptions: {
+      sourceType: 'script',
+      globals: { ...globals.serviceworker },
+    },
+  },
+
   // Accessibility rules for JSX
   {
     ...jsxA11y.flatConfigs.recommended,

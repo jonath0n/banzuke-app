@@ -14,6 +14,7 @@ import { appendFile, readFile } from 'node:fs/promises'
 import { parseArgs } from 'node:util'
 import { resolve } from 'node:path'
 import { fetchJson, HttpError } from './lib/http.ts'
+import { SITE_URL } from './lib/site.ts'
 import { sleep } from './lib/run-io.ts'
 import type { SumoApiTorikumi } from './lib/sumo-api.ts'
 import { resultsFileName, validateResults } from '../src/data/results.ts'
@@ -23,7 +24,7 @@ const API = 'https://www.sumo-api.com/api'
 const { values: args } = parseArgs({
   options: {
     snapshot: { type: 'string', default: 'public/latest-banzuke.json' },
-    site: { type: 'string', default: 'https://jonath0n.github.io/banzuke-app' },
+    site: { type: 'string', default: SITE_URL.replace(/\/$/, '') },
     out: { type: 'string', default: 'upstream-timing.csv' },
     every: { type: 'string', default: '120' },
     'max-minutes': { type: 'string', default: '240' },

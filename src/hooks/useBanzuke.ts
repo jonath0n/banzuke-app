@@ -3,7 +3,7 @@ import type { BanzukeSet, DataSource } from '../types/banzuke'
 import { validateSnapshot } from '../data/schema'
 import { normalizeSnapshot } from '../data/normalize'
 
-// Use Vite's BASE_URL to handle deployment base paths (e.g., /banzuke-app/)
+// Use Vite's BASE_URL to handle deployment base paths (scripts/lib/site.ts)
 const DATA_URL = `${import.meta.env.BASE_URL}latest-banzuke.json`
 const SAMPLE_URL = `${import.meta.env.BASE_URL}sample-data.json`
 const MAX_RETRIES = 3

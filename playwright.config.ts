@@ -13,7 +13,7 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
   use: {
-    baseURL: 'http://localhost:4173/banzuke-app/',
+    baseURL: 'http://localhost:4173/',
     // A machine with a Chromium of its own (the cloud sessions have one under
     // /opt/pw-browsers) names it here instead of downloading another.
     launchOptions: process.env.PW_CHROMIUM ? { executablePath: process.env.PW_CHROMIUM } : {},
@@ -23,7 +23,7 @@ export default defineConfig({
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
     command: 'npm run preview',
-    url: 'http://localhost:4173/banzuke-app/',
+    url: 'http://localhost:4173/',
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,
   },

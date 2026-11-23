@@ -1,7 +1,7 @@
 # banzuke-app
 
 Static React viewer for the official grand sumo banzuke (Makuuchi and Juryo), bilingual
-English/Japanese, deployed to GitHub Pages at https://jonath0n.github.io/banzuke-app/. No
+English/Japanese, served by Cloudflare (Workers static assets) at https://banzuke.app/. No
 backend: GitHub Actions fetch the data, commit it to `main` and redeploy; the browser reads only
 the JSON files under `public/`.
 
@@ -112,10 +112,18 @@ and formats in `Asia/Tokyo`.
 - Hover/focus lighting, arrow-key direction and URL push-vs-replace are deliberate; read the
   Keyboard and Dialogs sections before changing them.
 
+## Hosting
+
+The public URL is written once, in `scripts/lib/site.ts` (`SITE_URL`, `BASE`); index.html,
+the share pages, sitemap, robots.txt and the live-site checks all read it. `wrangler.jsonc`
+deploys `dist/` as Workers static assets on the `banzuke.app` zone. The old
+`jonath0n.github.io/banzuke-app/` serves only a redirect (`docs/ops/pages-redirect/`). Setup,
+secrets and rollback: [`docs/ops/cloudflare.md`](docs/ops/cloudflare.md).
+
 ## Workflows and ops
 
 The live workflows are in `.github/workflows/` (`deploy.yml`, `watch.yml`, `ci.yml`,
-`apply-ops.yml`). `docs/ops/*.yml` are their source copies: change the file under `docs/ops/`,
+`apply-ops.yml`, `pages-redirect.yml`). `docs/ops/*.yml` are their source copies: change the file under `docs/ops/`,
 merge, then dispatch **Apply ops workflows**, which copies it into `.github/workflows/` with the
-deploy key. Keep the two in sync (`diff -r docs/ops .github/workflows` should only show
-`README.md`). Bot data commits on `main` are `data: refresh … [skip ci]`.
+deploy key; the owner can also push both together over SSH. Keep the two in sync (each
+`docs/ops/<name>.yml` identical to `.github/workflows/<name>.yml`). Bot data commits on `main` are `data: refresh … [skip ci]`.

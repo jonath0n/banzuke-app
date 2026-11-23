@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Grand Sumo Banzuke has moved to banzuke.app</title>
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href="https://banzuke.app/" />
+    <script>
+      // jonath0n.github.io/banzuke-app/<path>?<query>#<hash> → banzuke.app/<path>?<query>#<hash>,
+      // so ?rikishi=, ?heya= and the r/<id>/ share links all land where they pointed.
+      var path = location.pathname.replace(/^\/banzuke-app(?=\/|$)/, '') || '/'
+      location.replace('https://banzuke.app' + path + location.search + location.hash)
+    </script>
+    <noscript><meta http-equiv="refresh" content="0; url=https://banzuke.app/" /></noscript>
+  </head>
+  <body>
+    <p>The banzuke has moved to <a href="https://banzuke.app/">banzuke.app</a>.</p>
+  </body>
+</html>

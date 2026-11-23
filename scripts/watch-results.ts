@@ -19,6 +19,7 @@ import { promisify } from 'node:util'
 import { parseArgs } from 'node:util'
 import { resolve } from 'node:path'
 import { fetchJson, HttpError } from './lib/http.ts'
+import { SITE_URL } from './lib/site.ts'
 import { setOutput, sleep } from './lib/run-io.ts'
 import type { SumoApiTorikumi } from './lib/sumo-api.ts'
 import { jstHour } from '../src/utils/dates.ts'
@@ -33,7 +34,7 @@ const run = promisify(execFile)
 const { values: args } = parseArgs({
   options: {
     snapshot: { type: 'string', default: 'public/latest-banzuke.json' },
-    site: { type: 'string', default: 'https://jonath0n.github.io/banzuke-app' },
+    site: { type: 'string', default: SITE_URL.replace(/\/$/, '') },
     'max-minutes': { type: 'string', default: '330' },
     'poll-seconds': { type: 'string', default: '300' },
     /** The hours (JST) in which results can land: the last bout ends about 18:00. */

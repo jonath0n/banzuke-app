@@ -8,8 +8,9 @@
  */
 import type { BanzukeSet, Rikishi } from '../../src/types/banzuke.ts'
 import { rosterFor } from '../../src/utils/stables.ts'
+import { SITE_URL } from './site.ts'
 
-export const SITE = 'https://jonath0n.github.io/banzuke-app/'
+export const SITE = SITE_URL
 /** The JSA portrait, the one size that suits a card (src/utils/formatting.ts has the app's copy). */
 const PORTRAIT = 'https://www.sumo.or.jp/img/sumo_data/rikishi/270x474'
 
@@ -120,6 +121,11 @@ export function renderSitemap(stubs: Stub[]): string {
     ...stubs.map((s) => page(`${SITE}${s.path}`, 'weekly')),
   ]
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${entries.join('\n')}\n</urlset>\n`
+}
+
+/** robots.txt: everything is crawlable, and the sitemap is at the site root. */
+export function renderRobots(): string {
+  return `User-agent: *\nAllow: /\n\nSitemap: ${SITE}sitemap.xml\n`
 }
 
 /** JSON-LD for the tournament on the sheet, injected into the built index.html. */

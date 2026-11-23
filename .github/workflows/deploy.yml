@@ -6,7 +6,7 @@ name: Build & Deploy
 #   data   – fetch the latest banzuke from sumo.or.jp, validate it, commit it
 #            to main when the tournament data changed, and hand it to the build
 #   build  – validate, test and build the site with that data
-#   deploy – publish to GitHub Pages
+#   deploy – publish to Cloudflare (Workers static assets, https://banzuke.app)
 #
 # It runs on every push to main, on demand (mode=full, or mode=results from
 # the watcher in watch.yml), and on the schedule below: one morning slot for
@@ -42,13 +42,11 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
   # The gate re-seeds the watcher during a tournament (see watch.yml)
   actions: write
 
 concurrency:
-  group: pages
+  group: deploy
   cancel-in-progress: false
 
 jobs:
@@ -349,19 +347,37 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v5
+      - name: Upload site artifact
+        uses: actions/upload-artifact@v7
         with:
+          name: site
           path: dist
+          retention-days: 7
 
   deploy:
-    name: Deploy to GitHub Pages
+    name: Deploy to Cloudflare
     needs: build
     runs-on: ubuntu-latest
     environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      name: cloudflare
+      url: https://banzuke.app/
     steps:
+      # wrangler.jsonc names the Worker, the assets directory and the custom domains
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          sparse-checkout: wrangler.jsonc
+          sparse-checkout-cone-mode: false
+
+      - name: Use built site
+        uses: actions/download-artifact@v8
+        with:
+          name: site
+          path: dist
+
       - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v5
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy

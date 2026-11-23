@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import { makeBanzuke, makeJuryoBanzuke, makeRikishi } from '../../src/test/fixtures.ts'
-import { renderJsonLd, renderSitemap, renderStub, stableStub, wrestlerStub } from './stubs.ts'
+import {
+  renderJsonLd,
+  renderRobots,
+  renderSitemap,
+  renderStub,
+  stableStub,
+  wrestlerStub,
+} from './stubs.ts'
 
 describe('share pages', () => {
   const data = { makuuchi: makeBanzuke(), juryo: makeJuryoBanzuke() }
@@ -31,23 +38,27 @@ describe('share pages', () => {
     expect(html).toContain(
       '<meta property="og:title" content="A &amp; &quot;B&quot; &lt;x&gt; · Yokozuna" />'
     )
-    expect(html).toContain(
-      '<link rel="canonical" href="https://jonath0n.github.io/banzuke-app/?rikishi=3842" />'
-    )
+    expect(html).toContain('<link rel="canonical" href="https://banzuke.app/?rikishi=3842" />')
     expect(html).toContain('<meta name="robots" content="noindex" />')
     expect(html).toContain('location.replace(to.toString())')
     expect(html).toContain(
-      '<noscript><meta http-equiv="refresh" content="0; url=https://jonath0n.github.io/banzuke-app/?rikishi=3842" /></noscript>'
+      '<noscript><meta http-equiv="refresh" content="0; url=https://banzuke.app/?rikishi=3842" /></noscript>'
     )
   })
 
   it('lists the app pages with language alternates and an x-default, then every stub', () => {
     const xml = renderSitemap([wrestlerStub(makeRikishi(), 'Aki')])
-    expect(xml).toContain('<loc>https://jonath0n.github.io/banzuke-app/</loc>')
-    expect(xml).toContain('hreflang="ja" href="https://jonath0n.github.io/banzuke-app/?lang=jp"')
-    expect(xml).toContain('hreflang="x-default" href="https://jonath0n.github.io/banzuke-app/"')
-    expect(xml).toContain('href="https://jonath0n.github.io/banzuke-app/?div=juryo&amp;lang=en"')
-    expect(xml).toContain('<loc>https://jonath0n.github.io/banzuke-app/r/3842/</loc>')
+    expect(xml).toContain('<loc>https://banzuke.app/</loc>')
+    expect(xml).toContain('hreflang="ja" href="https://banzuke.app/?lang=jp"')
+    expect(xml).toContain('hreflang="x-default" href="https://banzuke.app/"')
+    expect(xml).toContain('href="https://banzuke.app/?div=juryo&amp;lang=en"')
+    expect(xml).toContain('<loc>https://banzuke.app/r/3842/</loc>')
+  })
+
+  it('points robots.txt at the sitemap on the site', () => {
+    expect(renderRobots()).toBe(
+      'User-agent: *\nAllow: /\n\nSitemap: https://banzuke.app/sitemap.xml\n'
+    )
   })
 
   it('writes the tournament as a SportsEvent', () => {
