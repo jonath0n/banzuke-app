@@ -21,80 +21,31 @@ English/Japanese.
 
 ```
 src/
-  main.tsx                     # React entry point
-  App.tsx                      # Main app component
-  styles/
-    tokens.css                 # Design tokens (colour, type, spacing, motion)
-    base.css                   # Reset, page frame, fonts, print
-    a11y.css                   # Skip link and visually-hidden
-  components/
-    Hero/                      # Wordmark, seal, masthead, basho info
-    ViewToggle/                # Sheet or List
-    BanzukeSheet/              # The printed sheet: vertical, right to left
-    BanzukeGrid/               # The list: container for rank rows
-    RankRow/                   # Single rank row (West | Rank | East)
-    SideCell/                  # Wrestler cell on a list row
-    Hoshitori/                 # The star chart: score on the Sheet, ○●休 strip on the List
-    ResultsToggle/             # Results on/off (on by default in season)
-    Guide/                     # ?guide=1: the legend beneath the paper and its link
-    StableModal/               # ?heya=<id>: a stable, its master and its sekitori
-    Bouts/                     # The day's card and the leaders, under the paper
-    Footer/                    # Attribution
-  data/
-    schema.ts                  # Raw upstream types + snapshot validation (shared with scripts)
-    kimarite.ts                # Kimarite romaji → kanji + gloss
-    shikona-glossary.ts        # What the kanji in ring names mean (hand-curated)
-  hooks/
-    useBanzuke.ts              # Data fetching hook
-    useResults.ts              # Loads results/{bashoId}.json in season
-  types/
-    banzuke.ts                 # TypeScript interfaces
-  utils/
-    formatting.ts              # Date, rank, and URL helpers
-    rovingFocus.ts             # Arrow-key travel between wrestlers (sheet and list)
-public/
-  latest-banzuke.json          # Static data snapshot, both divisions (auto-updated)
-  sample-data.json             # Fallback: Makuuchi only, labelled (npm run make-sample)
-  banzuke/                     # One file per tournament + index.json (npm run archive-banzuke)
-  results/                     # One file per tournament of records, cards and yusho (npm run fetch-results)
-  assets/
-    FranSans-Solid.otf         # Wordmark font
-    fonts/
-      Archivo-latin.woff2            # Ring names and labels (Latin)
-      NotoSerifJP-700-core.woff2     # The Sheet's mincho: kana and the source's kanji
-      NotoSerifJP-700-names.woff2    # … and the glyphs only the data brings
-      NotoSerifJP-subset.json        # Which glyphs; checked by a test
-scripts/
-  fetch-banzuke.ts             # Fetches + validates the latest data from sumo.or.jp
-  validate-banzuke.ts          # Validates a snapshot file
-  fetch-profiles.ts            # Scrapes wrestler profiles (height, weight, debut …)
-  fetch-stables.ts             # Scrapes each stable's master and address into public/stables.json
-  subset-fonts.ts              # Builds the mincho subset from the snapshot + source
-  make-sample.ts               # Derives sample-data.json from the live snapshot
-  archive-banzuke.ts           # Adds the snapshot's tournament to public/banzuke/
-  backfill-archive.ts          # One-off: earlier tournaments from sumo-api.com, joined by JSA id
-  fetch-results.ts             # Tournament results from sumo-api.com, joined by JSA id
-  glossary-gaps.ts             # Lists ring-name characters the glossary lacks (deploy warns)
-  lib/charset.ts               # Collects the Japanese glyph set
-  lib/http.ts                  # fetch with timeout, retries and a User-Agent
-  lib/jp-search-page.ts        # Parses the Japanese rikishi list page
-  lib/jp-payload.ts            # Builds the Japanese payload from EN data + that page
-  lib/sumo-api.ts              # sumo-api shapes → archive format
-  lib/archive-io.ts            # Read/write the archive directory
-.github/
-  workflows/
-    deploy.yml                 # Refresh data, regenerate the font subset, build, deploy
-    ci.yml                     # Validate, test, build on pull requests
+  App.tsx          # URL state and render tree; one hook per concern in app/
+  app/             # useSearch, useSelection, useChanges, useResultsOverlay, …
+  components/      # one folder per component: Name.tsx + Name.module.css + Name.test.tsx
+  data/            # upstream schema + validation, normalize, archive, results, kanji, glossary
+  hooks/           # data loading (useBanzuke, useResults, …)
+  utils/           # pure logic: dates, diff, stakes, describe, guide, rovingFocus, search
+  sw/              # the hand-written service worker
+  styles/          # design tokens, base, a11y, generated fonts-jp.css
+scripts/           # data fetchers and build steps (run with tsx); parsers and IO in lib/
+public/            # committed data: latest-banzuke.json, banzuke/ (archive), results/,
+                   # rikishi-profiles.json, stables.json, sample-data.json, fonts
+e2e/               # Playwright smoke spec of the built site
+design/            # OG image and icon renderers
+docs/              # architecture.md (how each feature works), ops/ (workflow sources)
+.github/workflows/ # deploy, watch, ci, apply-ops
 ```
+
+How each feature works, and why, is in [`docs/architecture.md`](docs/architecture.md).
 
 ## Getting started
 
 ```sh
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
+npm ci           # install (Node 22, see .nvmrc)
+npm run dev      # development server
+npm run check    # validate, test and build: what every change must pass
 ```
 
 Then visit http://localhost:5173
@@ -110,11 +61,11 @@ This outputs to `dist/`. Deploy this folder to any static host (GitHub Pages, Ne
 ## Data refresh and deployment
 
 A single workflow (`.github/workflows/deploy.yml`) runs on every push to `main`, on four daily
-slots (07:13 JST for the banzuke; 18:12, 19:38 and 21:38 JST for the day's results), and on demand
-from the Actions tab. GitHub's scheduler runs the evening slots hours late, so `docs/ops/` carries
-a season-gated version of the workflow and `watch.yml`, a watcher that polls sumo-api through the
-Tokyo evening and starts a results-only deploy the moment the day's results are in; see
-`docs/ops/results-freshness.md`. The workflow:
+slots (07:13 JST for the banzuke; 18:12, 19:38 and 21:38 JST for the day's results, in season
+only), and on demand from the Actions tab. GitHub's scheduler runs the evening slots hours late,
+so `.github/workflows/watch.yml` polls sumo-api through the Tokyo evening and starts a
+results-only deploy the moment the day's results are in. Workflow files are edited under
+`docs/ops/` and applied by a dispatch; see [`docs/ops/README.md`](docs/ops/README.md). The workflow:
 
 1. Fetches the English and Japanese banzuke for both divisions from sumo.or.jp and validates
    them (both languages present, same tournament, same wrestlers, sane row counts).

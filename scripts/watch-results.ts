@@ -3,7 +3,7 @@
  * evening, asks sumo-api every few minutes whether more of today's bouts have
  * been decided than the live site shows, and starts a results-only deploy
  * when they have. GitHub's cron queue runs hours late in the evening; a
- * workflow_dispatch starts in seconds. See docs/ops/results-freshness.md.
+ * workflow_dispatch starts in seconds. See "Deploy and data refresh" in docs/architecture.md.
  *
  * Usage:
  *   tsx scripts/watch-results.ts [--snapshot <path>] [--site <url>]

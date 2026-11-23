@@ -27,7 +27,8 @@
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" \"scripts/**/*.{ts,mjs}\" \"e2e/**/*.ts\" playwright.config.ts",
     "type-check": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.scripts.json && tsc --noEmit -p tsconfig.e2e.json",
     "check:css": "tsx scripts/check-css-modules.ts",
-    "validate": "npm run type-check && npm run lint && npm run format:check && npm run check:css"
+    "validate": "npm run type-check && npm run lint && npm run format:check && npm run check:css",
+    "check": "npm run validate && npm run test:run && npm run build"
   },
   "engines": {
     "node": ">=22.0.0"
