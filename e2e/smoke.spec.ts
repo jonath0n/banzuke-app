@@ -1,11 +1,28 @@
+import { existsSync, readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { expect, test, type Page } from '@playwright/test'
 
 const require = createRequire(import.meta.url)
 const AXE = require.resolve('axe-core/axe.min.js')
 
-/** Day 8 of the committed September 2026 results, so the overlays are on. */
-const IN_SEASON = '2026-09-20T09:00:00Z'
+/**
+ * The clock is read off the committed data, so it never goes stale: the archive index ends at the
+ * live tournament (src/data/archive-files.test.ts insists), and its results file says how far it
+ * has been fought. A finished tournament is opened on day 8, as the spec always did; one in
+ * progress on its latest decided day. 09:00Z is 18:00 JST, after the day's last bout.
+ */
+const readJson = (path: string) => JSON.parse(readFileSync(new URL(path, import.meta.url), 'utf8'))
+const LIVE: { bashoId: number; startDate: string } = readJson(
+  '../public/banzuke/index.json'
+).basho.at(-1)
+const RESULTS_FILE = new URL(`../public/results/${LIVE.bashoId}.json`, import.meta.url)
+const DECIDED: number = existsSync(RESULTS_FILE)
+  ? JSON.parse(readFileSync(RESULTS_FILE, 'utf8')).day
+  : 0
+const DAY = DECIDED >= 15 ? 8 : Math.max(DECIDED, 1)
+const IN_SEASON = new Date(
+  Date.parse(`${LIVE.startDate}T09:00:00Z`) + (DAY - 1) * 86_400_000
+).toISOString()
 const WIDTHS = [360, 768, 1280] as const
 const LANGS = ['en', 'jp'] as const
 const VIEWS = ['sheet', 'list'] as const
@@ -111,21 +128,38 @@ for (const width of WIDTHS) {
         // Accessibility: nothing serious or critical
         await page.addScriptTag({ path: AXE })
         const violations = await page.evaluate(async () => {
+          type Result = { violations: Array<{ id: string; impact: string; nodes: unknown[] }> }
           const axe = (
             window as unknown as {
-              axe: {
-                run(): Promise<{
-                  violations: Array<{ id: string; impact: string; nodes: unknown[] }>
-                }>
-              }
+              axe: { run(context?: unknown, options?: unknown): Promise<Result> }
             }
           ).axe
-          const result = await axe.run()
-          return result.violations
+          // Label in Name (WCAG 2.5.3) is checked for the wrestler buttons below instead: their
+          // visible rank band, side seal, province and score are aria-hidden decoration that the
+          // spoken name deliberately says in words, which axe's literal containment test rejects.
+          const rule = 'label-content-name-mismatch'
+          const everything = await axe.run(document, { rules: { [rule]: { enabled: false } } })
+          const others = await axe.run(
+            { include: [document], exclude: [['button[data-id]']] },
+            { runOnly: [rule] }
+          )
+          return [...everything.violations, ...others.violations]
             .filter((v) => v.impact === 'serious' || v.impact === 'critical')
             .map((v) => `${v.id} (${v.impact}, ${v.nodes.length} nodes)`)
         })
         expect(violations).toEqual([])
+
+        // Label in Name for the wrestler buttons: the ring name they show leads what they are
+        // called, so "click Onosato" works in voice control in either language.
+        const mismatched = await page.locator('button[data-id]').evaluateAll((buttons) =>
+          buttons
+            .map((b) => ({
+              shown: b.querySelector('[class*="_name_"]')?.textContent?.trim() ?? '',
+              label: b.getAttribute('aria-label') ?? '',
+            }))
+            .filter(({ shown, label }) => !shown || !label.startsWith(shown))
+        )
+        expect(mismatched).toEqual([])
       })
     }
   }
@@ -154,11 +188,16 @@ test('keyboard: the arrows walk the Sheet and the dialog opens on the name', asy
 })
 
 test('in season the strip, the hoshitori and the card are on', async ({ page }) => {
+  test.skip(
+    DECIDED === 0,
+    'No bouts decided yet for the live tournament (banzuke out, day 1 to come)'
+  )
   await page.setViewportSize({ width: 1280, height: 900 })
   await open(page, '')
-  await expect(page.getByRole('complementary', { name: 'Today' })).toContainText('Day 8')
-  // The committed file is complete, so the card opens on senshuraku whatever the clock says
-  await expect(page.getByRole('region', { name: /Senshuraku/ })).toBeVisible()
+  await expect(page.getByRole('complementary', { name: 'Today' })).toContainText(`Day ${DAY}`)
+  // A complete file opens the card on senshuraku whatever the clock says; otherwise on today
+  const card = DECIDED >= 15 ? /Senshuraku/ : new RegExp(`Day ${DAY}\\b`)
+  await expect(page.getByRole('region', { name: card })).toBeVisible()
   const scored = page.locator('button[data-id]').filter({ hasText: /\d+–\d+/ })
   expect(await scored.count()).toBeGreaterThan(40)
 })
