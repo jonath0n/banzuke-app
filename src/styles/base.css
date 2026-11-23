@@ -10,9 +10,8 @@
 
 /* Archivo (SIL OFL 1.1, see public/assets/fonts/Archivo-OFL.txt): variable
    weight, Latin subset, for ring names and labels. The weight axis runs to
-   900, which is what the Sheet's Latin names need to hold their own beside
-   mincho kanji — the width axis is left out because it costs 55 kB and bought
-   only 5% of sheet height. */
+   900 so the heaviest Latin names hold their own beside mincho kanji; the
+   width axis is left out because it costs 55 kB. */
 @font-face {
   font-family: 'Archivo';
   src: url('/assets/fonts/Archivo-latin.woff2') format('woff2');
@@ -28,10 +27,10 @@
    instanced at 700 and subset to the glyphs the snapshot and source use, by
    scripts/subset-fonts.ts, which writes its two @font-face rules (core and
    names, split by unicode-range) to fonts-jp.css beside this file. One
-   weight: the Sheet sets mincho at 700, and the two places that ask for 600
+   weight: the app sets mincho at 700, and the two places that ask for 600
    resolve to this face without synthesis. Named as the upstream family so it
    slots into the stack where the system copy would have been, ahead of
-   Hiragino and Yu Mincho, so every platform sees the same face on the Sheet. */
+   Hiragino and Yu Mincho, so every platform sees the same face. */
 
 /* The one fade, shared by the header and the list's arrival. CSS Modules scope
    keyframes per file, so the single declaration lives here and modules refer to

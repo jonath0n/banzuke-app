@@ -7,8 +7,6 @@ import styles from './MovementBadge.module.css'
 
 interface MovementBadgeProps {
   movement: Movement
-  /** On the sheet the badge stands under the name; on a row it sits beside it. */
-  variant: 'sheet' | 'row'
   /** The wrestler carries a promotion flag (新入幕 …), so "New" would say it twice. */
   hasPromotion?: boolean
 }
@@ -20,12 +18,10 @@ const ARROW = { up: '▲', down: '▼' } as const
  * the button that contains it says the same thing in words
  * (`describeMovement`), because an arrow glyph is not a sentence.
  *
- * Side swaps show in both variants — including the sheet, which otherwise
- * stays silent on an unchanged rank — because the Yokozuna are the columns
- * most likely to swap sides, and the overlay must not look as if it skipped
- * them.
+ * Side swaps show too, because the Yokozuna are the wrestlers most likely to
+ * swap sides, and the overlay must not look as if it skipped them.
  */
-export function MovementBadge({ movement, variant, hasPromotion = false }: MovementBadgeProps) {
+export function MovementBadge({ movement, hasPromotion = false }: MovementBadgeProps) {
   const { language } = useLanguage()
   const strings = useStrings()
   const { kind, previous, sideChanged, previousRecord } = movement
@@ -46,12 +42,7 @@ export function MovementBadge({ movement, variant, hasPromotion = false }: Movem
   }
 
   return (
-    <span
-      className={`${styles.badge} ${styles[variant]}`}
-      data-kind={kind}
-      lang={langAttr(language)}
-      aria-hidden="true"
-    >
+    <span className={styles.badge} data-kind={kind} lang={langAttr(language)} aria-hidden="true">
       {text}
     </span>
   )

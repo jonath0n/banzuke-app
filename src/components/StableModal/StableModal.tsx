@@ -247,9 +247,9 @@ function MemberRow({ rikishi, movement, record, champion, kadoban, onSelect }: M
               {rikishi.pref[language]}
             </span>
           )}
-          {record && <Hoshitori record={record} variant="row" champion={champion} />}
+          {record && <Hoshitori record={record} champion={champion} />}
         </span>
-        {movement && <MovementBadge movement={movement} variant="row" />}
+        {movement && <MovementBadge movement={movement} />}
       </button>
     </li>
   )

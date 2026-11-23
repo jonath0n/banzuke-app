@@ -1,7 +1,6 @@
-/* Division tabs on the sheet's top edge, the layout toggle opposite them */
+/* Division tabs on the list's top edge */
 /* With the tabs seated on it, the panel's content pulls up under them by the
-   width of its own frame — `--frame`, declared by the sheet and the list on
-   themselves — so the selected tab breaks that frame and the others stand on
+   width of its own frame — `--frame`, declared by the list on itself — so the selected tab breaks that frame and the others stand on
    it. Its usual top margin (which collapses through this wrapper) would
    otherwise hold it clear. The panel opens with a visually-hidden heading
    (absolute, out of flow), so the pull-up targets the first *visible* child —
@@ -11,9 +10,9 @@
   margin-top: calc(-1 * var(--frame, 1px));
 }
 
-/* The view, overlay and guide controls. They read as one group, so they sit
+/* The overlay and archive controls. They read as one group, so they sit
    together at the start of the row rather than spread across it; the division
-   tabs are not here — they belong against the sheet's top edge. */
+   tabs are not here — they belong against the list's top edge. */
 .controls {
   display: flex;
   align-items: flex-end;

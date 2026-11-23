@@ -6,7 +6,7 @@ backend: GitHub Actions fetch the data, commit it to `main` and redeploy; the br
 the JSON files under `public/`.
 
 **Before touching a feature, read its section in [`docs/architecture.md`](docs/architecture.md)**
-(Sheet/List, keyboard, dialogs, fonts, archive, Changes, Results, guide, service worker, share
+(the List, keyboard, dialogs, fonts, archive, Changes, Results, service worker, share
 pages, deploy). Much of the code looks odd and is intentional; that file says why.
 
 ## Stack
@@ -69,7 +69,7 @@ and formats in `Asia/Tokyo`.
 - `src/App.tsx` — URL state and render tree; each concern is a hook in `src/app/`.
   `App.test.tsx` is the regression net for them.
 - `src/components/` — one folder per component. `src/data/` — schema, normalize, archive,
-  results, kanji helpers, glossary. `src/utils/` — pure logic (diff, stakes, describe, guide,
+  results, kanji helpers, glossary. `src/utils/` — pure logic (diff, stakes, describe,
   rovingFocus, dates). `src/sw/` — the service worker. `src/styles/` — tokens and global CSS.
 - `scripts/` — data fetchers and build steps; parsers and IO in `scripts/lib/` with fixtures in
   `scripts/lib/__fixtures__/`.
@@ -100,7 +100,7 @@ and formats in `Asia/Tokyo`.
 
 ## Hard rules (details in docs/architecture.md)
 
-- The Sheet **never scrolls sideways**: it wraps. Do not reintroduce a horizontal scroller.
+- The List **never scrolls sideways**: it fits every width from 360px up.
 - `public/sample-data.json` is **derived** by `npm run make-sample` (Makuuchi only, labelled);
   never a copy of `latest-banzuke.json`.
 - `src/styles/fonts-jp.css` and the font manifest are **generated** by `npm run subset-fonts`;

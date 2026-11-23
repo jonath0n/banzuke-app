@@ -11,26 +11,8 @@ import {
   jpRankShort,
   parseJpBasho,
   parseJpDate,
-  printedTier,
-  shortPrefecture,
   toKanjiNumber,
 } from './kanji'
-
-describe('shortPrefecture', () => {
-  it('drops the administrative suffix the banzuke leaves off', () => {
-    expect(shortPrefecture('石川県')).toBe('石川')
-    expect(shortPrefecture('大阪府')).toBe('大阪')
-    expect(shortPrefecture('東京都')).toBe('東京')
-  })
-
-  it('leaves countries and two-character names alone', () => {
-    expect(shortPrefecture('モンゴル')).toBe('モンゴル')
-    expect(shortPrefecture('カザフスタン')).toBe('カザフスタン')
-    // 京都 and 兵庫 are already short; trimming would leave a single character
-    expect(shortPrefecture('京都')).toBe('京都')
-    expect(shortPrefecture('')).toBe('')
-  })
-})
 
 describe('toKanjiNumber', () => {
   it('handles units, tens and compounds', () => {
@@ -133,25 +115,6 @@ describe('foldVariantKanji', () => {
     )
     expect(foldVariantKanji('豊昇龍 竜電')).toBe('豊昇龍 竜電')
     expect(Object.keys(VARIANT_KANJI)).toHaveLength(5)
-  })
-})
-
-describe('printedTier', () => {
-  it('reads the printed tier off the Japanese rank name, 横綱大関 included', () => {
-    expect(printedTier('横綱', 100)).toBe('横綱')
-    expect(printedTier('横綱大関', 100)).toBe('横綱大関')
-    expect(printedTier('大関', 200)).toBe('大関')
-    expect(printedTier('前頭筆頭', 500)).toBe('前頭')
-    expect(printedTier('前頭十七枚目', 500)).toBe('前頭')
-    expect(printedTier('十両二枚目', 600)).toBe('十両')
-    expect(printedTier('横綱大関', 200)).toBe('横綱大関')
-  })
-
-  it('lets the rank code decide when the name is missing or disagrees', () => {
-    expect(printedTier('', 500)).toBe('前頭')
-    expect(printedTier('前頭筆頭', 100)).toBe('横綱')
-    expect(printedTier('横綱大関', 300)).toBe('関脇')
-    expect(printedTier('', 999)).toBe('')
   })
 })
 

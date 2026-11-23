@@ -11,7 +11,7 @@ import type { Banzuke, BanzukeSet, Division, Localized, Rikishi, Side } from '..
 import { getRankLevelFromCode, isSanyaku, RANK_LEVEL_NAMES } from '../constants/ranks'
 import { DIVISIONS } from './schema'
 import { bashoYearMonth } from './bashoIds'
-import { jpBashoName, jpEraYear, jpNumberKanji, jpRankName, printedTier } from './kanji'
+import { jpBashoName, jpEraYear, jpNumberKanji, jpRankName } from './kanji'
 
 export type ArchiveSource = 'jsa' | 'sumo-api'
 
@@ -273,7 +273,6 @@ export function rikishiFromArchived(row: ArchivedRikishi): Rikishi {
       en: numbered ? `${RANK_LEVEL_NAMES[level]} #${row.rankNumber}` : RANK_LEVEL_NAMES[level],
       jp: jpRankName(row.rankCode, row.rankNumber),
     },
-    printedTier: printedTier('', row.rankCode),
     numberKanji: jpNumberKanji(row.rankNumber),
     sortKey: `${String(row.rankCode / 100).padStart(3, '0')}${String(row.rankNumber).padStart(7, '0')}${String(row.seat).padStart(5, '0')}`,
     shikona: row.shikona,

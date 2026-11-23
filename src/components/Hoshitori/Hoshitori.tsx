@@ -12,8 +12,6 @@ import styles from './Hoshitori.module.css'
 
 interface HoshitoriProps {
   record: RikishiRecord
-  /** Under the name on the sheet (score only); under the name on a row (full strip). */
-  variant: 'sheet' | 'row'
   /** Tournament champion, once decided. */
   champion?: boolean
 }
@@ -25,7 +23,7 @@ interface HoshitoriProps {
  * champion's mark is a hairline seal, never gold, which belongs to the
  * Yokozuna alone.
  */
-export function Hoshitori({ record, variant, champion = false }: HoshitoriProps) {
+export function Hoshitori({ record, champion = false }: HoshitoriProps) {
   const { language } = useLanguage()
   const strings = useStrings()
   const state = kachikoshiState(record)
@@ -33,32 +31,9 @@ export function Hoshitori({ record, variant, champion = false }: HoshitoriProps)
   const stateLabel =
     state === 'kachikoshi' ? strings.kachikoshi : state === 'makekoshi' ? strings.makekoshi : ''
 
-  if (variant === 'sheet') {
-    return (
-      <span
-        className={`${styles.badge} ${styles.sheet}`}
-        data-state={state}
-        lang={lang}
-        aria-hidden="true"
-      >
-        {scoreLabel(record, language)}
-        {champion && (
-          <span className={styles.seal} lang="ja">
-            優
-          </span>
-        )}
-      </span>
-    )
-  }
-
   const byDay = new Map(record.bouts.map((bout) => [bout.day, bout]))
   return (
-    <span
-      className={`${styles.badge} ${styles.row}`}
-      data-state={state}
-      lang={lang}
-      aria-hidden="true"
-    >
+    <span className={styles.badge} data-state={state} lang={lang} aria-hidden="true">
       <span className={styles.strip} lang="ja">
         {Array.from({ length: MAX_DAYS }, (_, i) => {
           const bout = byDay.get(i + 1)

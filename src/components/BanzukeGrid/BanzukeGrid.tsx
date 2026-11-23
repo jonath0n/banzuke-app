@@ -220,7 +220,7 @@ export function BanzukeGrid({
        keyboard delegation for the buttons inside; not itself interactive */
     <div
       className={styles.grid}
-      onKeyDown={(e) => handleRovingKey(e.currentTarget, e, 'list')}
+      onKeyDown={(e) => handleRovingKey(e.currentTarget, e)}
       onFocus={(e) => {
         const id = Number((e.target as HTMLElement).dataset.id)
         if (Number.isInteger(id) && id !== activeId) setActiveId(id)

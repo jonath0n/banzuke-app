@@ -1,7 +1,7 @@
 /**
  * Glyph-set collection for the self-hosted mincho subset.
  *
- * The Sheet sets ring names, rank kanji, the masthead and the 東/西 marks in
+ * The app sets ring names, rank kanji, the masthead and the 東/西 marks in
  * a serif Japanese face. Rather than ship the whole of Noto Serif JP (several
  * megabytes), `scripts/subset-fonts.ts` keeps only the characters the app can
  * actually render: everything Japanese in the current snapshot and in the

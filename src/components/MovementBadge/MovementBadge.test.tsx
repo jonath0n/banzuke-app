@@ -13,10 +13,10 @@ const prev = {
   seat: 1,
   side: 'east' as const,
 }
-const wrap = (m: Movement, variant: 'sheet' | 'row' = 'sheet') =>
+const wrap = (m: Movement) =>
   render(
     <LanguageProvider>
-      <MovementBadge movement={m} variant={variant} />
+      <MovementBadge movement={m} />
     </LanguageProvider>
   ).container
 
@@ -64,7 +64,6 @@ describe('MovementBadge', () => {
         <LanguageProvider>
           <MovementBadge
             movement={{ kind: 'new', previous: null, sideChanged: false }}
-            variant="sheet"
             hasPromotion
           />
         </LanguageProvider>
@@ -84,16 +83,10 @@ describe('MovementBadge', () => {
     expect(el).toHaveAttribute('data-kind', 'new')
   })
 
-  it('renders nothing for an unchanged rank, but a side swap in both variants', () => {
+  it('renders nothing for an unchanged rank, but shows a side swap', () => {
     expect(wrap({ kind: 'same', previous: prev, sideChanged: false }).firstElementChild).toBeNull()
     expect(
-      wrap({ kind: 'same', previous: prev, sideChanged: false }, 'row').firstElementChild
-    ).toBeNull()
-    expect(
-      wrap({ kind: 'same', previous: { ...prev, side: 'west' }, sideChanged: true }, 'row')
-    ).toHaveTextContent('W→E')
-    expect(
-      wrap({ kind: 'same', previous: { ...prev, side: 'west' }, sideChanged: true }, 'sheet')
+      wrap({ kind: 'same', previous: { ...prev, side: 'west' }, sideChanged: true })
     ).toHaveTextContent('W→E')
   })
 
@@ -107,7 +100,6 @@ describe('MovementBadge', () => {
             previous: { ...prev, rankNumber: 5 },
             sideChanged: false,
           }}
-          variant="sheet"
         />
       </LanguageProvider>
     ).container.firstElementChild!
@@ -117,7 +109,6 @@ describe('MovementBadge', () => {
       <LanguageProvider>
         <MovementBadge
           movement={{ kind: 'same', previous: { ...prev, side: 'west' }, sideChanged: true }}
-          variant="row"
         />
       </LanguageProvider>
     ).container.firstElementChild!

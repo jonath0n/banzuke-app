@@ -13,7 +13,7 @@ function wrap(rikishi: Parameters<typeof PromotionPill>[0]['rikishi'], lang = 'e
   window.history.replaceState(null, '', `/?lang=${lang}`)
   return render(
     <LanguageProvider>
-      <PromotionPill rikishi={rikishi} variant="row" />
+      <PromotionPill rikishi={rikishi} />
     </LanguageProvider>
   ).container
 }
@@ -43,7 +43,7 @@ describe('PromotionPill', () => {
     const ozeki = makeRikishi({ promotion: null, rankName: { en: 'Ozeki', jp: '大関' } })
     const { rerender } = render(
       <LanguageProvider>
-        <PromotionPill rikishi={ozeki} variant="row" kadoban />
+        <PromotionPill rikishi={ozeki} kadoban />
       </LanguageProvider>
     )
     expect(screen.getByText('Kadoban')).toHaveAttribute(
@@ -54,7 +54,7 @@ describe('PromotionPill', () => {
       <LanguageProvider>
         <PromotionPill
           rikishi={{ ...ozeki, promotion: { kind: 'new-rank', raw: '新大関' } }}
-          variant="row"
+
           kadoban
         />
       </LanguageProvider>

@@ -1,19 +1,17 @@
 # banzuke-app
 
 React + TypeScript viewer for the official Japan Sumo Association banzuke endpoint.
-Renders the current Makuuchi and Juryo divisions two ways: **Sheet**, the banzuke as it is
-printed — vertical, read right to left, East on the right, ranked by character size — and
-**List**, a searchable row per rank. Either view can be overlaid with **Changes** (`?diff=1`),
+Renders the current Makuuchi and Juryo divisions as a searchable list, one row per rank, East on
+the right and West on the left. It can be overlaid with **Changes** (`?diff=1`),
 which marks each name with the rank it held at the previous tournament and lists who left each
-division. During a tournament **Results** lays the hoshitori over both views — each name's
-record, ○● on the List, kachi-koshi and the yusho — with the day's bouts, the yusho race and any
-playoff beneath the paper, a line above it saying which day it is and how much is fought, and the
+division. During a tournament **Results** lays the hoshitori over the list — each name's
+record, ○●, kachi-koshi and the yusho — with the day's bouts, the yusho race and any
+playoff beneath it, a line above it saying which day it is and how much is fought, and the
 champion's headline once it is decided. Open a wrestler mid-basho and the dialog says the next bout,
 the kinboshi and what it still takes for kachi-koshi; an Ozeki on the brink is marked kadoban.
 Changes is on by itself from the banzuke's announcement until day 1, with the record that earned
-each move. `?basho=<id>` shows any earlier tournament from the archive. Arrow keys move between wrestlers on the Sheet and the List; the wrestler dialog steps
-along the banzuke with ‹ › or ← →. Not sure how to read it? `?guide=1` marks the real sheet with
-numbered notes and explains each beneath it, in English and Japanese. Open a wrestler and the
+each move. `?basho=<id>` shows any earlier tournament from the archive. Arrow keys move between wrestlers; the wrestler dialog steps
+along the banzuke with ‹ › or ← →. Open a wrestler and the
 dialog spells out the ring name character by character, with what each means. Bilingual
 English/Japanese.
 
@@ -26,7 +24,7 @@ src/
   components/      # one folder per component: Name.tsx + Name.module.css + Name.test.tsx
   data/            # upstream schema + validation, normalize, archive, results, kanji, glossary
   hooks/           # data loading (useBanzuke, useResults, …)
-  utils/           # pure logic: dates, diff, stakes, describe, guide, rovingFocus, search
+  utils/           # pure logic: dates, diff, stakes, describe, rovingFocus, search
   sw/              # the hand-written service worker
   styles/          # design tokens, base, a11y, generated fonts-jp.css
 scripts/           # data fetchers and build steps (run with tsx); parsers and IO in lib/

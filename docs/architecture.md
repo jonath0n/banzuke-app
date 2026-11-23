@@ -7,12 +7,12 @@ at first and is intentional.
 ## App shell and URL state
 
 `App.tsx` is the URL state and the render tree; each concern is a hook under `src/app/`
-(`useTournamentPhase`, `useResultsOverlay`, `useSearch`, `useSelection`, `useChanges`, `useGuide`,
+(`useTournamentPhase`, `useResultsOverlay`, `useSearch`, `useSelection`, `useChanges`,
 `useDocumentTitle`, `useArchiveViewer`). `App.test.tsx` is the regression net for all of them.
 
-URL parameters (each read with `useUrlParam` in `App.tsx`): `?view=list`, `?q=`,
-`?rikishi=<id>`, `?heya=<id>`, `?diff=0|1`, `?results=0`, `?basho=<id>`, `?guide=1`, plus
-`?lang=`.
+URL parameters (each read with `useUrlParam` in `App.tsx`): `?q=`, `?div=juryo`,
+`?rikishi=<id>`, `?heya=<id>`, `?diff=0|1`, `?results=0`, `?basho=<id>`, plus `?lang=`.
+Older links may carry `?view=` or `?guide=` from the removed Sheet view; both are ignored.
 
 ## Data loading and fallbacks
 
@@ -21,62 +21,47 @@ URL parameters (each read with `useUrlParam` in `App.tsx`): `?view=list`, `?q=`,
   `npm run make-sample`, never copied by hand; `src/data/sample.test.ts` enforces all three
   properties. Do not make it a copy of `latest-banzuke.json` again.
 - `readings` in the snapshot are hiragana readings of ring names, used for search and shown in
-  the modal. They are deliberately **not** on the Sheet: a printed banzuke carries no furigana.
+  the modal. They are not shown on the List.
 - `public/rikishi-profiles.json` (`src/data/profiles.ts`) is optional enrichment loaded on the
   first modal open; the app must work without it.
 - Photos are hot-linked from the JSA CDN with `referrerPolicy="no-referrer"`; only the `60x60`
   and `270x474` sizes exist upstream.
 
-## The Sheet and the List
+## The List
 
-- The rankings render two ways, switched by `?view=list` (`BanzukeSheet` / `BanzukeGrid`). Sheet
-  is the default. Both take the same `rows` and `highlight` props and share the grid's empty
-  state, so search behaves identically in either. Each half of the Sheet is `direction: rtl` so
-  East — which is DOM-first — lands on the right as it does in print, and DOM, focus and visual
-  order stay in agreement; `RankRow` mirrors the same trick on its grid.
-- The Sheet's column follows the printed sheet exactly — rank band, home province, ring name.
-  The rank band prints only the **tier** (前頭, never 前頭十七枚目) at a uniform bold size, because
-  on paper the position along the band says which one; the numeral sits small beneath it since a
-  screen has no fixed sheet to count along. The province is abbreviated the way the sheet
-  abbreviates it (`shortPrefecture` in `src/data/kanji.ts`: 石川県 → 石川). The three bands have
-  fixed heights (`--rank-band`, `--origin-band`) so they line up across every column; size them
-  for the worst case (前頭 over 十七, カザフスタン) or characters spill into the band below.
-- **The Sheet never scrolls sideways: it wraps.** A printed banzuke is ruled into horizontal
-  bands that stack down the paper, which is how every division fits on one sheet; each half here
-  does the same via `flex-wrap` and fills as many bands as the viewport allows. Columns are
-  packed, not spread (`flex: 0 0 auto` with a `min-width` floor of 1.5rem, the 24px target
-  size): a column is as wide as its characters, which is what makes the sheet read as one dense
-  block. Do not reintroduce a horizontal scroller.
-- The Sheet carries no portraits. Rank is legible from the size ladder alone, which is the
-  point; photos live in `WrestlerModal`.
-- **Promotions print on the Sheet** too (`PromotionPill`, vertical under the name), not only on
-  the List. **Kadoban** (角番) is derived, never stored: `kadobanIds()` in `src/utils/stakes.ts` —
-  an Ozeki now, an Ozeki on the previous banzuke, make-koshi there (absences counted) — and
-  prints as an ink pill with a hairline, never over a printed flag. **横綱大関** is a printed
-  tier, not a rank: `printedTier` on `Rikishi` is read off the JSA's Japanese rank name and the
-  Sheet shrinks the four characters to fit the band.
+- The rankings are one view, `BanzukeGrid`: a row per rank position (`RankRow`), West | rail |
+  East. The row is `direction: rtl` so East — which is DOM-first — lands on the right as it does
+  in print, and DOM, focus and visual order stay in agreement. Runs whose order carries meaning
+  (scores, the ○● strip, the movement arrow) declare `direction: ltr` so a West cell cannot
+  mirror them; their tests guard the stylesheet because jsdom does no bidi layout.
+- Search keeps a matching row whole (the partner is dimmed, not dropped) and leaves the others
+  out; the empty state offers the matches in the other division.
+- **The List never scrolls sideways**: it fits every width from 360px up (the smoke spec checks).
+- The List carries no portraits; photos live in `WrestlerModal`.
+- **Promotions** print beside the name (`PromotionPill`). **Kadoban** (角番) is derived, never
+  stored: `kadobanIds()` in `src/utils/stakes.ts` — an Ozeki now, an Ozeki on the previous
+  banzuke, make-koshi there (absences counted) — and prints as an ink pill with a hairline,
+  never over a printed flag.
+- Until 2026-11 there was also a **Sheet** view, the banzuke as printed (vertical names, right
+  to left, rank by size), and a `?guide=1` legend for it. It was removed because vertical names
+  were awkward to read; the last commit with it is tagged `sheet-final`.
 
 ## Keyboard and focus
 
-- Both layouts use a **roving tabindex**: one wrestler button is in the Tab order (the last
-  focused, or the highest rank), the arrows walk to the rest, so Tab crosses the paper or the
-  list in one step.
-- **Arrow keys are spatial**, not canonical: on the Sheet ← → walk a half's rank ladder (← is the
-  lower rank because each half is `direction: rtl`) and ↑ ↓ cross to the East/West partner; on
-  the List ↑ ↓ walk ranks and ← → cross the row. One `keyTarget()` in `src/utils/rovingFocus.ts`
-  serves both from the `data-side`/`data-pair` attributes on every wrestler button.
+- The List uses a **roving tabindex**: one wrestler button is in the Tab order (the last
+  focused, or the highest rank), the arrows walk to the rest, so Tab crosses the list in one
+  step.
+- **Arrow keys are spatial**: ↑ ↓ walk ranks and ← → cross the row to the East/West partner.
+  `keyTarget()` in `src/utils/rovingFocus.ts` works from the `data-side`/`data-pair` attributes
+  on every wrestler button.
 - The dialog's ‹ › and ← → follow canonical order (`banzuke.rikishi`) laid out right to left like
-  the sheet — ‹ and ← go to the next (lower) rank, › and → to the previous — and **replace** the
+  the printed banzuke — ‹ and ← go to the next (lower) rank, › and → to the previous — and **replace** the
   URL entry so Back still closes.
-- The Sheet tracks hover and keyboard focus as two separate states and lets pointer hover win
-  over focus when both are present; whichever wins lights the East/West *partner* of the active
-  column via `data-lit` on its button, never the hovered/focused column itself. Hover is cleared
-  whenever focus leaves the paper, so nothing stays lit behind the wrestler dialog.
 
 ## Accessible names
 
 **One accessible name**: `describeWrestler()` (`src/utils/describe.ts`) builds the name for
-every wrestler button — Sheet column, List cell, stable roster — in the order name, side, rank,
+every wrestler button — List cell, stable roster — in the order name, side, rank,
 promotion, kadoban, movement, record, yusho, then "View details". English keeps "Name, Side."
 first; Japanese joins with 、 and ends sentences with 。. Nothing else builds one by hand.
 
@@ -95,7 +80,7 @@ first; Japanese joins with 、 and ends sentences with 。. Nothing else builds 
   button (a button cannot hold a button): keyboard users reach the stable from the wrestler
   dialog.
 - "Show on the banzuke" leaves the dialog by writing `?q=<stable name>` in place of `?heya`, so
-  the sheet stays filtered and one Back undoes it.
+  the list stays filtered and one Back undoes it.
 - The dialog keyframes live in `base.css` and both modals reference them as `global(...)`:
   `fadeIn` for the backdrop, `modalSlideUp` for the panel.
 - `src/data/shikona-glossary.ts` is **hand-written** and deliberately **not** tested against live
@@ -107,7 +92,7 @@ first; Japanese joins with 、 and ends sentences with 。. Nothing else builds 
 
 ## Fonts
 
-The Sheet's mincho is a **self-hosted subset in two faces**: `NotoSerifJP-700-core.woff2` (the
+The mincho is a **self-hosted subset in two faces**: `NotoSerifJP-700-core.woff2` (the
 kana blocks and every Japanese character in the source — rank kanji, masthead, UI) and
 `NotoSerifJP-700-names.woff2` (what only the data brings: ring names, stables, birthplaces), at
 weight 700 (the only weight shipped; 600 requests resolve to it). `scripts/subset-fonts.ts`
@@ -116,7 +101,7 @@ writes both, the manifest `NotoSerifJP-subset.json`, and the two `@font-face` ru
 reader's browser fetches the core alone. `scripts/lib/font-coverage.test.ts` fails when data or
 source gains a character the faces lack — the fix is `npm run subset-fonts`, which the deploy
 job also runs whenever the banzuke changes. `'Noto Serif JP'` is first in `--font-jp-serif` on
-purpose, so Windows and Android render the Sheet the same as macOS.
+purpose, so Windows and Android render it the same as macOS.
 
 The font-coverage test scans test files too, so a test's deliberately unknown character is
 written as a `\u{…}` escape, never a literal, or it lands in the glyph manifest.
@@ -150,8 +135,8 @@ whenever there is one, because the kadoban mark reads them too.
 
 - **Results** (`?results=0` to hide; on by default in season) is the second overlay:
   `useResults` loads `results/{bashoId}.json` when the basho is live, a day before it starts, or
-  finished — until the next banzuke replaces it — `Hoshitori` shows the score on the Sheet and
-  the ○●休 strip on the List, `Bouts` lists the day's card, selected by who is fighting
+  finished — until the next banzuke replaces it — `Hoshitori` shows the ○●休 strip and the
+  score on the List, `Bouts` lists the day's card, selected by who is fighting
   (cross-division bouts are published on the Makuuchi card only). An absence counts as a loss
   for make-koshi. The yusho mark is an ink seal — `--gold` is still the Yokozuna's alone.
 - Kimarite are stored as sumo-api romaji; `src/data/kimarite.ts` supplies the kanji. Before
@@ -187,15 +172,6 @@ the `sansho`, from sumo-api.com joined by `nskId`.
   deploy-key pushes trigger the push workflow.
 - Results are **not** in the font subset's file set: kimarite are romaji and a visiting
   Makushita name may fall back.
-
-## The guide
-
-**The guide** (`?guide=1`) is Sheet-only: `buildGuide` (`src/utils/guide.ts`) chooses which
-columns carry which numbered mark from the rows on screen (highest rank present; the two ends of
-the Maegashira ladder), the marks are CSS circles placed as grid children over the band they
-annotate (no flow content, band heights untouched, no new glyphs), and `Guide` beneath the paper
-lists the same numbers with bilingual text. The way in is a link beside the controls, not a
-third seal — a guide is read once — and the legend carries the way out.
 
 ## Service worker
 
@@ -244,6 +220,6 @@ in `scripts/lib/site.ts`; the old github.io address serves the redirect in
 
 ## Smoke spec
 
-`e2e/smoke.spec.ts` (`npm run test:e2e`) drives the built site in Chromium: print order, band
-alignment, no horizontal scroll, tab seating, axe, the keyboard walk, the in-season overlays, at
+`e2e/smoke.spec.ts` (`npm run test:e2e`) drives the built site in Chromium: print order (East
+right of West, ranks running down), no horizontal scroll, tab seating, axe, the keyboard walk, the in-season overlays, at
 three widths in both languages. Locally `PW_CHROMIUM=<path>` names a browser.

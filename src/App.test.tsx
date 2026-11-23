@@ -84,25 +84,20 @@ describe('App', () => {
     )
   })
 
-  it('loads behind a skeleton shaped like the view it is about to show', async () => {
-    const { unmount } = render(<App />)
-    // The Sheet is the default view: its skeleton is the ruled paper, not a list.
-    expect(screen.getByRole('status', { busy: true })).toHaveTextContent('Loading the banzuke')
-    expect(
-      screen.getByRole('status', { busy: true }).querySelectorAll('[class*="half"]')
-    ).toHaveLength(2)
-    await screen.findByRole('button', { name: /Hoshoryu, East/ })
-    unmount()
-
-    // The first load cached the snapshot; forget it so the List loads from nothing too.
-    window.localStorage.clear()
-    window.history.replaceState(null, '', '/?view=list')
+  it('loads behind a skeleton of the list', async () => {
     render(<App />)
-    expect(screen.getByRole('status', { busy: true }).querySelector('[class*="half"]')).toBeNull()
+    expect(screen.getByRole('status', { busy: true })).toHaveTextContent('Loading the banzuke')
     await screen.findByRole('button', { name: /Hoshoryu, East/ })
   })
 
-  it('marks a kadoban Ozeki from the previous banzuke and its results, in every view', async () => {
+  it('still opens links made when there was a Sheet and a guide', async () => {
+    window.history.replaceState(null, '', '/?view=list&guide=1')
+    render(<App />)
+    expect(await screen.findByRole('button', { name: /Hoshoryu, East/ })).toBeInTheDocument()
+    expect(screen.queryByRole('group', { name: 'Layout' })).toBeNull()
+  })
+
+  it('marks a kadoban Ozeki from the previous banzuke and its results', async () => {
     const stub = fetch as unknown as Mock<(url: RequestInfo | URL) => Promise<Response>>
     const fallback = stub.getMockImplementation()!
     stub.mockImplementation((url) => {
@@ -475,52 +470,6 @@ describe('App', () => {
     expect(screen.queryByRole('button', { name: /Previous: Hoshoryu/ })).toBeInTheDocument()
   })
 
-  it('opens the guide from its link, marks the sheet, and closes it from the legend', async () => {
-    const user = userEvent.setup()
-    render(<App />)
-    await screen.findByRole('button', { name: /Hoshoryu, East/ })
-    await user.click(screen.getByRole('link', { name: 'How to read a banzuke' }))
-    expect(window.location.search).toBe('?guide=1')
-    expect(screen.getByRole('region', { name: 'How to read a banzuke' })).toBeInTheDocument()
-    expect(document.querySelectorAll('[data-zone]').length).toBeGreaterThan(5)
-    await user.click(screen.getByRole('link', { name: 'Hide the guide' }))
-    expect(window.location.search).toBe('')
-    expect(screen.queryByRole('region', { name: 'How to read a banzuke' })).toBeNull()
-  })
-
-  it('offers no guide on the list view', async () => {
-    window.history.replaceState(null, '', '/?view=list&guide=1')
-    render(<App />)
-    await screen.findByRole('button', { name: /Hoshoryu, East/ })
-    // The skip-link's "Skip to the banzuke" would false-match a bare /banzuke/
-    // regex, so this narrows to the guide's own link names.
-    expect(screen.queryByRole('link', { name: /How to read a banzuke|Hide the guide/ })).toBeNull()
-    expect(screen.queryByRole('region', { name: 'How to read a banzuke' })).toBeNull()
-  })
-
-  it('hides the guide while a search is filtering the sheet, and restores it when cleared', async () => {
-    const user = userEvent.setup()
-    window.history.replaceState(null, '', '/?guide=1&q=onosato')
-    render(<App />)
-    await screen.findByRole('button', { name: /Onosato, West/ })
-    expect(screen.queryByRole('region', { name: 'How to read a banzuke' })).toBeNull()
-    expect(screen.queryByRole('link', { name: /How to read a banzuke|Hide the guide/ })).toBeNull()
-
-    await user.click(screen.getByRole('button', { name: 'Clear search' }))
-    await screen.findByRole('button', { name: /Hoshoryu, East/ })
-    expect(screen.getByRole('region', { name: 'How to read a banzuke' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Hide the guide' })).toBeInTheDocument()
-  })
-
-  it('returns focus to the guide link when the guide is closed from the legend', async () => {
-    const user = userEvent.setup()
-    render(<App />)
-    await screen.findByRole('button', { name: /Hoshoryu, East/ })
-    await user.click(screen.getByRole('link', { name: 'How to read a banzuke' }))
-    await user.click(screen.getByRole('link', { name: 'Hide the guide' }))
-    expect(screen.getByRole('link', { name: 'How to read a banzuke' })).toHaveFocus()
-  })
-
   /** Simulates the Back button landing on `path`. */
   function goBack(path: string) {
     window.history.replaceState(null, '', path)
@@ -545,7 +494,7 @@ describe('App', () => {
       await screen.findByText('Stablemaster Tatsunami Taiji, former Komusubi Asahiyutaka')
     ).toBeInTheDocument()
 
-    // The member row inside the dialog, not Onosato's column on the sheet behind it
+    // The member row inside the dialog, not Onosato's row on the list behind it
     await user.click(within(stableDialog).getByRole('button', { name: /^Onosato, West\./ }))
     await waitFor(() => expect(screen.getByRole('dialog')).toHaveAccessibleName('Onosato'))
     expect(window.location.search).toBe('?rikishi=1001')

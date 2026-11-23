@@ -69,7 +69,7 @@ function SideCellInner({
   const { language } = useLanguage()
   const strings = useStrings()
 
-  const badge = rikishi ? <PromotionPill rikishi={rikishi} variant="row" kadoban={kadoban} /> : null
+  const badge = rikishi ? <PromotionPill rikishi={rikishi} kadoban={kadoban} /> : null
 
   const displayName = getDisplayName(rikishi, language)
   const langAttr = language === 'jp' ? 'ja' : 'en'
@@ -84,10 +84,10 @@ function SideCellInner({
         <span className={styles.name} lang={langAttr}>
           {displayName}
         </span>
-        {record && <Hoshitori record={record} variant="row" champion={champion} />}
+        {record && <Hoshitori record={record} champion={champion} />}
       </span>
       {badge}
-      {movement && <MovementBadge movement={movement} variant="row" />}
+      {movement && <MovementBadge movement={movement} />}
     </>
   )
 

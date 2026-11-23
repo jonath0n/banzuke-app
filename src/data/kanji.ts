@@ -29,18 +29,6 @@ export const RANK_KANJI: Record<number, string> = {
   600: '十両',
 }
 
-/**
- * The tier the sheet prints at the head of a column. The rank code decides it
- * (前頭筆頭 → 前頭), with one exception read off the JSA's own Japanese rank
- * name: 横綱大関, a Yokozuna standing in for a missing Ozeki, printed as a title
- * at the head of the Ozeki slot whichever code the row carries.
- */
-export function printedTier(jpRankName: string, rankCode: number): string {
-  const own = RANK_KANJI[rankCode] ?? ''
-  if (jpRankName.startsWith('横綱大関') && (rankCode === 100 || rankCode === 200)) return '横綱大関'
-  return own
-}
-
 /** Position within a numbered rank: 1 → 筆頭 ("top"), 2 → 二枚目, 17 → 十七枚目. */
 export function jpNumberKanji(position: number): string {
   return position === 1 ? '筆頭' : `${toKanjiNumber(position)}枚目`
@@ -119,15 +107,6 @@ const VARIANT_PATTERN = new RegExp(`[${Object.keys(VARIANT_KANJI).join('')}]`, '
 /** The text with every variant character replaced by its common form. */
 export function foldVariantKanji(text: string): string {
   return text.replace(VARIANT_PATTERN, (ch) => VARIANT_KANJI[ch])
-}
-
-/**
- * Prefecture as the banzuke prints it, without its administrative suffix:
- * 石川県 → 石川, 大阪府 → 大阪, 東京都 → 東京. Countries are left alone.
- * The sheet has one short band for this, so every character saved counts.
- */
-export function shortPrefecture(name: string): string {
-  return name.length > 2 ? name.replace(/[県府都]$/, '') : name
 }
 
 const KANJI_DIGITS: Record<string, number> = {

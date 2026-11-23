@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { handleRovingKey, keyTarget } from './rovingFocus'
 
 function build(pairs: Array<[string, boolean, boolean]>): HTMLElement {
-  // Sheet-like DOM: all East buttons, then all West buttons (two halves).
+  // All East buttons, then all West buttons: only DOM order within a side matters.
   const root = document.createElement('div')
   for (const side of ['east', 'west'] as const) {
     for (const [pair, hasEast, hasWest] of pairs) {
@@ -26,35 +26,26 @@ const root = build([
 ])
 const at = (id: string) => root.querySelector<HTMLElement>(`[data-id="${id}"]`)!
 
-describe('keyTarget on the sheet', () => {
-  it('walks the rank ladder within a half: ← lower, → higher', () => {
-    expect(keyTarget(root, at('100-1-1-east'), 'ArrowLeft', 'sheet')).toBe(at('200-1-1-east'))
-    expect(keyTarget(root, at('200-1-1-east'), 'ArrowRight', 'sheet')).toBe(at('100-1-1-east'))
-    expect(keyTarget(root, at('100-1-1-east'), 'ArrowRight', 'sheet')).toBeNull()
-    expect(keyTarget(root, at('500-1-1-west'), 'ArrowLeft', 'sheet')).toBeNull()
+describe('keyTarget', () => {
+  it('walks ranks with ↑ ↓ and switches partner with ← →', () => {
+    expect(keyTarget(root, at('100-1-1-east'), 'ArrowDown')).toBe(at('200-1-1-east'))
+    expect(keyTarget(root, at('500-1-1-west'), 'ArrowUp')).toBe(at('100-1-1-west'))
+    // East sits on the right of a row: ← from East reaches West, → from West reaches East
+    expect(keyTarget(root, at('100-1-1-east'), 'ArrowLeft')).toBe(at('100-1-1-west'))
+    expect(keyTarget(root, at('100-1-1-west'), 'ArrowRight')).toBe(at('100-1-1-east'))
+    expect(keyTarget(root, at('100-1-1-east'), 'ArrowRight')).toBeNull()
   })
-  it('jumps to the partner with ↑ ↓, or nowhere when the seat is vacant', () => {
-    expect(keyTarget(root, at('100-1-1-east'), 'ArrowDown', 'sheet')).toBe(at('100-1-1-west'))
-    expect(keyTarget(root, at('500-1-1-west'), 'ArrowUp', 'sheet')).toBe(at('500-1-1-east'))
-    expect(keyTarget(root, at('200-1-1-east'), 'ArrowDown', 'sheet')).toBeNull()
+  it('stops at the ends, and finds no partner for a vacant seat', () => {
+    expect(keyTarget(root, at('100-1-1-east'), 'ArrowUp')).toBeNull()
+    expect(keyTarget(root, at('500-1-1-west'), 'ArrowDown')).toBeNull()
+    expect(keyTarget(root, at('200-1-1-east'), 'ArrowLeft')).toBeNull()
   })
   it('Home and End go to the ends of the side', () => {
-    expect(keyTarget(root, at('500-1-1-east'), 'Home', 'sheet')).toBe(at('100-1-1-east'))
-    expect(keyTarget(root, at('100-1-1-west'), 'End', 'sheet')).toBe(at('500-1-1-west'))
+    expect(keyTarget(root, at('500-1-1-east'), 'Home')).toBe(at('100-1-1-east'))
+    expect(keyTarget(root, at('100-1-1-west'), 'End')).toBe(at('500-1-1-west'))
   })
   it('ignores other keys', () => {
-    expect(keyTarget(root, at('100-1-1-east'), 'Enter', 'sheet')).toBeNull()
-  })
-})
-
-describe('keyTarget on the list', () => {
-  it('walks ranks with ↑ ↓ and switches partner with ← →', () => {
-    expect(keyTarget(root, at('100-1-1-east'), 'ArrowDown', 'list')).toBe(at('200-1-1-east'))
-    expect(keyTarget(root, at('500-1-1-west'), 'ArrowUp', 'list')).toBe(at('100-1-1-west'))
-    // East sits on the right of a row: ← from East reaches West, → from West reaches East
-    expect(keyTarget(root, at('100-1-1-east'), 'ArrowLeft', 'list')).toBe(at('100-1-1-west'))
-    expect(keyTarget(root, at('100-1-1-west'), 'ArrowRight', 'list')).toBe(at('100-1-1-east'))
-    expect(keyTarget(root, at('100-1-1-east'), 'ArrowRight', 'list')).toBeNull()
+    expect(keyTarget(root, at('100-1-1-east'), 'Enter')).toBeNull()
   })
 })
 
@@ -65,15 +56,11 @@ describe('handleRovingKey', () => {
     const preventDefaultMock = vi.fn()
     const focusMock = vi.spyOn(target, 'focus')
 
-    handleRovingKey(
-      root,
-      {
-        key: 'ArrowLeft',
-        target: current,
-        preventDefault: preventDefaultMock,
-      },
-      'sheet'
-    )
+    handleRovingKey(root, {
+      key: 'ArrowDown',
+      target: current,
+      preventDefault: preventDefaultMock,
+    })
 
     expect(preventDefaultMock).toHaveBeenCalled()
     expect(focusMock).toHaveBeenCalled()
@@ -83,15 +70,11 @@ describe('handleRovingKey', () => {
     const nonButton = document.createElement('div')
     const preventDefaultMock = vi.fn()
 
-    handleRovingKey(
-      root,
-      {
-        key: 'ArrowLeft',
-        target: nonButton,
-        preventDefault: preventDefaultMock,
-      },
-      'sheet'
-    )
+    handleRovingKey(root, {
+      key: 'ArrowLeft',
+      target: nonButton,
+      preventDefault: preventDefaultMock,
+    })
 
     expect(preventDefaultMock).not.toHaveBeenCalled()
   })
@@ -101,15 +84,11 @@ describe('handleRovingKey', () => {
     const focusMock = vi.spyOn(current, 'focus')
     const preventDefaultMock = vi.fn()
 
-    handleRovingKey(
-      root,
-      {
-        key: 'End',
-        target: current,
-        preventDefault: preventDefaultMock,
-      },
-      'sheet'
-    )
+    handleRovingKey(root, {
+      key: 'End',
+      target: current,
+      preventDefault: preventDefaultMock,
+    })
 
     expect(preventDefaultMock).toHaveBeenCalled()
     expect(focusMock).not.toHaveBeenCalled()
@@ -119,15 +98,11 @@ describe('handleRovingKey', () => {
     const current = at('100-1-1-east')
     const preventDefaultMock = vi.fn()
 
-    handleRovingKey(
-      root,
-      {
-        key: 'Tab',
-        target: current,
-        preventDefault: preventDefaultMock,
-      },
-      'sheet'
-    )
+    handleRovingKey(root, {
+      key: 'Tab',
+      target: current,
+      preventDefault: preventDefaultMock,
+    })
 
     expect(preventDefaultMock).not.toHaveBeenCalled()
   })
