@@ -1,15 +1,13 @@
-# Operations notes
+# Workflow sources
 
-Things the repository owner does by hand, because the sessions that write the code cannot push
-to `.github/workflows/` or change repository settings.
+The `.yml` files here are the source copies of `.github/workflows/`. To change a workflow:
 
-| Note | When |
-|---|---|
-| [`branch-protection.md`](branch-protection.md) | Once: require the `Validate, test, build` check on `main`; stop Dependabot auto-merging. |
-| [`apply-ops.md`](apply-ops.md) | Once: copy over `apply-ops.yml`; after that, workflow files here are applied by dispatching **Apply ops workflows** instead of by hand. |
-| [`ci.yml`](ci.yml) | Any time: copy over `.github/workflows/ci.yml` to add the Chromium smoke test job (`npm run test:e2e`) after the checks. |
-| [`results-freshness.md`](results-freshness.md) | Before **26 October 2026** (banzuke day) and **8 November 2026** (Kyushu day 1): copy `deploy.yml` and `watch.yml` into `.github/workflows/`. |
+1. Edit the file here (not under `.github/workflows/`) and merge it to `main` through a PR.
+2. Dispatch **Apply ops workflows** (Actions tab, or `gh workflow run apply-ops.yml`; the `files`
+   input takes bare names such as `deploy.yml`, empty means all). It validates each file, copies
+   it into `.github/workflows/` with the deploy key and commits `ops: apply … from docs/ops`.
+3. The run's summary shows the diff; applying `deploy.yml` starts a deploy of the new file, and
+   that run going green is the check that it took.
 
-`deploy.yml`, `watch.yml`, `ci.yml` and `apply-ops.yml` in this directory are the files to copy, kept here as
-complete files so that applying them is a `cp`, and so a reviewer can read them whole. Once `apply-ops.yml`
-is on `main`, the `cp` is a dispatch.
+`diff docs/ops/deploy.yml .github/workflows/deploy.yml` (and likewise for the others) should
+print nothing once a change is applied.
