@@ -46,7 +46,7 @@
   /* The wordmark only: FranSans is a poster face whose M and A blur at text sizes */
   --font-wordmark: 'FranSans Solid', 'Archivo', system-ui, sans-serif;
   /* Names voice: ring names, rank badges, tabs, chips (self-hosted, OFL).
-     Variable to 900, which the Sheet uses at full weight. */
+     Variable to 900. */
   --font-names: 'Archivo', 'Segoe UI', system-ui, -apple-system, sans-serif;
   /* Reading text and every small label: hero facts, search, modal details, footer */
   --font-body:
@@ -58,7 +58,7 @@
     'Noto Sans CJK JP', system-ui, sans-serif;
   /* Japanese mincho for ring names and rank kanji, the calligraphic voice.
      The self-hosted subset (base.css) leads, so Windows and Android — which
-     usually ship no mincho at all — render the Sheet the way macOS does. */
+     usually ship no mincho at all — render the names the way macOS does. */
   --font-jp-serif:
     'Noto Serif JP', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', 'YuMincho',
     'Noto Serif CJK JP', 'MS PMincho', serif;

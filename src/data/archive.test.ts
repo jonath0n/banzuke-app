@@ -137,11 +137,10 @@ describe('index', () => {
 })
 
 describe('the archive as the app sees it', () => {
-  it('derives what the archive does not keep: rank names, numeral, printed tier, sort key', () => {
+  it('derives what the archive does not keep: rank names, numeral, sort key', () => {
     const [hoshoryu, , wakatakakage, dewanoryu] =
       makeArchivedBanzuke().rikishi.map(rikishiFromArchived)
     expect(hoshoryu.rankName).toEqual({ en: 'Yokozuna', jp: '横綱' })
-    expect(hoshoryu.printedTier).toBe('横綱')
     expect(wakatakakage.rankName).toEqual({ en: 'Maegashira #3', jp: '前頭三枚目' })
     expect(wakatakakage.numberKanji).toBe('三枚目')
     expect(wakatakakage.rankLevel).toBe('maegashira')

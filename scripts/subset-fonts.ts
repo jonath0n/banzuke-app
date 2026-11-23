@@ -1,7 +1,7 @@
 /**
- * Builds the self-hosted mincho for the Sheet.
+ * Builds the self-hosted mincho.
  *
- * The Sheet, tabs, masthead and rank seals set Japanese in a serif face at
+ * Ring names, rank kanji, tabs, masthead and rank seals set Japanese in a serif face at
  * weight 700, and until now relied on whatever mincho the visitor's OS had —
  * often none on Windows or Android, where the calligraphic voice silently
  * became gothic. This script downloads the variable Noto Serif JP (OFL),

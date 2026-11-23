@@ -9,6 +9,12 @@
   color: var(--text);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
+  /* Under the name: strip, score, state */
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  margin-top: 0.15rem;
 }
 
 .badge[data-state='kachikoshi'] {
@@ -24,26 +30,6 @@
    the bidi algorithm reads the neutral en-dash between two digit runs as RTL
    and paints "2–0" as "0–2", and a strip laid out rtl puts day 1 on the right.
    `.detail` in SideCell.module.css declares ltr for the same reason. */
-
-/* Under the name on the sheet: horizontal, tiny — digits have no vertical form */
-.sheet {
-  direction: ltr;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.2em;
-  margin-top: var(--space-1);
-  font-size: var(--text-2xs);
-  writing-mode: horizontal-tb;
-}
-
-/* Under the name on a row: strip, score, state */
-.row {
-  display: inline-flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: var(--space-1) var(--space-2);
-  margin-top: 0.15rem;
-}
 
 /* Day 1 is leftmost, whichever side of the rail the cell is on */
 .strip {

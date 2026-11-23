@@ -1,4 +1,4 @@
-/* Vermilion on ink: the one place the sheet's accent marks a wrestler, and
+/* Vermilion on ink: the one place the accent marks a wrestler, and
    the movement badge borrows it for "new" so the two agree. */
 .pill {
   flex-shrink: 0;
@@ -22,31 +22,7 @@
   text-transform: none;
 }
 
-/* Beside the name on a row */
-.row {
-  flex-shrink: 0;
-}
-
-/* Under the name on the sheet: read down like the numeral band. Padding is
-   turned with the text, so the pill stays a narrow ribbon in the column. */
-.sheet {
-  display: block;
-  margin-top: var(--space-1);
-  margin-inline: auto;
-  padding: 0.4rem 0.2rem;
-  writing-mode: vertical-rl;
-}
-
-.sheet:lang(ja) {
-  text-orientation: upright;
-}
-
-/* Latin has no vertical form; it turns on its side, as the ring names do */
-.sheet:lang(en) {
-  text-orientation: sideways;
-}
-
-/* Kadoban: ink and a hairline, since the sheet prints no such flag */
+/* Kadoban: ink and a hairline, since the banzuke prints no such flag */
 .kadoban {
   color: var(--text);
   background: none;

@@ -20,7 +20,7 @@ export interface DescribeOptions {
 
 /**
  * The one accessible name for a wrestler, wherever a button stands for them:
- * a Sheet column, a List cell, a stable's roster row. Everything the eye reads
+ * a List cell, a stable's roster row. Everything the eye reads
  * from size, position, a pill or a mark is spelled out here in order —
  * name, side, rank, promotion, movement, record, yusho — then the action.
  *

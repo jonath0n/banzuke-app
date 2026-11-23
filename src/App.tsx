@@ -12,7 +12,6 @@ import { useResultsOverlay } from './app/useResultsOverlay'
 import { useSearch } from './app/useSearch'
 import { useSelection } from './app/useSelection'
 import { useChanges } from './app/useChanges'
-import { useGuide } from './app/useGuide'
 import { useDocumentTitle } from './app/useDocumentTitle'
 import { useEverTrue } from './app/useEverTrue'
 import { useArchiveViewer } from './app/useArchiveViewer'
@@ -23,11 +22,8 @@ import { SearchBar } from './components/SearchBar/SearchBar'
 import { DivisionTabs } from './components/DivisionTabs/DivisionTabs'
 import { PANEL_ID, tabId } from './components/DivisionTabs/ids'
 import { BanzukeGrid, BanzukeGridSkeleton } from './components/BanzukeGrid/BanzukeGrid'
-import { BanzukeSheet, BanzukeSheetSkeleton } from './components/BanzukeSheet/BanzukeSheet'
-import { ViewToggle, type View } from './components/ViewToggle/ViewToggle'
 import { ChangesToggle } from './components/ChangesToggle/ChangesToggle'
 import { ResultsToggle } from './components/ResultsToggle/ResultsToggle'
-import { Guide, GuideLink } from './components/Guide/Guide'
 import { Departed } from './components/Departed/Departed'
 import { Bouts } from './components/Bouts/Bouts'
 import { TodayStrip } from './components/TodayStrip/TodayStrip'
@@ -40,8 +36,7 @@ import styles from './App.module.css'
 
 // The two dialogs are not on the first paint: each arrives as its own chunk
 // the first time it is needed (the wrestler dialog carries the glossary and
-// kimarite tables with it). The guide's legend shares a module with the link
-// beside the controls, so it stays in the main chunk.
+// kimarite tables with it).
 const WrestlerModal = lazy(() =>
   import('./components/WrestlerModal/WrestlerModal').then((m) => ({ default: m.WrestlerModal }))
 )
@@ -61,7 +56,7 @@ function App() {
 
 const EMPTY: Rikishi[] = []
 
-/** How long the entrance cascade may run after the first sheet renders. */
+/** How long the entrance cascade may run after the banzuke first renders. */
 const ENTRANCE_MS = 1200
 
 /** The division named in the URL, when the data actually has it. */
@@ -80,17 +75,15 @@ function AppContent() {
   const strings = useStrings()
   const [searchQuery, setSearchQuery] = useUrlParam('q')
   const [divisionParam, setDivisionParam] = useUrlParam('div')
-  const [viewParam, setViewParam] = useUrlParam('view')
   const [selectedId, setSelectedId] = useUrlParam('rikishi', 'push')
   const [diffParam, setDiffParam] = useUrlParam('diff')
   const [resultsParam, setResultsParam] = useUrlParam('results')
-  const [guideParam, setGuideParam] = useUrlParam('guide')
   const [heyaParam] = useUrlParam('heya', 'push')
   const [bashoParam, setBashoParam] = useUrlParam('basho')
   const [boutsDay, setBoutsDay] = useState<number | null>(null)
   const [helpOpen, setHelpOpen] = useState(false)
   const [singleKeys, setSingleKeys] = useShortcutSetting()
-  // Entrance animations play once, on the first sheet; later renders (tab
+  // Entrance animations play once, on the first render of the banzuke; later renders (tab
   // switches, search) must not replay the cascade.
   const [entered, setEntered] = useState(false)
 
@@ -111,8 +104,6 @@ function AppContent() {
     return () => window.clearTimeout(timer)
   }, [data, entered])
 
-  // The sheet is the default: the first thing to see is the artifact itself.
-  const view: View = viewParam === 'list' ? 'list' : 'sheet'
   const division = resolveDivision(divisionParam, data)
   const banzuke = data ? (division === 'juryo' ? data.juryo : data.makuuchi) : null
   const allRows = banzuke?.rikishi ?? EMPTY
@@ -134,8 +125,6 @@ function AppContent() {
   const search = useSearch(data, division, query)
   const { highlight, isFiltering, matchedCount, otherDivision, otherHits, counts } = search
   const showTabs = data?.juryo != null
-  // Nothing on the sheet: no data at all, or a search this division cannot answer.
-  const nothingToShow = allRows.length === 0 || (highlight !== null && highlight.size === 0)
 
   const selection = useSelection(data, selectedId, heyaParam)
   const { rankById, selectedRikishi, neighbours, selectedHeyaId, roster, stable, stableLoading } =
@@ -144,22 +133,6 @@ function AppContent() {
   const changes = useChanges(data, banzuke, phase, diffParam, language)
   const { prevEntry, changesDefault, diffOn, diffWanted, previous, sinceLabel, diff } = changes
   const { movements, kadoban } = changes
-
-  const guideState = useGuide(
-    guideParam,
-    setGuideParam,
-    view === 'sheet' && !nothingToShow && !isFiltering,
-    allRows,
-    movements != null,
-    records != null
-  )
-  const {
-    on: guideOn,
-    guide,
-    linkRef: guideLinkRef,
-    onToggle: handleToggleGuide,
-    openedHere: guideOpenedHere,
-  } = guideState
 
   const handleSelectRikishi = useCallback(
     (rikishi: Rikishi) => setSelectedId(String(rikishi.id)),
@@ -172,11 +145,6 @@ function AppContent() {
       setBoutsDay(null)
     },
     [setDivisionParam]
-  )
-  // 'sheet' is the default, so it stays out of the URL.
-  const handleChangeView = useCallback(
-    (next: View) => setViewParam(next === 'sheet' ? null : next),
-    [setViewParam]
   )
   const otherMatches = useMemo(
     () =>
@@ -253,8 +221,7 @@ function AppContent() {
             matchedCount={matchedCount}
           />
         )}
-        {status === 'loading' &&
-          (view === 'sheet' ? <BanzukeSheetSkeleton /> : <BanzukeGridSkeleton />)}
+        {status === 'loading' && <BanzukeGridSkeleton />}
         {problemMessage && !data && (
           <div role="alert" className={`${styles.status} ${styles.error}`}>
             {problemMessage}
@@ -267,7 +234,6 @@ function AppContent() {
         )}
         {banzuke && (
           <div className={styles.controls}>
-            <ViewToggle view={view} onViewChange={handleChangeView} />
             {prevEntry && (
               <ChangesToggle
                 on={diffOn}
@@ -281,12 +247,6 @@ function AppContent() {
                 onChange={(on) => setResultsParam(on ? null : '0')}
                 day={results.results.day}
               />
-            )}
-            {/* Read once, not left on: once open, the legend beneath the paper
-                carries its own close link, so this one steps aside rather than
-                doubling it. */}
-            {view === 'sheet' && !nothingToShow && !isFiltering && !guideOn && (
-              <GuideLink ref={guideLinkRef} on={false} onToggle={handleToggleGuide} />
             )}
             {archiveIndex && archiveIndex.basho.length > 0 && (
               <BashoPicker
@@ -310,7 +270,7 @@ function AppContent() {
           />
         )}
         {/* The tabs are cut as paper tabs — open along the bottom — so they
-            belong against the top edge of the sheet, not in the controls row
+            belong against the top edge of the list, not in the controls row
             above it, where a wrap left them floating with that edge open. The
             tablist also reads better immediately before the panel it labels. */}
         {banzuke && showTabs && (
@@ -334,44 +294,21 @@ function AppContent() {
               {/* The division as a heading for readers walking the outline; the
                   tab already names it for the eye. */}
               <h2 className="visually-hidden">{strings.division[division]}</h2>
-              {/* Both views share the grid's empty state, so the copy and the
-                  "show N in Juryo" offer stay identical whichever is showing. */}
-              {view === 'sheet' && !nothingToShow ? (
-                <BanzukeSheet
-                  key={division}
-                  rows={allRows}
-                  highlight={highlight}
-                  movements={movements}
-                  kadoban={kadoban}
-                  records={records}
-                  champions={champions}
-                  guide={guide}
-                  onSelectRikishi={handleSelectRikishi}
-                />
-              ) : (
-                <BanzukeGrid
-                  key={division}
-                  rows={allRows}
-                  highlight={highlight}
-                  movements={movements}
-                  kadoban={kadoban}
-                  records={records}
-                  champions={champions}
-                  onSelectRikishi={handleSelectRikishi}
-                  onSelectStable={selection.onSelectStable}
-                  emptyReason={isFiltering ? 'no-matches' : 'no-data'}
-                  query={query}
-                  otherMatches={otherMatches}
-                  onClearSearch={handleClearSearch}
-                />
-              )}
-              {guide && (
-                <Guide
-                  items={guide.items}
-                  onClose={() => handleToggleGuide(false)}
-                  focusOnOpen={guideOpenedHere}
-                />
-              )}
+              <BanzukeGrid
+                key={division}
+                rows={allRows}
+                highlight={highlight}
+                movements={movements}
+                kadoban={kadoban}
+                records={records}
+                champions={champions}
+                onSelectRikishi={handleSelectRikishi}
+                onSelectStable={selection.onSelectStable}
+                emptyReason={isFiltering ? 'no-matches' : 'no-data'}
+                query={query}
+                otherMatches={otherMatches}
+                onClearSearch={handleClearSearch}
+              />
               {diffWanted && previous.status === 'loading' && (
                 <div role="status" className="visually-hidden">
                   {strings.loading}

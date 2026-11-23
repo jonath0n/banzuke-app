@@ -5,8 +5,7 @@ import { describe, expect, it } from 'vitest'
 /**
  * Type sizes come from the --text-* ladder in tokens.css, never typed by hand:
  * a 0.6rem here and a 0.65rem there is how the smallest text drifts apart. Sizes
- * in em scale with their parent and are allowed; the Sheet's name ladder is
- * computed from --col-scale and is allowed too.
+ * in em scale with their parent and are allowed.
  */
 const componentsDir = resolve(__dirname, '../components')
 
