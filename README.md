@@ -56,7 +56,8 @@ Then visit http://localhost:5173
 npm run build
 ```
 
-This outputs to `dist/`. Deploy this folder to any static host (GitHub Pages, Netlify, Vercel, etc.).
+This outputs to `dist/`, a static site. Production deploys it to Cloudflare with `wrangler deploy`
+(`wrangler.jsonc`); any static host serving it from the root works.
 
 ## Data refresh and deployment
 
@@ -80,7 +81,7 @@ results-only deploy the moment the day's results are in. Workflow files are edit
    `public/banzuke/` and `public/results/` to `main` when any of them changed (a fresh fetch
    timestamp alone is not a change).
 5. Validates, tests and builds the site with the freshest valid data and deploys it to
-   GitHub Pages.
+   Cloudflare at https://banzuke.app (see [`docs/ops/cloudflare.md`](docs/ops/cloudflare.md)).
 
 If sumo.or.jp is unreachable the committed snapshot is deployed instead, so a data hiccup never
 breaks a deploy.
@@ -127,7 +128,7 @@ npm run fetch-results    # in season: refresh public/results/{bashoId}.json (-- 
 npm run glossary-gaps    # list ring-name kanji the shikona glossary lacks
 ```
 
-Live site: https://jonath0n.github.io/banzuke-app/
+Live site: https://banzuke.app/ (the old https://jonath0n.github.io/banzuke-app/ redirects there)
 
 ## Tech stack
 
@@ -136,4 +137,4 @@ Live site: https://jonath0n.github.io/banzuke-app/
 - **CSS Modules** for scoped component styles
 - **Vitest** for unit tests and **Playwright** for a Chromium smoke spec of the built site
 - **GitHub Actions** for automated data refresh and deployment
-- **GitHub Pages** for hosting
+- **Cloudflare Workers static assets** for hosting, at banzuke.app

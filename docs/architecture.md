@@ -212,7 +212,8 @@ survived a tournament.
 `scripts/build-stubs.ts` runs after `vite build` and writes `dist/r/<id>/` and `dist/heya/<id>/`
 — one small page per wrestler and stable with its own title, description and JSA portrait for
 the unfurl, `noindex`, a canonical to the app and a redirect that keeps `?lang=` — plus the
-sitemap (with en/ja/x-default alternates) and a `SportsEvent` JSON-LD in `index.html`. The
+sitemap (with en/ja/x-default alternates), `robots.txt` and a `SportsEvent` JSON-LD in `index.html`,
+all on `SITE_URL` from `scripts/lib/site.ts`. The
 dialog's Copy link hands out the share page. They are build output, never committed.
 
 ## Deploy and data refresh
@@ -231,6 +232,13 @@ When the tournament data changed the data job also archives the banzuke under
 stablemaster's kanji is in it); profiles are re-scraped only when stale; whatever changed is
 committed to `main` before building. During a tournament it also fetches results into
 `public/results/`. If sumo.or.jp is unreachable the committed snapshot is deployed instead.
+
+The deploy job uploads `dist/` with `cloudflare/wrangler-action` (`wrangler.jsonc`: Workers
+static assets, custom domains `banzuke.app` and `www.banzuke.app`), using the repository secrets
+`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. Static assets are served with revalidation
+(no fixed max-age), so a results deploy is visible on the next request. The public URL lives
+in `scripts/lib/site.ts`; the old github.io address serves the redirect in
+`docs/ops/pages-redirect/`, published once by `pages-redirect.yml`.
 
 `ci.yml` runs validate, test, build and the Chromium smoke spec on pull requests.
 

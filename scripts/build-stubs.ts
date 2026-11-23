@@ -1,6 +1,6 @@
 /**
  * After `vite build`: writes the share pages (r/<id>/, heya/<id>/), the
- * sitemap and the tournament's JSON-LD into dist/, from the snapshot the
+ * sitemap, robots.txt and the tournament's JSON-LD into dist/, from the snapshot the
  * build shipped. See scripts/lib/stubs.ts.
  *
  * Usage: tsx scripts/build-stubs.ts [--dist <dir>] [--snapshot <path>]
@@ -11,7 +11,14 @@ import { fileURLToPath } from 'node:url'
 import { parseArgs } from 'node:util'
 import { normalizeSnapshot } from '../src/data/normalize.ts'
 import { validateSnapshot } from '../src/data/schema.ts'
-import { renderJsonLd, renderSitemap, renderStub, stableStub, wrestlerStub } from './lib/stubs.ts'
+import {
+  renderJsonLd,
+  renderRobots,
+  renderSitemap,
+  renderStub,
+  stableStub,
+  wrestlerStub,
+} from './lib/stubs.ts'
 
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const { values: args } = parseArgs({
@@ -47,6 +54,7 @@ async function main(): Promise<number> {
     await writeFile(join(dir, 'index.html'), renderStub(stub), 'utf8')
   }
   await writeFile(join(dist, 'sitemap.xml'), renderSitemap(stubs), 'utf8')
+  await writeFile(join(dist, 'robots.txt'), renderRobots(), 'utf8')
 
   const indexPath = join(dist, 'index.html')
   const index = await readFile(indexPath, 'utf8')
@@ -58,7 +66,7 @@ async function main(): Promise<number> {
     )
   }
   console.log(
-    `Wrote ${everyone.length} wrestler and ${stubs.length - everyone.length} stable share pages, the sitemap and the JSON-LD`
+    `Wrote ${everyone.length} wrestler and ${stubs.length - everyone.length} stable share pages, the sitemap, robots.txt and the JSON-LD`
   )
   return 0
 }

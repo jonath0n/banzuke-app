@@ -1,12 +1,21 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { serviceWorker } from './scripts/lib/vite-plugin-sw.ts'
+import { BASE, SITE_URL } from './scripts/lib/site.ts'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), serviceWorker()],
-  // GitHub Pages serves the site from /banzuke-app/
-  base: '/banzuke-app/',
+  plugins: [
+    react(),
+    serviceWorker(),
+    // index.html's canonical and social tags name the public URL as %SITE_URL%
+    {
+      name: 'site-url',
+      transformIndexHtml: (html) => html.replaceAll('%SITE_URL%', SITE_URL),
+    },
+  ],
+  // Cloudflare serves the site from the root of banzuke.app (scripts/lib/site.ts)
+  base: BASE,
   build: {
     outDir: 'dist',
     // Emit source maps for debugging without referencing them from the bundle

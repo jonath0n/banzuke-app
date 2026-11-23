@@ -1,0 +1,42 @@
+name: Publish github.io redirect
+
+# Run once, after the site is live at https://banzuke.app. It publishes
+# docs/ops/pages-redirect/ to GitHub Pages in place of the old site: every
+# jonath0n.github.io/banzuke-app/ URL (including ?rikishi=, ?heya= and the
+# r/<id>/ share links) forwards to the same path on banzuke.app, and returning
+# visitors' old service worker is replaced by one that removes itself. Pages
+# keeps serving this last deploy; nothing else deploys to Pages any more.
+# See docs/ops/cloudflare.md.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-redirect
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish redirect to GitHub Pages
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - name: Upload redirect bundle
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: docs/ops/pages-redirect
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v5
