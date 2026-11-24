@@ -36,7 +36,9 @@
   display: grid;
   direction: rtl;
   grid-template-columns: minmax(0, 1fr) var(--rail-width) minmax(0, 1fr);
-  align-items: center;
+  /* Both halves hang from the top, so East's and West's names share one line
+     even when one side is vacant or carries a stamp that wraps */
+  align-items: start;
   gap: var(--space-3);
 }
 
@@ -50,7 +52,11 @@
   justify-content: center;
   gap: 0.15rem;
   min-height: 2.75rem;
-  padding: 0.2rem 0.25rem;
+  /* Stretched through the row's padding, so the rail's rules meet the rules
+     between rows and run down the sheet as one column, as in a printed table */
+  align-self: stretch;
+  margin-block: calc(-1 * var(--space-2));
+  padding: calc(0.2rem + var(--space-2)) 0.25rem;
   border-inline: 1px solid var(--rule);
   text-align: center;
   line-height: 1;
@@ -89,9 +95,11 @@
   color: var(--accent);
 }
 
-/* The Yokozuna rail is the one stamped solid: red ground, rank reversed out */
+/* The Yokozuna rail is the one stamped solid: red ground, rank reversed out.
+   A stamp, not a column: it keeps inside the row's padding. */
 .row[data-rank-level='yokozuna'] .rail {
-  align-self: stretch;
+  margin-block: 0;
+  padding-block: 0.2rem;
   background: var(--band);
   border-inline-color: var(--band);
 }
@@ -129,13 +137,12 @@
   .inner {
     grid-template-columns: minmax(0, 1fr) 2.25rem minmax(0, 1fr);
     gap: var(--space-2);
-    align-items: start;
   }
 
   .rail {
     display: grid;
     place-items: center;
-    padding: 0.2rem 0;
+    padding: calc(0.2rem + var(--space-2)) 0;
     min-height: 4.5rem;
     align-self: stretch;
   }
