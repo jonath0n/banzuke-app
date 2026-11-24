@@ -21,6 +21,17 @@
      so it can sit centred on the name's capitals at every rank. */
   --name-size: var(--name-maegashira);
   --name-leading: 1.05;
+  /* Where the eye finds the middle of the name, as a fraction of its size
+     from the top of its line box: the middle of the capitals in Sofia Sans
+     Condensed (ascent 0.9, descent 0.3, cap height 0.655, at 1.05 leading),
+     a little above the line box's own middle (0.525). The seal and the
+     stamps beside the name centre on this line. */
+  --name-mid: 0.4975;
+}
+
+/* Noto Serif JP sits lower in its line box: the middle of the kanji ink */
+.cell:has(.name:lang(ja)) {
+  --name-mid: 0.5725;
 }
 
 .cell[data-side='east'] {
@@ -62,7 +73,7 @@
 .side-seal {
   flex-shrink: 0;
   align-self: flex-start;
-  margin-block-start: max(0px, calc((var(--name-size) * var(--name-leading) - 1.35rem) / 2));
+  margin-block-start: max(0px, calc(var(--name-size) * var(--name-mid) - 1.35rem / 2));
   display: inline-grid;
   place-items: center;
   width: 1.35rem;
@@ -199,12 +210,29 @@
   text-overflow: ellipsis;
   text-underline-offset: 0.15em;
   text-decoration-thickness: 2px;
+  /* At display size a capital's side bearing (C and O 0.054em, H and K
+     0.065em) is a visible gap the small stable line below does not have
+     (its own is about 0.1em of 14px). Pull the name back by the difference,
+     so its first stroke stands on the same edge as the star chart and the
+     stable line, at every rank. */
+  margin-inline-start: calc(0.1 * var(--text-sm) - 0.055em);
 }
 
 .name:lang(ja) {
   font-family: var(--font-jp-serif);
   font-weight: 700;
   letter-spacing: 0.02em;
+  margin-inline-start: 0;
+}
+
+/* The stamps beside the name (promotion, kadoban, movement) centre on the
+   name's middle rather than sitting on its baseline. Centred in the line,
+   then nudged by the small difference between the line box's middle and the
+   name's: on a line of their own (a narrow cell) they simply centre. */
+.nameLine > :not(.name) {
+  align-self: center;
+  position: relative;
+  top: calc(var(--name-size) * (var(--name-mid) - var(--name-leading) / 2));
 }
 
 /* An ink rule under the name on hover */
