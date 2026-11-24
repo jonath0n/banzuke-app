@@ -48,7 +48,14 @@ interface BanzukeGridProps {
 }
 
 /** Tiers whose single row already stamps the rank on its rail need no band. */
-const BANDED_TIERS: ReadonlySet<RankLevel> = new Set(['maegashira', 'juryo'])
+const BANDED_TIERS: ReadonlySet<RankLevel> = new Set([
+  'maegashira',
+  'juryo',
+  'makushita',
+  'sandanme',
+  'jonidan',
+  'jonokuchi',
+])
 
 /** Number of skeleton rows to display during loading */
 const SKELETON_ROW_COUNT = 8

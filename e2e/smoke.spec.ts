@@ -25,6 +25,8 @@ const IN_SEASON = new Date(
 ).toISOString()
 const WIDTHS = [360, 768, 1280] as const
 const LANGS = ['en', 'jp'] as const
+/** The top division, and the biggest below Juryo (two hundred names, ranks past a hundred). */
+const DIVISIONS = ['makuuchi', 'jonidan'] as const
 
 async function open(page: Page, query: string) {
   await page.clock.setFixedTime(IN_SEASON)
@@ -49,87 +51,106 @@ async function cells(page: Page) {
   )
 }
 
-for (const width of WIDTHS) {
-  for (const lang of LANGS) {
-    test(`list at ${width}px in ${lang}: geometry, seating, axe`, async ({ page }, info) => {
-      await page.setViewportSize({ width, height: 900 })
-      await open(page, `?lang=${lang}`)
-      const all = await cells(page)
-      expect(all.length).toBeGreaterThan(40)
+for (const division of DIVISIONS) {
+  for (const width of WIDTHS) {
+    for (const lang of LANGS) {
+      test(`${division} list at ${width}px in ${lang}: geometry, seating, axe`, async ({
+        page,
+      }, info) => {
+        await page.setViewportSize({ width, height: 900 })
+        await open(page, `?lang=${lang}${division === 'makuuchi' ? '' : `&div=${division}`}`)
+        const all = await cells(page)
+        expect(all.length).toBeGreaterThan(40)
 
-      // Print order: East is the right-hand cell of its row, and the rows run down in rank order
-      const bySide = new Map<string, Record<string, Box>>()
-      for (const c of all) bySide.set(c.pair, { ...bySide.get(c.pair), [c.side]: c.box })
-      let pairs = 0
-      for (const [pair, sides] of bySide) {
-        if (!sides.east || !sides.west) continue
-        pairs += 1
-        expect(sides.east.x, `pair ${pair}: East right of West`).toBeGreaterThan(sides.west.x)
-      }
-      expect(pairs).toBeGreaterThanOrEqual(18)
-      for (const side of ['east', 'west']) {
-        const ys = all.filter((c) => c.side === side).map((c) => c.box.y)
-        expect(
-          ys.every((y, i) => i === 0 || y > ys[i - 1]),
-          `${side}: ranks run down`
-        ).toBe(true)
-      }
+        // Print order: East is the right-hand cell of its row, and the rows run down in rank order
+        const bySide = new Map<string, Record<string, Box>>()
+        for (const c of all) bySide.set(c.pair, { ...bySide.get(c.pair), [c.side]: c.box })
+        let pairs = 0
+        for (const [pair, sides] of bySide) {
+          if (!sides.east || !sides.west) continue
+          pairs += 1
+          expect(sides.east.x, `pair ${pair}: East right of West`).toBeGreaterThan(sides.west.x)
+        }
+        expect(pairs).toBeGreaterThanOrEqual(18)
+        for (const side of ['east', 'west']) {
+          const ys = all.filter((c) => c.side === side).map((c) => c.box.y)
+          expect(
+            ys.every((y, i) => i === 0 || y > ys[i - 1]),
+            `${side}: ranks run down`
+          ).toBe(true)
+        }
 
-      // No horizontal scroll: the list fits
-      const overflow = await page.evaluate(
-        () => document.documentElement.scrollWidth - document.documentElement.clientWidth
-      )
-      expect(overflow, 'horizontal overflow').toBeLessThanOrEqual(1)
-
-      // The selected tab seats into the panel's frame: its bottom sits just below the panel's top
-      const tab = await page.locator('[role="tab"][aria-selected="true"]').boundingBox()
-      const panel = await page.locator('#division-panel > :first-child').boundingBox()
-      expect(tab && panel).toBeTruthy()
-      const overlap = tab!.y + tab!.height - panel!.y
-      expect(overlap, 'tab seated into the frame').toBeGreaterThanOrEqual(1)
-      expect(overlap, 'tab seated into the frame').toBeLessThanOrEqual(8)
-
-      await info.attach(`list-${width}-${lang}.png`, {
-        body: await page.screenshot({ fullPage: true }),
-        contentType: 'image/png',
-      })
-
-      // Accessibility: nothing serious or critical
-      await page.addScriptTag({ path: AXE })
-      const violations = await page.evaluate(async () => {
-        type Result = { violations: Array<{ id: string; impact: string; nodes: unknown[] }> }
-        const axe = (
-          window as unknown as {
-            axe: { run(context?: unknown, options?: unknown): Promise<Result> }
-          }
-        ).axe
-        // Label in Name (WCAG 2.5.3) is checked for the wrestler buttons below instead: their
-        // visible rank, side, details and score are aria-hidden decoration that the
-        // spoken name deliberately says in words, which axe's literal containment test rejects.
-        const rule = 'label-content-name-mismatch'
-        const everything = await axe.run(document, { rules: { [rule]: { enabled: false } } })
-        const others = await axe.run(
-          { include: [document], exclude: [['button[data-id]']] },
-          { runOnly: [rule] }
+        // No horizontal scroll: the list fits
+        const overflow = await page.evaluate(
+          () => document.documentElement.scrollWidth - document.documentElement.clientWidth
         )
-        return [...everything.violations, ...others.violations]
-          .filter((v) => v.impact === 'serious' || v.impact === 'critical')
-          .map((v) => `${v.id} (${v.impact}, ${v.nodes.length} nodes)`)
-      })
-      expect(violations).toEqual([])
+        expect(overflow, 'horizontal overflow').toBeLessThanOrEqual(1)
 
-      // Label in Name for the wrestler buttons: the ring name they show leads what they are
-      // called, so "click Onosato" works in voice control in either language.
-      const mismatched = await page.locator('button[data-id]').evaluateAll((buttons) =>
-        buttons
-          .map((b) => ({
-            shown: b.querySelector('[class*="_name_"]')?.textContent?.trim() ?? '',
-            label: b.getAttribute('aria-label') ?? '',
-          }))
-          .filter(({ shown, label }) => !shown || !label.startsWith(shown))
-      )
-      expect(mismatched).toEqual([])
-    })
+        // All six division tabs sit on one line inside the viewport
+        const tabs = await page
+          .locator('[role="tab"]')
+          .evaluateAll((els) => els.map((el) => el.getBoundingClientRect()))
+        expect(tabs).toHaveLength(6)
+        expect(new Set(tabs.map((t) => Math.round(t.y))).size, 'tabs on one line').toBe(1)
+        const sheet = await page.locator('#division-panel').boundingBox()
+        expect(Math.max(...tabs.map((t) => t.right)), 'tabs within the sheet').toBeLessThanOrEqual(
+          sheet!.x + sheet!.width + 1
+        )
+        expect(
+          Math.min(...tabs.map((t) => t.left)),
+          'tabs within the sheet'
+        ).toBeGreaterThanOrEqual(sheet!.x - 1)
+
+        // The selected tab seats into the panel's frame: its bottom sits just below the panel's top
+        const tab = await page.locator('[role="tab"][aria-selected="true"]').boundingBox()
+        const panel = await page.locator('#division-panel > :first-child').boundingBox()
+        expect(tab && panel).toBeTruthy()
+        const overlap = tab!.y + tab!.height - panel!.y
+        expect(overlap, 'tab seated into the frame').toBeGreaterThanOrEqual(1)
+        expect(overlap, 'tab seated into the frame').toBeLessThanOrEqual(8)
+
+        await info.attach(`list-${division}-${width}-${lang}.png`, {
+          body: await page.screenshot({ fullPage: true }),
+          contentType: 'image/png',
+        })
+
+        // Accessibility: nothing serious or critical
+        await page.addScriptTag({ path: AXE })
+        const violations = await page.evaluate(async () => {
+          type Result = { violations: Array<{ id: string; impact: string; nodes: unknown[] }> }
+          const axe = (
+            window as unknown as {
+              axe: { run(context?: unknown, options?: unknown): Promise<Result> }
+            }
+          ).axe
+          // Label in Name (WCAG 2.5.3) is checked for the wrestler buttons below instead: their
+          // visible rank, side, details and score are aria-hidden decoration that the
+          // spoken name deliberately says in words, which axe's literal containment test rejects.
+          const rule = 'label-content-name-mismatch'
+          const everything = await axe.run(document, { rules: { [rule]: { enabled: false } } })
+          const others = await axe.run(
+            { include: [document], exclude: [['button[data-id]']] },
+            { runOnly: [rule] }
+          )
+          return [...everything.violations, ...others.violations]
+            .filter((v) => v.impact === 'serious' || v.impact === 'critical')
+            .map((v) => `${v.id} (${v.impact}, ${v.nodes.length} nodes)`)
+        })
+        expect(violations).toEqual([])
+
+        // Label in Name for the wrestler buttons: the ring name they show leads what they are
+        // called, so "click Onosato" works in voice control in either language.
+        const mismatched = await page.locator('button[data-id]').evaluateAll((buttons) =>
+          buttons
+            .map((b) => ({
+              shown: b.querySelector('[class*="_name_"]')?.textContent?.trim() ?? '',
+              label: b.getAttribute('aria-label') ?? '',
+            }))
+            .filter(({ shown, label }) => !shown || !label.startsWith(shown))
+        )
+        expect(mismatched).toEqual([])
+      })
+    }
   }
 }
 

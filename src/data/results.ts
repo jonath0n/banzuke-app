@@ -5,7 +5,7 @@
  * imports so the scripts can share it.
  */
 import type { Division, Language, Localized, Rikishi } from '../types/banzuke'
-import { DIVISIONS } from './schema'
+import { SEKITORI_DIVISIONS } from './schema'
 
 /**
  * win/loss: fought. fusen: a forfeit, awarded without a bout. absent: sat out.
@@ -114,8 +114,9 @@ function isDay(value: unknown): value is number {
   return isInteger(value) && value >= 1 && value <= MAX_DAYS
 }
 
+/** Results are kept for the sekitori only. */
 function isDivision(value: unknown): value is Division {
-  return (DIVISIONS as readonly string[]).includes(value as string)
+  return (SEKITORI_DIVISIONS as readonly string[]).includes(value as string)
 }
 
 function isFighter(value: unknown): value is Fighter {

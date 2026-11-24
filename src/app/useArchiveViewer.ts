@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import type { BanzukeSet } from '../types/banzuke'
 import { banzukeSetFromArchive, type ArchiveIndex, type ArchiveIndexEntry } from '../data/archive'
-import { useArchivedBanzuke } from '../hooks/useArchive'
+import { useArchiveFile, useArchivedBanzuke } from '../hooks/useArchive'
 import { clearUrlParam } from '../hooks/useUrlState'
 
 export interface ArchiveViewer {
@@ -15,6 +15,9 @@ export interface ArchiveViewer {
   next: ArchiveIndexEntry | null
   /** Stepping off the newest archived tournament returns to the live one. */
   nextIsLive: boolean
+  /** Whether this tournament's lower divisions were archived, and how their file is doing. */
+  hasLower: boolean
+  lowerStatus: 'idle' | 'loading' | 'ready' | 'unavailable'
 }
 
 /**
@@ -26,7 +29,9 @@ export interface ArchiveViewer {
 export function useArchiveViewer(
   bashoParam: string | null,
   index: ArchiveIndex | null,
-  liveBashoId: number | null
+  liveBashoId: number | null,
+  /** Load the lower divisions' file too, when the tournament has one. */
+  wantLower = false
 ): ArchiveViewer {
   const wanted = Number(bashoParam)
   const entry = useMemo(() => {
@@ -34,9 +39,11 @@ export function useArchiveViewer(
     return index.basho.find((b) => b.bashoId === wanted) ?? null
   }, [index, wanted, liveBashoId])
   const state = useArchivedBanzuke(entry)
+  const lowerFile = entry?.lowerFile ?? null
+  const lower = useArchiveFile(wantLower ? lowerFile : null)
   const data = useMemo(
-    () => (state.archive ? banzukeSetFromArchive(state.archive) : null),
-    [state.archive]
+    () => (state.archive ? banzukeSetFromArchive(state.archive, lower.archive) : null),
+    [state.archive, lower.archive]
   )
 
   // A ?basho= the index does not know, once the index is here: back to the live sheet.
@@ -56,5 +63,7 @@ export function useArchiveViewer(
     previous,
     next: nextIsLive ? null : after,
     nextIsLive,
+    hasLower: lowerFile !== null,
+    lowerStatus: lower.status,
   }
 }

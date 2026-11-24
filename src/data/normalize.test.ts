@@ -6,7 +6,14 @@ import {
   makeThirdOzekiRow,
   placeholderRow,
 } from '../test/fixtures'
-import { normalizeDivision, normalizeSnapshot, parsePromotion, ringName } from './normalize'
+import {
+  normalizeDivision,
+  normalizeLowerSnapshot,
+  normalizeSnapshot,
+  parsePromotion,
+  ringName,
+} from './normalize'
+import { makeRawLowerSnapshot } from '../test/fixtures'
 
 const FETCHED_AT = '2026-09-04T00:00:00.000Z'
 
@@ -113,12 +120,12 @@ describe('normalizeSnapshot', () => {
     expect(set.juryo?.basho).toEqual(banzuke.basho)
   })
 
-  it('leaves juryo null when the snapshot has only makuuchi', () => {
+  it('leaves juryo out when the snapshot has only makuuchi', () => {
     const only = normalizeSnapshot(
       makeRawSnapshot({ divisions: { makuuchi: makeRawDivision() } }),
       'live'
     )
-    expect(only.juryo).toBeNull()
+    expect(only.juryo).toBeUndefined()
     expect(only.makuuchi.rikishi).toHaveLength(24)
   })
 
@@ -208,5 +215,26 @@ describe('parsePromotion', () => {
     expect(parsePromotion('再大関')).toEqual({ kind: 'returning', raw: '再大関' })
     expect(parsePromotion('新十両')).toEqual({ kind: 'new-to-division', raw: '新十両' })
     expect(parsePromotion('再十両')).toEqual({ kind: 'returning', raw: '再十両' })
+  })
+})
+
+describe('normalizeLowerSnapshot', () => {
+  it('builds each lower division with its rank names and levels', () => {
+    const lower = normalizeLowerSnapshot(makeRawLowerSnapshot(), 637)!
+    expect(Object.keys(lower)).toEqual(['makushita', 'jonokuchi'])
+    const top = lower.makushita!.rikishi[0]
+    expect(top).toMatchObject({
+      id: 3000,
+      rankCode: 700,
+      rankLevel: 'makushita',
+      rankNumber: 1,
+      shikona: { en: 'Inami', jp: '伊波' },
+      reading: 'いなみ',
+    })
+    expect(lower.jonokuchi!.rikishi[0].rankLevel).toBe('jonokuchi')
+  })
+
+  it('hides a lower file for another tournament', () => {
+    expect(normalizeLowerSnapshot(makeRawLowerSnapshot(), 638)).toBeNull()
   })
 })

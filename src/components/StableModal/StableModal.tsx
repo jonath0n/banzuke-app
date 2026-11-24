@@ -18,7 +18,7 @@ import styles from './StableModal.module.css'
 interface StableModalProps {
   /** The stable to show; null closes the dialog. */
   heyaId: number | null
-  /** The stable's sekitori on this banzuke; null when none is left. */
+  /** The stable's wrestlers on this banzuke; null when none is left. */
   roster: StableRoster | null
   /** The stables file's entry, when the file has one. */
   stable: Stable | null
@@ -37,7 +37,7 @@ interface StableModalProps {
 
 /**
  * The stable dialog: who the stable is (the master, from the stables file)
- * and who is in it (the sekitori, from the banzuke itself). A sibling of the
+ * and who is in it (from the banzuke itself). A sibling of the
  * wrestler dialog, built on the same native <dialog>; opening one from the
  * other pushes a history entry, so Back walks the chain back.
  */
@@ -108,11 +108,13 @@ export function StableModal({
   const masterRank = master ? master.highestRank[language] || master.highestRank.en : ''
   const masterShikona = master ? master.formerShikona[language] || master.formerShikona.en : ''
 
+  const sekitori = roster ? roster.makuuchi + roster.juryo : 0
   const counts = roster
     ? [
-        strings.sekitoriCount(roster.members.length),
+        sekitori > 0 ? strings.sekitoriCount(sekitori) : '',
         roster.makuuchi > 0 ? strings.inMakuuchi(roster.makuuchi) : '',
         roster.juryo > 0 ? strings.inJuryo(roster.juryo) : '',
+        roster.lower > 0 ? strings.inLower(roster.lower) : '',
       ]
         .filter(Boolean)
         .join(' · ')
@@ -179,7 +181,7 @@ export function StableModal({
                 ))}
               </ol>
             ) : (
-              <p className={styles.empty}>{strings.noSekitori}</p>
+              <p className={styles.empty}>{strings.noMembers}</p>
             )}
           </div>
 
@@ -211,7 +213,7 @@ interface MemberRowProps {
 }
 
 /**
- * One sekitori: rank, side, ring name at the size its rank earns, home. The
+ * One member: rank, side, ring name at the size its rank earns, home. The
  * movement badge and the hoshitori are decorative, so the accessible name
  * spells them out, as the List's cell does. No data-pair: the arrow keys do
  * not travel here.

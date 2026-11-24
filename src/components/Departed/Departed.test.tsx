@@ -3,9 +3,10 @@ import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { Departed } from './Departed'
 import { LanguageProvider } from '../../contexts/LanguageContext'
+import type { Departure } from '../../utils/diff'
 import { makeArchivedRikishi, makeRikishi } from '../../test/fixtures'
 
-const moved = {
+const moved: Departure = {
   was: makeArchivedRikishi({
     id: 4,
     shikona: { en: 'Tobizaru', jp: '翔猿' },
@@ -19,8 +20,9 @@ const moved = {
     rankLevel: 'juryo',
     rankNumber: 1,
   }),
+  nowDivision: 'juryo',
 }
-const gone = {
+const gone: Departure = {
   was: makeArchivedRikishi({
     id: 5,
     shikona: { en: 'Endo', jp: '遠藤' },
@@ -28,6 +30,24 @@ const gone = {
     rankNumber: 17,
   }),
   now: null,
+  nowDivision: null,
+}
+const dropped: Departure = {
+  was: makeArchivedRikishi({
+    id: 6,
+    division: 'juryo',
+    shikona: { en: 'Chiyoshoma', jp: '千代翔馬' },
+    rankCode: 600,
+    rankNumber: 14,
+  }),
+  now: makeRikishi({
+    id: 6,
+    shikona: { en: 'Chiyoshoma', jp: '千代翔馬' },
+    rankCode: 700,
+    rankLevel: 'makushita',
+    rankNumber: 3,
+  }),
+  nowDivision: 'makushita',
 }
 
 describe('Departed', () => {
@@ -97,5 +117,22 @@ describe('Departed', () => {
     expect(screen.getByRole('region', { name: '七月場所から幕内を離れた力士' })).toBeInTheDocument()
     const endo = screen.getByRole('link', { name: /遠藤/ })
     expect(endo).toHaveTextContent('旧')
+  })
+
+  it('groups the moved by the division they are in now, below Juryo too', () => {
+    render(
+      <LanguageProvider>
+        <Departed
+          division="juryo"
+          departures={{ moved: [dropped], gone: [gone] }}
+          sinceLabel="July 2026"
+          lowerLoaded
+          onSelectRikishi={vi.fn()}
+        />
+      </LanguageProvider>
+    )
+    expect(screen.getByRole('heading', { name: 'Now in Makushita' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Chiyoshoma/ })).toHaveTextContent('now Ms3')
+    expect(screen.getByRole('heading', { name: 'Retired or off the banzuke' })).toBeInTheDocument()
   })
 })

@@ -9,7 +9,12 @@ function renderTabs(value: 'makuuchi' | 'juryo' = 'makuuchi', lang: 'en' | 'jp' 
   window.history.replaceState({}, '', `/?lang=${lang}`)
   render(
     <LanguageProvider>
-      <DivisionTabs value={value} onChange={onChange} counts={{ makuuchi: 42, juryo: 28 }} />
+      <DivisionTabs
+        value={value}
+        onChange={onChange}
+        divisions={['makuuchi', 'juryo']}
+        counts={{ makuuchi: 42, juryo: 28 }}
+      />
     </LanguageProvider>
   )
   return { onChange }
@@ -24,7 +29,9 @@ describe('DivisionTabs', () => {
     renderTabs()
     expect(screen.getByRole('tablist', { name: 'Division' })).toBeInTheDocument()
     const tabs = screen.getAllByRole('tab')
-    expect(tabs.map((t) => t.textContent)).toEqual(['幕内Makuuchi42', '十両Juryo28'])
+    expect(tabs.map((t) => t.textContent)).toEqual(['MakuuchiM42', 'JuryoJ28'])
+    // The phone abbreviation is decoration; the tab is named by the English name.
+    expect(tabs[0]).toHaveAccessibleName('Makuuchi 42')
     expect(tabs[0]).toHaveAttribute('aria-selected', 'true')
     expect(tabs[0]).toHaveAttribute('tabindex', '0')
     expect(tabs[1]).toHaveAttribute('aria-selected', 'false')
@@ -52,14 +59,32 @@ describe('DivisionTabs', () => {
     expect(onChange).toHaveBeenLastCalledWith('makuuchi')
   })
 
-  it('offers only divisions that have data', () => {
+  it('offers the divisions it is given, a loading one without a count', async () => {
+    const user = userEvent.setup()
+    const onChange = vi.fn()
     window.history.replaceState({}, '', '/?lang=en')
     render(
       <LanguageProvider>
-        <DivisionTabs value="makuuchi" onChange={vi.fn()} counts={{ makuuchi: 42 }} />
+        <DivisionTabs
+          value="makuuchi"
+          onChange={onChange}
+          divisions={['makuuchi', 'juryo', 'makushita', 'sandanme', 'jonidan', 'jonokuchi']}
+          counts={{ makuuchi: 42, juryo: 28, makushita: 120 }}
+        />
       </LanguageProvider>
     )
-    expect(screen.getAllByRole('tab')).toHaveLength(1)
+    const tabs = screen.getAllByRole('tab')
+    expect(tabs.map((t) => t.textContent)).toEqual([
+      'MakuuchiM42',
+      'JuryoJ28',
+      'MakushitaMs120',
+      'SandanmeSd',
+      'JonidanJd',
+      'JonokuchiJk',
+    ])
+    tabs[0].focus()
+    await user.keyboard('{End}')
+    expect(onChange).toHaveBeenLastCalledWith('jonokuchi')
   })
 
   it('shows matches against totals while a search is active', () => {
@@ -69,18 +94,20 @@ describe('DivisionTabs', () => {
         <DivisionTabs
           value="makuuchi"
           onChange={vi.fn()}
+          divisions={['makuuchi', 'juryo']}
           counts={{ makuuchi: 42, juryo: 28 }}
           matched={{ makuuchi: 6, juryo: 0 }}
         />
       </LanguageProvider>
     )
     const tabs = screen.getAllByRole('tab')
-    expect(tabs.map((t) => t.textContent)).toEqual(['幕内Makuuchi6/42', '十両Juryo0/28'])
+    expect(tabs.map((t) => t.textContent)).toEqual(['MakuuchiM6/42', 'JuryoJ0/28'])
   })
 
   it('uses Japanese labels in Japanese mode', () => {
     renderTabs('juryo', 'jp')
     expect(screen.getByRole('tablist', { name: '階級' })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: /十両/ })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getAllByRole('tab').map((t) => t.textContent)).toEqual(['幕内42', '十両28'])
   })
 })

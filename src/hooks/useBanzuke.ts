@@ -193,7 +193,9 @@ export function readCachedBanzuke(): BanzukeSet | null {
     const set = parsed as { makuuchi?: unknown; juryo?: unknown }
     if (!looksLikeBanzuke(set.makuuchi)) return null
     if (set.juryo != null && !looksLikeBanzuke(set.juryo)) return null
-    return { makuuchi: set.makuuchi, juryo: set.juryo ?? null } as BanzukeSet
+    return (
+      set.juryo ? { makuuchi: set.makuuchi, juryo: set.juryo } : { makuuchi: set.makuuchi }
+    ) as BanzukeSet
   } catch {
     // Unavailable or corrupt storage: behave as if nothing was cached.
   }

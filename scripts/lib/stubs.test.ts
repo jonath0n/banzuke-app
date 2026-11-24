@@ -23,11 +23,11 @@ describe('share pages', () => {
     expect(stub.target).toBe('?rikishi=3842')
   })
 
-  it('describes a stable by its sekitori on this banzuke, or nothing for an unknown id', () => {
+  it('describes a stable by its wrestlers on this banzuke, or nothing for an unknown id', () => {
     const stub = stableStub(data, 1, 'September Grand Sumo Tournament')
     expect(stub?.path).toBe('heya/1/')
     expect(stub?.title).toMatch(/^Tatsunami stable 立浪部屋/)
-    expect(stub?.description).toMatch(/sekitori on the September Grand Sumo Tournament banzuke: /)
+    expect(stub?.description).toMatch(/wrestlers? on the September Grand Sumo Tournament banzuke: /)
     expect(stableStub(data, 999, 'x')).toBeNull()
   })
 

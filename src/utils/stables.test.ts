@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { rosterFor } from './stables'
-import { makeBanzuke, makeBanzukeSet, makeRikishi } from '../test/fixtures'
+import { makeBanzuke, makeBanzukeSet, makeMakushitaBanzuke, makeRikishi } from '../test/fixtures'
 
 describe('rosterFor', () => {
   // The fixture set: Tatsunami (id 1) has Hoshoryu in Makuuchi and, once
@@ -34,13 +34,13 @@ describe('rosterFor', () => {
         makeRikishi({ id: 2, side: 'west', heya: { id: 9, en: 'Kise', jp: '木瀬' } }),
       ],
     })
-    expect(rosterFor({ makuuchi: shared, juryo: null }, 9)!.members.map((r) => r.id)).toEqual([
+    expect(rosterFor({ makuuchi: shared, juryo: undefined }, 9)!.members.map((r) => r.id)).toEqual([
       1, 2,
     ])
   })
 
   it('works on a Makuuchi-only set', () => {
-    const roster = rosterFor({ makuuchi: set.makuuchi, juryo: null }, 32)
+    const roster = rosterFor({ makuuchi: set.makuuchi, juryo: undefined }, 32)
     expect(roster!.members.map((r) => r.shikona.en)).toEqual(['Onosato'])
     expect(roster!.juryo).toBe(0)
   })
@@ -50,6 +50,19 @@ describe('rosterFor', () => {
     const vacantish = makeBanzuke({
       rikishi: [makeRikishi({ heya: { id: 0, en: '', jp: '' } })],
     })
-    expect(rosterFor({ makuuchi: vacantish, juryo: null }, 0)).toBeNull()
+    expect(rosterFor({ makuuchi: vacantish, juryo: undefined }, 0)).toBeNull()
+  })
+})
+
+describe('rosterFor across the lower divisions', () => {
+  it('counts the members below Juryo once their divisions are loaded', () => {
+    const set = makeBanzukeSet({ makushita: makeMakushitaBanzuke() })
+    // Tatsunami (1): Hoshoryu in Makuuchi, Izumifuji in Makushita.
+    const roster = rosterFor(set, 1)!
+    expect(roster.members.map((r) => r.id)).toEqual([3842, 4156])
+    expect(roster).toMatchObject({ makuuchi: 1, juryo: 0, lower: 1 })
+    expect(roster.byDivision).toEqual({ makuuchi: 1, makushita: 1 })
+    // Onoe (10008) has only a Makushita man: still a stable on this banzuke.
+    expect(rosterFor(set, 10008)?.members.map((r) => r.id)).toEqual([4242])
   })
 })

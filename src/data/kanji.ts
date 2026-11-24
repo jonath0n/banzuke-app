@@ -9,15 +9,18 @@ import type { Division } from './schema'
 const DIGITS = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九'] as const
 
 /**
- * Converts 1–99 to traditional kanji numerals as used on the banzuke
- * (e.g. 1 → 一, 10 → 十, 17 → 十七, 21 → 二十一).
+ * Converts 1–999 to traditional kanji numerals as used on the banzuke
+ * (e.g. 1 → 一, 10 → 十, 17 → 十七, 21 → 二十一, 100 → 百, 105 → 百五).
+ * Jonidan runs past a hundred.
  */
 export function toKanjiNumber(n: number): string {
-  if (!Number.isInteger(n) || n < 1 || n > 99) return String(n)
-  const tens = Math.floor(n / 10)
+  if (!Number.isInteger(n) || n < 1 || n > 999) return String(n)
+  const hundreds = Math.floor(n / 100)
+  const tens = Math.floor((n % 100) / 10)
   const ones = n % 10
+  const hundredsPart = hundreds === 0 ? '' : hundreds === 1 ? '百' : `${DIGITS[hundreds]}百`
   const tensPart = tens === 0 ? '' : tens === 1 ? '十' : `${DIGITS[tens]}十`
-  return `${tensPart}${DIGITS[ones]}`
+  return `${hundredsPart}${tensPart}${DIGITS[ones]}`
 }
 
 export const RANK_KANJI: Record<number, string> = {
@@ -27,6 +30,10 @@ export const RANK_KANJI: Record<number, string> = {
   400: '小結',
   500: '前頭',
   600: '十両',
+  700: '幕下',
+  800: '三段目',
+  900: '序二段',
+  1000: '序ノ口',
 }
 
 /** Position within a numbered rank: 1 → 筆頭 ("top"), 2 → 二枚目, 17 → 十七枚目. */
@@ -173,4 +180,11 @@ export function parseJpDate(text: string): string | null {
   return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
 }
 
-export const DIVISION_KANJI: Record<Division, string> = { makuuchi: '幕内', juryo: '十両' }
+export const DIVISION_KANJI: Record<Division, string> = {
+  makuuchi: '幕内',
+  juryo: '十両',
+  makushita: '幕下',
+  sandanme: '三段目',
+  jonidan: '序二段',
+  jonokuchi: '序ノ口',
+}

@@ -1,0 +1,10477 @@
+{
+ "version": 1,
+ "bashoId": 638,
+ "year": 2026,
+ "month": 11,
+ "startDate": "2026-11-08",
+ "endDate": "2026-11-22",
+ "source": "jsa",
+ "divisions": [
+  "makushita",
+  "sandanme",
+  "jonidan",
+  "jonokuchi"
+ ],
+ "rikishi": [
+  {
+   "id": 4242,
+   "shikona": {
+    "en": "Inami",
+    "jp": "伊波"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 1,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Onoe",
+    "jp": "尾上"
+   },
+   "pref": {
+    "en": "Kagoshima",
+    "jp": "鹿児島県"
+   }
+  },
+  {
+   "id": 4357,
+   "shikona": {
+    "en": "Tenshoyama",
+    "jp": "天昇山"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 1,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tamanoi",
+    "jp": "玉ノ井"
+   },
+   "pref": {
+    "en": "Mongolia",
+    "jp": "モンゴル"
+   }
+  },
+  {
+   "id": 2892,
+   "shikona": {
+    "en": "Nishikigi",
+    "jp": "錦木"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 2,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Isenoumi",
+    "jp": "伊勢ノ海"
+   },
+   "pref": {
+    "en": "Iwate",
+    "jp": "岩手県"
+   }
+  },
+  {
+   "id": 4302,
+   "shikona": {
+    "en": "Ikarigata",
+    "jp": "碇潟"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 2,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isenoumi",
+    "jp": "伊勢ノ海"
+   },
+   "pref": {
+    "en": "Kyoto",
+    "jp": "京都府"
+   }
+  },
+  {
+   "id": 4123,
+   "shikona": {
+    "en": "Gojinyu",
+    "jp": "豪刃雄"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 3,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takekuma",
+    "jp": "武隈"
+   },
+   "pref": {
+    "en": "Hyogo",
+    "jp": "兵庫県"
+   }
+  },
+  {
+   "id": 3839,
+   "shikona": {
+    "en": "Tochitaikai",
+    "jp": "栃大海"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 3,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kasugano",
+    "jp": "春日野"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 4337,
+   "shikona": {
+    "en": "Fujitensei",
+    "jp": "藤天晴"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 4,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Fujishima",
+    "jp": "藤島"
+   },
+   "pref": {
+    "en": "Kagoshima",
+    "jp": "鹿児島県"
+   }
+  },
+  {
+   "id": 3984,
+   "shikona": {
+    "en": "Mudoho",
+    "jp": "夢道鵬"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 4,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Otake",
+    "jp": "大嶽"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4376,
+   "shikona": {
+    "en": "Fudoho",
+    "jp": "不動豊"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 5,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tokitsukaze",
+    "jp": "時津風"
+   },
+   "pref": {
+    "en": "Nagasaki",
+    "jp": "長崎県"
+   }
+  },
+  {
+   "id": 3914,
+   "shikona": {
+    "en": "Nishinoryu",
+    "jp": "西ノ龍"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 5,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sakaigawa",
+    "jp": "境川"
+   },
+   "pref": {
+    "en": "Osaka",
+    "jp": "大阪府"
+   }
+  },
+  {
+   "id": 3733,
+   "shikona": {
+    "en": "Tsushimanada",
+    "jp": "對馬洋"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 6,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Sakaigawa",
+    "jp": "境川"
+   },
+   "pref": {
+    "en": "Nagasaki",
+    "jp": "長崎県"
+   }
+  },
+  {
+   "id": 3917,
+   "shikona": {
+    "en": "Daikisho",
+    "jp": "大喜翔"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 6,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Oitekaze",
+    "jp": "追手風"
+   },
+   "pref": {
+    "en": "Kagawa",
+    "jp": "香川県"
+   }
+  },
+  {
+   "id": 4353,
+   "shikona": {
+    "en": "Ryusho",
+    "jp": "竜翔"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 7,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Oitekaze",
+    "jp": "追手風"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  },
+  {
+   "id": 3763,
+   "shikona": {
+    "en": "Tochikodai",
+    "jp": "栃幸大"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 7,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kasugano",
+    "jp": "春日野"
+   },
+   "pref": {
+    "en": "Shizuoka",
+    "jp": "静岡県"
+   }
+  },
+  {
+   "id": 4275,
+   "shikona": {
+    "en": "Okaryu",
+    "jp": "大花竜"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 8,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tatsunami",
+    "jp": "立浪"
+   },
+   "pref": {
+    "en": "Aomori",
+    "jp": "青森県"
+   }
+  },
+  {
+   "id": 4186,
+   "shikona": {
+    "en": "Himukamaru",
+    "jp": "日向丸"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 8,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kise",
+    "jp": "木瀬"
+   },
+   "pref": {
+    "en": "Miyazaki",
+    "jp": "宮崎県"
+   }
+  },
+  {
+   "id": 4289,
+   "shikona": {
+    "en": "Mita",
+    "jp": "三田"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 9,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Futagoyama",
+    "jp": "二子山"
+   },
+   "pref": {
+    "en": "Tochigi",
+    "jp": "栃木県"
+   }
+  },
+  {
+   "id": 3952,
+   "shikona": {
+    "en": "Otsuji",
+    "jp": "大辻"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 9,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Takadagawa",
+    "jp": "高田川"
+   },
+   "pref": {
+    "en": "Hyogo",
+    "jp": "兵庫県"
+   }
+  },
+  {
+   "id": 4127,
+   "shikona": {
+    "en": "Wakamiyabi",
+    "jp": "若雅"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 10,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Futagoyama",
+    "jp": "二子山"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 3615,
+   "shikona": {
+    "en": "Sazanami",
+    "jp": "漣"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 10,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isenoumi",
+    "jp": "伊勢ノ海"
+   },
+   "pref": {
+    "en": "Iwate",
+    "jp": "岩手県"
+   }
+  },
+  {
+   "id": 4394,
+   "shikona": {
+    "en": "Omori",
+    "jp": "大森"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 11,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Oitekaze",
+    "jp": "追手風"
+   },
+   "pref": {
+    "en": "Ishikawa",
+    "jp": "石川県"
+   }
+  },
+  {
+   "id": 4090,
+   "shikona": {
+    "en": "Osanai",
+    "jp": "長内"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 11,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Takasago",
+    "jp": "高砂"
+   },
+   "pref": {
+    "en": "Aomori",
+    "jp": "青森県"
+   }
+  },
+  {
+   "id": 4259,
+   "shikona": {
+    "en": "Fujisodai",
+    "jp": "藤壮大"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 12,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Fujishima",
+    "jp": "藤島"
+   },
+   "pref": {
+    "en": "Wakayama",
+    "jp": "和歌山県"
+   }
+  },
+  {
+   "id": 4223,
+   "shikona": {
+    "en": "Haruyama",
+    "jp": "春山"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 12,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Onoe",
+    "jp": "尾上"
+   },
+   "pref": {
+    "en": "Kagoshima",
+    "jp": "鹿児島県"
+   }
+  },
+  {
+   "id": 3976,
+   "shikona": {
+    "en": "Hokutenkai",
+    "jp": "北天海"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 13,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Onoe",
+    "jp": "尾上"
+   },
+   "pref": {
+    "en": "Mongolia",
+    "jp": "モンゴル"
+   }
+  },
+  {
+   "id": 4345,
+   "shikona": {
+    "en": "Gyotoku",
+    "jp": "行徳"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 13,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tamanoi",
+    "jp": "玉ノ井"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4162,
+   "shikona": {
+    "en": "Toshunryu",
+    "jp": "東俊隆"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 14,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tamanoi",
+    "jp": "玉ノ井"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4099,
+   "shikona": {
+    "en": "Nobehara",
+    "jp": "延原"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 14,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Futagoyama",
+    "jp": "二子山"
+   },
+   "pref": {
+    "en": "Osaka",
+    "jp": "大阪府"
+   }
+  },
+  {
+   "id": 4338,
+   "shikona": {
+    "en": "Koseiryu",
+    "jp": "光星竜"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 15,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Otowayama",
+    "jp": "音羽山"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4347,
+   "shikona": {
+    "en": "Hanahibiki",
+    "jp": "花響"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 15,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sakaigawa",
+    "jp": "境川"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  },
+  {
+   "id": 3218,
+   "shikona": {
+    "en": "Kotokuzan",
+    "jp": "荒篤山"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 16,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Arashio",
+    "jp": "荒汐"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 4249,
+   "shikona": {
+    "en": "Daikosho",
+    "jp": "大皇翔"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 16,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Oitekaze",
+    "jp": "追手風"
+   },
+   "pref": {
+    "en": "Kagawa",
+    "jp": "香川県"
+   }
+  },
+  {
+   "id": 3985,
+   "shikona": {
+    "en": "Nihonyanagi",
+    "jp": "二本柳"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 17,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Onomatsu",
+    "jp": "阿武松"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 3906,
+   "shikona": {
+    "en": "Kurohimeyama",
+    "jp": "黒姫山"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 17,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sakaigawa",
+    "jp": "境川"
+   },
+   "pref": {
+    "en": "Niigata",
+    "jp": "新潟県"
+   }
+  },
+  {
+   "id": 3857,
+   "shikona": {
+    "en": "Daiyusho",
+    "jp": "大雄翔"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 18,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Oitekaze",
+    "jp": "追手風"
+   },
+   "pref": {
+    "en": "Ehime",
+    "jp": "愛媛県"
+   }
+  },
+  {
+   "id": 3610,
+   "shikona": {
+    "en": "Obara",
+    "jp": "小原"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 18,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Asakayama",
+    "jp": "浅香山"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 4026,
+   "shikona": {
+    "en": "Mikazuchiyama",
+    "jp": "御雷山"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 19,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Shikoroyama",
+    "jp": "錣山"
+   },
+   "pref": {
+    "en": "Ibaraki",
+    "jp": "茨城県"
+   }
+  },
+  {
+   "id": 3546,
+   "shikona": {
+    "en": "Kitadaichi",
+    "jp": "北大地"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 19,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tatsunami",
+    "jp": "立浪"
+   },
+   "pref": {
+    "en": "Hokkaido",
+    "jp": "北海道"
+   }
+  },
+  {
+   "id": 4235,
+   "shikona": {
+    "en": "Anhibiki",
+    "jp": "安響"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 20,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Ajigawa",
+    "jp": "安治川"
+   },
+   "pref": {
+    "en": "Aomori",
+    "jp": "青森県"
+   }
+  },
+  {
+   "id": 4065,
+   "shikona": {
+    "en": "Tochimusashi",
+    "jp": "栃武蔵"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 20,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kasugano",
+    "jp": "春日野"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 3415,
+   "shikona": {
+    "en": "Shimanoumi",
+    "jp": "志摩ノ海"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 21,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kise",
+    "jp": "木瀬"
+   },
+   "pref": {
+    "en": "Mie",
+    "jp": "三重県"
+   }
+  },
+  {
+   "id": 3356,
+   "shikona": {
+    "en": "Tochimaru",
+    "jp": "栃丸"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 21,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kasugano",
+    "jp": "春日野"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4194,
+   "shikona": {
+    "en": "Yumenofuji",
+    "jp": "夢之富士"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 22,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Ehime",
+    "jp": "愛媛県"
+   }
+  },
+  {
+   "id": 4128,
+   "shikona": {
+    "en": "Kyokumizuno",
+    "jp": "旭水野"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 22,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Oshima",
+    "jp": "大島"
+   },
+   "pref": {
+    "en": "Toyama",
+    "jp": "富山県"
+   }
+  },
+  {
+   "id": 4163,
+   "shikona": {
+    "en": "Ikazuchido",
+    "jp": "雷道"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 23,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Ikazuchi",
+    "jp": "雷"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 4188,
+   "shikona": {
+    "en": "Kobayashi",
+    "jp": "小林"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 23,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kasugano",
+    "jp": "春日野"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 4278,
+   "shikona": {
+    "en": "Yonezawaryu",
+    "jp": "米沢龍"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 24,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Sakaigawa",
+    "jp": "境川"
+   },
+   "pref": {
+    "en": "Yamagata",
+    "jp": "山形県"
+   }
+  },
+  {
+   "id": 4130,
+   "shikona": {
+    "en": "Gyokuozan",
+    "jp": "玉欧山"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 24,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Naruto",
+    "jp": "鳴戸"
+   },
+   "pref": {
+    "en": "Aichi",
+    "jp": "愛知県"
+   }
+  },
+  {
+   "id": 4342,
+   "shikona": {
+    "en": "Tatsubayama",
+    "jp": "龍葉山"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 25,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tokitsukaze",
+    "jp": "時津風"
+   },
+   "pref": {
+    "en": "Mongolia",
+    "jp": "モンゴル"
+   }
+  },
+  {
+   "id": 3312,
+   "shikona": {
+    "en": "Akua",
+    "jp": "天空海"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 25,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tatsunami",
+    "jp": "立浪"
+   },
+   "pref": {
+    "en": "Ibaraki",
+    "jp": "茨城県"
+   }
+  },
+  {
+   "id": 4170,
+   "shikona": {
+    "en": "Hananofuji",
+    "jp": "花の富士"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 26,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  },
+  {
+   "id": 3404,
+   "shikona": {
+    "en": "Shimazuumi",
+    "jp": "島津海"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 26,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Hanaregoma",
+    "jp": "放駒"
+   },
+   "pref": {
+    "en": "Kagoshima",
+    "jp": "鹿児島県"
+   }
+  },
+  {
+   "id": 4001,
+   "shikona": {
+    "en": "Asanoryu",
+    "jp": "朝ノ龍"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 27,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takasago",
+    "jp": "高砂"
+   },
+   "pref": {
+    "en": "Ishikawa",
+    "jp": "石川県"
+   }
+  },
+  {
+   "id": 4364,
+   "shikona": {
+    "en": "Shosei",
+    "jp": "翔盛"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 27,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Nakamura",
+    "jp": "中村"
+   },
+   "pref": {
+    "en": "Oita",
+    "jp": "大分県"
+   }
+  },
+  {
+   "id": 3950,
+   "shikona": {
+    "en": "Aratakayama",
+    "jp": "新隆山"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 28,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Minatogawa",
+    "jp": "湊川"
+   },
+   "pref": {
+    "en": "Osaka",
+    "jp": "大阪府"
+   }
+  },
+  {
+   "id": 4225,
+   "shikona": {
+    "en": "Anosho",
+    "jp": "安大翔"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 28,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Ajigawa",
+    "jp": "安治川"
+   },
+   "pref": {
+    "en": "Miyagi",
+    "jp": "宮城県"
+   }
+  },
+  {
+   "id": 4118,
+   "shikona": {
+    "en": "Hananoumi",
+    "jp": "花の海"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 29,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Nishonoseki",
+    "jp": "二所ノ関"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 3807,
+   "shikona": {
+    "en": "Kamito",
+    "jp": "上戸"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 29,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tatsunami",
+    "jp": "立浪"
+   },
+   "pref": {
+    "en": "Nagasaki",
+    "jp": "長崎県"
+   }
+  },
+  {
+   "id": 3978,
+   "shikona": {
+    "en": "Oshoryu",
+    "jp": "欧勝竜"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 30,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Naruto",
+    "jp": "鳴戸"
+   },
+   "pref": {
+    "en": "Osaka",
+    "jp": "大阪府"
+   }
+  },
+  {
+   "id": 4339,
+   "shikona": {
+    "en": "Kaki",
+    "jp": "可貴"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 30,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Oitekaze",
+    "jp": "追手風"
+   },
+   "pref": {
+    "en": "Ishikawa",
+    "jp": "石川県"
+   }
+  },
+  {
+   "id": 4166,
+   "shikona": {
+    "en": "Oyamada",
+    "jp": "欧山田"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 31,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Naruto",
+    "jp": "鳴戸"
+   },
+   "pref": {
+    "en": "Akita",
+    "jp": "秋田県"
+   }
+  },
+  {
+   "id": 4032,
+   "shikona": {
+    "en": "Nishiomoto",
+    "jp": "西御許"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 31,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Nakamura",
+    "jp": "中村"
+   },
+   "pref": {
+    "en": "Fukuoka",
+    "jp": "福岡県"
+   }
+  },
+  {
+   "id": 3879,
+   "shikona": {
+    "en": "Kaigo",
+    "jp": "魁郷"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 32,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Asakayama",
+    "jp": "浅香山"
+   },
+   "pref": {
+    "en": "Kagoshima",
+    "jp": "鹿児島県"
+   }
+  },
+  {
+   "id": 4354,
+   "shikona": {
+    "en": "Takahara",
+    "jp": "高原"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 32,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Futagoyama",
+    "jp": "二子山"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 4219,
+   "shikona": {
+    "en": "Ryuji",
+    "jp": "隆志"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 33,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Onomatsu",
+    "jp": "阿武松"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 4122,
+   "shikona": {
+    "en": "Toseiryu",
+    "jp": "東誠竜"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 33,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tamanoi",
+    "jp": "玉ノ井"
+   },
+   "pref": {
+    "en": "Fukuoka",
+    "jp": "福岡県"
+   }
+  },
+  {
+   "id": 3505,
+   "shikona": {
+    "en": "Takakento",
+    "jp": "貴健斗"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 34,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Minatogawa",
+    "jp": "湊川"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  },
+  {
+   "id": 3956,
+   "shikona": {
+    "en": "Ienoshima",
+    "jp": "家の島"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 34,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Yamahibiki",
+    "jp": "山響"
+   },
+   "pref": {
+    "en": "Hyogo",
+    "jp": "兵庫県"
+   }
+  },
+  {
+   "id": 3921,
+   "shikona": {
+    "en": "Awanokuni",
+    "jp": "安房乃国"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 35,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takadagawa",
+    "jp": "高田川"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 4100,
+   "shikona": {
+    "en": "Mienofuji",
+    "jp": "三重ノ富士"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 35,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Mie",
+    "jp": "三重県"
+   }
+  },
+  {
+   "id": 3948,
+   "shikona": {
+    "en": "Mineyaiba",
+    "jp": "峰刃"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 36,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Shikoroyama",
+    "jp": "錣山"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 4224,
+   "shikona": {
+    "en": "Shiroma",
+    "jp": "城間"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 36,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Onoe",
+    "jp": "尾上"
+   },
+   "pref": {
+    "en": "Okinawa",
+    "jp": "沖縄県"
+   }
+  },
+  {
+   "id": 4274,
+   "shikona": {
+    "en": "Shoryu",
+    "jp": "象竜"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 37,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Otowayama",
+    "jp": "音羽山"
+   },
+   "pref": {
+    "en": "Nagano",
+    "jp": "長野県"
+   }
+  },
+  {
+   "id": 4395,
+   "shikona": {
+    "en": "Honoikazuchi",
+    "jp": "火雷"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 37,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Ikazuchi",
+    "jp": "雷"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 3946,
+   "shikona": {
+    "en": "Kiyota",
+    "jp": "清田"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 38,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Dewanoumi",
+    "jp": "出羽海"
+   },
+   "pref": {
+    "en": "Fukushima",
+    "jp": "福島県"
+   }
+  },
+  {
+   "id": 3791,
+   "shikona": {
+    "en": "Kaishin",
+    "jp": "海真"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 38,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tagonoura",
+    "jp": "田子ノ浦"
+   },
+   "pref": {
+    "en": "Aomori",
+    "jp": "青森県"
+   }
+  },
+  {
+   "id": 4292,
+   "shikona": {
+    "en": "Tenrosei",
+    "jp": "天狼星"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 39,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Shikoroyama",
+    "jp": "錣山"
+   },
+   "pref": {
+    "en": "Mongolia",
+    "jp": "モンゴル"
+   }
+  },
+  {
+   "id": 2448,
+   "shikona": {
+    "en": "Kitaharima",
+    "jp": "北はり磨"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 39,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Yamahibiki",
+    "jp": "山響"
+   },
+   "pref": {
+    "en": "Hyogo",
+    "jp": "兵庫県"
+   }
+  },
+  {
+   "id": 4346,
+   "shikona": {
+    "en": "Kakueizan",
+    "jp": "鶴英山"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 40,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Otowayama",
+    "jp": "音羽山"
+   },
+   "pref": {
+    "en": "Toyama",
+    "jp": "富山県"
+   }
+  },
+  {
+   "id": 4253,
+   "shikona": {
+    "en": "Uzumasa",
+    "jp": "太秦"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 40,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isenoumi",
+    "jp": "伊勢ノ海"
+   },
+   "pref": {
+    "en": "Kyoto",
+    "jp": "京都府"
+   }
+  },
+  {
+   "id": 3379,
+   "shikona": {
+    "en": "Ikawasakura",
+    "jp": "井川桜良"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 41,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Nakamura",
+    "jp": "中村"
+   },
+   "pref": {
+    "en": "Akita",
+    "jp": "秋田県"
+   }
+  },
+  {
+   "id": 3784,
+   "shikona": {
+    "en": "Seigo",
+    "jp": "聖冴"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 41,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Shikoroyama",
+    "jp": "錣山"
+   },
+   "pref": {
+    "en": "Osaka",
+    "jp": "大阪府"
+   }
+  },
+  {
+   "id": 4240,
+   "shikona": {
+    "en": "Daimasakari",
+    "jp": "大斧"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 42,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Oitekaze",
+    "jp": "追手風"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 4025,
+   "shikona": {
+    "en": "Oshoumi",
+    "jp": "欧勝海"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 42,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Naruto",
+    "jp": "鳴戸"
+   },
+   "pref": {
+    "en": "Ishikawa",
+    "jp": "石川県"
+   }
+  },
+  {
+   "id": 3724,
+   "shikona": {
+    "en": "Tokunomusashi",
+    "jp": "徳之武藏"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 43,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Musashigawa",
+    "jp": "武蔵川"
+   },
+   "pref": {
+    "en": "Kagoshima",
+    "jp": "鹿児島県"
+   }
+  },
+  {
+   "id": 3936,
+   "shikona": {
+    "en": "Daishinkai",
+    "jp": "大新海"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 43,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Otake",
+    "jp": "大嶽"
+   },
+   "pref": {
+    "en": "Niigata",
+    "jp": "新潟県"
+   }
+  },
+  {
+   "id": 4370,
+   "shikona": {
+    "en": "Hakugetsuro",
+    "jp": "白月狼"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 44,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Asahiyama",
+    "jp": "朝日山"
+   },
+   "pref": {
+    "en": "Mongolia",
+    "jp": "モンゴル"
+   }
+  },
+  {
+   "id": 3770,
+   "shikona": {
+    "en": "Yoshiyasu",
+    "jp": "良安"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 44,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kise",
+    "jp": "木瀬"
+   },
+   "pref": {
+    "en": "Gifu",
+    "jp": "岐阜県"
+   }
+  },
+  {
+   "id": 3466,
+   "shikona": {
+    "en": "Kaisho",
+    "jp": "魁勝"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 45,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Asakayama",
+    "jp": "浅香山"
+   },
+   "pref": {
+    "en": "Aichi",
+    "jp": "愛知県"
+   }
+  },
+  {
+   "id": 3627,
+   "shikona": {
+    "en": "Oyamatoumi",
+    "jp": "大和湖"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 45,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Yamahibiki",
+    "jp": "山響"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 3846,
+   "shikona": {
+    "en": "Hinataryu",
+    "jp": "日向龍"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 46,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Musashigawa",
+    "jp": "武蔵川"
+   },
+   "pref": {
+    "en": "Miyazaki",
+    "jp": "宮崎県"
+   }
+  },
+  {
+   "id": 4024,
+   "shikona": {
+    "en": "Ieshima",
+    "jp": "家島"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 46,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Yamahibiki",
+    "jp": "山響"
+   },
+   "pref": {
+    "en": "Hyogo",
+    "jp": "兵庫県"
+   }
+  },
+  {
+   "id": 3528,
+   "shikona": {
+    "en": "Kaiseijo",
+    "jp": "魁清城"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 47,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Asakayama",
+    "jp": "浅香山"
+   },
+   "pref": {
+    "en": "Aichi",
+    "jp": "愛知県"
+   }
+  },
+  {
+   "id": 4272,
+   "shikona": {
+    "en": "Inanoyama",
+    "jp": "猪名の山"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 47,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Nishonoseki",
+    "jp": "二所ノ関"
+   },
+   "pref": {
+    "en": "Hyogo",
+    "jp": "兵庫県"
+   }
+  },
+  {
+   "id": 4135,
+   "shikona": {
+    "en": "Yamato",
+    "jp": "山藤"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 48,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Dewanoumi",
+    "jp": "出羽海"
+   },
+   "pref": {
+    "en": "Gifu",
+    "jp": "岐阜県"
+   }
+  },
+  {
+   "id": 3177,
+   "shikona": {
+    "en": "Tsurubayashi",
+    "jp": "つる林"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 48,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kise",
+    "jp": "木瀬"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  },
+  {
+   "id": 3023,
+   "shikona": {
+    "en": "Kototsubasa",
+    "jp": "琴翼"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 49,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Sadogatake",
+    "jp": "佐渡ヶ嶽"
+   },
+   "pref": {
+    "en": "Aichi",
+    "jp": "愛知県"
+   }
+  },
+  {
+   "id": 3966,
+   "shikona": {
+    "en": "Chiyotora",
+    "jp": "千代虎"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 49,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kokonoe",
+    "jp": "九重"
+   },
+   "pref": {
+    "en": "Saga",
+    "jp": "佐賀県"
+   }
+  },
+  {
+   "id": 3849,
+   "shikona": {
+    "en": "Asonoyama",
+    "jp": "阿蘇ノ山"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 50,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Sakaigawa",
+    "jp": "境川"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  },
+  {
+   "id": 3334,
+   "shikona": {
+    "en": "Hakuyozan",
+    "jp": "白鷹山"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 50,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Takadagawa",
+    "jp": "高田川"
+   },
+   "pref": {
+    "en": "Yamagata",
+    "jp": "山形県"
+   }
+  },
+  {
+   "id": 3583,
+   "shikona": {
+    "en": "Ohata",
+    "jp": "大畑"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 51,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tokitsukaze",
+    "jp": "時津風"
+   },
+   "pref": {
+    "en": "Miyagi",
+    "jp": "宮城県"
+   }
+  },
+  {
+   "id": 3970,
+   "shikona": {
+    "en": "Marusho",
+    "jp": "丸勝"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 51,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Naruto",
+    "jp": "鳴戸"
+   },
+   "pref": {
+    "en": "Niigata",
+    "jp": "新潟県"
+   }
+  },
+  {
+   "id": 3676,
+   "shikona": {
+    "en": "Asagyokusei",
+    "jp": "朝玉勢"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 52,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takasago",
+    "jp": "高砂"
+   },
+   "pref": {
+    "en": "Mie",
+    "jp": "三重県"
+   }
+  },
+  {
+   "id": 3396,
+   "shikona": {
+    "en": "Dewataikai",
+    "jp": "出羽大海"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 52,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Dewanoumi",
+    "jp": "出羽海"
+   },
+   "pref": {
+    "en": "Okinawa",
+    "jp": "沖縄県"
+   }
+  },
+  {
+   "id": 3992,
+   "shikona": {
+    "en": "Tendozan",
+    "jp": "天道山"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 53,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Fujishima",
+    "jp": "藤島"
+   },
+   "pref": {
+    "en": "Shizuoka",
+    "jp": "静岡県"
+   }
+  },
+  {
+   "id": 4046,
+   "shikona": {
+    "en": "Akiyoshi",
+    "jp": "秋良"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 53,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Onomatsu",
+    "jp": "阿武松"
+   },
+   "pref": {
+    "en": "Iwate",
+    "jp": "岩手県"
+   }
+  },
+  {
+   "id": 4293,
+   "shikona": {
+    "en": "Gonosho",
+    "jp": "豪ノ勝"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 54,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takekuma",
+    "jp": "武隈"
+   },
+   "pref": {
+    "en": "Aomori",
+    "jp": "青森県"
+   }
+  },
+  {
+   "id": 3165,
+   "shikona": {
+    "en": "Asakoki",
+    "jp": "朝興貴"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 54,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Takasago",
+    "jp": "高砂"
+   },
+   "pref": {
+    "en": "Hyogo",
+    "jp": "兵庫県"
+   }
+  },
+  {
+   "id": 4270,
+   "shikona": {
+    "en": "Tokitenran",
+    "jp": "時天嵐"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 55,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tokitsukaze",
+    "jp": "時津風"
+   },
+   "pref": {
+    "en": "Aomori",
+    "jp": "青森県"
+   }
+  },
+  {
+   "id": 4260,
+   "shikona": {
+    "en": "Seiyu",
+    "jp": "誠雄"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 55,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Hidenoyama",
+    "jp": "秀ノ山"
+   },
+   "pref": {
+    "en": "Fukuoka",
+    "jp": "福岡県"
+   }
+  },
+  {
+   "id": 4062,
+   "shikona": {
+    "en": "Hogasho",
+    "jp": "豊雅将"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 56,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tokitsukaze",
+    "jp": "時津風"
+   },
+   "pref": {
+    "en": "Ishikawa",
+    "jp": "石川県"
+   }
+  },
+  {
+   "id": 3523,
+   "shikona": {
+    "en": "Tochiseiryu",
+    "jp": "栃清龍"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 56,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kasugano",
+    "jp": "春日野"
+   },
+   "pref": {
+    "en": "Gifu",
+    "jp": "岐阜県"
+   }
+  },
+  {
+   "id": 3765,
+   "shikona": {
+    "en": "Hamanoumi",
+    "jp": "濱ノ海"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 57,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tokitsukaze",
+    "jp": "時津風"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 4178,
+   "shikona": {
+    "en": "Kazeeidai",
+    "jp": "風栄大"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 57,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Oshiogawa",
+    "jp": "押尾川"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 4280,
+   "shikona": {
+    "en": "Goseizan",
+    "jp": "豪聖山"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 58,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takekuma",
+    "jp": "武隈"
+   },
+   "pref": {
+    "en": "Mongolia",
+    "jp": "モンゴル"
+   }
+  },
+  {
+   "id": 3898,
+   "shikona": {
+    "en": "Kawamura",
+    "jp": "川村"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 58,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Naruto",
+    "jp": "鳴戸"
+   },
+   "pref": {
+    "en": "Mie",
+    "jp": "三重県"
+   }
+  },
+  {
+   "id": 3955,
+   "shikona": {
+    "en": "Hakuonada",
+    "jp": "白旺灘"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 59,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Yamahibiki",
+    "jp": "山響"
+   },
+   "pref": {
+    "en": "Hyogo",
+    "jp": "兵庫県"
+   }
+  },
+  {
+   "id": 3327,
+   "shikona": {
+    "en": "Hamayutaka",
+    "jp": "濱豊"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 59,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tokitsukaze",
+    "jp": "時津風"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 4189,
+   "shikona": {
+    "en": "Gonoumi",
+    "jp": "豪ノ湖"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 60,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takekuma",
+    "jp": "武隈"
+   },
+   "pref": {
+    "en": "Shiga",
+    "jp": "滋賀県"
+   }
+  },
+  {
+   "id": 4156,
+   "shikona": {
+    "en": "Izumifuji",
+    "jp": "泉富士"
+   },
+   "division": "makushita",
+   "rankCode": 700,
+   "rankNumber": 60,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Osaka",
+    "jp": "大阪府"
+   }
+  },
+  {
+   "id": 4002,
+   "shikona": {
+    "en": "Naya",
+    "jp": "納谷"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 1,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Otake",
+    "jp": "大嶽"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4184,
+   "shikona": {
+    "en": "Satorufuji",
+    "jp": "聖富士"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 1,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Shizuoka",
+    "jp": "静岡県"
+   }
+  },
+  {
+   "id": 3837,
+   "shikona": {
+    "en": "Tenei",
+    "jp": "天惠"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 2,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takadagawa",
+    "jp": "高田川"
+   },
+   "pref": {
+    "en": "Osaka",
+    "jp": "大阪府"
+   }
+  },
+  {
+   "id": 4102,
+   "shikona": {
+    "en": "Kiryuko",
+    "jp": "木竜皇"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 2,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tatsunami",
+    "jp": "立浪"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 4208,
+   "shikona": {
+    "en": "Soma",
+    "jp": "相馬"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 3,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Futagoyama",
+    "jp": "二子山"
+   },
+   "pref": {
+    "en": "Tochigi",
+    "jp": "栃木県"
+   }
+  },
+  {
+   "id": 3852,
+   "shikona": {
+    "en": "Tenshoma",
+    "jp": "天照馬"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 3,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Arashio",
+    "jp": "荒汐"
+   },
+   "pref": {
+    "en": "Miyazaki",
+    "jp": "宮崎県"
+   }
+  },
+  {
+   "id": 3617,
+   "shikona": {
+    "en": "Higonoumi",
+    "jp": "肥後ノ海"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 4,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kise",
+    "jp": "木瀬"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  },
+  {
+   "id": 4281,
+   "shikona": {
+    "en": "Shimizuumi",
+    "jp": "清水海"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 4,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sakaigawa",
+    "jp": "境川"
+   },
+   "pref": {
+    "en": "Kochi",
+    "jp": "高知県"
+   }
+  },
+  {
+   "id": 4282,
+   "shikona": {
+    "en": "Musubiyama",
+    "jp": "結山"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 5,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Hanaregoma",
+    "jp": "放駒"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4295,
+   "shikona": {
+    "en": "Okada",
+    "jp": "岡田"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 5,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Takadagawa",
+    "jp": "高田川"
+   },
+   "pref": {
+    "en": "Shimane",
+    "jp": "島根県"
+   }
+  },
+  {
+   "id": 4359,
+   "shikona": {
+    "en": "Kazemitsuki",
+    "jp": "風光希"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 6,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Oshiogawa",
+    "jp": "押尾川"
+   },
+   "pref": {
+    "en": "Iwate",
+    "jp": "岩手県"
+   }
+  },
+  {
+   "id": 4173,
+   "shikona": {
+    "en": "Kazenoumi",
+    "jp": "風の湖"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 6,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Oshiogawa",
+    "jp": "押尾川"
+   },
+   "pref": {
+    "en": "Mongolia",
+    "jp": "モンゴル"
+   }
+  },
+  {
+   "id": 4143,
+   "shikona": {
+    "en": "Dairinzan",
+    "jp": "大凜山"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 7,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Arashio",
+    "jp": "荒汐"
+   },
+   "pref": {
+    "en": "Aichi",
+    "jp": "愛知県"
+   }
+  },
+  {
+   "id": 4380,
+   "shikona": {
+    "en": "Kaida",
+    "jp": "甲斐田"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 7,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kasugano",
+    "jp": "春日野"
+   },
+   "pref": {
+    "en": "Oita",
+    "jp": "大分県"
+   }
+  },
+  {
+   "id": 3995,
+   "shikona": {
+    "en": "Kirinryu",
+    "jp": "麒麟龍"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 8,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Nishonoseki",
+    "jp": "二所ノ関"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4057,
+   "shikona": {
+    "en": "Goosho",
+    "jp": "豪欧勝"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 8,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Naruto",
+    "jp": "鳴戸"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 4246,
+   "shikona": {
+    "en": "Suzunofuji",
+    "jp": "鈴ノ富士"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 9,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Shizuoka",
+    "jp": "静岡県"
+   }
+  },
+  {
+   "id": 4351,
+   "shikona": {
+    "en": "Yabugasaki",
+    "jp": "藪ヶ崎"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 9,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Yamahibiki",
+    "jp": "山響"
+   },
+   "pref": {
+    "en": "Hyogo",
+    "jp": "兵庫県"
+   }
+  },
+  {
+   "id": 3632,
+   "shikona": {
+    "en": "Akitoba",
+    "jp": "諒兎馬"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 10,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Minato",
+    "jp": "湊"
+   },
+   "pref": {
+    "en": "Aichi",
+    "jp": "愛知県"
+   }
+  },
+  {
+   "id": 3508,
+   "shikona": {
+    "en": "Bushozan",
+    "jp": "武将山"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 10,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Fujishima",
+    "jp": "藤島"
+   },
+   "pref": {
+    "en": "Ibaraki",
+    "jp": "茨城県"
+   }
+  },
+  {
+   "id": 3654,
+   "shikona": {
+    "en": "Tosamidori",
+    "jp": "土佐緑"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 11,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Onomatsu",
+    "jp": "阿武松"
+   },
+   "pref": {
+    "en": "Kochi",
+    "jp": "高知県"
+   }
+  },
+  {
+   "id": 4071,
+   "shikona": {
+    "en": "Amao",
+    "jp": "尼王"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 11,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Nishonoseki",
+    "jp": "二所ノ関"
+   },
+   "pref": {
+    "en": "Hyogo",
+    "jp": "兵庫県"
+   }
+  },
+  {
+   "id": 3769,
+   "shikona": {
+    "en": "Amane",
+    "jp": "天"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 12,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Shikoroyama",
+    "jp": "錣山"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 3344,
+   "shikona": {
+    "en": "Oka",
+    "jp": "鷹翔"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 12,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Minato",
+    "jp": "湊"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 4252,
+   "shikona": {
+    "en": "Ikazuchiarashi",
+    "jp": "雷嵐"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 13,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Ikazuchi",
+    "jp": "雷"
+   },
+   "pref": {
+    "en": "Oita",
+    "jp": "大分県"
+   }
+  },
+  {
+   "id": 4149,
+   "shikona": {
+    "en": "Rinko",
+    "jp": "麟虎"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 13,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Nishonoseki",
+    "jp": "二所ノ関"
+   },
+   "pref": {
+    "en": "Nagano",
+    "jp": "長野県"
+   }
+  },
+  {
+   "id": 4083,
+   "shikona": {
+    "en": "Takashoki",
+    "jp": "隆勝生"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 14,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Minatogawa",
+    "jp": "湊川"
+   },
+   "pref": {
+    "en": "Aichi",
+    "jp": "愛知県"
+   }
+  },
+  {
+   "id": 3928,
+   "shikona": {
+    "en": "Denuma",
+    "jp": "出沼"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 14,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Futagoyama",
+    "jp": "二子山"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 4238,
+   "shikona": {
+    "en": "Kyokutairyu",
+    "jp": "旭大龍"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 15,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Oshima",
+    "jp": "大島"
+   },
+   "pref": {
+    "en": "Hokkaido",
+    "jp": "北海道"
+   }
+  },
+  {
+   "id": 4204,
+   "shikona": {
+    "en": "Higonomaru",
+    "jp": "肥後ノ丸"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 15,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kise",
+    "jp": "木瀬"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  },
+  {
+   "id": 3586,
+   "shikona": {
+    "en": "Kiyonoumi",
+    "jp": "清乃海"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 16,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tamanoi",
+    "jp": "玉ノ井"
+   },
+   "pref": {
+    "en": "Nagano",
+    "jp": "長野県"
+   }
+  },
+  {
+   "id": 3477,
+   "shikona": {
+    "en": "Okinohama",
+    "jp": "隠岐の浜"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 16,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Hakkaku",
+    "jp": "八角"
+   },
+   "pref": {
+    "en": "Shimane",
+    "jp": "島根県"
+   }
+  },
+  {
+   "id": 4362,
+   "shikona": {
+    "en": "Sekishoryu",
+    "jp": "関将竜"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 17,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Sakaigawa",
+    "jp": "境川"
+   },
+   "pref": {
+    "en": "Fukuoka",
+    "jp": "福岡県"
+   }
+  },
+  {
+   "id": 4088,
+   "shikona": {
+    "en": "Kassho",
+    "jp": "滑翔"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 17,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Yamahibiki",
+    "jp": "山響"
+   },
+   "pref": {
+    "en": "Hyogo",
+    "jp": "兵庫県"
+   }
+  },
+  {
+   "id": 4103,
+   "shikona": {
+    "en": "Shunrai",
+    "jp": "春雷"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 18,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tatsunami",
+    "jp": "立浪"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 3685,
+   "shikona": {
+    "en": "Asashinjo",
+    "jp": "朝心誠"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 18,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Takasago",
+    "jp": "高砂"
+   },
+   "pref": {
+    "en": "Aichi",
+    "jp": "愛知県"
+   }
+  },
+  {
+   "id": 4233,
+   "shikona": {
+    "en": "Daigoyama",
+    "jp": "醍醐山"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 19,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Isenoumi",
+    "jp": "伊勢ノ海"
+   },
+   "pref": {
+    "en": "Kyoto",
+    "jp": "京都府"
+   }
+  },
+  {
+   "id": 3829,
+   "shikona": {
+    "en": "Harunishiki",
+    "jp": "悠錦"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 19,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Asahiyama",
+    "jp": "朝日山"
+   },
+   "pref": {
+    "en": "Ibaraki",
+    "jp": "茨城県"
+   }
+  },
+  {
+   "id": 4374,
+   "shikona": {
+    "en": "Kawazoe",
+    "jp": "川副"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 20,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Ajigawa",
+    "jp": "安治川"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  },
+  {
+   "id": 4004,
+   "shikona": {
+    "en": "Kotetsu",
+    "jp": "虎徹"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 20,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Otake",
+    "jp": "大嶽"
+   },
+   "pref": {
+    "en": "Mie",
+    "jp": "三重県"
+   }
+  },
+  {
+   "id": 4027,
+   "shikona": {
+    "en": "Teraosho",
+    "jp": "寺尾松"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 21,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Shikoroyama",
+    "jp": "錣山"
+   },
+   "pref": {
+    "en": "Yamaguchi",
+    "jp": "山口県"
+   }
+  },
+  {
+   "id": 3250,
+   "shikona": {
+    "en": "Chiyonoo",
+    "jp": "千代ノ皇"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 21,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kokonoe",
+    "jp": "九重"
+   },
+   "pref": {
+    "en": "Kagoshima",
+    "jp": "鹿児島県"
+   }
+  },
+  {
+   "id": 3754,
+   "shikona": {
+    "en": "Wakaterumoto",
+    "jp": "若輝元"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 22,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Shikoroyama",
+    "jp": "錣山"
+   },
+   "pref": {
+    "en": "Yamaguchi",
+    "jp": "山口県"
+   }
+  },
+  {
+   "id": 3163,
+   "shikona": {
+    "en": "Tochinobori",
+    "jp": "栃登"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 22,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kasugano",
+    "jp": "春日野"
+   },
+   "pref": {
+    "en": "Ishikawa",
+    "jp": "石川県"
+   }
+  },
+  {
+   "id": 2476,
+   "shikona": {
+    "en": "Nionoumi",
+    "jp": "鳰の湖"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 23,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Yamahibiki",
+    "jp": "山響"
+   },
+   "pref": {
+    "en": "Shiga",
+    "jp": "滋賀県"
+   }
+  },
+  {
+   "id": 4239,
+   "shikona": {
+    "en": "Kyokutendo",
+    "jp": "旭天道"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 23,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Oshima",
+    "jp": "大島"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 4075,
+   "shikona": {
+    "en": "Kiyonohana",
+    "jp": "清の花"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 24,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Dewanoumi",
+    "jp": "出羽海"
+   },
+   "pref": {
+    "en": "Fukushima",
+    "jp": "福島県"
+   }
+  },
+  {
+   "id": 3897,
+   "shikona": {
+    "en": "Tokinohira",
+    "jp": "時乃平"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 24,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tokitsukaze",
+    "jp": "時津風"
+   },
+   "pref": {
+    "en": "Iwate",
+    "jp": "岩手県"
+   }
+  },
+  {
+   "id": 3557,
+   "shikona": {
+    "en": "Sadanohikari",
+    "jp": "佐田ノ輝"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 25,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Sakaigawa",
+    "jp": "境川"
+   },
+   "pref": {
+    "en": "Mongolia",
+    "jp": "モンゴル"
+   }
+  },
+  {
+   "id": 4176,
+   "shikona": {
+    "en": "Kototaiko",
+    "jp": "琴泰広"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 25,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sadogatake",
+    "jp": "佐渡ヶ嶽"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 4396,
+   "shikona": {
+    "en": "Kakizoe",
+    "jp": "垣添"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 26,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Ikazuchi",
+    "jp": "雷"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4146,
+   "shikona": {
+    "en": "Rakanji",
+    "jp": "羅漢児"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 26,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Nishonoseki",
+    "jp": "二所ノ関"
+   },
+   "pref": {
+    "en": "Oita",
+    "jp": "大分県"
+   }
+  },
+  {
+   "id": 3454,
+   "shikona": {
+    "en": "Chiyonokatsu",
+    "jp": "千代の勝"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 27,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kokonoe",
+    "jp": "九重"
+   },
+   "pref": {
+    "en": "Okinawa",
+    "jp": "沖縄県"
+   }
+  },
+  {
+   "id": 3580,
+   "shikona": {
+    "en": "Shohoryu",
+    "jp": "将豊竜"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 27,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tokitsukaze",
+    "jp": "時津風"
+   },
+   "pref": {
+    "en": "Akita",
+    "jp": "秋田県"
+   }
+  },
+  {
+   "id": 3886,
+   "shikona": {
+    "en": "Hokutosakae",
+    "jp": "北勝栄"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 28,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Hakkaku",
+    "jp": "八角"
+   },
+   "pref": {
+    "en": "Hokkaido",
+    "jp": "北海道"
+   }
+  },
+  {
+   "id": 3918,
+   "shikona": {
+    "en": "Kotodaishin",
+    "jp": "琴大進"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 28,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sadogatake",
+    "jp": "佐渡ヶ嶽"
+   },
+   "pref": {
+    "en": "Gifu",
+    "jp": "岐阜県"
+   }
+  },
+  {
+   "id": 3805,
+   "shikona": {
+    "en": "Churafuji",
+    "jp": "美富士"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 29,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Okinawa",
+    "jp": "沖縄県"
+   }
+  },
+  {
+   "id": 4361,
+   "shikona": {
+    "en": "Wakanofuji",
+    "jp": "和歌ノ富士"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 29,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kasugano",
+    "jp": "春日野"
+   },
+   "pref": {
+    "en": "Mongolia",
+    "jp": "モンゴル"
+   }
+  },
+  {
+   "id": 3942,
+   "shikona": {
+    "en": "Asahabataki",
+    "jp": "朝翔"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 30,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takasago",
+    "jp": "高砂"
+   },
+   "pref": {
+    "en": "Aichi",
+    "jp": "愛知県"
+   }
+  },
+  {
+   "id": 3881,
+   "shikona": {
+    "en": "Kojikara",
+    "jp": "小力"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 30,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tagonoura",
+    "jp": "田子ノ浦"
+   },
+   "pref": {
+    "en": "Tochigi",
+    "jp": "栃木県"
+   }
+  },
+  {
+   "id": 4182,
+   "shikona": {
+    "en": "Gohakuun",
+    "jp": "豪白雲"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 31,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takekuma",
+    "jp": "武隈"
+   },
+   "pref": {
+    "en": "Hyogo",
+    "jp": "兵庫県"
+   }
+  },
+  {
+   "id": 3901,
+   "shikona": {
+    "en": "Chiyotaiyo",
+    "jp": "千代太陽"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 31,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kokonoe",
+    "jp": "九重"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4104,
+   "shikona": {
+    "en": "Miyanokaze",
+    "jp": "宮乃風"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 32,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Nakamura",
+    "jp": "中村"
+   },
+   "pref": {
+    "en": "Okinawa",
+    "jp": "沖縄県"
+   }
+  },
+  {
+   "id": 3975,
+   "shikona": {
+    "en": "Araoyama",
+    "jp": "荒雄山"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 32,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Onomatsu",
+    "jp": "阿武松"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 3478,
+   "shikona": {
+    "en": "Yutakasho",
+    "jp": "豊翔"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 33,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Sakaigawa",
+    "jp": "境川"
+   },
+   "pref": {
+    "en": "Kagoshima",
+    "jp": "鹿児島県"
+   }
+  },
+  {
+   "id": 4174,
+   "shikona": {
+    "en": "Kitanosho",
+    "jp": "北乃庄"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 33,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Hanaregoma",
+    "jp": "放駒"
+   },
+   "pref": {
+    "en": "Fukui",
+    "jp": "福井県"
+   }
+  },
+  {
+   "id": 4296,
+   "shikona": {
+    "en": "Wakaikazuchi",
+    "jp": "若雷"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 34,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Ikazuchi",
+    "jp": "雷"
+   },
+   "pref": {
+    "en": "Oita",
+    "jp": "大分県"
+   }
+  },
+  {
+   "id": 4019,
+   "shikona": {
+    "en": "Takanoryu",
+    "jp": "隆の龍"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 34,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tagonoura",
+    "jp": "田子ノ浦"
+   },
+   "pref": {
+    "en": "Fukuoka",
+    "jp": "福岡県"
+   }
+  },
+  {
+   "id": 3729,
+   "shikona": {
+    "en": "Wakenokaze",
+    "jp": "和気乃風"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 35,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Nakamura",
+    "jp": "中村"
+   },
+   "pref": {
+    "en": "Okayama",
+    "jp": "岡山県"
+   }
+  },
+  {
+   "id": 4183,
+   "shikona": {
+    "en": "Gonowaka",
+    "jp": "豪乃若"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 35,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Takekuma",
+    "jp": "武隈"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 4160,
+   "shikona": {
+    "en": "Suyama",
+    "jp": "須山"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 36,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kise",
+    "jp": "木瀬"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 4091,
+   "shikona": {
+    "en": "Aron",
+    "jp": "阿龍"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 36,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Nakamura",
+    "jp": "中村"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 3296,
+   "shikona": {
+    "en": "Fujinowaka",
+    "jp": "藤乃若"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 37,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Fujishima",
+    "jp": "藤島"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 3690,
+   "shikona": {
+    "en": "Hokutoryu",
+    "jp": "北勝龍"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 37,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Hakkaku",
+    "jp": "八角"
+   },
+   "pref": {
+    "en": "Hokkaido",
+    "jp": "北海道"
+   }
+  },
+  {
+   "id": 4052,
+   "shikona": {
+    "en": "Minorufuji",
+    "jp": "実富士"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 38,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 4054,
+   "shikona": {
+    "en": "Kyoda",
+    "jp": "許田"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 38,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Futagoyama",
+    "jp": "二子山"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 3779,
+   "shikona": {
+    "en": "Chiyotaiho",
+    "jp": "千代大宝"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 39,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kokonoe",
+    "jp": "九重"
+   },
+   "pref": {
+    "en": "Yamaguchi",
+    "jp": "山口県"
+   }
+  },
+  {
+   "id": 4041,
+   "shikona": {
+    "en": "Otsuna",
+    "jp": "大綱"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 39,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isenoumi",
+    "jp": "伊勢ノ海"
+   },
+   "pref": {
+    "en": "Fukuoka",
+    "jp": "福岡県"
+   }
+  },
+  {
+   "id": 4185,
+   "shikona": {
+    "en": "Agora",
+    "jp": "安強羅"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 40,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Ajigawa",
+    "jp": "安治川"
+   },
+   "pref": {
+    "en": "Gifu",
+    "jp": "岐阜県"
+   }
+  },
+  {
+   "id": 3239,
+   "shikona": {
+    "en": "Oginohama",
+    "jp": "小城ノ浜"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 40,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Dewanoumi",
+    "jp": "出羽海"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 3500,
+   "shikona": {
+    "en": "Shinyashiki",
+    "jp": "新屋敷"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 41,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Otake",
+    "jp": "大嶽"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 4081,
+   "shikona": {
+    "en": "Goseiryu",
+    "jp": "豪正龍"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 41,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Takekuma",
+    "jp": "武隈"
+   },
+   "pref": {
+    "en": "Aomori",
+    "jp": "青森県"
+   }
+  },
+  {
+   "id": 4134,
+   "shikona": {
+    "en": "Takaarashi",
+    "jp": "隆嵐"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 42,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tagonoura",
+    "jp": "田子ノ浦"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 4382,
+   "shikona": {
+    "en": "Ryusei",
+    "jp": "隆晟"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 42,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kise",
+    "jp": "木瀬"
+   },
+   "pref": {
+    "en": "Gifu",
+    "jp": "岐阜県"
+   }
+  },
+  {
+   "id": 4140,
+   "shikona": {
+    "en": "Shoran",
+    "jp": "松蘭"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 43,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Hanaregoma",
+    "jp": "放駒"
+   },
+   "pref": {
+    "en": "Aichi",
+    "jp": "愛知県"
+   }
+  },
+  {
+   "id": 3919,
+   "shikona": {
+    "en": "Hodaka",
+    "jp": "穂嵩"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 43,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Onoe",
+    "jp": "尾上"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  },
+  {
+   "id": 4047,
+   "shikona": {
+    "en": "Hoshuzan",
+    "jp": "峰洲山"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 44,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Naruto",
+    "jp": "鳴戸"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 2914,
+   "shikona": {
+    "en": "Chiyoraizan",
+    "jp": "千代雷山"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 44,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kokonoe",
+    "jp": "九重"
+   },
+   "pref": {
+    "en": "Wakayama",
+    "jp": "和歌山県"
+   }
+  },
+  {
+   "id": 4154,
+   "shikona": {
+    "en": "Tokikenryu",
+    "jp": "時健龍"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 45,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tokitsukaze",
+    "jp": "時津風"
+   },
+   "pref": {
+    "en": "Oita",
+    "jp": "大分県"
+   }
+  },
+  {
+   "id": 4003,
+   "shikona": {
+    "en": "Kiboho",
+    "jp": "喜望鵬"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 45,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Otake",
+    "jp": "大嶽"
+   },
+   "pref": {
+    "en": "Gifu",
+    "jp": "岐阜県"
+   }
+  },
+  {
+   "id": 3555,
+   "shikona": {
+    "en": "Kaishinmaru",
+    "jp": "魁新丸"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 46,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Asakayama",
+    "jp": "浅香山"
+   },
+   "pref": {
+    "en": "Osaka",
+    "jp": "大阪府"
+   }
+  },
+  {
+   "id": 3945,
+   "shikona": {
+    "en": "Kototaiho",
+    "jp": "琴太豊"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 46,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sadogatake",
+    "jp": "佐渡ヶ嶽"
+   },
+   "pref": {
+    "en": "Fukuoka",
+    "jp": "福岡県"
+   }
+  },
+  {
+   "id": 3932,
+   "shikona": {
+    "en": "Tomiyutaka",
+    "jp": "富豊"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 47,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tokitsukaze",
+    "jp": "時津風"
+   },
+   "pref": {
+    "en": "Toyama",
+    "jp": "富山県"
+   }
+  },
+  {
+   "id": 3926,
+   "shikona": {
+    "en": "Daihisho",
+    "jp": "大飛翔"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 47,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Oitekaze",
+    "jp": "追手風"
+   },
+   "pref": {
+    "en": "Ehime",
+    "jp": "愛媛県"
+   }
+  },
+  {
+   "id": 4017,
+   "shikona": {
+    "en": "Matsugi",
+    "jp": "松木"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 48,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tagonoura",
+    "jp": "田子ノ浦"
+   },
+   "pref": {
+    "en": "Ehime",
+    "jp": "愛媛県"
+   }
+  },
+  {
+   "id": 3958,
+   "shikona": {
+    "en": "Hakuda",
+    "jp": "白蛇"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 48,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Asahiyama",
+    "jp": "朝日山"
+   },
+   "pref": {
+    "en": "Gunma",
+    "jp": "群馬県"
+   }
+  },
+  {
+   "id": 3764,
+   "shikona": {
+    "en": "Hakuomaru",
+    "jp": "柏王丸"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 49,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tokitsukaze",
+    "jp": "時津風"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 4247,
+   "shikona": {
+    "en": "Ayanofuji",
+    "jp": "絢ノ富士"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 49,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Kagoshima",
+    "jp": "鹿児島県"
+   }
+  },
+  {
+   "id": 3900,
+   "shikona": {
+    "en": "Awanoumi",
+    "jp": "淡の海"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 50,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Naruto",
+    "jp": "鳴戸"
+   },
+   "pref": {
+    "en": "Hyogo",
+    "jp": "兵庫県"
+   }
+  },
+  {
+   "id": 3823,
+   "shikona": {
+    "en": "Shoji",
+    "jp": "庄司"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 50,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Musashigawa",
+    "jp": "武蔵川"
+   },
+   "pref": {
+    "en": "Akita",
+    "jp": "秋田県"
+   }
+  },
+  {
+   "id": 3465,
+   "shikona": {
+    "en": "Toshoyama",
+    "jp": "東照山"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 51,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tamanoi",
+    "jp": "玉ノ井"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 4251,
+   "shikona": {
+    "en": "Tochiaoi",
+    "jp": "栃葵"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 51,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kasugano",
+    "jp": "春日野"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 3828,
+   "shikona": {
+    "en": "Yurikisho",
+    "jp": "優力勝"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 52,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Minatogawa",
+    "jp": "湊川"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 3962,
+   "shikona": {
+    "en": "Koki",
+    "jp": "昂輝"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 52,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Minato",
+    "jp": "湊"
+   },
+   "pref": {
+    "en": "Aichi",
+    "jp": "愛知県"
+   }
+  },
+  {
+   "id": 4363,
+   "shikona": {
+    "en": "Asasubaru",
+    "jp": "朝昴"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 53,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takasago",
+    "jp": "高砂"
+   },
+   "pref": {
+    "en": "Aomori",
+    "jp": "青森県"
+   }
+  },
+  {
+   "id": 3935,
+   "shikona": {
+    "en": "Nishikikuni",
+    "jp": "錦国"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 53,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Shibatayama",
+    "jp": "芝田山"
+   },
+   "pref": {
+    "en": "Yamaguchi",
+    "jp": "山口県"
+   }
+  },
+  {
+   "id": 3395,
+   "shikona": {
+    "en": "Seido",
+    "jp": "誠道"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 54,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Minato",
+    "jp": "湊"
+   },
+   "pref": {
+    "en": "Gunma",
+    "jp": "群馬県"
+   }
+  },
+  {
+   "id": 3600,
+   "shikona": {
+    "en": "Kenshin",
+    "jp": "謙信"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 54,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sakaigawa",
+    "jp": "境川"
+   },
+   "pref": {
+    "en": "Niigata",
+    "jp": "新潟県"
+   }
+  },
+  {
+   "id": 4389,
+   "shikona": {
+    "en": "Nojima",
+    "jp": "野島"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 55,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Nishonoseki",
+    "jp": "二所ノ関"
+   },
+   "pref": {
+    "en": "Oita",
+    "jp": "大分県"
+   }
+  },
+  {
+   "id": 4334,
+   "shikona": {
+    "en": "Shironoryu",
+    "jp": "城乃龍"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 55,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sakaigawa",
+    "jp": "境川"
+   },
+   "pref": {
+    "en": "Tottori",
+    "jp": "鳥取県"
+   }
+  },
+  {
+   "id": 4072,
+   "shikona": {
+    "en": "Taniguchi",
+    "jp": "谷口"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 56,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Nishonoseki",
+    "jp": "二所ノ関"
+   },
+   "pref": {
+    "en": "Hyogo",
+    "jp": "兵庫県"
+   }
+  },
+  {
+   "id": 4159,
+   "shikona": {
+    "en": "Najima",
+    "jp": "名島"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 56,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Minato",
+    "jp": "湊"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  },
+  {
+   "id": 4228,
+   "shikona": {
+    "en": "Kikunoshiro",
+    "jp": "菊ノ城"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 57,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Hidenoyama",
+    "jp": "秀ノ山"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4179,
+   "shikona": {
+    "en": "Fujinoshin",
+    "jp": "藤ノ進"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 57,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Fujishima",
+    "jp": "藤島"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 3999,
+   "shikona": {
+    "en": "Suigafuji",
+    "jp": "翠河富士"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 58,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Ibaraki",
+    "jp": "茨城県"
+   }
+  },
+  {
+   "id": 3809,
+   "shikona": {
+    "en": "Taranami",
+    "jp": "多良浪"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 58,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tatsunami",
+    "jp": "立浪"
+   },
+   "pref": {
+    "en": "Nagasaki",
+    "jp": "長崎県"
+   }
+  },
+  {
+   "id": 3564,
+   "shikona": {
+    "en": "Ryuma",
+    "jp": "流馬"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 59,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Hanaregoma",
+    "jp": "放駒"
+   },
+   "pref": {
+    "en": "Aichi",
+    "jp": "愛知県"
+   }
+  },
+  {
+   "id": 3386,
+   "shikona": {
+    "en": "Hokutoshu",
+    "jp": "北勝就"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 59,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Hakkaku",
+    "jp": "八角"
+   },
+   "pref": {
+    "en": "Hiroshima",
+    "jp": "広島県"
+   }
+  },
+  {
+   "id": 3645,
+   "shikona": {
+    "en": "Tosashimizu",
+    "jp": "土佐清水"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 60,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tokitsukaze",
+    "jp": "時津風"
+   },
+   "pref": {
+    "en": "Kochi",
+    "jp": "高知県"
+   }
+  },
+  {
+   "id": 4061,
+   "shikona": {
+    "en": "Kyokutaiga",
+    "jp": "旭大海"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 60,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Oshima",
+    "jp": "大島"
+   },
+   "pref": {
+    "en": "Hokkaido",
+    "jp": "北海道"
+   }
+  },
+  {
+   "id": 3560,
+   "shikona": {
+    "en": "Kuranofuji",
+    "jp": "蔵ノ富士"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 61,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Fukuoka",
+    "jp": "福岡県"
+   }
+  },
+  {
+   "id": 4236,
+   "shikona": {
+    "en": "Anryukai",
+    "jp": "安琉海"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 61,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Ajigawa",
+    "jp": "安治川"
+   },
+   "pref": {
+    "en": "Okinawa",
+    "jp": "沖縄県"
+   }
+  },
+  {
+   "id": 2569,
+   "shikona": {
+    "en": "Fujiazuma",
+    "jp": "富士東"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 62,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tamanoi",
+    "jp": "玉ノ井"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 3019,
+   "shikona": {
+    "en": "Ebisumaru",
+    "jp": "恵比寿丸"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 62,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Takadagawa",
+    "jp": "高田川"
+   },
+   "pref": {
+    "en": "Hyogo",
+    "jp": "兵庫県"
+   }
+  },
+  {
+   "id": 4058,
+   "shikona": {
+    "en": "Tenryuyama",
+    "jp": "天竜山"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 63,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Dewanoumi",
+    "jp": "出羽海"
+   },
+   "pref": {
+    "en": "Shizuoka",
+    "jp": "静岡県"
+   }
+  },
+  {
+   "id": 4203,
+   "shikona": {
+    "en": "Kiyonoyama",
+    "jp": "清の山"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 63,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Dewanoumi",
+    "jp": "出羽海"
+   },
+   "pref": {
+    "en": "Fukushima",
+    "jp": "福島県"
+   }
+  },
+  {
+   "id": 3875,
+   "shikona": {
+    "en": "Asazenshin",
+    "jp": "朝前進"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 64,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takasago",
+    "jp": "高砂"
+   },
+   "pref": {
+    "en": "Niigata",
+    "jp": "新潟県"
+   }
+  },
+  {
+   "id": 4216,
+   "shikona": {
+    "en": "Kazeyuki",
+    "jp": "風佑城"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 64,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Oshiogawa",
+    "jp": "押尾川"
+   },
+   "pref": {
+    "en": "Ehime",
+    "jp": "愛媛県"
+   }
+  },
+  {
+   "id": 3091,
+   "shikona": {
+    "en": "Kanryu",
+    "jp": "寛龍"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 65,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Arashio",
+    "jp": "荒汐"
+   },
+   "pref": {
+    "en": "Tochigi",
+    "jp": "栃木県"
+   }
+  },
+  {
+   "id": 4199,
+   "shikona": {
+    "en": "Datenoumi",
+    "jp": "達ノ海"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 65,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isenoumi",
+    "jp": "伊勢ノ海"
+   },
+   "pref": {
+    "en": "Miyagi",
+    "jp": "宮城県"
+   }
+  },
+  {
+   "id": 3859,
+   "shikona": {
+    "en": "Kotakiyama",
+    "jp": "小滝山"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 66,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Futagoyama",
+    "jp": "二子山"
+   },
+   "pref": {
+    "en": "Tochigi",
+    "jp": "栃木県"
+   }
+  },
+  {
+   "id": 3070,
+   "shikona": {
+    "en": "Akinoyama",
+    "jp": "安芸乃山"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 66,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Takadagawa",
+    "jp": "高田川"
+   },
+   "pref": {
+    "en": "Hiroshima",
+    "jp": "広島県"
+   }
+  },
+  {
+   "id": 3592,
+   "shikona": {
+    "en": "Ryutsukasa",
+    "jp": "龍司"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 67,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Ikazuchi",
+    "jp": "雷"
+   },
+   "pref": {
+    "en": "Shizuoka",
+    "jp": "静岡県"
+   }
+  },
+  {
+   "id": 4082,
+   "shikona": {
+    "en": "Zuitenryu",
+    "jp": "瑞天龍"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 67,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sakaigawa",
+    "jp": "境川"
+   },
+   "pref": {
+    "en": "Gifu",
+    "jp": "岐阜県"
+   }
+  },
+  {
+   "id": 4290,
+   "shikona": {
+    "en": "Hikarumusashi",
+    "jp": "光武蔵"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 68,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Musashigawa",
+    "jp": "武蔵川"
+   },
+   "pref": {
+    "en": "America",
+    "jp": "米国"
+   }
+  },
+  {
+   "id": 4297,
+   "shikona": {
+    "en": "Ikazuchihayate",
+    "jp": "雷颯"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 68,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Ikazuchi",
+    "jp": "雷"
+   },
+   "pref": {
+    "en": "Oita",
+    "jp": "大分県"
+   }
+  },
+  {
+   "id": 4201,
+   "shikona": {
+    "en": "Fujiso",
+    "jp": "藤宗"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 69,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Nishonoseki",
+    "jp": "二所ノ関"
+   },
+   "pref": {
+    "en": "Kochi",
+    "jp": "高知県"
+   }
+  },
+  {
+   "id": 3924,
+   "shikona": {
+    "en": "Fujiyuho",
+    "jp": "藤雄峰"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 69,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Fujishima",
+    "jp": "藤島"
+   },
+   "pref": {
+    "en": "Nagano",
+    "jp": "長野県"
+   }
+  },
+  {
+   "id": 4078,
+   "shikona": {
+    "en": "Asakiryu",
+    "jp": "朝氣龍"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 70,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takasago",
+    "jp": "高砂"
+   },
+   "pref": {
+    "en": "Mie",
+    "jp": "三重県"
+   }
+  },
+  {
+   "id": 4045,
+   "shikona": {
+    "en": "Chiyoyamato",
+    "jp": "千代大和"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 70,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kokonoe",
+    "jp": "九重"
+   },
+   "pref": {
+    "en": "Aichi",
+    "jp": "愛知県"
+   }
+  },
+  {
+   "id": 3543,
+   "shikona": {
+    "en": "Ishiazuma",
+    "jp": "石東"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 71,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tamanoi",
+    "jp": "玉ノ井"
+   },
+   "pref": {
+    "en": "Miyagi",
+    "jp": "宮城県"
+   }
+  },
+  {
+   "id": 4035,
+   "shikona": {
+    "en": "Kaihiryu",
+    "jp": "魁陽龍"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 71,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Asakayama",
+    "jp": "浅香山"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4332,
+   "shikona": {
+    "en": "Uchima",
+    "jp": "内間"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 72,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Nishonoseki",
+    "jp": "二所ノ関"
+   },
+   "pref": {
+    "en": "Okinawa",
+    "jp": "沖縄県"
+   }
+  },
+  {
+   "id": 3542,
+   "shikona": {
+    "en": "Toukiryu",
+    "jp": "東輝龍"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 72,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tamanoi",
+    "jp": "玉ノ井"
+   },
+   "pref": {
+    "en": "Aichi",
+    "jp": "愛知県"
+   }
+  },
+  {
+   "id": 3717,
+   "shikona": {
+    "en": "Tsugunohana",
+    "jp": "禎ノ花"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 73,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Onomatsu",
+    "jp": "阿武松"
+   },
+   "pref": {
+    "en": "Iwate",
+    "jp": "岩手県"
+   }
+  },
+  {
+   "id": 2522,
+   "shikona": {
+    "en": "Katsunofuji",
+    "jp": "克乃富士"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 73,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sakaigawa",
+    "jp": "境川"
+   },
+   "pref": {
+    "en": "Aomori",
+    "jp": "青森県"
+   }
+  },
+  {
+   "id": 2647,
+   "shikona": {
+    "en": "Hitachigo",
+    "jp": "常陸號"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 74,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Fujishima",
+    "jp": "藤島"
+   },
+   "pref": {
+    "en": "Ibaraki",
+    "jp": "茨城県"
+   }
+  },
+  {
+   "id": 4393,
+   "shikona": {
+    "en": "Ogawa",
+    "jp": "小川"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 74,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tamanoi",
+    "jp": "玉ノ井"
+   },
+   "pref": {
+    "en": "Fukuoka",
+    "jp": "福岡県"
+   }
+  },
+  {
+   "id": 3525,
+   "shikona": {
+    "en": "Tochimitsuru",
+    "jp": "栃満"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 75,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kasugano",
+    "jp": "春日野"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 3383,
+   "shikona": {
+    "en": "Tsugaruumi",
+    "jp": "津軽海"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 75,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tamanoi",
+    "jp": "玉ノ井"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 4312,
+   "shikona": {
+    "en": "Shunta",
+    "jp": "駿太"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 76,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Futagoyama",
+    "jp": "二子山"
+   },
+   "pref": {
+    "en": "Tochigi",
+    "jp": "栃木県"
+   }
+  },
+  {
+   "id": 3930,
+   "shikona": {
+    "en": "Inaba",
+    "jp": "稲葉"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 76,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Onomatsu",
+    "jp": "阿武松"
+   },
+   "pref": {
+    "en": "Aichi",
+    "jp": "愛知県"
+   }
+  },
+  {
+   "id": 4313,
+   "shikona": {
+    "en": "Ikazuchishu",
+    "jp": "雷修"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 77,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Ikazuchi",
+    "jp": "雷"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4273,
+   "shikona": {
+    "en": "Sekimoto",
+    "jp": "関本"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 77,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Onomatsu",
+    "jp": "阿武松"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 4000,
+   "shikona": {
+    "en": "Tsukioka",
+    "jp": "月岡"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 78,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Futagoyama",
+    "jp": "二子山"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 3965,
+   "shikona": {
+    "en": "Kisenoumi",
+    "jp": "木瀬の海"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 78,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kise",
+    "jp": "木瀬"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 3866,
+   "shikona": {
+    "en": "Wakazakura",
+    "jp": "和歌桜"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 79,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kasugano",
+    "jp": "春日野"
+   },
+   "pref": {
+    "en": "Kyoto",
+    "jp": "京都府"
+   }
+  },
+  {
+   "id": 4372,
+   "shikona": {
+    "en": "Nakazawa",
+    "jp": "中澤"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 79,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kise",
+    "jp": "木瀬"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4153,
+   "shikona": {
+    "en": "Daishimatsu",
+    "jp": "大志松"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 80,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Onomatsu",
+    "jp": "阿武松"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 4198,
+   "shikona": {
+    "en": "Soseizan",
+    "jp": "総勢山"
+   },
+   "division": "sandanme",
+   "rankCode": 800,
+   "rankNumber": 80,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Nishonoseki",
+    "jp": "二所ノ関"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 3973,
+   "shikona": {
+    "en": "Yamane",
+    "jp": "山根"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 1,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Naruto",
+    "jp": "鳴戸"
+   },
+   "pref": {
+    "en": "Shimane",
+    "jp": "島根県"
+   }
+  },
+  {
+   "id": 2983,
+   "shikona": {
+    "en": "Kayatoiwa",
+    "jp": "夏野登岩"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 1,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Minato",
+    "jp": "湊"
+   },
+   "pref": {
+    "en": "Gunma",
+    "jp": "群馬県"
+   }
+  },
+  {
+   "id": 4015,
+   "shikona": {
+    "en": "Fujimusashi",
+    "jp": "藤武蔵"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 2,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Musashigawa",
+    "jp": "武蔵川"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 3284,
+   "shikona": {
+    "en": "Fukutsuumi",
+    "jp": "福津海"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 2,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Hakkaku",
+    "jp": "八角"
+   },
+   "pref": {
+    "en": "Fukuoka",
+    "jp": "福岡県"
+   }
+  },
+  {
+   "id": 4373,
+   "shikona": {
+    "en": "Hanenoyama",
+    "jp": "跳乃山"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 3,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Hanaregoma",
+    "jp": "放駒"
+   },
+   "pref": {
+    "en": "Oita",
+    "jp": "大分県"
+   }
+  },
+  {
+   "id": 3026,
+   "shikona": {
+    "en": "Hamadayama",
+    "jp": "浜田山"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 3,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Shibatayama",
+    "jp": "芝田山"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4300,
+   "shikona": {
+    "en": "Sunasaka",
+    "jp": "砂坂"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 4,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takasago",
+    "jp": "高砂"
+   },
+   "pref": {
+    "en": "Fukuoka",
+    "jp": "福岡県"
+   }
+  },
+  {
+   "id": 3461,
+   "shikona": {
+    "en": "Sekizuka",
+    "jp": "関塚"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 4,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tagonoura",
+    "jp": "田子ノ浦"
+   },
+   "pref": {
+    "en": "Aichi",
+    "jp": "愛知県"
+   }
+  },
+  {
+   "id": 4098,
+   "shikona": {
+    "en": "Daitenshin",
+    "jp": "大天真"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 5,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Onomatsu",
+    "jp": "阿武松"
+   },
+   "pref": {
+    "en": "Fukuoka",
+    "jp": "福岡県"
+   }
+  },
+  {
+   "id": 4212,
+   "shikona": {
+    "en": "Kakuho",
+    "jp": "鶴峰"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 5,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Otowayama",
+    "jp": "音羽山"
+   },
+   "pref": {
+    "en": "Kagawa",
+    "jp": "香川県"
+   }
+  },
+  {
+   "id": 4286,
+   "shikona": {
+    "en": "Furuta",
+    "jp": "古田"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 6,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Nishonoseki",
+    "jp": "二所ノ関"
+   },
+   "pref": {
+    "en": "Hiroshima",
+    "jp": "広島県"
+   }
+  },
+  {
+   "id": 3953,
+   "shikona": {
+    "en": "Tokazan",
+    "jp": "東華山"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 6,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tamanoi",
+    "jp": "玉ノ井"
+   },
+   "pref": {
+    "en": "Miyagi",
+    "jp": "宮城県"
+   }
+  },
+  {
+   "id": 4397,
+   "shikona": {
+    "en": "Joshoyu",
+    "jp": "城勝雄"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 7,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Minatogawa",
+    "jp": "湊川"
+   },
+   "pref": {
+    "en": "Mongolia",
+    "jp": "モンゴル"
+   }
+  },
+  {
+   "id": 4317,
+   "shikona": {
+    "en": "Kakusho",
+    "jp": "鶴翔"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 7,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Otowayama",
+    "jp": "音羽山"
+   },
+   "pref": {
+    "en": "Nagano",
+    "jp": "長野県"
+   }
+  },
+  {
+   "id": 4385,
+   "shikona": {
+    "en": "Soedayama",
+    "jp": "添田山"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 8,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Hidenoyama",
+    "jp": "秀ノ山"
+   },
+   "pref": {
+    "en": "Fukuoka",
+    "jp": "福岡県"
+   }
+  },
+  {
+   "id": 3889,
+   "shikona": {
+    "en": "Biganzan",
+    "jp": "備巌山"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 8,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Yamahibiki",
+    "jp": "山響"
+   },
+   "pref": {
+    "en": "Okayama",
+    "jp": "岡山県"
+   }
+  },
+  {
+   "id": 3895,
+   "shikona": {
+    "en": "Souga",
+    "jp": "颯雅"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 9,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Futagoyama",
+    "jp": "二子山"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 4322,
+   "shikona": {
+    "en": "Tsurunosato",
+    "jp": "鶴の里"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 9,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Nishiiwa",
+    "jp": "西岩"
+   },
+   "pref": {
+    "en": "Aomori",
+    "jp": "青森県"
+   }
+  },
+  {
+   "id": 3418,
+   "shikona": {
+    "en": "Mihamaumi",
+    "jp": "美浜海"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 10,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tamanoi",
+    "jp": "玉ノ井"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 3776,
+   "shikona": {
+    "en": "Kototaiga",
+    "jp": "琴大河"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 10,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sadogatake",
+    "jp": "佐渡ヶ嶽"
+   },
+   "pref": {
+    "en": "Hyogo",
+    "jp": "兵庫県"
+   }
+  },
+  {
+   "id": 4109,
+   "shikona": {
+    "en": "Shinseido",
+    "jp": "信正道"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 11,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Yamahibiki",
+    "jp": "山響"
+   },
+   "pref": {
+    "en": "Hyogo",
+    "jp": "兵庫県"
+   }
+  },
+  {
+   "id": 3718,
+   "shikona": {
+    "en": "Oshozan",
+    "jp": "欧翔山"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 11,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Naruto",
+    "jp": "鳴戸"
+   },
+   "pref": {
+    "en": "Yamanashi",
+    "jp": "山梨県"
+   }
+  },
+  {
+   "id": 1835,
+   "shikona": {
+    "en": "Hienriki",
+    "jp": "飛燕力"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 12,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Oshiogawa",
+    "jp": "押尾川"
+   },
+   "pref": {
+    "en": "Niigata",
+    "jp": "新潟県"
+   }
+  },
+  {
+   "id": 4167,
+   "shikona": {
+    "en": "Kazuto",
+    "jp": "一翔"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 12,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tatsunami",
+    "jp": "立浪"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 3189,
+   "shikona": {
+    "en": "Oginosho",
+    "jp": "小城ノ正"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 13,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Dewanoumi",
+    "jp": "出羽海"
+   },
+   "pref": {
+    "en": "Osaka",
+    "jp": "大阪府"
+   }
+  },
+  {
+   "id": 4080,
+   "shikona": {
+    "en": "Kumanoryu",
+    "jp": "隈ノ竜"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 13,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Takekuma",
+    "jp": "武隈"
+   },
+   "pref": {
+    "en": "Fukuoka",
+    "jp": "福岡県"
+   }
+  },
+  {
+   "id": 3621,
+   "shikona": {
+    "en": "Dewanosora",
+    "jp": "出羽の空"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 14,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Dewanoumi",
+    "jp": "出羽海"
+   },
+   "pref": {
+    "en": "Nagasaki",
+    "jp": "長崎県"
+   }
+  },
+  {
+   "id": 3346,
+   "shikona": {
+    "en": "Takataisho",
+    "jp": "貴大将"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 14,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Minatogawa",
+    "jp": "湊川"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4148,
+   "shikona": {
+    "en": "Onbashira",
+    "jp": "御柱"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 15,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Nishonoseki",
+    "jp": "二所ノ関"
+   },
+   "pref": {
+    "en": "Nagano",
+    "jp": "長野県"
+   }
+  },
+  {
+   "id": 3002,
+   "shikona": {
+    "en": "Amakaze",
+    "jp": "天風"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 15,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Oshiogawa",
+    "jp": "押尾川"
+   },
+   "pref": {
+    "en": "Kagawa",
+    "jp": "香川県"
+   }
+  },
+  {
+   "id": 3847,
+   "shikona": {
+    "en": "Sakabayashi",
+    "jp": "坂林"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 16,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Onoe",
+    "jp": "尾上"
+   },
+   "pref": {
+    "en": "Toyama",
+    "jp": "富山県"
+   }
+  },
+  {
+   "id": 4229,
+   "shikona": {
+    "en": "Karino",
+    "jp": "狩野"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 16,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Naruto",
+    "jp": "鳴戸"
+   },
+   "pref": {
+    "en": "Niigata",
+    "jp": "新潟県"
+   }
+  },
+  {
+   "id": 3960,
+   "shikona": {
+    "en": "Tsurunoumi",
+    "jp": "鶴ノ海"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 17,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Shikoroyama",
+    "jp": "錣山"
+   },
+   "pref": {
+    "en": "Osaka",
+    "jp": "大阪府"
+   }
+  },
+  {
+   "id": 4048,
+   "shikona": {
+    "en": "Ibuki",
+    "jp": "揖武貴"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 17,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Musashigawa",
+    "jp": "武蔵川"
+   },
+   "pref": {
+    "en": "Gifu",
+    "jp": "岐阜県"
+   }
+  },
+  {
+   "id": 3793,
+   "shikona": {
+    "en": "Ojiyama",
+    "jp": "応時山"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 18,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tagonoura",
+    "jp": "田子ノ浦"
+   },
+   "pref": {
+    "en": "Aichi",
+    "jp": "愛知県"
+   }
+  },
+  {
+   "id": 4405,
+   "shikona": {
+    "en": "Sawada",
+    "jp": "澤田"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 18,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sakaigawa",
+    "jp": "境川"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 3712,
+   "shikona": {
+    "en": "Hatooka",
+    "jp": "鳩岡"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 19,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kise",
+    "jp": "木瀬"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 4168,
+   "shikona": {
+    "en": "Sachinofuji",
+    "jp": "幸乃富士"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 19,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 4028,
+   "shikona": {
+    "en": "Tsukubayama",
+    "jp": "筑波山"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 20,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tatsunami",
+    "jp": "立浪"
+   },
+   "pref": {
+    "en": "Ibaraki",
+    "jp": "茨城県"
+   }
+  },
+  {
+   "id": 4284,
+   "shikona": {
+    "en": "Kosei",
+    "jp": "康誠"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 20,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Hidenoyama",
+    "jp": "秀ノ山"
+   },
+   "pref": {
+    "en": "Saga",
+    "jp": "佐賀県"
+   }
+  },
+  {
+   "id": 1275,
+   "shikona": {
+    "en": "Shoketsu",
+    "jp": "翔傑"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 21,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Shibatayama",
+    "jp": "芝田山"
+   },
+   "pref": {
+    "en": "Shizuoka",
+    "jp": "静岡県"
+   }
+  },
+  {
+   "id": 3510,
+   "shikona": {
+    "en": "Genbumaru",
+    "jp": "玄武丸"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 21,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Onoe",
+    "jp": "尾上"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  },
+  {
+   "id": 4119,
+   "shikona": {
+    "en": "Satsumasho",
+    "jp": "薩摩翔"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 22,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Oitekaze",
+    "jp": "追手風"
+   },
+   "pref": {
+    "en": "Kagoshima",
+    "jp": "鹿児島県"
+   }
+  },
+  {
+   "id": 3494,
+   "shikona": {
+    "en": "Dogo",
+    "jp": "道轟"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 22,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Hanaregoma",
+    "jp": "放駒"
+   },
+   "pref": {
+    "en": "Hokkaido",
+    "jp": "北海道"
+   }
+  },
+  {
+   "id": 3650,
+   "shikona": {
+    "en": "Fukuazuma",
+    "jp": "福東"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 23,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tamanoi",
+    "jp": "玉ノ井"
+   },
+   "pref": {
+    "en": "Fukushima",
+    "jp": "福島県"
+   }
+  },
+  {
+   "id": 1520,
+   "shikona": {
+    "en": "Musashiumi",
+    "jp": "武蔵海"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 23,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Fujishima",
+    "jp": "藤島"
+   },
+   "pref": {
+    "en": "Ehime",
+    "jp": "愛媛県"
+   }
+  },
+  {
+   "id": 3437,
+   "shikona": {
+    "en": "Kyokushori",
+    "jp": "旭将里"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 24,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Oshima",
+    "jp": "大島"
+   },
+   "pref": {
+    "en": "Hyogo",
+    "jp": "兵庫県"
+   }
+  },
+  {
+   "id": 4257,
+   "shikona": {
+    "en": "Daigozakura",
+    "jp": "醍醐桜"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 24,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Takadagawa",
+    "jp": "高田川"
+   },
+   "pref": {
+    "en": "Okayama",
+    "jp": "岡山県"
+   }
+  },
+  {
+   "id": 4070,
+   "shikona": {
+    "en": "Matsuzawa",
+    "jp": "松澤"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 25,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tagonoura",
+    "jp": "田子ノ浦"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 3957,
+   "shikona": {
+    "en": "Shimanishiki",
+    "jp": "志摩錦"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 25,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Asahiyama",
+    "jp": "朝日山"
+   },
+   "pref": {
+    "en": "Mie",
+    "jp": "三重県"
+   }
+  },
+  {
+   "id": 3689,
+   "shikona": {
+    "en": "Hokutoyoshi",
+    "jp": "北勝伊"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 26,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Hakkaku",
+    "jp": "八角"
+   },
+   "pref": {
+    "en": "Hokkaido",
+    "jp": "北海道"
+   }
+  },
+  {
+   "id": 4190,
+   "shikona": {
+    "en": "Daitengu",
+    "jp": "大天狗"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 26,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Takadagawa",
+    "jp": "高田川"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4018,
+   "shikona": {
+    "en": "Takasu",
+    "jp": "高須"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 27,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tagonoura",
+    "jp": "田子ノ浦"
+   },
+   "pref": {
+    "en": "Ibaraki",
+    "jp": "茨城県"
+   }
+  },
+  {
+   "id": 4340,
+   "shikona": {
+    "en": "Azuma",
+    "jp": "安寿真"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 27,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Ajigawa",
+    "jp": "安治川"
+   },
+   "pref": {
+    "en": "Aomori",
+    "jp": "青森県"
+   }
+  },
+  {
+   "id": 4205,
+   "shikona": {
+    "en": "Keiga",
+    "jp": "恵雅"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 28,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Futagoyama",
+    "jp": "二子山"
+   },
+   "pref": {
+    "en": "Tochigi",
+    "jp": "栃木県"
+   }
+  },
+  {
+   "id": 4114,
+   "shikona": {
+    "en": "Masakifuji",
+    "jp": "柾富士"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 28,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Niigata",
+    "jp": "新潟県"
+   }
+  },
+  {
+   "id": 1306,
+   "shikona": {
+    "en": "Dairaido",
+    "jp": "大雷童"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 29,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takadagawa",
+    "jp": "高田川"
+   },
+   "pref": {
+    "en": "Fukuoka",
+    "jp": "福岡県"
+   }
+  },
+  {
+   "id": 4350,
+   "shikona": {
+    "en": "Tanaka",
+    "jp": "田中"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 29,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Nishonoseki",
+    "jp": "二所ノ関"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  },
+  {
+   "id": 3997,
+   "shikona": {
+    "en": "Kirinohana",
+    "jp": "霧乃華"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 30,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Arashio",
+    "jp": "荒汐"
+   },
+   "pref": {
+    "en": "Toyama",
+    "jp": "富山県"
+   }
+  },
+  {
+   "id": 4077,
+   "shikona": {
+    "en": "Asasorai",
+    "jp": "朝走雷"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 30,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Takasago",
+    "jp": "高砂"
+   },
+   "pref": {
+    "en": "Mie",
+    "jp": "三重県"
+   }
+  },
+  {
+   "id": 3891,
+   "shikona": {
+    "en": "Matsugashima",
+    "jp": "松ヶ島"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 31,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takadagawa",
+    "jp": "高田川"
+   },
+   "pref": {
+    "en": "Shizuoka",
+    "jp": "静岡県"
+   }
+  },
+  {
+   "id": 3780,
+   "shikona": {
+    "en": "Suio",
+    "jp": "翠桜"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 31,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Dewanoumi",
+    "jp": "出羽海"
+   },
+   "pref": {
+    "en": "Gifu",
+    "jp": "岐阜県"
+   }
+  },
+  {
+   "id": 4106,
+   "shikona": {
+    "en": "Shotaimu",
+    "jp": "翔大夢"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 32,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Shikoroyama",
+    "jp": "錣山"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 4262,
+   "shikona": {
+    "en": "Amidaishin",
+    "jp": "阿見大心"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 32,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Nishonoseki",
+    "jp": "二所ノ関"
+   },
+   "pref": {
+    "en": "Ibaraki",
+    "jp": "茨城県"
+   }
+  },
+  {
+   "id": 3372,
+   "shikona": {
+    "en": "Hidano",
+    "jp": "飛騨野"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 33,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Arashio",
+    "jp": "荒汐"
+   },
+   "pref": {
+    "en": "Toyama",
+    "jp": "富山県"
+   }
+  },
+  {
+   "id": 3697,
+   "shikona": {
+    "en": "Akatora",
+    "jp": "赤虎"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 33,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Shikihide",
+    "jp": "式秀"
+   },
+   "pref": {
+    "en": "Oita",
+    "jp": "大分県"
+   }
+  },
+  {
+   "id": 4096,
+   "shikona": {
+    "en": "Daitensho",
+    "jp": "大典翔"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 34,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Oitekaze",
+    "jp": "追手風"
+   },
+   "pref": {
+    "en": "Aichi",
+    "jp": "愛知県"
+   }
+  },
+  {
+   "id": 4309,
+   "shikona": {
+    "en": "Mitsurufuji",
+    "jp": "満富士"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 34,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Osaka",
+    "jp": "大阪府"
+   }
+  },
+  {
+   "id": 4399,
+   "shikona": {
+    "en": "Hokuto",
+    "jp": "北勝"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 35,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Hakkaku",
+    "jp": "八角"
+   },
+   "pref": {
+    "en": "Mongolia",
+    "jp": "モンゴル"
+   }
+  },
+  {
+   "id": 4269,
+   "shikona": {
+    "en": "Wakahomura",
+    "jp": "若焔"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 35,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Shikoroyama",
+    "jp": "錣山"
+   },
+   "pref": {
+    "en": "Ishikawa",
+    "jp": "石川県"
+   }
+  },
+  {
+   "id": 4403,
+   "shikona": {
+    "en": "Taiga",
+    "jp": "泰我"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 36,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kise",
+    "jp": "木瀬"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  },
+  {
+   "id": 3030,
+   "shikona": {
+    "en": "Ryuseiyama",
+    "jp": "龍成山"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 36,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Dewanoumi",
+    "jp": "出羽海"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4254,
+   "shikona": {
+    "en": "Hakuryu",
+    "jp": "白竜"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 37,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Otowayama",
+    "jp": "音羽山"
+   },
+   "pref": {
+    "en": "Miyazaki",
+    "jp": "宮崎県"
+   }
+  },
+  {
+   "id": 4384,
+   "shikona": {
+    "en": "Ibata",
+    "jp": "井畑"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 37,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sakaigawa",
+    "jp": "境川"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 4136,
+   "shikona": {
+    "en": "Dewanowaka",
+    "jp": "出羽乃若"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 38,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Dewanoumi",
+    "jp": "出羽海"
+   },
+   "pref": {
+    "en": "Hokkaido",
+    "jp": "北海道"
+   }
+  },
+  {
+   "id": 4276,
+   "shikona": {
+    "en": "Kikuchi",
+    "jp": "菊池"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 38,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Futagoyama",
+    "jp": "二子山"
+   },
+   "pref": {
+    "en": "Kyoto",
+    "jp": "京都府"
+   }
+  },
+  {
+   "id": 4383,
+   "shikona": {
+    "en": "Goto",
+    "jp": "後藤"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 39,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Nishonoseki",
+    "jp": "二所ノ関"
+   },
+   "pref": {
+    "en": "Mie",
+    "jp": "三重県"
+   }
+  },
+  {
+   "id": 4294,
+   "shikona": {
+    "en": "Ideno",
+    "jp": "出野"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 39,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Hidenoyama",
+    "jp": "秀ノ山"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4320,
+   "shikona": {
+    "en": "Kazekodai",
+    "jp": "風紅大"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 40,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Oshiogawa",
+    "jp": "押尾川"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 4330,
+   "shikona": {
+    "en": "Hokutonada",
+    "jp": "北斗洋"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 40,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Hanaregoma",
+    "jp": "放駒"
+   },
+   "pref": {
+    "en": "Hokkaido",
+    "jp": "北海道"
+   }
+  },
+  {
+   "id": 4365,
+   "shikona": {
+    "en": "Kyokugosei",
+    "jp": "旭轟星"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 41,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Oshima",
+    "jp": "大島"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 4256,
+   "shikona": {
+    "en": "Tsurugifuji",
+    "jp": "都留樹富士"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 41,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Takadagawa",
+    "jp": "高田川"
+   },
+   "pref": {
+    "en": "Yamanashi",
+    "jp": "山梨県"
+   }
+  },
+  {
+   "id": 3242,
+   "shikona": {
+    "en": "Tochigidake",
+    "jp": "栃岐岳"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 42,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kasugano",
+    "jp": "春日野"
+   },
+   "pref": {
+    "en": "Gifu",
+    "jp": "岐阜県"
+   }
+  },
+  {
+   "id": 3877,
+   "shikona": {
+    "en": "Akinishiki",
+    "jp": "安芸錦"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 42,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Asahiyama",
+    "jp": "朝日山"
+   },
+   "pref": {
+    "en": "Hiroshima",
+    "jp": "広島県"
+   }
+  },
+  {
+   "id": 4298,
+   "shikona": {
+    "en": "Goseimaru",
+    "jp": "豪清丸"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 43,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takekuma",
+    "jp": "武隈"
+   },
+   "pref": {
+    "en": "Kochi",
+    "jp": "高知県"
+   }
+  },
+  {
+   "id": 4196,
+   "shikona": {
+    "en": "Masarufuji",
+    "jp": "優富士"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 43,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Ibaraki",
+    "jp": "茨城県"
+   }
+  },
+  {
+   "id": 4333,
+   "shikona": {
+    "en": "Asarikimaru",
+    "jp": "朝力丸"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 44,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takasago",
+    "jp": "高砂"
+   },
+   "pref": {
+    "en": "Osaka",
+    "jp": "大阪府"
+   }
+  },
+  {
+   "id": 4341,
+   "shikona": {
+    "en": "Iinoryu",
+    "jp": "飯の竜"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 44,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sakaigawa",
+    "jp": "境川"
+   },
+   "pref": {
+    "en": "Nagasaki",
+    "jp": "長崎県"
+   }
+  },
+  {
+   "id": 4213,
+   "shikona": {
+    "en": "Chiyonoteru",
+    "jp": "千代の輝"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 45,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kokonoe",
+    "jp": "九重"
+   },
+   "pref": {
+    "en": "Oita",
+    "jp": "大分県"
+   }
+  },
+  {
+   "id": 4215,
+   "shikona": {
+    "en": "Asasakurai",
+    "jp": "朝櫻井"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 45,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Takasago",
+    "jp": "高砂"
+   },
+   "pref": {
+    "en": "Miyagi",
+    "jp": "宮城県"
+   }
+  },
+  {
+   "id": 3166,
+   "shikona": {
+    "en": "Hokuyozan",
+    "jp": "北洋山"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 46,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tatsunami",
+    "jp": "立浪"
+   },
+   "pref": {
+    "en": "Hokkaido",
+    "jp": "北海道"
+   }
+  },
+  {
+   "id": 3460,
+   "shikona": {
+    "en": "Yukiamami",
+    "jp": "幸奄美"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 46,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tatsunami",
+    "jp": "立浪"
+   },
+   "pref": {
+    "en": "Kagoshima",
+    "jp": "鹿児島県"
+   }
+  },
+  {
+   "id": 4220,
+   "shikona": {
+    "en": "Kikushoki",
+    "jp": "菊昇基"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 47,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Hidenoyama",
+    "jp": "秀ノ山"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 3843,
+   "shikona": {
+    "en": "Asaazuma",
+    "jp": "朝東"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 47,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Takasago",
+    "jp": "高砂"
+   },
+   "pref": {
+    "en": "Kochi",
+    "jp": "高知県"
+   }
+  },
+  {
+   "id": 3967,
+   "shikona": {
+    "en": "Chiyokozan",
+    "jp": "千代煌山"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 48,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kokonoe",
+    "jp": "九重"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 3727,
+   "shikona": {
+    "en": "Kaiyuma",
+    "jp": "魁佑馬"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 48,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Asakayama",
+    "jp": "浅香山"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 3663,
+   "shikona": {
+    "en": "Buomaru",
+    "jp": "武旺丸"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 49,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Musashigawa",
+    "jp": "武蔵川"
+   },
+   "pref": {
+    "en": "Oita",
+    "jp": "大分県"
+   }
+  },
+  {
+   "id": 4033,
+   "shikona": {
+    "en": "Chiyotaisei",
+    "jp": "千代大聖"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 49,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kokonoe",
+    "jp": "九重"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  },
+  {
+   "id": 4248,
+   "shikona": {
+    "en": "Daishisho",
+    "jp": "大志翔"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 50,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Oitekaze",
+    "jp": "追手風"
+   },
+   "pref": {
+    "en": "Ehime",
+    "jp": "愛媛県"
+   }
+  },
+  {
+   "id": 3864,
+   "shikona": {
+    "en": "Fujinonami",
+    "jp": "藤乃波"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 50,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Fujishima",
+    "jp": "藤島"
+   },
+   "pref": {
+    "en": "Tokushima",
+    "jp": "徳島県"
+   }
+  },
+  {
+   "id": 1147,
+   "shikona": {
+    "en": "Yoshiazuma",
+    "jp": "芳東"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 51,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tamanoi",
+    "jp": "玉ノ井"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  },
+  {
+   "id": 3916,
+   "shikona": {
+    "en": "Kyokuhayate",
+    "jp": "旭疾風"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 51,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Oshima",
+    "jp": "大島"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 4315,
+   "shikona": {
+    "en": "Kido",
+    "jp": "城戸"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 52,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tamanoi",
+    "jp": "玉ノ井"
+   },
+   "pref": {
+    "en": "Ehime",
+    "jp": "愛媛県"
+   }
+  },
+  {
+   "id": 4321,
+   "shikona": {
+    "en": "Wakahasegawa",
+    "jp": "若長谷川"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 52,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Nishiiwa",
+    "jp": "西岩"
+   },
+   "pref": {
+    "en": "Aomori",
+    "jp": "青森県"
+   }
+  },
+  {
+   "id": 3701,
+   "shikona": {
+    "en": "Furanshisu",
+    "jp": "冨蘭志壽"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 53,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Shikihide",
+    "jp": "式秀"
+   },
+   "pref": {
+    "en": "Philippines",
+    "jp": "フィリピン"
+   }
+  },
+  {
+   "id": 4348,
+   "shikona": {
+    "en": "Tosoumi",
+    "jp": "東颯海"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 53,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tamanoi",
+    "jp": "玉ノ井"
+   },
+   "pref": {
+    "en": "Iwate",
+    "jp": "岩手県"
+   }
+  },
+  {
+   "id": 4301,
+   "shikona": {
+    "en": "Tsurunofuji",
+    "jp": "鶴ノ富士"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 54,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 4044,
+   "shikona": {
+    "en": "Chiyofuku",
+    "jp": "千代福"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 54,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kokonoe",
+    "jp": "九重"
+   },
+   "pref": {
+    "en": "Tochigi",
+    "jp": "栃木県"
+   }
+  },
+  {
+   "id": 4117,
+   "shikona": {
+    "en": "Aoifuji",
+    "jp": "蒼富士"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 55,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 4327,
+   "shikona": {
+    "en": "Kazeoka",
+    "jp": "風凰花"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 55,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Oshiogawa",
+    "jp": "押尾川"
+   },
+   "pref": {
+    "en": "Akita",
+    "jp": "秋田県"
+   }
+  },
+  {
+   "id": 3618,
+   "shikona": {
+    "en": "Oatari",
+    "jp": "大当利"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 56,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Shikihide",
+    "jp": "式秀"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 3448,
+   "shikona": {
+    "en": "Daishoki",
+    "jp": "大翔樹"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 56,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Oitekaze",
+    "jp": "追手風"
+   },
+   "pref": {
+    "en": "Hyogo",
+    "jp": "兵庫県"
+   }
+  },
+  {
+   "id": 4145,
+   "shikona": {
+    "en": "Kotofuno",
+    "jp": "琴布野"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 57,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Sadogatake",
+    "jp": "佐渡ヶ嶽"
+   },
+   "pref": {
+    "en": "Shimane",
+    "jp": "島根県"
+   }
+  },
+  {
+   "id": 4331,
+   "shikona": {
+    "en": "Sumiyoshi",
+    "jp": "住吉"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 57,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Nishonoseki",
+    "jp": "二所ノ関"
+   },
+   "pref": {
+    "en": "Aichi",
+    "jp": "愛知県"
+   }
+  },
+  {
+   "id": 4401,
+   "shikona": {
+    "en": "Uza",
+    "jp": "宇座"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 58,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Onoe",
+    "jp": "尾上"
+   },
+   "pref": {
+    "en": "Okinawa",
+    "jp": "沖縄県"
+   }
+  },
+  {
+   "id": 4391,
+   "shikona": {
+    "en": "Chiyonotaka",
+    "jp": "千代の貴"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 58,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kokonoe",
+    "jp": "九重"
+   },
+   "pref": {
+    "en": "Oita",
+    "jp": "大分県"
+   }
+  },
+  {
+   "id": 3530,
+   "shikona": {
+    "en": "Shuji",
+    "jp": "周志"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 59,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kise",
+    "jp": "木瀬"
+   },
+   "pref": {
+    "en": "Nara",
+    "jp": "奈良県"
+   }
+  },
+  {
+   "id": 3512,
+   "shikona": {
+    "en": "Kukio",
+    "jp": "九鬼王"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 59,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Onoe",
+    "jp": "尾上"
+   },
+   "pref": {
+    "en": "Mie",
+    "jp": "三重県"
+   }
+  },
+  {
+   "id": 2637,
+   "shikona": {
+    "en": "Asanojo",
+    "jp": "朝乃丈"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 60,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takasago",
+    "jp": "高砂"
+   },
+   "pref": {
+    "en": "Kochi",
+    "jp": "高知県"
+   }
+  },
+  {
+   "id": 2924,
+   "shikona": {
+    "en": "Wakahizen",
+    "jp": "若肥前"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 60,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Shibatayama",
+    "jp": "芝田山"
+   },
+   "pref": {
+    "en": "Nagasaki",
+    "jp": "長崎県"
+   }
+  },
+  {
+   "id": 3694,
+   "shikona": {
+    "en": "Tokio",
+    "jp": "鬨王"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 61,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Isenoumi",
+    "jp": "伊勢ノ海"
+   },
+   "pref": {
+    "en": "Iwate",
+    "jp": "岩手県"
+   }
+  },
+  {
+   "id": 4132,
+   "shikona": {
+    "en": "Daikinryu",
+    "jp": "大錦龍"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 61,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sakaigawa",
+    "jp": "境川"
+   },
+   "pref": {
+    "en": "Yamaguchi",
+    "jp": "山口県"
+   }
+  },
+  {
+   "id": 3944,
+   "shikona": {
+    "en": "Naniwamusashi",
+    "jp": "浪速武蔵"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 62,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Musashigawa",
+    "jp": "武蔵川"
+   },
+   "pref": {
+    "en": "Osaka",
+    "jp": "大阪府"
+   }
+  },
+  {
+   "id": 3890,
+   "shikona": {
+    "en": "Ai",
+    "jp": "藍"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 62,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Takadagawa",
+    "jp": "高田川"
+   },
+   "pref": {
+    "en": "Tokushima",
+    "jp": "徳島県"
+   }
+  },
+  {
+   "id": 4305,
+   "shikona": {
+    "en": "Umeyama",
+    "jp": "梅山"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 63,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Futagoyama",
+    "jp": "二子山"
+   },
+   "pref": {
+    "en": "Gunma",
+    "jp": "群馬県"
+   }
+  },
+  {
+   "id": 4328,
+   "shikona": {
+    "en": "Ryugi",
+    "jp": "隆葵"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 63,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tagonoura",
+    "jp": "田子ノ浦"
+   },
+   "pref": {
+    "en": "Fukuoka",
+    "jp": "福岡県"
+   }
+  },
+  {
+   "id": 4202,
+   "shikona": {
+    "en": "Kuwae",
+    "jp": "桑江"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 64,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Futagoyama",
+    "jp": "二子山"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 3568,
+   "shikona": {
+    "en": "Fubu",
+    "jp": "風武"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 64,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Musashigawa",
+    "jp": "武蔵川"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4406,
+   "shikona": {
+    "en": "Tengakufuji",
+    "jp": "天岳富士"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 65,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Saga",
+    "jp": "佐賀県"
+   }
+  },
+  {
+   "id": 3731,
+   "shikona": {
+    "en": "Sawayaka",
+    "jp": "爽"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 65,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Shikihide",
+    "jp": "式秀"
+   },
+   "pref": {
+    "en": "Shizuoka",
+    "jp": "静岡県"
+   }
+  },
+  {
+   "id": 4311,
+   "shikona": {
+    "en": "Kazeoki",
+    "jp": "風桜輝"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 66,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Oshiogawa",
+    "jp": "押尾川"
+   },
+   "pref": {
+    "en": "Akita",
+    "jp": "秋田県"
+   }
+  },
+  {
+   "id": 2692,
+   "shikona": {
+    "en": "Sadanokuni",
+    "jp": "佐田ノ国"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 66,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sakaigawa",
+    "jp": "境川"
+   },
+   "pref": {
+    "en": "Nagasaki",
+    "jp": "長崎県"
+   }
+  },
+  {
+   "id": 4388,
+   "shikona": {
+    "en": "Setonoryu",
+    "jp": "瀬戸ノ竜"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 67,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Otowayama",
+    "jp": "音羽山"
+   },
+   "pref": {
+    "en": "Kagawa",
+    "jp": "香川県"
+   }
+  },
+  {
+   "id": 4266,
+   "shikona": {
+    "en": "Kaihakusho",
+    "jp": "魁白猩"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 67,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Asakayama",
+    "jp": "浅香山"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 3979,
+   "shikona": {
+    "en": "Chiyotsurugi",
+    "jp": "千代剣"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 68,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kokonoe",
+    "jp": "九重"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 3307,
+   "shikona": {
+    "en": "Okuni",
+    "jp": "大國"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 68,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Oitekaze",
+    "jp": "追手風"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4265,
+   "shikona": {
+    "en": "Kaiso",
+    "jp": "魁蒼"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 69,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Asakayama",
+    "jp": "浅香山"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 3880,
+   "shikona": {
+    "en": "Shishimaru",
+    "jp": "獅子丸"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 69,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tagonoura",
+    "jp": "田子ノ浦"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 3287,
+   "shikona": {
+    "en": "Azumayama",
+    "jp": "東山"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 70,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tamanoi",
+    "jp": "玉ノ井"
+   },
+   "pref": {
+    "en": "Fukushima",
+    "jp": "福島県"
+   }
+  },
+  {
+   "id": 4310,
+   "shikona": {
+    "en": "Komanofuji",
+    "jp": "駒ノ富士"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 70,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 2106,
+   "shikona": {
+    "en": "Tochikasuga",
+    "jp": "栃春日"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 71,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kasugano",
+    "jp": "春日野"
+   },
+   "pref": {
+    "en": "Aichi",
+    "jp": "愛知県"
+   }
+  },
+  {
+   "id": 4366,
+   "shikona": {
+    "en": "Kyokutaiyo",
+    "jp": "旭大陽"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 71,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Oshima",
+    "jp": "大島"
+   },
+   "pref": {
+    "en": "Hokkaido",
+    "jp": "北海道"
+   }
+  },
+  {
+   "id": 3631,
+   "shikona": {
+    "en": "Fukushoryu",
+    "jp": "福生龍"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 72,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Minato",
+    "jp": "湊"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 3677,
+   "shikona": {
+    "en": "Daisho",
+    "jp": "大翔"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 72,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Oitekaze",
+    "jp": "追手風"
+   },
+   "pref": {
+    "en": "Ishikawa",
+    "jp": "石川県"
+   }
+  },
+  {
+   "id": 4378,
+   "shikona": {
+    "en": "Kotokawabuchi",
+    "jp": "琴川渕"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 73,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Sadogatake",
+    "jp": "佐渡ヶ嶽"
+   },
+   "pref": {
+    "en": "Kochi",
+    "jp": "高知県"
+   }
+  },
+  {
+   "id": 4200,
+   "shikona": {
+    "en": "Datenomori",
+    "jp": "達ノ森"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 73,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isenoumi",
+    "jp": "伊勢ノ海"
+   },
+   "pref": {
+    "en": "Miyagi",
+    "jp": "宮城県"
+   }
+  },
+  {
+   "id": 4031,
+   "shikona": {
+    "en": "Mikinosato",
+    "jp": "幹希の里"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 74,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Nishiiwa",
+    "jp": "西岩"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4193,
+   "shikona": {
+    "en": "Daibasho",
+    "jp": "大馬翔"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 74,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Oitekaze",
+    "jp": "追手風"
+   },
+   "pref": {
+    "en": "Gifu",
+    "jp": "岐阜県"
+   }
+  },
+  {
+   "id": 4355,
+   "shikona": {
+    "en": "Sato",
+    "jp": "佐藤"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 75,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Arashio",
+    "jp": "荒汐"
+   },
+   "pref": {
+    "en": "Miyagi",
+    "jp": "宮城県"
+   }
+  },
+  {
+   "id": 3799,
+   "shikona": {
+    "en": "Hokutoshin",
+    "jp": "北勝真"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 75,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Hakkaku",
+    "jp": "八角"
+   },
+   "pref": {
+    "en": "Nagano",
+    "jp": "長野県"
+   }
+  },
+  {
+   "id": 4042,
+   "shikona": {
+    "en": "Chiyoaoi",
+    "jp": "千代葵"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 76,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kokonoe",
+    "jp": "九重"
+   },
+   "pref": {
+    "en": "Aichi",
+    "jp": "愛知県"
+   }
+  },
+  {
+   "id": 4209,
+   "shikona": {
+    "en": "Shimabukuro",
+    "jp": "島袋"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 76,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Hanaregoma",
+    "jp": "放駒"
+   },
+   "pref": {
+    "en": "Okinawa",
+    "jp": "沖縄県"
+   }
+  },
+  {
+   "id": 3943,
+   "shikona": {
+    "en": "Yokomaru",
+    "jp": "陽孔丸"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 77,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Musashigawa",
+    "jp": "武蔵川"
+   },
+   "pref": {
+    "en": "Okayama",
+    "jp": "岡山県"
+   }
+  },
+  {
+   "id": 3870,
+   "shikona": {
+    "en": "Chiyooga",
+    "jp": "千代大牙"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 77,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kokonoe",
+    "jp": "九重"
+   },
+   "pref": {
+    "en": "Osaka",
+    "jp": "大阪府"
+   }
+  },
+  {
+   "id": 4371,
+   "shikona": {
+    "en": "Shimano",
+    "jp": "島野"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 78,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Arashio",
+    "jp": "荒汐"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 4087,
+   "shikona": {
+    "en": "Harimao",
+    "jp": "播磨皇"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 78,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Yamahibiki",
+    "jp": "山響"
+   },
+   "pref": {
+    "en": "Hyogo",
+    "jp": "兵庫県"
+   }
+  },
+  {
+   "id": 3279,
+   "shikona": {
+    "en": "Tochihayate",
+    "jp": "栃颯"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 79,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kasugano",
+    "jp": "春日野"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4084,
+   "shikona": {
+    "en": "Takatairiku",
+    "jp": "隆太陸"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 79,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Minatogawa",
+    "jp": "湊川"
+   },
+   "pref": {
+    "en": "Gifu",
+    "jp": "岐阜県"
+   }
+  },
+  {
+   "id": 4192,
+   "shikona": {
+    "en": "Daishoheki",
+    "jp": "大翔碧"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 80,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Oitekaze",
+    "jp": "追手風"
+   },
+   "pref": {
+    "en": "Kagawa",
+    "jp": "香川県"
+   }
+  },
+  {
+   "id": 4110,
+   "shikona": {
+    "en": "Koga",
+    "jp": "厚雅"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 80,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Futagoyama",
+    "jp": "二子山"
+   },
+   "pref": {
+    "en": "Mie",
+    "jp": "三重県"
+   }
+  },
+  {
+   "id": 3951,
+   "shikona": {
+    "en": "Maniwayama",
+    "jp": "真庭山"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 81,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takadagawa",
+    "jp": "高田川"
+   },
+   "pref": {
+    "en": "Okayama",
+    "jp": "岡山県"
+   }
+  },
+  {
+   "id": 4255,
+   "shikona": {
+    "en": "Fukufukumaru",
+    "jp": "福福丸"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 81,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tagonoura",
+    "jp": "田子ノ浦"
+   },
+   "pref": {
+    "en": "Ehime",
+    "jp": "愛媛県"
+   }
+  },
+  {
+   "id": 4258,
+   "shikona": {
+    "en": "Sanukiryu",
+    "jp": "讃岐竜"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 82,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Otowayama",
+    "jp": "音羽山"
+   },
+   "pref": {
+    "en": "Kagawa",
+    "jp": "香川県"
+   }
+  },
+  {
+   "id": 4323,
+   "shikona": {
+    "en": "Satomatsunaga",
+    "jp": "里松永"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 82,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Nishiiwa",
+    "jp": "西岩"
+   },
+   "pref": {
+    "en": "Osaka",
+    "jp": "大阪府"
+   }
+  },
+  {
+   "id": 4400,
+   "shikona": {
+    "en": "Eisei",
+    "jp": "栄誠"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 83,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Minato",
+    "jp": "湊"
+   },
+   "pref": {
+    "en": "UK",
+    "jp": "英国"
+   }
+  },
+  {
+   "id": 2436,
+   "shikona": {
+    "en": "Banju",
+    "jp": "磐受"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 83,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Nara",
+    "jp": "奈良県"
+   }
+  },
+  {
+   "id": 3915,
+   "shikona": {
+    "en": "Terutaka",
+    "jp": "照寶"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 84,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Onoe",
+    "jp": "尾上"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4367,
+   "shikona": {
+    "en": "Kyokurenma",
+    "jp": "旭漣眞"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 84,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Oshima",
+    "jp": "大島"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 4244,
+   "shikona": {
+    "en": "Kato",
+    "jp": "加藤"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 85,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Nakamura",
+    "jp": "中村"
+   },
+   "pref": {
+    "en": "Akita",
+    "jp": "秋田県"
+   }
+  },
+  {
+   "id": 4402,
+   "shikona": {
+    "en": "Chiyoshinkai",
+    "jp": "千代心海"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 85,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kokonoe",
+    "jp": "九重"
+   },
+   "pref": {
+    "en": "Saga",
+    "jp": "佐賀県"
+   }
+  },
+  {
+   "id": 4064,
+   "shikona": {
+    "en": "Tamanotora",
+    "jp": "玉の寅"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 86,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kataonami",
+    "jp": "片男波"
+   },
+   "pref": {
+    "en": "Osaka",
+    "jp": "大阪府"
+   }
+  },
+  {
+   "id": 3552,
+   "shikona": {
+    "en": "Fujinoteru",
+    "jp": "富士の輝"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 86,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Onoe",
+    "jp": "尾上"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 3567,
+   "shikona": {
+    "en": "Ryubumaru",
+    "jp": "流武丸"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 87,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Musashigawa",
+    "jp": "武蔵川"
+   },
+   "pref": {
+    "en": "Gifu",
+    "jp": "岐阜県"
+   }
+  },
+  {
+   "id": 3046,
+   "shikona": {
+    "en": "Azumanami",
+    "jp": "東浪"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 87,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tamanoi",
+    "jp": "玉ノ井"
+   },
+   "pref": {
+    "en": "Fukushima",
+    "jp": "福島県"
+   }
+  },
+  {
+   "id": 3688,
+   "shikona": {
+    "en": "Hokutoizumi",
+    "jp": "北勝泉"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 88,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Hakkaku",
+    "jp": "八角"
+   },
+   "pref": {
+    "en": "Hiroshima",
+    "jp": "広島県"
+   }
+  },
+  {
+   "id": 4089,
+   "shikona": {
+    "en": "Daishoryu",
+    "jp": "大昇龍"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 88,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Yamahibiki",
+    "jp": "山響"
+   },
+   "pref": {
+    "en": "Hyogo",
+    "jp": "兵庫県"
+   }
+  },
+  {
+   "id": 3812,
+   "shikona": {
+    "en": "Tsuyasato",
+    "jp": "艶郷"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 89,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Minato",
+    "jp": "湊"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 4349,
+   "shikona": {
+    "en": "Tomimaru",
+    "jp": "冨丸"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 89,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sakaigawa",
+    "jp": "境川"
+   },
+   "pref": {
+    "en": "Yamaguchi",
+    "jp": "山口県"
+   }
+  },
+  {
+   "id": 4197,
+   "shikona": {
+    "en": "Bishomaru",
+    "jp": "美勝丸"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 90,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Musashigawa",
+    "jp": "武蔵川"
+   },
+   "pref": {
+    "en": "Shizuoka",
+    "jp": "静岡県"
+   }
+  },
+  {
+   "id": 2236,
+   "shikona": {
+    "en": "Asatenmai",
+    "jp": "朝天舞"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 90,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Takasago",
+    "jp": "高砂"
+   },
+   "pref": {
+    "en": "Miyagi",
+    "jp": "宮城県"
+   }
+  },
+  {
+   "id": 3113,
+   "shikona": {
+    "en": "Motoazuma",
+    "jp": "本東"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 91,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tamanoi",
+    "jp": "玉ノ井"
+   },
+   "pref": {
+    "en": "Nagano",
+    "jp": "長野県"
+   }
+  },
+  {
+   "id": 3648,
+   "shikona": {
+    "en": "Watatani",
+    "jp": "綿谷"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 91,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Arashio",
+    "jp": "荒汐"
+   },
+   "pref": {
+    "en": "Ishikawa",
+    "jp": "石川県"
+   }
+  },
+  {
+   "id": 4326,
+   "shikona": {
+    "en": "Futagawa",
+    "jp": "二川"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 92,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Nishikido",
+    "jp": "錦戸"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 2251,
+   "shikona": {
+    "en": "Hagane",
+    "jp": "鋼"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 92,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Otowayama",
+    "jp": "音羽山"
+   },
+   "pref": {
+    "en": "Aichi",
+    "jp": "愛知県"
+   }
+  },
+  {
+   "id": 4210,
+   "shikona": {
+    "en": "Sachinoyama",
+    "jp": "祥乃山"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 93,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takadagawa",
+    "jp": "高田川"
+   },
+   "pref": {
+    "en": "Okayama",
+    "jp": "岡山県"
+   }
+  },
+  {
+   "id": 4150,
+   "shikona": {
+    "en": "Aratobi",
+    "jp": "荒飛"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 93,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isenoumi",
+    "jp": "伊勢ノ海"
+   },
+   "pref": {
+    "en": "Iwate",
+    "jp": "岩手県"
+   }
+  },
+  {
+   "id": 3869,
+   "shikona": {
+    "en": "Wakaarata",
+    "jp": "若花新"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 94,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Nishiiwa",
+    "jp": "西岩"
+   },
+   "pref": {
+    "en": "Osaka",
+    "jp": "大阪府"
+   }
+  },
+  {
+   "id": 4023,
+   "shikona": {
+    "en": "Hishuyama",
+    "jp": "肥州山"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 94,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sakaigawa",
+    "jp": "境川"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  },
+  {
+   "id": 4299,
+   "shikona": {
+    "en": "Asakawasumi",
+    "jp": "朝河隅"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 95,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takasago",
+    "jp": "高砂"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4245,
+   "shikona": {
+    "en": "Shibuya",
+    "jp": "澁谷"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 95,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Nishonoseki",
+    "jp": "二所ノ関"
+   },
+   "pref": {
+    "en": "Ibaraki",
+    "jp": "茨城県"
+   }
+  },
+  {
+   "id": 4092,
+   "shikona": {
+    "en": "Sonoshun",
+    "jp": "蒼乃駿"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 96,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Arashio",
+    "jp": "荒汐"
+   },
+   "pref": {
+    "en": "Kagoshima",
+    "jp": "鹿児島県"
+   }
+  },
+  {
+   "id": 4264,
+   "shikona": {
+    "en": "Kaigyokusei",
+    "jp": "魁玉聖"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 96,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Asakayama",
+    "jp": "浅香山"
+   },
+   "pref": {
+    "en": "Saitama",
+    "jp": "埼玉県"
+   }
+  },
+  {
+   "id": 4329,
+   "shikona": {
+    "en": "Yamauchi",
+    "jp": "山内"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 97,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tagonoura",
+    "jp": "田子ノ浦"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 3563,
+   "shikona": {
+    "en": "Wakaikki",
+    "jp": "若一輝"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 97,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Hanaregoma",
+    "jp": "放駒"
+   },
+   "pref": {
+    "en": "Fukuoka",
+    "jp": "福岡県"
+   }
+  },
+  {
+   "id": 4263,
+   "shikona": {
+    "en": "Seiseigo",
+    "jp": "西勢郷"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 98,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Nishonoseki",
+    "jp": "二所ノ関"
+   },
+   "pref": {
+    "en": "Fukushima",
+    "jp": "福島県"
+   }
+  },
+  {
+   "id": 1179,
+   "shikona": {
+    "en": "Tenichi",
+    "jp": "天一"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 98,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Yamahibiki",
+    "jp": "山響"
+   },
+   "pref": {
+    "en": "Niigata",
+    "jp": "新潟県"
+   }
+  },
+  {
+   "id": 4390,
+   "shikona": {
+    "en": "Kotoyoshino",
+    "jp": "琴芳野"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 99,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Sadogatake",
+    "jp": "佐渡ヶ嶽"
+   },
+   "pref": {
+    "en": "Shizuoka",
+    "jp": "静岡県"
+   }
+  },
+  {
+   "id": 4288,
+   "shikona": {
+    "en": "Kumanishiki",
+    "jp": "隈錦"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 99,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Takekuma",
+    "jp": "武隈"
+   },
+   "pref": {
+    "en": "Kanagawa",
+    "jp": "神奈川県"
+   }
+  },
+  {
+   "id": 4318,
+   "shikona": {
+    "en": "Toranomaru",
+    "jp": "寅ノ丸"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 100,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Onoe",
+    "jp": "尾上"
+   },
+   "pref": {
+    "en": "Kagoshima",
+    "jp": "鹿児島県"
+   }
+  },
+  {
+   "id": 4306,
+   "shikona": {
+    "en": "Kototerao",
+    "jp": "琴寺尾"
+   },
+   "division": "jonidan",
+   "rankCode": 900,
+   "rankNumber": 100,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sadogatake",
+    "jp": "佐渡ヶ嶽"
+   },
+   "pref": {
+    "en": "Fukuoka",
+    "jp": "福岡県"
+   }
+  },
+  {
+   "id": 3219,
+   "shikona": {
+    "en": "Hirose",
+    "jp": "廣瀬"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 1,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Arashio",
+    "jp": "荒汐"
+   },
+   "pref": {
+    "en": "Tokushima",
+    "jp": "徳島県"
+   }
+  },
+  {
+   "id": 3760,
+   "shikona": {
+    "en": "Gokishin",
+    "jp": "豪鬼神"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 1,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Shikihide",
+    "jp": "式秀"
+   },
+   "pref": {
+    "en": "Akita",
+    "jp": "秋田県"
+   }
+  },
+  {
+   "id": 4314,
+   "shikona": {
+    "en": "Ikazuchiarata",
+    "jp": "雷新"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 2,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Ikazuchi",
+    "jp": "雷"
+   },
+   "pref": {
+    "en": "Fukuoka",
+    "jp": "福岡県"
+   }
+  },
+  {
+   "id": 3548,
+   "shikona": {
+    "en": "Kokuryunami",
+    "jp": "刻竜浪"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 2,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tatsunami",
+    "jp": "立浪"
+   },
+   "pref": {
+    "en": "Fukuoka",
+    "jp": "福岡県"
+   }
+  },
+  {
+   "id": 3786,
+   "shikona": {
+    "en": "Bakukoshin",
+    "jp": "爆虎神"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 3,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Shikihide",
+    "jp": "式秀"
+   },
+   "pref": {
+    "en": "Fukushima",
+    "jp": "福島県"
+   }
+  },
+  {
+   "id": 4377,
+   "shikona": {
+    "en": "Kotohiranuma",
+    "jp": "琴平沼"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 3,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sadogatake",
+    "jp": "佐渡ヶ嶽"
+   },
+   "pref": {
+    "en": "Miyazaki",
+    "jp": "宮崎県"
+   }
+  },
+  {
+   "id": 3306,
+   "shikona": {
+    "en": "Urutora",
+    "jp": "宇瑠寅"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 4,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Shikihide",
+    "jp": "式秀"
+   },
+   "pref": {
+    "en": "Tochigi",
+    "jp": "栃木県"
+   }
+  },
+  {
+   "id": 4283,
+   "shikona": {
+    "en": "Yamada",
+    "jp": "山田"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 4,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Nishonoseki",
+    "jp": "二所ノ関"
+   },
+   "pref": {
+    "en": "Aomori",
+    "jp": "青森県"
+   }
+  },
+  {
+   "id": 4387,
+   "shikona": {
+    "en": "Kokubo",
+    "jp": "小久保"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 5,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Asakayama",
+    "jp": "浅香山"
+   },
+   "pref": {
+    "en": "Aichi",
+    "jp": "愛知県"
+   }
+  },
+  {
+   "id": 4307,
+   "shikona": {
+    "en": "Usagifuji",
+    "jp": "兎富士"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 5,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 4268,
+   "shikona": {
+    "en": "Wakasasaki",
+    "jp": "若佐々木"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 6,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Nishiiwa",
+    "jp": "西岩"
+   },
+   "pref": {
+    "en": "Aomori",
+    "jp": "青森県"
+   }
+  },
+  {
+   "id": 4022,
+   "shikona": {
+    "en": "Sadanojo",
+    "jp": "佐田の城"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 6,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Sakaigawa",
+    "jp": "境川"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 4277,
+   "shikona": {
+    "en": "Miyafuji",
+    "jp": "宮富士"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 7,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Isegahama",
+    "jp": "伊勢ヶ濱"
+   },
+   "pref": {
+    "en": "Shizuoka",
+    "jp": "静岡県"
+   }
+  },
+  {
+   "id": 4344,
+   "shikona": {
+    "en": "Minami",
+    "jp": "美浪"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 7,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Hidenoyama",
+    "jp": "秀ノ山"
+   },
+   "pref": {
+    "en": "Okayama",
+    "jp": "岡山県"
+   }
+  },
+  {
+   "id": 3340,
+   "shikona": {
+    "en": "Kotodaigo",
+    "jp": "琴太豪"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 8,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Sadogatake",
+    "jp": "佐渡ヶ嶽"
+   },
+   "pref": {
+    "en": "Oita",
+    "jp": "大分県"
+   }
+  },
+  {
+   "id": 3067,
+   "shikona": {
+    "en": "Okuniyama",
+    "jp": "大國山"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 8,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Asahiyama",
+    "jp": "朝日山"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4029,
+   "shikona": {
+    "en": "Wakaonehara",
+    "jp": "若大根原"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 9,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Nishiiwa",
+    "jp": "西岩"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4207,
+   "shikona": {
+    "en": "Togyokuko",
+    "jp": "東玉康"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 9,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Tamanoi",
+    "jp": "玉ノ井"
+   },
+   "pref": {
+    "en": "Hyogo",
+    "jp": "兵庫県"
+   }
+  },
+  {
+   "id": 4303,
+   "shikona": {
+    "en": "Akenoyama",
+    "jp": "安氣乃山"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 10,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Ajigawa",
+    "jp": "安治川"
+   },
+   "pref": {
+    "en": "Mie",
+    "jp": "三重県"
+   }
+  },
+  {
+   "id": 4319,
+   "shikona": {
+    "en": "Kazenohana",
+    "jp": "風ノ華"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 10,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Oshiogawa",
+    "jp": "押尾川"
+   },
+   "pref": {
+    "en": "Akita",
+    "jp": "秋田県"
+   }
+  },
+  {
+   "id": 1451,
+   "shikona": {
+    "en": "Terunosato",
+    "jp": "輝の里"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 11,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Tagonoura",
+    "jp": "田子ノ浦"
+   },
+   "pref": {
+    "en": "Ehime",
+    "jp": "愛媛県"
+   }
+  },
+  {
+   "id": 4404,
+   "shikona": {
+    "en": "Tadokoro",
+    "jp": "田所"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 11,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Nishonoseki",
+    "jp": "二所ノ関"
+   },
+   "pref": {
+    "en": "Ibaraki",
+    "jp": "茨城県"
+   }
+  },
+  {
+   "id": 4379,
+   "shikona": {
+    "en": "Kotoishida",
+    "jp": "琴石田"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 12,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Sadogatake",
+    "jp": "佐渡ヶ嶽"
+   },
+   "pref": {
+    "en": "Osaka",
+    "jp": "大阪府"
+   }
+  },
+  {
+   "id": 3614,
+   "shikona": {
+    "en": "Kyonosato",
+    "jp": "京の里"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 12,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Isenoumi",
+    "jp": "伊勢ノ海"
+   },
+   "pref": {
+    "en": "Kyoto",
+    "jp": "京都府"
+   }
+  },
+  {
+   "id": 2688,
+   "shikona": {
+    "en": "Higonoryu",
+    "jp": "肥後ノ龍"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 13,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kise",
+    "jp": "木瀬"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  },
+  {
+   "id": 1691,
+   "shikona": {
+    "en": "Itakozakura",
+    "jp": "潮来桜"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 13,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Shikihide",
+    "jp": "式秀"
+   },
+   "pref": {
+    "en": "Ibaraki",
+    "jp": "茨城県"
+   }
+  },
+  {
+   "id": 2684,
+   "shikona": {
+    "en": "Chiyooume",
+    "jp": "千代青梅"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 14,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kokonoe",
+    "jp": "九重"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4369,
+   "shikona": {
+    "en": "Chiyoshinzan",
+    "jp": "千代真山"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 14,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kokonoe",
+    "jp": "九重"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 2605,
+   "shikona": {
+    "en": "Moriurara",
+    "jp": "森麗"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 15,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Otake",
+    "jp": "大嶽"
+   },
+   "pref": {
+    "en": "Chiba",
+    "jp": "千葉県"
+   }
+  },
+  {
+   "id": 3737,
+   "shikona": {
+    "en": "Chiyodaigo",
+    "jp": "千代大豪"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 15,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Kokonoe",
+    "jp": "九重"
+   },
+   "pref": {
+    "en": "Hyogo",
+    "jp": "兵庫県"
+   }
+  },
+  {
+   "id": 3766,
+   "shikona": {
+    "en": "Asashiyu",
+    "jp": "朝志雄"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 16,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takasago",
+    "jp": "高砂"
+   },
+   "pref": {
+    "en": "Mie",
+    "jp": "三重県"
+   }
+  },
+  {
+   "id": 4271,
+   "shikona": {
+    "en": "Hara",
+    "jp": "原"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 16,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Hakkaku",
+    "jp": "八角"
+   },
+   "pref": {
+    "en": "Shimane",
+    "jp": "島根県"
+   }
+  },
+  {
+   "id": 4386,
+   "shikona": {
+    "en": "Somanoshin",
+    "jp": "杣乃心"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 17,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Hidenoyama",
+    "jp": "秀ノ山"
+   },
+   "pref": {
+    "en": "Shiga",
+    "jp": "滋賀県"
+   }
+  },
+  {
+   "id": 4180,
+   "shikona": {
+    "en": "Anzakura",
+    "jp": "安櫻"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 17,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Ajigawa",
+    "jp": "安治川"
+   },
+   "pref": {
+    "en": "Aomori",
+    "jp": "青森県"
+   }
+  },
+  {
+   "id": 4408,
+   "shikona": {
+    "en": "Matsunosato",
+    "jp": "松の里"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 18,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Nishonoseki",
+    "jp": "二所ノ関"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  },
+  {
+   "id": 4151,
+   "shikona": {
+    "en": "Jokoki",
+    "jp": "城皓貴"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 18,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Musashigawa",
+    "jp": "武蔵川"
+   },
+   "pref": {
+    "en": "Osaka",
+    "jp": "大阪府"
+   }
+  },
+  {
+   "id": 4014,
+   "shikona": {
+    "en": "Toramusashi",
+    "jp": "寅武蔵"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 19,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Musashigawa",
+    "jp": "武蔵川"
+   },
+   "pref": {
+    "en": "Yamanashi",
+    "jp": "山梨県"
+   }
+  },
+  {
+   "id": 4407,
+   "shikona": {
+    "en": "Sunamusashi",
+    "jp": "砂武蔵"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 19,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Musashigawa",
+    "jp": "武蔵川"
+   },
+   "pref": {
+    "en": "Tokyo",
+    "jp": "東京都"
+   }
+  },
+  {
+   "id": 4050,
+   "shikona": {
+    "en": "Kotoryu",
+    "jp": "弘騰龍"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 20,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kise",
+    "jp": "木瀬"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  },
+  {
+   "id": 4410,
+   "shikona": {
+    "en": "Shinmichi",
+    "jp": "新道"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 20,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Takadagawa",
+    "jp": "高田川"
+   },
+   "pref": {
+    "en": "Ibaraki",
+    "jp": "茨城県"
+   }
+  },
+  {
+   "id": 3333,
+   "shikona": {
+    "en": "Onojo",
+    "jp": "大野城"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 21,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Takadagawa",
+    "jp": "高田川"
+   },
+   "pref": {
+    "en": "Fukuoka",
+    "jp": "福岡県"
+   }
+  },
+  {
+   "id": 4375,
+   "shikona": {
+    "en": "Honda",
+    "jp": "本多"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 21,
+   "seat": 1,
+   "side": "west",
+   "heya": {
+    "en": "Shikoroyama",
+    "jp": "錣山"
+   },
+   "pref": {
+    "en": "Shizuoka",
+    "jp": "静岡県"
+   }
+  },
+  {
+   "id": 4409,
+   "shikona": {
+    "en": "Hajime",
+    "jp": "一元"
+   },
+   "division": "jonokuchi",
+   "rankCode": 1000,
+   "rankNumber": 22,
+   "seat": 1,
+   "side": "east",
+   "heya": {
+    "en": "Kise",
+    "jp": "木瀬"
+   },
+   "pref": {
+    "en": "Kumamoto",
+    "jp": "熊本県"
+   }
+  }
+ ]
+}

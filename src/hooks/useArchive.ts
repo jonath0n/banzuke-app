@@ -88,7 +88,11 @@ export interface ArchivedBanzukeState {
 
 /** The archive an index entry points at; idle until given an entry. */
 export function useArchivedBanzuke(entry: ArchiveIndexEntry | null): ArchivedBanzukeState {
-  const file = entry?.file ?? null
+  return useArchiveFile(entry?.file ?? null)
+}
+
+/** One archive file by name (`{id}.json` or `{id}-lower.json`); idle until given one. */
+export function useArchiveFile(file: string | null): ArchivedBanzukeState {
   const [state, setState] = useState<ArchivedBanzukeState & { file: string | null }>({
     status: 'idle',
     archive: null,

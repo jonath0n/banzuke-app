@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "fetchedAt": "2026-10-26T00:20:31.706Z",
+  "fetchedAt": "2026-11-24T15:52:11.390Z",
   "stables": {
     "1": {
       "id": 1,
@@ -46,6 +46,29 @@
         }
       },
       "address": "〒130-0023 東京都墨田区立川2-1-18 Pista森下",
+      "bashoId": 638
+    },
+    "4": {
+      "id": 4,
+      "name": {
+        "en": "Asahiyama",
+        "jp": "朝日山"
+      },
+      "master": {
+        "name": {
+          "en": "Asahiyama Hirokatsu",
+          "jp": "朝日山 宗功"
+        },
+        "formerShikona": {
+          "en": "Kotonishiki",
+          "jp": "琴錦"
+        },
+        "highestRank": {
+          "en": "Sekiwake",
+          "jp": "関脇"
+        }
+      },
+      "address": "〒273-0128 千葉県鎌ケ谷市くぬぎ山2-1-5",
       "bashoId": 638
     },
     "5": {
@@ -138,6 +161,52 @@
         }
       },
       "address": "〒112-0011 東京都文京区千石1-22-2",
+      "bashoId": 638
+    },
+    "16": {
+      "id": 16,
+      "name": {
+        "en": "Minato",
+        "jp": "湊"
+      },
+      "master": {
+        "name": {
+          "en": "Minato Takayuki",
+          "jp": "湊 孝行"
+        },
+        "formerShikona": {
+          "en": "#2 Minatofuji",
+          "jp": "湊富士"
+        },
+        "highestRank": {
+          "en": "Maegashira",
+          "jp": "前頭二枚目"
+        }
+      },
+      "address": "〒333-0847 埼玉県川口市芝中田2-20-10",
+      "bashoId": 638
+    },
+    "17": {
+      "id": 17,
+      "name": {
+        "en": "Shikihide",
+        "jp": "式秀"
+      },
+      "master": {
+        "name": {
+          "en": "Shikihide",
+          "jp": "式守 秀五郎"
+        },
+        "formerShikona": {
+          "en": "#9 Kitazakura",
+          "jp": "北桜"
+        },
+        "highestRank": {
+          "en": "Maegashira",
+          "jp": "前頭九枚目"
+        }
+      },
+      "address": "〒301-0032 茨城県龍ヶ崎市佐貫4-17-17",
       "bashoId": 638
     },
     "20": {
@@ -439,6 +508,52 @@
       "address": "〒275-0014 千葉県習志野市鷺沼5-15-14",
       "bashoId": 638
     },
+    "43": {
+      "id": 43,
+      "name": {
+        "en": "Musashigawa",
+        "jp": "武蔵川"
+      },
+      "master": {
+        "name": {
+          "en": "Musashigawa Mitsuhide",
+          "jp": "武蔵川 光偉"
+        },
+        "formerShikona": {
+          "en": "Musashimaru",
+          "jp": "武蔵丸"
+        },
+        "highestRank": {
+          "en": "Yokozuna",
+          "jp": "横綱"
+        }
+      },
+      "address": "〒132-0021 東京都江戸川区中央4-1-10",
+      "bashoId": 638
+    },
+    "44": {
+      "id": 44,
+      "name": {
+        "en": "Kasugano",
+        "jp": "春日野"
+      },
+      "master": {
+        "name": {
+          "en": "Kasugano Kiyotaka",
+          "jp": "春日野 清隆"
+        },
+        "formerShikona": {
+          "en": "Tochinowaka",
+          "jp": "栃乃和歌"
+        },
+        "highestRank": {
+          "en": "Sekiwake",
+          "jp": "関脇"
+        }
+      },
+      "address": "〒130-0026 東京都墨田区両国1-7-11",
+      "bashoId": 638
+    },
     "45": {
       "id": 45,
       "name": {
@@ -531,6 +646,29 @@
       "address": "〒145-0067 東京都大田区雪谷大塚町14-22",
       "bashoId": 638
     },
+    "54": {
+      "id": 54,
+      "name": {
+        "en": "Shibatayama",
+        "jp": "芝田山"
+      },
+      "master": {
+        "name": {
+          "en": "Shibatayama Yasushi",
+          "jp": "芝田山 康"
+        },
+        "formerShikona": {
+          "en": "Onokuni",
+          "jp": "大乃国"
+        },
+        "highestRank": {
+          "en": "Yokozuna",
+          "jp": "横綱"
+        }
+      },
+      "address": "〒168-0072 東京都杉並区高井戸東2-26-9",
+      "bashoId": 638
+    },
     "55": {
       "id": 55,
       "name": {
@@ -598,6 +736,29 @@
         }
       },
       "address": "〒103-0007 東京都中央区日本橋浜町2-47-2",
+      "bashoId": 638
+    },
+    "10002": {
+      "id": 10002,
+      "name": {
+        "en": "Nishikido",
+        "jp": "錦戸"
+      },
+      "master": {
+        "name": {
+          "en": "Nishikido Masayuki",
+          "jp": "錦戸 眞幸"
+        },
+        "formerShikona": {
+          "en": "Mitoizumi",
+          "jp": "水戸泉"
+        },
+        "highestRank": {
+          "en": "Sekiwake",
+          "jp": "関脇"
+        }
+      },
+      "address": "〒130-0014 東京都墨田区亀沢1-16-7",
       "bashoId": 638
     },
     "10003": {
@@ -669,6 +830,29 @@
       "address": "〒135-0024 東京都江東区清澄3-6-2",
       "bashoId": 638
     },
+    "10008": {
+      "id": 10008,
+      "name": {
+        "en": "Onoe",
+        "jp": "尾上"
+      },
+      "master": {
+        "name": {
+          "en": "Onoe Keishi",
+          "jp": "尾上 圭志"
+        },
+        "formerShikona": {
+          "en": "Hamanoshima",
+          "jp": "濱ノ嶋"
+        },
+        "highestRank": {
+          "en": "Komusubi",
+          "jp": "小結"
+        }
+      },
+      "address": "〒146-0082 東京都大田区池上8-8-8",
+      "bashoId": 638
+    },
     "10009": {
       "id": 10009,
       "name": {
@@ -690,6 +874,75 @@
         }
       },
       "address": "〒116-0014 東京都荒川区東日暮里4-27-1",
+      "bashoId": 638
+    },
+    "10010": {
+      "id": 10010,
+      "name": {
+        "en": "Asakayama",
+        "jp": "浅香山"
+      },
+      "master": {
+        "name": {
+          "en": "Asakayama Hiroyuki",
+          "jp": "浅香山 博之"
+        },
+        "formerShikona": {
+          "en": "Kaio",
+          "jp": "魁皇"
+        },
+        "highestRank": {
+          "en": "Ozeki",
+          "jp": "大関"
+        }
+      },
+      "address": "〒130-0021 東京都墨田区緑4-21-1",
+      "bashoId": 638
+    },
+    "10011": {
+      "id": 10011,
+      "name": {
+        "en": "Yamahibiki",
+        "jp": "山響"
+      },
+      "master": {
+        "name": {
+          "en": "Yamahibiki Kenji",
+          "jp": "山響 謙司"
+        },
+        "formerShikona": {
+          "en": "#1 Ganyu",
+          "jp": "巌雄"
+        },
+        "highestRank": {
+          "en": "Maegashira",
+          "jp": "前頭筆頭"
+        }
+      },
+      "address": "〒136-0074 東京都江東区東砂6-6-3",
+      "bashoId": 638
+    },
+    "10013": {
+      "id": 10013,
+      "name": {
+        "en": "Nishiiwa",
+        "jp": "西岩"
+      },
+      "master": {
+        "name": {
+          "en": "Nishiiwa Shinobu",
+          "jp": "西岩 忍"
+        },
+        "formerShikona": {
+          "en": "Wakanosato",
+          "jp": "若の里"
+        },
+        "highestRank": {
+          "en": "Sekiwake",
+          "jp": "関脇"
+        }
+      },
+      "address": "〒111-0042 東京都台東区寿4-4-9",
       "bashoId": 638
     },
     "10015": {
@@ -736,6 +989,29 @@
         }
       },
       "address": "〒131-0033 東京都墨田区向島2-17-11",
+      "bashoId": 638
+    },
+    "10017": {
+      "id": 10017,
+      "name": {
+        "en": "Hidenoyama",
+        "jp": "秀ノ山"
+      },
+      "master": {
+        "name": {
+          "en": "Hidenoyama Kazuhiro",
+          "jp": "秀ノ山 和弘"
+        },
+        "formerShikona": {
+          "en": "Kotoshogiku",
+          "jp": "琴奨菊"
+        },
+        "highestRank": {
+          "en": "Ozeki",
+          "jp": "大関"
+        }
+      },
+      "address": "〒131-0032 東京都墨田区東向島4-2-9",
       "bashoId": 638
     },
     "10018": {

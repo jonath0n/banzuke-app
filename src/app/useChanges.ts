@@ -1,9 +1,16 @@
 import { useMemo } from 'react'
 import type { Banzuke, BanzukeSet, Language } from '../types/banzuke'
-import { previousEntry, type ArchiveIndexEntry } from '../data/archive'
+import { previousEntry, type ArchivedBanzuke, type ArchiveIndexEntry } from '../data/archive'
+import { divisionsIn } from '../data/divisions'
+import { isLowerDivision } from '../data/schema'
 import { jpBashoName, jpEraYear } from '../data/kanji'
 import type { RikishiRecord } from '../data/results'
-import { useArchiveIndex, useArchivedBanzuke, type ArchivedBanzukeState } from '../hooks/useArchive'
+import {
+  useArchiveFile,
+  useArchiveIndex,
+  useArchivedBanzuke,
+  type ArchivedBanzukeState,
+} from '../hooks/useArchive'
 import { useResults } from '../hooks/useResults'
 import { diffBanzuke, type BanzukeDiff, type CurrentRow, type Movement } from '../utils/diff'
 import { formatYearMonth } from '../utils/profile'
@@ -47,7 +54,17 @@ export function useChanges(
   const changesDefault = phase.status?.kind === 'upcoming' && prevEntry != null
   const diffOn = diffParam === '1' || (diffParam !== '0' && changesDefault)
   const diffWanted = diffOn && prevEntry != null
-  const previous = useArchivedBanzuke(prevEntry)
+  const sekitoriPrevious = useArchivedBanzuke(prevEntry)
+  // The previous lower divisions join the comparison once the current ones are loaded.
+  const lowerLoaded = data != null && divisionsIn(data).some(isLowerDivision)
+  const lowerPrevious = useArchiveFile(lowerLoaded ? (prevEntry?.lowerFile ?? null) : null)
+  // Keyed on the archives themselves: the hook hands back a fresh state object each render.
+  const { status: previousStatus, archive: sekitoriArchive } = sekitoriPrevious
+  const lowerArchive = lowerPrevious.archive
+  const previous = useMemo(
+    () => mergePrevious({ status: previousStatus, archive: sekitoriArchive }, lowerArchive),
+    [previousStatus, sekitoriArchive, lowerArchive]
+  )
   const previousResults = useResults(prevEntry ? prevEntry.bashoId : null)
   const previousRecords = previousResults.results?.records ?? null
 
@@ -66,13 +83,9 @@ export function useChanges(
   const currentRows: CurrentRow[] = useMemo(
     () =>
       data
-        ? [
-            ...data.makuuchi.rikishi.map((rikishi) => ({ rikishi, division: 'makuuchi' as const })),
-            ...(data.juryo?.rikishi ?? []).map((rikishi) => ({
-              rikishi,
-              division: 'juryo' as const,
-            })),
-          ]
+        ? divisionsIn(data).flatMap((division) =>
+            (data[division]?.rikishi ?? []).map((rikishi) => ({ rikishi, division }))
+          )
         : [],
     [data]
   )
@@ -102,4 +115,21 @@ export function useChanges(
     kadoban,
     previousRecords,
   }
+}
+
+/**
+ * The sekitori archive with the lower one folded in when it has loaded; the
+ * sekitori alone decide the status, so a missing lower file never hides Changes.
+ */
+function mergePrevious(
+  sekitori: ArchivedBanzukeState,
+  lower: ArchivedBanzuke | null
+): ArchivedBanzukeState {
+  if (!sekitori.archive || !lower) return sekitori
+  const archive: ArchivedBanzuke = {
+    ...sekitori.archive,
+    divisions: [...sekitori.archive.divisions, ...lower.divisions],
+    rikishi: [...sekitori.archive.rikishi, ...lower.rikishi],
+  }
+  return { status: sekitori.status, archive }
 }

@@ -16,7 +16,11 @@ import { getRankLevelFromCode } from '../constants/ranks'
 import { jpNumberKanji, jpRankName } from './kanji'
 import {
   isPlaceholderRow,
+  lowerSnapshotBashoId,
+  snapshotDivisions,
+  type LowerDivision,
   type RawDivisionSnapshot,
+  type RawLowerSnapshot,
   type RawPayload,
   type RawRikishi,
   type RawSnapshot,
@@ -162,9 +166,36 @@ export function normalizeDivision(
 
 /** Converts a validated snapshot into every division it carries. */
 export function normalizeSnapshot(snapshot: RawSnapshot, source: DataSource): BanzukeSet {
-  const { makuuchi, juryo } = snapshot.divisions
-  return {
-    makuuchi: normalizeDivision('makuuchi', makuuchi, snapshot.fetchedAt, source),
-    juryo: juryo ? normalizeDivision('juryo', juryo, snapshot.fetchedAt, source) : null,
+  const set: BanzukeSet = {
+    makuuchi: normalizeDivision(
+      'makuuchi',
+      snapshot.divisions.makuuchi,
+      snapshot.fetchedAt,
+      source
+    ),
   }
+  const { juryo } = snapshot.divisions
+  if (juryo) set.juryo = normalizeDivision('juryo', juryo, snapshot.fetchedAt, source)
+  return set
+}
+
+/** The divisions below Juryo, as loaded from `latest-lower.json`. */
+export type LowerSet = Partial<Record<LowerDivision, Banzuke>>
+
+/**
+ * Converts a validated lower-division snapshot, or returns null when it is
+ * for a different tournament than the one on screen (`bashoId`): the fetch
+ * keeps the old lower file when only the sekitori could be refreshed.
+ */
+export function normalizeLowerSnapshot(
+  snapshot: RawLowerSnapshot,
+  bashoId: number
+): LowerSet | null {
+  if (lowerSnapshotBashoId(snapshot) !== bashoId) return null
+  const set: LowerSet = {}
+  for (const division of snapshotDivisions(snapshot)) {
+    const raw = snapshot.divisions[division]
+    if (raw) set[division] = normalizeDivision(division, raw, snapshot.fetchedAt, 'live')
+  }
+  return set
 }

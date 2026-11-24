@@ -4,12 +4,14 @@ import { type Mock, afterEach, beforeEach, describe, expect, it, vi } from 'vite
 import {
   makeArchiveIndex,
   makeArchivedBanzuke,
+  makeRawLowerSnapshot,
   makeRawSnapshot,
   makeRecord,
   makeResultsFile,
   makeStablesFile,
 } from './test/fixtures'
 import { resetArchiveCache } from './hooks/useArchive'
+import { resetLowerCache } from './hooks/useLowerBanzuke'
 import { resetResultsCache } from './hooks/useResults'
 import { resetStablesCache } from './hooks/useStables'
 import App from './App'
@@ -25,6 +27,7 @@ describe('App', () => {
     localStorage.clear()
     window.history.replaceState(null, '', '/')
     resetArchiveCache()
+    resetLowerCache()
     resetResultsCache()
     resetStablesCache()
     // From 2026-09-12 the fixture basho (637: 2026-09-13…27) is in season for
@@ -38,33 +41,35 @@ describe('App', () => {
       'fetch',
       vi.fn((url: RequestInfo | URL) =>
         Promise.resolve(
-          String(url).includes('banzuke/index.json')
-            ? jsonResponse(makeArchiveIndex())
-            : String(url).includes('banzuke/636.json')
-              ? jsonResponse(makeArchivedBanzuke())
-              : String(url).includes('rikishi-profiles')
-                ? jsonResponse({ version: 1, fetchedAt: '2026-09-04T00:00:00Z', profiles: {} })
-                : String(url).includes('stables.json')
-                  ? jsonResponse(makeStablesFile())
-                  : String(url).includes('results/637.json')
-                    ? jsonResponse(
-                        makeResultsFile({
-                          records: { '1000': makeRecord(), '1001': recordOf10 },
-                          torikumi: {
-                            '12': [
-                              {
-                                division: 'makuuchi',
-                                matchNo: 1,
-                                east: { id: 1000, shikona: { en: 'Hoshoryu', jp: '豊昇龍' } },
-                                west: { id: 1001, shikona: { en: 'Onosato', jp: '大の里' } },
-                                winnerId: 1001,
-                                kimarite: 'yorikiri',
-                              },
-                            ],
-                          },
-                        })
-                      )
-                    : jsonResponse(makeRawSnapshot())
+          String(url).includes('latest-lower.json')
+            ? jsonResponse(makeRawLowerSnapshot())
+            : String(url).includes('banzuke/index.json')
+              ? jsonResponse(makeArchiveIndex())
+              : String(url).includes('banzuke/636.json')
+                ? jsonResponse(makeArchivedBanzuke())
+                : String(url).includes('rikishi-profiles')
+                  ? jsonResponse({ version: 1, fetchedAt: '2026-09-04T00:00:00Z', profiles: {} })
+                  : String(url).includes('stables.json')
+                    ? jsonResponse(makeStablesFile())
+                    : String(url).includes('results/637.json')
+                      ? jsonResponse(
+                          makeResultsFile({
+                            records: { '1000': makeRecord(), '1001': recordOf10 },
+                            torikumi: {
+                              '12': [
+                                {
+                                  division: 'makuuchi',
+                                  matchNo: 1,
+                                  east: { id: 1000, shikona: { en: 'Hoshoryu', jp: '豊昇龍' } },
+                                  west: { id: 1001, shikona: { en: 'Onosato', jp: '大の里' } },
+                                  winnerId: 1001,
+                                  kimarite: 'yorikiri',
+                                },
+                              ],
+                            },
+                          })
+                        )
+                      : jsonResponse(makeRawSnapshot())
         )
       )
     )
@@ -528,5 +533,97 @@ describe('App', () => {
     await screen.findByRole('button', { name: /Hoshoryu, East/ })
     await waitFor(() => expect(window.location.search).toBe(''))
     expect(screen.queryByRole('dialog')).toBeNull()
+  })
+
+  describe('the divisions below Juryo', () => {
+    const stub = () => fetch as unknown as Mock<(url: RequestInfo | URL) => Promise<Response>>
+    const lowerRequests = () =>
+      stub().mock.calls.filter(([url]) => String(url).includes('latest-lower.json'))
+
+    it('loads a lower division on demand from ?div= and offers what the file has', async () => {
+      window.history.replaceState(null, '', '/?div=makushita')
+      render(<App />)
+      expect(await screen.findByRole('button', { name: /Inami, East/ })).toBeInTheDocument()
+      // The fixture's lower file has Makushita and Jonokuchi; once it is here, those are offered.
+      expect(screen.getAllByRole('tab').map((t) => t.textContent?.replace(/\d+$/, ''))).toEqual([
+        'MakuuchiM',
+        'JuryoJ',
+        'MakushitaMs',
+        'JonokuchiJk',
+      ])
+      expect(screen.getByRole('tab', { name: /Makushita/ })).toHaveAttribute(
+        'aria-selected',
+        'true'
+      )
+      expect(screen.getByRole('tab', { name: /Makushita/ })).toHaveTextContent('100')
+      expect(lowerRequests()).toHaveLength(1)
+    })
+
+    it('does not fetch the lower file for the first paint', async () => {
+      render(<App />)
+      await screen.findByRole('button', { name: /Hoshoryu, East/ })
+      expect(lowerRequests()).toHaveLength(0)
+      // The tabs are offered before the file is here, without counts.
+      expect(screen.getAllByRole('tab')).toHaveLength(6)
+      expect(screen.getByRole('tab', { name: /Jonidan/ })).toHaveTextContent(/^JonidanJd$/)
+      // …but does once the page has been idle a while, so a search is instant.
+      await vi.advanceTimersByTimeAsync(3000)
+      await waitFor(() => expect(lowerRequests()).toHaveLength(1))
+      expect(screen.getByRole('tab', { name: /Jonokuchi/ })).toHaveTextContent('12')
+    })
+
+    it('searches into the lower divisions and offers the way there', async () => {
+      const user = userEvent.setup()
+      render(<App />)
+      await user.type(await screen.findByRole('searchbox'), 'inami')
+      await user.click(await screen.findByRole('button', { name: 'Show 1 in Makushita' }))
+      expect(window.location.search).toBe('?q=inami&div=makushita')
+      expect(await screen.findByRole('button', { name: /Inami, East/ })).toBeInTheDocument()
+    })
+
+    it('opens a lower wrestler from ?rikishi= once his file has loaded', async () => {
+      window.history.replaceState(null, '', '/?rikishi=3001')
+      render(<App />)
+      const dialog = await screen.findByRole('dialog')
+      expect(dialog).toHaveAccessibleName('Izumifuji')
+      expect(window.location.search).toBe('?rikishi=3001')
+    })
+
+    it('keeps Makuuchi and Juryo when the lower file fails, and says so on a lower tab', async () => {
+      const fallback = stub().getMockImplementation()!
+      stub().mockImplementation((url) =>
+        String(url).includes('latest-lower.json')
+          ? Promise.resolve({ ok: false, status: 500 } as Response)
+          : fallback(url)
+      )
+      window.history.replaceState(null, '', '/?div=jonidan')
+      render(<App />)
+      expect(await screen.findByRole('alert')).toHaveTextContent(
+        'The divisions below Juryo could not be loaded.'
+      )
+      const user = userEvent.setup()
+      await user.click(screen.getByRole('tab', { name: /Makuuchi/ }))
+      expect(await screen.findByRole('button', { name: /Hoshoryu, East/ })).toBeInTheDocument()
+    })
+
+    it('hides a lower file for another tournament', async () => {
+      const fallback = stub().getMockImplementation()!
+      const old = makeRawLowerSnapshot()
+      for (const division of Object.values(old.divisions)) {
+        division!.payloads.en.basho_id = 636
+        division!.payloads.jp.basho_id = 636
+      }
+      stub().mockImplementation((url) =>
+        String(url).includes('latest-lower.json')
+          ? Promise.resolve(jsonResponse(old))
+          : fallback(url)
+      )
+      window.history.replaceState(null, '', '/?div=makushita')
+      render(<App />)
+      expect(await screen.findByRole('alert')).toHaveTextContent(
+        'The divisions below Juryo could not be loaded.'
+      )
+      expect(screen.queryByRole('button', { name: /Inami/ })).toBeNull()
+    })
   })
 })

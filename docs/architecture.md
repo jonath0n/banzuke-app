@@ -10,7 +10,8 @@ at first and is intentional.
 (`useTournamentPhase`, `useResultsOverlay`, `useSearch`, `useSelection`, `useChanges`,
 `useDocumentTitle`, `useArchiveViewer`). `App.test.tsx` is the regression net for all of them.
 
-URL parameters (each read with `useUrlParam` in `App.tsx`): `?q=`, `?div=juryo`,
+URL parameters (each read with `useUrlParam` in `App.tsx`): `?q=`, `?div=juryo` (or
+`makushita`, `sandanme`, `jonidan`, `jonokuchi`),
 `?rikishi=<id>`, `?heya=<id>`, `?diff=0|1`, `?results=0`, `?basho=<id>`, plus `?lang=`.
 Older links may carry `?view=` or `?guide=` from the removed Sheet view; both are ignored.
 
@@ -45,6 +46,34 @@ Older links may carry `?view=` or `?guide=` from the removed Sheet view; both ar
 - Until 2026-11 there was also a **Sheet** view, the banzuke as printed (vertical names, right
   to left, rank by size), and a `?guide=1` legend for it. It was removed because vertical names
   were awkward to read; the last commit with it is tagged `sheet-final`.
+
+## The lower divisions
+
+- Makushita, Sandanme, Jonidan and Jonokuchi (about 520 names, six times the sekitori) live in
+  **their own file**, `public/latest-lower.json` (`RawLowerSnapshot`, `validateLowerSnapshot`),
+  so the first paint never waits for them. `useLowerBanzuke` fetches it when something needs it
+  — a lower tab in `?div=`, a search, a `?rikishi=` that is not a sekitori, an open `?heya=` —
+  or 2.5 s after the first paint, so a search is ready by the time anyone types. There is no
+  localStorage copy; the service worker keeps it like any `*.json`.
+- The six tabs are offered from the first paint (the lower ones without a count until the file
+  arrives); a lower tab shows "loading" in the panel meanwhile, and "could not be loaded" if it
+  fails or is for another tournament (`normalizeLowerSnapshot` checks the basho id). Makuuchi
+  and Juryo never depend on it. The sample has no lower divisions, so its tabs stop at Juryo.
+- The tabs speak the page's language: kanji in Japanese, the English names in English — and
+  below 720px, where six English names do not fit, the rank prefixes the rail already uses
+  (M, J, Ms, Sd, Jd, Jk), with the full name kept as the tab's accessible name.
+- A deep link to a lower wrestler or a lower-only stable is not cleared as unknown until the
+  file has settled (`useSelection`'s `settled`).
+- `scripts/fetch-banzuke.ts` writes both files. The Japanese list page shows **fifty names a
+  page** (its `v` field is ignored), so the lower divisions are fetched page by page with `p`
+  (`scripts/lib/jp-search-pages.ts`): about sixteen requests, one at a time. **A lower failure
+  never fails the run**: it is a warning, and the committed lower file ships.
+- Results stay sekitori-only: on a lower tab the hoshitori, the card, the Today strip and the
+  yusho race are not shown (seven bouts, four wins for kachi-koshi — none of `results.ts`
+  applies). Profiles are scraped for the sekitori only; the dialog works without one.
+- The rail on a narrow sheet carries only the position below Juryo (五十七, not 序二段五十七):
+  the tier band above names the division, and a hundred rows of six stacked characters would be
+  twice as tall.
 
 ## Keyboard and focus
 
@@ -109,7 +138,9 @@ written as a `\u{…}` escape, never a literal, or it lands in the glyph manifes
 ## Archive and the basho picker
 
 - `public/banzuke/` is the **archive**: one small validated file per tournament
-  (`src/data/archive.ts`), keyed by JSA rikishi id, plus `index.json`. JSA-sourced files come
+  (`src/data/archive.ts`), keyed by JSA rikishi id, plus `index.json`. From 2026-11 the lower
+  divisions are archived too, in `{id}-lower.json` beside it (the entry's `lowerFile`), loaded
+  only with the lower divisions. JSA-sourced files come
   from `scripts/archive-banzuke.ts`; 2025-11 → 2026-07 came from sumo-api.com via `nskId` (its
   `heya`/`pref` have `jp: ''`). `src/data/archive-files.test.ts` insists the index matches the
   files, is contiguous, and ends at the live tournament; the font subset includes these files
@@ -126,7 +157,10 @@ the current rows with the previous archived tournament by JSA id and yields a `M
 wrestler plus per-division departures. It is **on by default from the banzuke's announcement
 until day 1** and off once the tournament starts. Badges show the **rank a wrestler came from**
 and, when the previous results file is on disk, **the record that earned the move** (`▲M5 9–6`),
-never a step count — steps are undefined across sanyaku and the Juryo line. Arrows are
+never a step count — steps are undefined across sanyaku and the Juryo line. Only a division the
+previous archive carries can call a wrestler "new" (tournaments before 2026-11 have no lower
+file); a sekitori who dropped below Juryo is listed under "Now in Makushita" once the lower
+divisions are loaded. Arrows are
 ink/muted; "new" borrows the promotion pill's vermilion, and a newcomer who already carries a
 printed flag (新入幕 …) gets no "new" badge. The previous banzuke and its results are loaded
 whenever there is one, because the kadoban mark reads them too.

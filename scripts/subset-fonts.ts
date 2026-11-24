@@ -11,10 +11,12 @@
  * scripts/lib/font-coverage.test.ts checks against the current data.
  *
  * Usage:
- *   tsx scripts/subset-fonts.ts [--snapshot <path>] [--archive-dir <dir>] [--stables <path>]
+ *   tsx scripts/subset-fonts.ts [--snapshot <path>] [--lower <path>] [--archive-dir <dir>]
+ *                               [--stables <path>]
  *                               [--out-dir <dir>] [--cache <path>]
  *
  * --snapshot    Banzuke snapshot to draw glyphs from (default: public/latest-banzuke.json).
+ * --lower       Lower-division snapshot, when there is one (default: public/latest-lower.json).
  * --archive-dir Directory of archived banzuke JSON files (default: public/banzuke).
  * --stables     Stables file to draw glyphs from (default: public/stables.json). The deploy
  *               job passes the freshly fetched one, so a new stablemaster's kanji is in the
@@ -70,6 +72,7 @@ const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const { values: args } = parseArgs({
   options: {
     snapshot: { type: 'string', default: resolve(rootDir, 'public/latest-banzuke.json') },
+    lower: { type: 'string', default: resolve(rootDir, 'public/latest-lower.json') },
     'archive-dir': { type: 'string', default: resolve(rootDir, 'public/banzuke') },
     stables: { type: 'string', default: resolve(rootDir, 'public/stables.json') },
     'out-dir': { type: 'string', default: resolve(rootDir, 'public/assets/fonts') },
@@ -106,10 +109,17 @@ async function sourceFiles(dir: string): Promise<string[]> {
  */
 async function gatherTexts(
   snapshotPath: string,
+  lowerPath: string,
   archiveDir: string,
   stablesPath: string
 ): Promise<{ core: string[]; names: string[] }> {
   const names = [await readFile(snapshotPath, 'utf8')]
+  // The divisions below Juryo: ring names, stables and birthplaces again.
+  try {
+    names.push(await readFile(lowerPath, 'utf8'))
+  } catch {
+    // No lower file: nothing to add.
+  }
   // The fallback sheet must render in the same face, and it is frozen at an
   // older basho than the live file.
   names.push(await readFile(resolve(rootDir, 'public/sample-data.json'), 'utf8'))
@@ -232,6 +242,7 @@ async function main(): Promise<number> {
   const outDir = resolve(args['out-dir'] as string)
   const texts = await gatherTexts(
     resolve(args.snapshot as string),
+    resolve(args.lower as string),
     resolve(args['archive-dir'] as string),
     resolve(args.stables as string)
   )

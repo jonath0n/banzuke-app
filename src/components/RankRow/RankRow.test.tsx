@@ -52,4 +52,26 @@ describe('RankRow', () => {
     expect(screen.getByText('大関')).toBeInTheDocument()
     expect(screen.getByText('—')).toBeInTheDocument()
   })
+
+  it('prints the full rank below Juryo and only the position in the short form', () => {
+    const group: RankGroup = {
+      key: '900-100-1',
+      rankCode: 900,
+      rankNumber: 100,
+      seat: 1,
+      rankLevel: 'jonidan',
+      name: { en: 'Jonidan #100', jp: '序二段百枚目' },
+      east: makeRikishi({ id: 1, rankCode: 900, rankLevel: 'jonidan', rankNumber: 100 }),
+      west: null,
+    }
+    render(
+      <LanguageProvider>
+        <RankRow group={group} />
+      </LanguageProvider>
+    )
+    expect(screen.getByText('Jd100')).toBeInTheDocument()
+    expect(screen.getByText('序二段百枚目')).toHaveAttribute('lang', 'ja')
+    // The tier band names the division; the narrow rail carries the number alone.
+    expect(screen.getByText('百')).toHaveAttribute('aria-hidden', 'true')
+  })
 })
