@@ -26,13 +26,57 @@
 }
 
 .modal[open] {
-  animation: global(modalSlideUp) 350ms var(--ease-out-expo) forwards;
+  animation: global(modalSlideUp) 350ms var(--ease-out-expo);
 }
 
-/* A flat ink scrim: the page dims, it does not blur */
+/* The way out: the sheet drops back a touch and fades, quicker than it came.
+   Transitions, not a keyframe, so the motion budget holds. allow-discrete keeps
+   the closed dialog displayed (and, where `overlay` is supported, in the top
+   layer) until the fade ends; position: fixed keeps it centred where it is not.
+   A browser without allow-discrete closes at once, as before. */
+.modal:not([open]) {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-skip-link);
+  opacity: 0;
+  transform: translateY(12px) scale(0.98);
+  pointer-events: none;
+  transition:
+    opacity var(--dur-base) ease-in,
+    transform var(--dur-base) ease-in,
+    overlay var(--dur-base) allow-discrete,
+    display var(--dur-base) allow-discrete;
+}
+
+/* A flat ink scrim: the page dims, it does not blur. The fade in is scoped to
+   [open] so it lets go on close and the scrim can fade out with the sheet. */
 .modal::backdrop {
   background: rgb(17 17 17 / 0.55);
-  animation: global(fadeIn) 200ms ease forwards;
+  transition:
+    opacity var(--dur-base) ease-in,
+    overlay var(--dur-base) allow-discrete,
+    display var(--dur-base) allow-discrete;
+}
+
+.modal[open]::backdrop {
+  animation: global(fadeIn) 200ms ease;
+}
+
+.modal:not([open])::backdrop {
+  opacity: 0;
+}
+
+/* A hop between the two dialogs: the outgoing sheet and its scrim go at once,
+   the incoming scrim is already at strength, and the incoming sheet's rise is
+   the only motion. Otherwise the old file shows through the new one and the
+   page behind dips darker under two scrims. */
+.modal[data-handoff],
+.modal[data-handoff]::backdrop {
+  transition: none;
+}
+
+.modal[open][data-hop]::backdrop {
+  animation: none;
 }
 
 /* Content wrapper: clicks on it are inside the dialog, clicks outside land on the backdrop. */
@@ -865,7 +909,13 @@
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .modal[open],
-  .modal::backdrop {
+  .modal[open]::backdrop {
     animation: none;
+  }
+
+  /* base.css already cuts every transition to nothing; ::backdrop is outside
+     its reach, so the scrim goes with the sheet here. */
+  .modal::backdrop {
+    transition: none;
   }
 }

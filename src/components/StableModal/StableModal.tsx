@@ -1,4 +1,5 @@
 import { useEffect, useId, useMemo, useRef } from 'react'
+import { useLingeringProps } from '../../hooks/useLingeringProps'
 import { createPortal } from 'react-dom'
 import type { Division, Rikishi } from '../../types/banzuke'
 import type { Stable } from '../../data/stables'
@@ -41,19 +42,24 @@ interface StableModalProps {
  * wrestler dialog, built on the same native <dialog>; opening one from the
  * other pushes a history entry, so Back walks the chain back.
  */
-export function StableModal({
-  heyaId,
-  roster,
-  stable,
-  stableLoading,
-  movements,
-  records,
-  champions,
-  kadoban,
-  onClose,
-  onSelectRikishi,
-  onShowOnBanzuke,
-}: StableModalProps) {
+export function StableModal(props: StableModalProps) {
+  // The page renders from `shown`, which holds the last stable through the
+  // close fade; opening and closing follow the live selection.
+  const live = props.heyaId
+  const [shown, release] = useLingeringProps(props, live != null)
+  const {
+    heyaId,
+    roster,
+    stable,
+    stableLoading,
+    movements,
+    records,
+    champions,
+    kadoban,
+    onClose,
+    onSelectRikishi,
+    onShowOnBanzuke,
+  } = shown
   const championIds = useMemo(() => new Set(Object.values(champions ?? {})), [champions])
   const dialogRef = useRef<HTMLDialogElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
@@ -69,17 +75,29 @@ export function StableModal({
   useEffect(() => {
     const dialog = dialogRef.current
     if (!dialog) return
-    if (heyaId != null) {
+    if (live != null) {
       if (!dialog.open) {
         openerRef.current = document.activeElement
         handingOverRef.current = false
+        // A hop from the sibling dialog: its sheet has just gone, so the scrim
+        // is already down and must not fade in again (data-hop, in the CSS).
+        dialog.toggleAttribute(
+          'data-hop',
+          document.querySelector('dialog[open], dialog[data-handoff]') !== null
+        )
+        dialog.removeAttribute('data-handoff')
         dialog.showModal()
         headingRef.current?.focus()
       }
-    } else if (dialog.open) {
-      dialog.close()
+    } else {
+      // Escape has already closed it natively; the close button and Back have not.
+      // Handing over to the sibling dialog: go at once (data-handoff), so the
+      // incoming sheet never rises over this one still fading.
+      dialog.toggleAttribute('data-handoff', handingOverRef.current)
+      if (dialog.open) dialog.close()
+      release(dialog)
     }
-  }, [heyaId])
+  }, [live, release])
 
   // Fires for Escape, the close button and programmatic close alike.
   const handleClose = () => {

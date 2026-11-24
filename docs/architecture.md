@@ -112,6 +112,15 @@ first; Japanese joins with 、 and ends sentences with 。. Nothing else builds 
   the list stays filtered and one Back undoes it.
 - The dialog keyframes live in `base.css` and both modals reference them as `global(...)`:
   `fadeIn` for the backdrop, `modalSlideUp` for the panel.
+- Closing is the entrance in reverse, faster: 200ms ease-in, the sheet dropping 12px as it and
+  its scrim fade. It is **transitions, not a keyframe** (`allow-discrete` on `display` and
+  `overlay` keeps the closed dialog painted), so the motion budget holds; the open keyframes
+  have no `forwards` fill, or Chrome would not start the transition. `useLingeringProps`
+  (`src/hooks/`) keeps the last wrestler or stable rendered until the dialog's animations
+  settle, or the sheet would fade out empty. A hop between the two dialogs is not a close:
+  the outgoing one is marked `data-handoff` and goes at once, the incoming one `data-hop` and
+  its scrim skips the fade, so the new sheet's rise is the only motion. Under reduced motion
+  everything is instant (`base.css`, plus `::backdrop`, which that rule does not reach).
 - `src/data/shikona-glossary.ts` is **hand-written** and deliberately **not** tested against live
   data: the deploy job runs the test suite after the bot's data commit, so a new wrestler's kanji
   must never fail a test. Coverage is checked against the fixtures; `npm run glossary-gaps` (and
