@@ -92,10 +92,11 @@ and formats in `Asia/Tokyo`.
   (`--highlight`) is a screen under ink for what matters now — one highlight per screen. Rank
   is still carried by type size first. `src/styles/tokens.test.ts` enforces contrast on every
   pair, so adding a colour means adding it there too.
-- **Motion budget: four keyframe effects in the whole app** (three in use: `fadeIn`,
-  `modalSlideUp`, `riseIn`; one slot free), and no infinite animations — this is a printed
-  document. Adding one means removing one. Entrance animation plays once per page load (the
-  `data-entered` gate on `<main>`); tab switches and searches settle in place.
+- **Motion budget: four keyframe effects in the whole app, all in use** (`fadeIn`,
+  `modalSlideUp`, `riseIn`, and `stampPress`, the 優勝 stamp pressed in the headline), and no
+  infinite animations — this is a printed document. Adding one means removing one. Entrance
+  animation plays once per page load (the `data-entered` gate on `<main>`); tab switches and
+  searches settle in place.
 - Tests use the fixtures in `src/test/fixtures.ts`; add cases there rather than inventing new
   ad-hoc shapes.
 - Japanese naming helpers (kanji numerals, rank names, era years) live in `src/data/kanji.ts`.

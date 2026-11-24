@@ -635,7 +635,12 @@
       {
         "name": "modalSlideUp",
         "value": "@keyframes translateY(24px) scale(0.96) → none",
-        "purpose": "Dialog entrance. Budget: four effects, three in use, none loop."
+        "purpose": "Dialog entrance."
+      },
+      {
+        "name": "stampPress",
+        "value": "@keyframes scale(1.32) rotate(-5deg), opacity 0 → scale(0.95) at 45% → none; 560ms after 180ms",
+        "purpose": "The 優勝 stamp beside the champion headline, pressed once like a hanko. Budget: four effects, all in use, none loop."
       }
     ],
     "breakpoints": [
@@ -780,7 +785,7 @@
       "Rank carried by type size (about 2.6x from Yokozuna to Maegashira on desktop), with red reserved for sanyaku kanji and the Yokozuna's solid rail block.",
       "Square everything: radius 0, 1.5px ink borders on controls, 1px hairlines between rows.",
       "Flat print: only what floats over the page (dialogs, the scroll button) casts a shadow.",
-      "Three keyframe effects, entrance once per page load, nothing loops."
+      "Four keyframe effects, entrance once per page load, nothing loops. The one authored moment is the 優勝 stamp, pressed like a hanko when the champion first appears."
     ],
     "rules": [
       {
@@ -833,7 +838,7 @@
       "**Don't** highlight two things on one screen.",
       "**Don't** use cream, gold, or a decorative seal; a red stamp always states a fact (優勝, promotion, the wordmark's 番付).",
       "**Don't** tell rank by hue alone.",
-      "**Don't** add a fifth keyframe effect (four budgeted, three in use: `fadeIn`, `riseIn`, `modalSlideUp`) or anything that loops.",
+      "**Don't** add a fifth keyframe effect (four budgeted, all in use: `fadeIn`, `riseIn`, `modalSlideUp`, `stampPress`) or anything that loops.",
       "**Don't** draw Rising Sun rays or other decorative Japanese motifs."
     ]
   }

@@ -25,7 +25,8 @@
 
 /* The one fade, shared by the header and the list's arrival. CSS Modules scope
    keyframes per file, so the single declaration lives here and modules refer to
-   it as global(fadeIn). Three effects in use: fadeIn, riseIn, modalSlideUp. */
+   it as global(fadeIn). The four effects in the budget: fadeIn, riseIn,
+   modalSlideUp, and the 優勝 stamp's stampPress (Hero). */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -36,8 +37,7 @@
 }
 
 /* The dialogs' entrance, shared by the wrestler and the stable dialogs; their
-   backdrop fades with fadeIn above. Three of the four budgeted effects are in
-   use (fadeIn, modalSlideUp, and the list's riseIn); one slot is free. */
+   backdrop fades with fadeIn above. */
 @keyframes modalSlideUp {
   from {
     opacity: 0;

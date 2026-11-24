@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { Banzuke } from '../../types/banzuke'
 import {
   formatDateRange,
@@ -88,6 +89,20 @@ export function Hero({ data, resultsFetchedAt = null, results = null, rankById }
     return r ? r.shikona[language] || r.shikona.en : ''
   }
   const championId = results?.yusho.makuuchi
+  // The 優勝 stamp is pressed once per page load: for the first champion this
+  // Hero shows, and never again once the page has moved to another tournament
+  // (or to none), so an archive switch sets the stamp in place. Kept as state
+  // adjusted during render, so a re-render mid-press never cancels it.
+  const [press, setPress] = useState<{ id: number | null; done: boolean }>({
+    id: null,
+    done: false,
+  })
+  if (championId != null && press.id === null) {
+    setPress({ id: championId, done: false })
+  } else if (press.id !== null && !press.done && championId !== press.id) {
+    setPress({ id: press.id, done: true })
+  }
+  const pressStamp = championId != null && championId === press.id && !press.done
   const champion = championId != null ? nameOf(championId) : ''
   const championRecord = championId != null ? results?.records[String(championId)] : undefined
   const prizes = SANSHO_KINDS.flatMap((kind) => {
@@ -167,6 +182,7 @@ export function Hero({ data, resultsFetchedAt = null, results = null, rankById }
             <p className={styles.champion}>
               <span
                 className={styles.stamp}
+                data-press={pressStamp || undefined}
                 lang="ja"
                 aria-hidden={language === 'jp' ? undefined : true}
               >
