@@ -165,8 +165,6 @@
   display: inline-grid;
   place-items: center;
   align-self: stretch;
-  display: inline-grid;
-  place-items: center;
   padding: 0.3em 0.35em;
   font-family: var(--font-jp-serif);
   font-size: clamp(var(--text-lg), 3.3vw, var(--text-3xl));
@@ -175,6 +173,40 @@
   letter-spacing: 0.06em;
   color: var(--on-band);
   background: var(--band);
+}
+
+/* Pressed once, like a hanko: it comes down a touch large and askew, meets
+   the paper and settles square. Once per page load (Hero.tsx sets
+   data-press for the first champion only); an archive switch or a language
+   switch sets it in place. The fourth and last effect in the motion budget. */
+.stamp[data-press] {
+  animation: stampPress 560ms 180ms backwards;
+}
+
+@keyframes stampPress {
+  from {
+    opacity: 0;
+    transform: scale(1.32) rotate(-5deg);
+    /* Accelerate into the paper, as a hand does */
+    animation-timing-function: cubic-bezier(0.55, 0, 0.9, 0.45);
+  }
+  45% {
+    opacity: 1;
+    transform: scale(0.95) rotate(0deg);
+    /* Then the slight give of the seal against the paper */
+    animation-timing-function: var(--ease-out-expo);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* No movement: the stamp simply arrives with the page */
+  .stamp[data-press] {
+    animation: global(fadeIn) var(--dur-base) ease backwards;
+  }
 }
 
 .championText {

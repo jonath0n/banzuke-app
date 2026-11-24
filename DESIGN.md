@@ -231,7 +231,8 @@ Dialogs under Components.
   sanyaku kanji and the Yokozuna's solid rail block.
 - Square everything: radius 0, 1.5px ink borders on controls, 1px hairlines between rows.
 - Flat print: only what floats over the page (dialogs, the scroll button) casts a shadow.
-- Three keyframe effects, entrance once per page load, nothing loops.
+- Four keyframe effects, entrance once per page load, nothing loops. The one authored moment is
+  the 優勝 stamp, pressed like a hanko when the champion first appears.
 
 ## Colors
 
@@ -453,7 +454,8 @@ decided. At ≥1200px they stack in the sticky rail; below, they follow the shee
 
 Solid rectangles in `--band` with `--on-band` condensed 850 caps (mincho 700 in Japanese):
 the **promotion stamp** (新入幕 / New) beside a name, the **優勝 seal** in the star chart line and,
-larger, beside the champion headline. **Kadoban** is the one outlined stamp: ink type in an inset
+larger, beside the champion headline, where it is pressed once like a hanko (`stampPress`: down
+a touch large and askew, a slight give, square; a plain fade under reduced motion). **Kadoban** is the one outlined stamp: ink type in an inset
 1.5px ink frame, since the printed banzuke carries no such flag. The status badge in the deck is
 an ink block (outlined for "upcoming").
 
@@ -514,6 +516,6 @@ A 44px ink square, fixed bottom right, with the float shadow; fades in past the 
 - **Don't** use cream, gold, or a decorative seal; a red stamp always states a fact (優勝,
   promotion, the wordmark's 番付).
 - **Don't** tell rank by hue alone.
-- **Don't** add a fifth keyframe effect (four budgeted, three in use: `fadeIn`, `riseIn`,
-  `modalSlideUp`) or anything that loops.
+- **Don't** add a fifth keyframe effect (four budgeted, all in use: `fadeIn`, `riseIn`,
+  `modalSlideUp`, `stampPress`) or anything that loops.
 - **Don't** draw Rising Sun rays or other decorative Japanese motifs.
