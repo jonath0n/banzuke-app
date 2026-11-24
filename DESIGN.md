@@ -220,9 +220,8 @@ the yellow screen a sports desk lays over the leader's line.
 cards, pills and soft shadows; small tracked caps under 12px; rank told by hue alone; decorative
 Japanese motifs. No Rising Sun forms, ever: the masthead is a flat band, never rays.
 
-The wrestler and stable dialogs were not redesigned in this pass. They inherit the tokens (square,
-the new palette, the dialog shadow) but their layouts are not part of this record; they get their
-own pass.
+The wrestler and stable dialogs are set as a player file (選手名鑑) on the same sheet: see
+Dialogs under Components.
 
 **Key Characteristics:**
 
@@ -457,6 +456,36 @@ the **promotion stamp** (新入幕 / New) beside a name, the **優勝 seal** in 
 larger, beside the champion headline. **Kadoban** is the one outlined stamp: ink type in an inset
 1.5px ink frame, since the printed banzuke carries no such flag. The status badge in the deck is
 an ink block (outlined for "upcoming").
+
+### Dialogs
+
+The wrestler and stable dialogs are files on the sheet, not cards. The dialog opens on the sheet's
+5px ink rule with a 1px ink frame, square, with the Dialog shadow (it floats); the backdrop is a flat
+55% ink scrim, never blurred. A phone gets an edge-to-edge bottom sheet.
+
+- **Toolbar**, pinned at the top while the file scrolls: the joined ‹ › stepper (two 41px cells in a
+  1.5px ink frame, a disabled step's chevron greyed to column rule) on the left, a 44px square ✕ on
+  the right.
+- **Head:** a 3:4 portrait in a column-rule frame (120px, 96px on a phone; with no photo, the ring
+  name set vertically in pencil mincho) beside the rank line (rank kanji: ink, `--accent` for
+  sanyaku, a solid `--band` block for the Yokozuna; the 東/西 seal; rank and side in condensed caps),
+  the name in condensed 850 at clamp(2rem, 8.5vw, 2.9rem) (mincho 700 in Japanese), the other-script
+  name, stable › · home, and a promotion stamp or the outlined kadoban stamp.
+- **Section bars:** `--bar` ground, condensed 900 caps, with the mincho kanji beside it in English
+  (星取 RECORD, 名鑑 PROFILE, 昇進 CAREER, 四股名 RING NAME), pinned under the toolbar. The Record bar
+  carries the score at the right, with the state in caps or the 優勝 stamp.
+- **星取表 plate:** fifteen cells in three column-rule-framed groups of five, the mincho mark over
+  the day number, sized with `cqi`. Under it, what he still needs sits under the highlighter.
+- **Bouts and facts:** hairline rows. Bouts: day, mark, opponent in condensed 700 (mincho in
+  Japanese), kimarite in pencil. The profile is an agate table, a caps label column beside the
+  value.
+- **Career:** stops along a 2px ink rule, as hollow ink squares; the stop for the rank he holds now
+  is stamped `--band`.
+- **Highlighter:** the champion's name, or while a basho is open what he still needs: one per
+  dialog.
+- **Stable dialog:** the same frame, toolbar and bar, then the members as the List's cells on a
+  ladder stepped under the stable's own name (`--text-3xl` down to `--text-lg`).
+- **Actions:** square 1.5px-ink controls in condensed caps after a 3px ink rule.
 
 ### Scroll to Top
 

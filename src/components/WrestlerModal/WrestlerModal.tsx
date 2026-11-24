@@ -1,9 +1,9 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
-import type { Rikishi } from '../../types/banzuke'
-import { careerSteps, type RikishiProfile } from '../../data/profiles'
+import type { RankLevel, Rikishi } from '../../types/banzuke'
+import { careerSteps, type CareerStep, type RikishiProfile } from '../../data/profiles'
 import { buildPhotoUrl, profileUrl, PHOTO_DIMENSIONS } from '../../utils/formatting'
-import { jpRankShort } from '../../data/kanji'
+import { jpRankShort, SIDE_KANJI } from '../../data/kanji'
 import { describePromotion } from '../../utils/promotion'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { useStrings } from '../../i18n/useStrings'
@@ -14,6 +14,8 @@ import {
   boutMark,
   isKinboshi,
   kachikoshiOutlook,
+  kachikoshiState,
+  MAX_DAYS,
   nextBout,
   scoreLabel,
   type Bout,
@@ -23,6 +25,8 @@ import {
 import { kimariteLabel } from '../../data/kimarite'
 import { explainShikona } from '../../data/shikona-glossary'
 import { CloseIcon } from '../CloseIcon/CloseIcon'
+import { ChevronIcon } from '../ChevronIcon/ChevronIcon'
+import { ExternalIcon } from '../ExternalIcon/ExternalIcon'
 import styles from './WrestlerModal.module.css'
 
 interface WrestlerModalProps {
@@ -42,6 +46,8 @@ interface WrestlerModalProps {
   onSelectStable?: (heyaId: number) => void
   /** An Ozeki whose make-koshi would cost the rank. */
   kadoban?: boolean
+  /** This tournament's champion in the wrestler's division, once decided. */
+  champion?: boolean
 }
 
 /**
@@ -60,6 +66,7 @@ export function WrestlerModal({
   onStep,
   onSelectStable,
   kadoban = false,
+  champion = false,
 }: WrestlerModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
@@ -177,17 +184,55 @@ export function WrestlerModal({
     >
       {rikishi && (
         <div className={styles.content}>
-          <button
-            className={styles.close}
-            onClick={onClose}
-            type="button"
-            aria-label={strings.closeDetails}
-          >
-            <CloseIcon />
-          </button>
+          {/* Pinned while the file scrolls: the way along the banzuke and the way out */}
+          <div className={styles.toolbar}>
+            {neighbours && onStep ? (
+              <div className={styles.stepper}>
+                {/* Right to left, as the sheet reads: next (lower rank) on the left */}
+                {neighbours.next ? (
+                  <button
+                    type="button"
+                    className={styles.stepButton}
+                    onClick={() => onStep(neighbours.next!)}
+                    aria-label={strings.nextWrestler(nameOf(neighbours.next))}
+                  >
+                    <ChevronIcon direction="previous" size={18} />
+                  </button>
+                ) : (
+                  <span className={styles.stepGap} aria-hidden="true">
+                    <ChevronIcon direction="previous" size={18} />
+                  </span>
+                )}
+                {neighbours.previous ? (
+                  <button
+                    type="button"
+                    className={styles.stepButton}
+                    onClick={() => onStep(neighbours.previous!)}
+                    aria-label={strings.previousWrestler(nameOf(neighbours.previous))}
+                  >
+                    <ChevronIcon direction="next" size={18} />
+                  </button>
+                ) : (
+                  <span className={styles.stepGap} aria-hidden="true">
+                    <ChevronIcon direction="next" size={18} />
+                  </span>
+                )}
+              </div>
+            ) : (
+              <span />
+            )}
+            <button
+              className={styles.close}
+              onClick={onClose}
+              type="button"
+              aria-label={strings.closeDetails}
+            >
+              <CloseIcon />
+            </button>
+          </div>
 
-          <div className={styles.photoSection}>
-            <div className={styles.photoWrapper} data-rank-level={rikishi.rankLevel}>
+          <div className={styles.head}>
+            <div className={styles.portrait}>
               {rikishi.photo ? (
                 <img
                   src={buildPhotoUrl(rikishi.photo, '270x474')}
@@ -205,167 +250,156 @@ export function WrestlerModal({
                   }}
                 />
               ) : (
-                <div className={styles.photoPlaceholder} aria-hidden="true">
-                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.5" />
-                    <path
-                      d="M4 20c0-4 4-7 8-7s8 3 8 7"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </div>
+                // No portrait (common below Makushita): the ring name set
+                // down the plate in mincho, as a paper fills a missing photo.
+                <span className={styles.portraitName} lang="ja" aria-hidden="true">
+                  {rikishi.shikona.jp || rikishi.shikona.en}
+                </span>
               )}
             </div>
-            {/* The seal under the portrait reads the rank in kanji, as the rail does;
-                the Rank row below carries it in the UI language for assistive tech. */}
-            <div
-              className={styles.rankBadge}
-              data-rank-level={rikishi.rankLevel}
-              lang="ja"
-              aria-hidden="true"
-            >
-              {jpRankShort(rikishi.rankCode, rikishi.rankNumber) || rikishi.rankName.jp}
+
+            <div className={styles.identity}>
+              {/* The rank kanji reads the rank as the rail does; the words beside
+                  it carry it in the UI language for assistive tech. */}
+              <p className={styles.rankLine}>
+                <span
+                  className={styles.rankKanji}
+                  data-rank-level={rikishi.rankLevel}
+                  lang="ja"
+                  aria-hidden="true"
+                >
+                  {jpRankShort(rikishi.rankCode, rikishi.rankNumber) || rikishi.rankName.jp}
+                </span>
+                <span className={styles.sideSeal} lang="ja" aria-hidden="true">
+                  {SIDE_KANJI[rikishi.side]}
+                </span>
+                <span className={language === 'jp' ? 'visually-hidden' : styles.rankLabel}>
+                  <span>{rikishi.rankName[language]}</span>{' '}
+                  <span className={styles.rankSide}>{strings.side[rikishi.side]}</span>
+                </span>
+              </p>
+              <h2
+                id={nameId}
+                ref={headingRef}
+                tabIndex={-1}
+                className={styles.primaryName}
+                lang={lang}
+              >
+                <span className={champion ? styles.highlight : undefined}>
+                  {rikishi.shikona[language] || rikishi.shikona.en}
+                </span>
+              </h2>
+              <SecondaryName rikishi={rikishi} />
+              <p className={styles.affiliation}>
+                {rikishi.heya.en &&
+                  (onSelectStable && rikishi.heya.id > 0 ? (
+                    <button
+                      type="button"
+                      className={styles.stableButton}
+                      aria-label={strings.openStable(rikishi.heya[language])}
+                      onClick={() => {
+                        handingOverRef.current = true
+                        onSelectStable(rikishi.heya.id)
+                      }}
+                    >
+                      {rikishi.heya[language]}
+                      <ChevronIcon direction="next" size={14} />
+                    </button>
+                  ) : (
+                    <span className={styles.stableName}>{rikishi.heya[language]}</span>
+                  ))}
+                {rikishi.heya.en && rikishi.pref.en && (
+                  <span className={styles.dot} aria-hidden="true">
+                    ·
+                  </span>
+                )}
+                {rikishi.pref.en && (
+                  <span className={styles.from}>
+                    <span className="visually-hidden">{strings.from} </span>
+                    {profile?.birthplace[language] || rikishi.pref[language]}
+                  </span>
+                )}
+              </p>
+              {rikishi.promotion ? (
+                <p className={styles.status}>
+                  <span className={styles.stamp}>{describePromotion(rikishi, language)}</span>
+                </p>
+              ) : (
+                kadoban && (
+                  <p className={styles.status}>
+                    <span className={`${styles.stamp} ${styles.stampOutline}`}>
+                      {strings.kadoban}
+                    </span>
+                    <span className={styles.statusNote}>{strings.kadobanNote}</span>
+                  </p>
+                )
+              )}
             </div>
           </div>
 
-          <div className={styles.details}>
-            {neighbours && onStep && (
-              <div className={styles.stepper}>
-                {/* Right to left, as the sheet reads: next (lower rank) on the left */}
-                {neighbours.next ? (
-                  <button
-                    type="button"
-                    className={styles.stepButton}
-                    onClick={() => onStep(neighbours.next!)}
-                    aria-label={strings.nextWrestler(nameOf(neighbours.next))}
-                  >
-                    ‹
-                  </button>
-                ) : (
-                  <span className={styles.stepGap} aria-hidden="true" />
-                )}
-                {neighbours.previous ? (
-                  <button
-                    type="button"
-                    className={styles.stepButton}
-                    onClick={() => onStep(neighbours.previous!)}
-                    aria-label={strings.previousWrestler(nameOf(neighbours.previous))}
-                  >
-                    ›
-                  </button>
-                ) : (
-                  <span className={styles.stepGap} aria-hidden="true" />
-                )}
-              </div>
-            )}
-            <h2
-              id={nameId}
-              ref={headingRef}
-              tabIndex={-1}
-              className={styles.primaryName}
-              lang={lang}
+          {record && (
+            <RecordSection
+              rikishi={rikishi}
+              record={record}
+              results={results ?? null}
+              rankById={rankById}
+              champion={champion}
+            />
+          )}
+          {profileLoading && <div className={styles.profilePending} aria-busy="true" />}
+          {profile && <ProfileRows profile={profile} rankLevel={rikishi.rankLevel} />}
+          <NameSection rikishi={rikishi} />
+
+          <div className={styles.actions}>
+            <a
+              className={styles.action}
+              href={profileUrl(rikishi.id, language)}
+              target="_blank"
+              rel="noreferrer noopener"
             >
-              {rikishi.shikona[language] || rikishi.shikona.en}
-            </h2>
-            <SecondaryName rikishi={rikishi} />
-            <NameSection rikishi={rikishi} />
-
-            <dl className={styles.meta}>
-              <div className={styles.metaItem}>
-                <dt className={styles.metaLabel}>{strings.rank}</dt>
-                <dd className={styles.metaValue}>{rikishi.rankName[language]}</dd>
-              </div>
-              <div className={styles.metaItem}>
-                <dt className={styles.metaLabel}>{strings.sideLabel}</dt>
-                <dd className={styles.metaValue}>
-                  {strings.side[rikishi.side]}
-                  {language === 'en' && (
-                    <span className={styles.sideKanji} lang="ja">
-                      {rikishi.side === 'east' ? '東' : '西'}
-                    </span>
-                  )}
-                </dd>
-              </div>
-              {rikishi.heya.en && (
-                <div className={styles.metaItem}>
-                  <dt className={styles.metaLabel}>{strings.stable}</dt>
-                  <dd className={styles.metaValue}>
-                    {onSelectStable && rikishi.heya.id > 0 ? (
-                      <button
-                        type="button"
-                        className={styles.stableButton}
-                        aria-label={strings.openStable(rikishi.heya[language])}
-                        onClick={() => {
-                          handingOverRef.current = true
-                          onSelectStable(rikishi.heya.id)
-                        }}
-                      >
-                        {rikishi.heya[language]}
-                        <span className={styles.chevron} aria-hidden="true">
-                          ›
-                        </span>
-                      </button>
-                    ) : (
-                      rikishi.heya[language]
-                    )}
-                  </dd>
-                </div>
-              )}
-              {rikishi.pref.en && (
-                <div className={styles.metaItem}>
-                  <dt className={styles.metaLabel}>{strings.from}</dt>
-                  <dd className={styles.metaValue}>
-                    {profile?.birthplace[language] || rikishi.pref[language]}
-                  </dd>
-                </div>
-              )}
-              {(rikishi.promotion || kadoban) && (
-                <div className={styles.metaItem}>
-                  <dt className={styles.metaLabel}>{strings.status}</dt>
-                  <dd className={`${styles.metaValue} ${styles.statusBadge}`}>
-                    {rikishi.promotion ? describePromotion(rikishi, language) : strings.kadobanLong}
-                  </dd>
-                </div>
-              )}
-            </dl>
-
-            {profileLoading && <div className={styles.profilePending} aria-busy="true" />}
-            {profile && <ProfileRows profile={profile} />}
-            {record && (
-              <RecordSection
-                rikishi={rikishi}
-                record={record}
-                results={results ?? null}
-                rankById={rankById}
-              />
-            )}
-
-            <div className={styles.actions}>
-              <a
-                className={styles.action}
-                href={profileUrl(rikishi.id, language)}
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                {strings.officialProfile}
-                <span className={styles.external} aria-hidden="true">
-                  ↗
-                </span>
-              </a>
-              <button type="button" className={styles.action} onClick={handleCopyLink}>
-                {copied ? strings.linkCopied : strings.copyLink}
-              </button>
-              <span role="status" className="visually-hidden">
-                {copied ? strings.linkCopied : ''}
-              </span>
-            </div>
+              {strings.officialProfile}
+              <ExternalIcon />
+            </a>
+            <button type="button" className={styles.action} onClick={handleCopyLink}>
+              {copied ? strings.linkCopied : strings.copyLink}
+            </button>
+            <span role="status" className="visually-hidden">
+              {copied ? strings.linkCopied : ''}
+            </span>
           </div>
         </div>
       )}
     </dialog>,
     document.body
+  )
+}
+
+/** An ink section bar heading one part of the file, as the sheet heads a tier. */
+function SectionBar({
+  id,
+  title,
+  kanji,
+  children,
+}: {
+  id: string
+  title: string
+  /** The bar's head in kanji, set beside an English label as the sheet's tier bars are */
+  kanji?: string
+  children?: ReactNode
+}) {
+  const { language } = useLanguage()
+  return (
+    <div className={styles.bar}>
+      <h3 id={id} className={styles.barTitle}>
+        {kanji && language === 'en' && (
+          <span className={styles.barKanji} lang="ja" aria-hidden="true">
+            {kanji}
+          </span>
+        )}
+        {title}
+      </h3>
+      {children}
+    </div>
   )
 }
 
@@ -402,10 +436,8 @@ function NameSection({ rikishi }: { rikishi: Rikishi }) {
     segments.find((s) => !s.gloss?.joining && s.gloss?.note)?.gloss?.note ??
     segments.find((s) => s.gloss?.note)?.gloss?.note
   return (
-    <section className={styles.nameSection} aria-labelledby={headingId}>
-      <h3 id={headingId} className={styles.careerTitle}>
-        {strings.nameMeaning}
-      </h3>
+    <section className={styles.section} aria-labelledby={headingId}>
+      <SectionBar id={headingId} title={strings.nameMeaning} kanji="四股名" />
       {/* list-style: none loses list semantics in Safari; role restores it. */}
       <ul className={styles.segments} role="list">
         {segments.map((s, i) => (
@@ -423,11 +455,12 @@ function NameSection({ rikishi }: { rikishi: Rikishi }) {
 }
 
 /** Vital statistics and career facts from the scraped profile, when available. */
-function ProfileRows({ profile }: { profile: RikishiProfile }) {
+function ProfileRows({ profile, rankLevel }: { profile: RikishiProfile; rankLevel: RankLevel }) {
   const { language } = useLanguage()
   const strings = useStrings()
+  const headingId = useId()
   const age = profile.birthDate ? ageOn(profile.birthDate) : null
-  const rows: Array<{ label: string; value: string; wide?: boolean }> = []
+  const rows: Array<{ label: string; value: string }> = []
 
   if (profile.realName[language]) {
     rows.push({ label: strings.realName, value: profile.realName[language] })
@@ -446,27 +479,41 @@ function ProfileRows({ profile }: { profile: RikishiProfile }) {
     rows.push({ label: strings.highestRank, value: profile.highestRank[language] })
   }
   if (profile.kimarite[language]) {
-    rows.push({ label: strings.kimarite, value: profile.kimarite[language], wide: true })
+    rows.push({ label: strings.kimarite, value: profile.kimarite[language] })
   }
   return (
     <>
       {rows.length > 0 && (
-        <dl className={`${styles.meta} ${styles.profile}`}>
-          {rows.map((row) => (
-            <div key={row.label} className={`${styles.metaItem} ${row.wide ? styles.wide : ''}`}>
-              <dt className={styles.metaLabel}>{row.label}</dt>
-              <dd className={styles.metaValue}>{row.value}</dd>
-            </div>
-          ))}
-        </dl>
+        <section className={styles.section} aria-labelledby={headingId}>
+          <SectionBar id={headingId} title={strings.profileHeading} kanji="名鑑" />
+          {/* An agate table: label and value on one ruled line each */}
+          <dl className={styles.facts}>
+            {rows.map((row) => (
+              <div key={row.label} className={styles.fact}>
+                <dt className={styles.factLabel}>{row.label}</dt>
+                <dd className={styles.factValue}>{row.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
       )}
-      <CareerLadder profile={profile} />
+      <CareerLadder profile={profile} rankLevel={rankLevel} />
     </>
   )
 }
 
 /** Debut and each promotion as steps along a rule, oldest first. */
-function CareerLadder({ profile }: { profile: RikishiProfile }) {
+/** The career step a wrestler's present rank sits on; null below Juryo. */
+const STEP_OF_LEVEL: Partial<Record<RankLevel, CareerStep>> = {
+  yokozuna: 'yokozuna',
+  ozeki: 'ozeki',
+  sekiwake: 'sanyaku',
+  komusubi: 'sanyaku',
+  maegashira: 'makuuchi',
+  juryo: 'juryo',
+}
+
+function CareerLadder({ profile, rankLevel }: { profile: RikishiProfile; rankLevel: RankLevel }) {
   const { language } = useLanguage()
   const strings = useStrings()
   const headingId = useId()
@@ -474,13 +521,19 @@ function CareerLadder({ profile }: { profile: RikishiProfile }) {
   if (steps.length === 0) return null
 
   return (
-    <section className={styles.career} aria-labelledby={headingId}>
-      <h3 id={headingId} className={styles.careerTitle}>
-        {strings.career}
-      </h3>
+    <section className={styles.section} aria-labelledby={headingId}>
+      <SectionBar id={headingId} title={strings.career} kanji="昇進" />
       <ol className={styles.ladder} role="list">
-        {steps.map(([step, date]) => (
-          <li key={step} className={styles.step}>
+        {steps.map(([step, date], i) => (
+          <li
+            key={step}
+            className={styles.step}
+            // Stamped red only when it is the rank he holds now: a demoted
+            // former Ozeki's top step is history, not a fact about today.
+            data-current={
+              i === steps.length - 1 && STEP_OF_LEVEL[rankLevel] === step ? '' : undefined
+            }
+          >
             <span className={styles.stepLabel}>{strings.milestone[step]}</span>
             <time dateTime={date} className={styles.stepDate}>
               {formatYearMonth(date, language, 'short')}
@@ -492,17 +545,19 @@ function CareerLadder({ profile }: { profile: RikishiProfile }) {
   )
 }
 
-/** The tournament so far: score, what is still at stake, then every bout as a line. */
+/** The tournament so far: score, the star chart, what is still at stake, then every bout as a line. */
 function RecordSection({
   rikishi,
   record,
   results,
   rankById,
+  champion,
 }: {
   rikishi: Rikishi
   record: RikishiRecord
   results: ResultsFile | null
   rankById?: Map<number, Rikishi>
+  champion: boolean
 }) {
   const { language } = useLanguage()
   const strings = useStrings()
@@ -510,6 +565,10 @@ function RecordSection({
   const nameOf = (f: { shikona: Rikishi['shikona'] }) => f.shikona[language] || f.shikona.en
   const outlook = results ? kachikoshiOutlook(record, results.day) : null
   const next = results ? nextBout(results, rikishi.id) : null
+  const state = kachikoshiState(record)
+  const stateLabel =
+    state === 'kachikoshi' ? strings.kachikoshi : state === 'makekoshi' ? strings.makekoshi : ''
+  const byDay = new Map(record.bouts.map((bout) => [bout.day, bout]))
   const kinboshi = (bout: Bout) => isKinboshi(bout, rikishi, (id) => rankById?.get(id)?.rankCode)
   const outcomeText = (bout: Bout) =>
     bout.outcome === 'absent'
@@ -527,16 +586,49 @@ function RecordSection({
   // and a forfeit or an absence already says so in its visible text.
   const spokenOutcome = (bout: Bout) =>
     bout.outcome === 'win' ? strings.boutWin : bout.outcome === 'loss' ? strings.boutLoss : ''
+  const needs = outlook?.state === 'pending' && outlook.remaining > 0
   return (
-    <section className={styles.career} aria-labelledby={headingId}>
-      <h3 id={headingId} className={styles.careerTitle}>
-        {strings.record}
-      </h3>
-      <p className={styles.score}>{scoreLabel(record, language)}</p>
-      {((outlook?.state === 'pending' && outlook.remaining > 0) || next) && (
+    <section className={styles.section} aria-labelledby={headingId}>
+      <SectionBar id={headingId} title={strings.record} kanji="星取">
+        <p className={styles.barScore} data-state={state}>
+          <span className={styles.score}>{scoreLabel(record, language)}</span>
+          {champion ? (
+            <span className={styles.yusho}>{strings.yusho}</span>
+          ) : (
+            stateLabel && <span className={styles.barState}>{stateLabel}</span>
+          )}
+        </p>
+      </SectionBar>
+
+      {/* The 星取表: fifteen fixed cells in three groups of five, day under
+          mark. Decorative; the bout lines below say each day in words. */}
+      <div className={styles.plate} aria-hidden="true">
+        {Array.from({ length: MAX_DAYS / 5 }, (_, group) => (
+          <span key={group} className={styles.plateGroup}>
+            {Array.from({ length: 5 }, (_, i) => {
+              const day = group * 5 + i + 1
+              const bout = byDay.get(day)
+              return (
+                <span key={day} className={styles.plateCell} data-outcome={bout?.outcome}>
+                  <span className={styles.plateMark} lang="ja">
+                    {bout ? boutMark(bout.outcome) : '·'}
+                  </span>
+                  <span className={styles.plateDay}>{day}</span>
+                </span>
+              )
+            })}
+          </span>
+        ))}
+      </div>
+
+      {(needs || next) && (
         <p className={styles.stakes}>
-          {outlook?.state === 'pending' && outlook.remaining > 0 && (
-            <span>{strings.outlookNeeds(outlook.needed, outlook.remaining)}</span>
+          {needs && (
+            <span className={styles.needs}>
+              <span className={styles.highlight}>
+                {strings.outlookNeeds(outlook.needed, outlook.remaining)}
+              </span>
+            </span>
           )}
           {next && <span>{strings.nextBout(nameOf(next.opponent), next.day)}</span>}
         </p>

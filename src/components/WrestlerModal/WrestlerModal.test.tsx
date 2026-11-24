@@ -207,6 +207,20 @@ describe('WrestlerModal', () => {
     expect(bouts[0].parentElement).toHaveAttribute('role', 'list')
   })
 
+  it('stamps the champion’s record with the yusho and screens his name', () => {
+    renderModal(onosato, vi.fn(), 'en', makeRecord(), { champion: true })
+    expect(screen.getByText('Yusho')).toBeInTheDocument()
+    expect(screen.queryByText('Kachi-koshi')).toBeNull()
+    // The heading's name stays the name alone; the highlighter is a box inside it
+    expect(screen.getByRole('heading', { level: 2 })).toHaveAccessibleName('Onosato')
+  })
+
+  it('says kachi-koshi on the record bar when he is not the champion', () => {
+    renderModal(onosato, vi.fn(), 'en', makeRecord())
+    expect(screen.getByText('Kachi-koshi')).toBeInTheDocument()
+    expect(screen.queryByText('Yusho')).toBeNull()
+  })
+
   it('says what is at stake: the next bout, the wins still needed, and a kinboshi', () => {
     const rows = makeBanzuke().rikishi
     const rankById = new Map(rows.map((r) => [r.id, r]))
@@ -321,8 +335,9 @@ describe('WrestlerModal', () => {
     renderModal(onosato, vi.fn(), 'en', null, { neighbours: { previous, next }, onStep: vi.fn() })
     const nextButton = screen.getByRole('button', { name: 'Next: Hoshoryu' })
     const previousButton = screen.getByRole('button', { name: 'Previous: Kirishima' })
-    expect(nextButton).toHaveTextContent('‹')
-    expect(previousButton).toHaveTextContent('›')
+    // The chevrons are drawn: next (the lower rank) points left, previous right
+    expect(nextButton.querySelector('path')).toHaveAttribute('d', 'M12.5 4L6.5 10l6 6')
+    expect(previousButton.querySelector('path')).toHaveAttribute('d', 'M7.5 4l6 6-6 6')
     expect(
       nextButton.compareDocumentPosition(previousButton) & Node.DOCUMENT_POSITION_FOLLOWING
     ).toBeTruthy()

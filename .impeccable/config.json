@@ -1,0 +1,26 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "border-accent-on-rounded",
+        "value": "*",
+        "files": [
+          "src/components/WrestlerModal/WrestlerModal.module.css"
+        ],
+        "createdAt": "2026-11-24T18:23:38.213Z",
+        "reason": "Claude triage: border-radius is 0 (square world per DESIGN.md); 5px top border is the sheet's documented 5px ink opening rule, not an accent on a rounded card"
+      },
+      {
+        "rule": "border-accent-on-rounded",
+        "value": "*",
+        "files": [
+          "src/components/StableModal/StableModal.module.css"
+        ],
+        "createdAt": "2026-11-24T18:23:38.230Z",
+        "reason": "Claude triage: border-radius is 0 (square world per DESIGN.md); 5px top border is the sheet's documented 5px ink opening rule, not an accent on a rounded card"
+      }
+    ]
+  }
+}

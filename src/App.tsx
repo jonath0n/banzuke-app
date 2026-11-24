@@ -436,6 +436,11 @@ function AppContent() {
               results={file}
               rankById={rankById}
               kadoban={selectedRikishi ? kadoban.has(selectedRikishi.id) : false}
+              champion={
+                selectedRikishi
+                  ? Object.values(champions ?? {}).includes(selectedRikishi.id)
+                  : false
+              }
               neighbours={neighbours}
               onStep={selection.onStep}
               onSelectStable={selection.onSelectStable}
