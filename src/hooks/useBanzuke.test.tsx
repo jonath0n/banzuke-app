@@ -51,7 +51,7 @@ describe('useBanzuke', () => {
     const { result } = renderHook(() => useBanzuke())
     await waitFor(() => expect(result.current.status).toBe('ready'))
     expect(result.current.data?.makuuchi.rikishi).toHaveLength(24)
-    expect(result.current.data?.juryo).toBeNull()
+    expect(result.current.data?.juryo).toBeUndefined()
   })
 
   it('shows the saved copy first, then the fresh data', async () => {
@@ -78,7 +78,7 @@ describe('useBanzuke', () => {
 
   it('keeps the saved copy and flags it stale when the refresh fails', async () => {
     vi.spyOn(console, 'warn').mockImplementation(() => undefined)
-    localStorage.setItem(CACHE_KEY, JSON.stringify(makeBanzukeSet({ juryo: null })))
+    localStorage.setItem(CACHE_KEY, JSON.stringify(makeBanzukeSet({ juryo: undefined })))
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(notFound))
 
     const { result } = renderHook(() => useBanzuke())
@@ -86,7 +86,7 @@ describe('useBanzuke', () => {
     expect(result.current.status).toBe('ready')
     expect(result.current.problem).toBe('stale')
     expect(result.current.data?.makuuchi.basho.id).toBe(637)
-    expect(result.current.data?.juryo).toBeNull()
+    expect(result.current.data?.juryo).toBeUndefined()
   })
 
   it('ignores a corrupt or outdated cache entry', async () => {

@@ -1,5 +1,6 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { useBanzuke } from './hooks/useBanzuke'
+import { useLowerBanzuke } from './hooks/useLowerBanzuke'
 import { loadProfiles } from './hooks/useProfiles'
 import { loadStables } from './hooks/useStables'
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext'
@@ -31,6 +32,8 @@ import { Footer } from './components/Footer/Footer'
 import { DialogFallback } from './components/ErrorBoundary/DialogFallback'
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary'
 import { ScrollToTop } from './components/ScrollToTop/ScrollToTop'
+import { DIVISIONS, isLowerDivision, LOWER_DIVISIONS } from './data/schema'
+import { divisionsIn } from './data/divisions'
 import type { BanzukeSet, Division, Rikishi } from './types/banzuke'
 import styles from './App.module.css'
 
@@ -59,9 +62,15 @@ const EMPTY: Rikishi[] = []
 /** How long the entrance cascade may run after the banzuke first renders. */
 const ENTRANCE_MS = 1200
 
-/** The division named in the URL, when the data actually has it. */
-function resolveDivision(param: string | null, data: BanzukeSet | null): Division {
-  return param === 'juryo' && data?.juryo ? 'juryo' : 'makuuchi'
+/** The division named in the URL, when it is on offer. */
+function resolveDivision(param: string | null, offered: readonly Division[]): Division {
+  return offered.find((division) => division === param) ?? 'makuuchi'
+}
+
+/** Whether a wrestler id is in the loaded set (cheap enough per render for ~70 sekitori). */
+function knows(set: BanzukeSet | null, id: string | null): boolean {
+  if (!set || !id) return false
+  return divisionsIn(set).some((d) => set[d]?.rikishi.some((r) => String(r.id) === id))
 }
 
 /**
@@ -89,10 +98,32 @@ function AppContent() {
 
   // ?basho= shows an earlier tournament from the archive in place of the live one.
   const archiveIndex = useArchiveIndex()
-  const archive = useArchiveViewer(bashoParam, archiveIndex, live.data?.makuuchi.basho.id ?? null)
-  const data = archive.entry ? archive.data : live.data
+  const liveBashoId = live.data?.makuuchi.basho.id ?? null
+
+  // The divisions below Juryo come from their own file, fetched when something
+  // asks for them (a lower tab, a search, a link to a wrestler or stable not
+  // among the sekitori) or once the page is idle. The sample has none.
+  const query = searchQuery ?? ''
+  const wantLower =
+    (divisionParam != null && (LOWER_DIVISIONS as readonly string[]).includes(divisionParam)) ||
+    query.trim() !== '' ||
+    heyaParam != null ||
+    (selectedId != null && live.data != null && !knows(live.data, selectedId))
+  const liveHasLower = live.data?.makuuchi.source === 'live'
+  const lower = useLowerBanzuke(liveHasLower ? liveBashoId : null, wantLower)
+
+  const archive = useArchiveViewer(bashoParam, archiveIndex, liveBashoId, wantLower)
+  const liveData = useMemo(
+    () => (live.data && lower.data ? { ...live.data, ...lower.data } : live.data),
+    [live.data, lower.data]
+  )
+  const data = archive.entry ? archive.data : liveData
   const status = archive.entry ? (archive.loading ? 'loading' : live.status) : live.status
   const problem = archive.entry ? null : live.problem
+  const hasLower = archive.entry ? archive.hasLower : liveHasLower
+  const lowerStatus = archive.entry ? archive.lowerStatus : lower.status
+  // Settled: a link to someone below Juryo can now be judged unknown.
+  const lowerSettled = !hasLower || lowerStatus === 'ready' || lowerStatus === 'unavailable'
   const handleChangeBasho = useCallback(
     (id: number | null) => setBashoParam(id === null ? null : String(id)),
     [setBashoParam]
@@ -104,10 +135,23 @@ function AppContent() {
     return () => window.clearTimeout(timer)
   }, [data, entered])
 
-  const division = resolveDivision(divisionParam, data)
-  const banzuke = data ? (division === 'juryo' ? data.juryo : data.makuuchi) : null
-  const allRows = banzuke?.rikishi ?? EMPTY
-  const query = searchQuery ?? ''
+  // Every division the data has, plus the lower ones while their file is on its way.
+  const offered = useMemo(
+    () =>
+      data
+        ? DIVISIONS.filter(
+            (d) => data[d] != null || (hasLower && isLowerDivision(d) && lowerStatus !== 'ready')
+          )
+        : [],
+    [data, hasLower, lowerStatus]
+  )
+  const division = resolveDivision(divisionParam, offered)
+  const lowerTab = isLowerDivision(division)
+  // The division on screen; null for a lower tab whose file has not arrived.
+  const shown = data?.[division] ?? null
+  // The tournament itself (dates, phase, title) is the same in every division.
+  const banzuke = shown ?? data?.makuuchi ?? null
+  const allRows = shown?.rikishi ?? EMPTY
 
   const phase = useTournamentPhase(banzuke)
   const tournamentStatus = phase.status
@@ -124,9 +168,13 @@ function AppContent() {
 
   const search = useSearch(data, division, query)
   const { highlight, isFiltering, matchedCount, otherDivision, otherHits, counts } = search
-  const showTabs = data?.juryo != null
+  const showTabs = offered.length > 1
+  // Results are kept for the sekitori only: the lower divisions show the banzuke alone.
+  const overlayRecords = lowerTab ? null : records
+  const lowerMessage =
+    !lowerTab || shown ? null : lowerStatus === 'unavailable' ? 'unavailable' : 'loading'
 
-  const selection = useSelection(data, selectedId, heyaParam)
+  const selection = useSelection(data, selectedId, heyaParam, lowerSettled)
   const { rankById, selectedRikishi, neighbours, selectedHeyaId, roster, stable, stableLoading } =
     selection
 
@@ -148,7 +196,7 @@ function AppContent() {
   )
   const otherMatches = useMemo(
     () =>
-      isFiltering && otherHits > 0
+      isFiltering && otherDivision && otherHits > 0
         ? {
             division: otherDivision,
             count: otherHits,
@@ -260,7 +308,7 @@ function AppContent() {
           </div>
         )}
         {/* In season, today's line: the day, the card so far, the leader, the freshness. */}
-        {banzuke && file && tournamentStatus?.kind === 'live' && (
+        {banzuke && file && !lowerTab && tournamentStatus?.kind === 'live' && (
           <TodayStrip
             results={file}
             division={division}
@@ -277,6 +325,7 @@ function AppContent() {
           <DivisionTabs
             value={division}
             onChange={handleChangeDivision}
+            divisions={offered}
             counts={counts}
             matched={search.matchedByDivision}
           />
@@ -294,21 +343,34 @@ function AppContent() {
               {/* The division as a heading for readers walking the outline; the
                   tab already names it for the eye. */}
               <h2 className="visually-hidden">{strings.division[division]}</h2>
-              <BanzukeGrid
-                key={division}
-                rows={allRows}
-                highlight={highlight}
-                movements={movements}
-                kadoban={kadoban}
-                records={records}
-                champions={champions}
-                onSelectRikishi={handleSelectRikishi}
-                onSelectStable={selection.onSelectStable}
-                emptyReason={isFiltering ? 'no-matches' : 'no-data'}
-                query={query}
-                otherMatches={otherMatches}
-                onClearSearch={handleClearSearch}
-              />
+              {lowerMessage === 'loading' && (
+                <div role="status" className={styles.status}>
+                  {strings.lowerLoading}
+                </div>
+              )}
+              {lowerMessage === 'unavailable' && (
+                <div role="alert" className={`${styles.status} ${styles.warning}`}>
+                  {strings.lowerUnavailable}
+                </div>
+              )}
+              {lowerMessage === 'loading' && <BanzukeGridSkeleton />}
+              {!lowerMessage && (
+                <BanzukeGrid
+                  key={division}
+                  rows={allRows}
+                  highlight={highlight}
+                  movements={movements}
+                  kadoban={kadoban}
+                  records={overlayRecords}
+                  champions={champions}
+                  onSelectRikishi={handleSelectRikishi}
+                  onSelectStable={selection.onSelectStable}
+                  emptyReason={isFiltering ? 'no-matches' : 'no-data'}
+                  query={query}
+                  otherMatches={otherMatches}
+                  onClearSearch={handleClearSearch}
+                />
+              )}
               {diffWanted && previous.status === 'loading' && (
                 <div role="status" className="visually-hidden">
                   {strings.loading}
@@ -324,10 +386,11 @@ function AppContent() {
                   division={division}
                   departures={diff.byDivision[division]}
                   sinceLabel={sinceLabel}
+                  lowerLoaded={data != null && divisionsIn(data).some(isLowerDivision)}
                   onSelectRikishi={handleSelectRikishi}
                 />
               )}
-              {file && !isFiltering && (
+              {file && !isFiltering && !lowerTab && (
                 <Bouts
                   results={file}
                   division={division}

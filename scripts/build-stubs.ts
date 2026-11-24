@@ -3,14 +3,18 @@
  * sitemap, robots.txt and the tournament's JSON-LD into dist/, from the snapshot the
  * build shipped. See scripts/lib/stubs.ts.
  *
- * Usage: tsx scripts/build-stubs.ts [--dist <dir>] [--snapshot <path>]
+ * Usage: tsx scripts/build-stubs.ts [--dist <dir>] [--snapshot <path>] [--lower <path>]
+ *
+ * The lower divisions (--lower) get share pages too when their file is for the
+ * same tournament; without it the sekitori's pages are still written.
  */
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { parseArgs } from 'node:util'
-import { normalizeSnapshot } from '../src/data/normalize.ts'
-import { validateSnapshot } from '../src/data/schema.ts'
+import { normalizeLowerSnapshot, normalizeSnapshot } from '../src/data/normalize.ts'
+import { validateLowerSnapshot, validateSnapshot } from '../src/data/schema.ts'
+import { everyRikishi } from '../src/data/divisions.ts'
 import {
   renderJsonLd,
   renderRobots,
@@ -25,8 +29,20 @@ const { values: args } = parseArgs({
   options: {
     dist: { type: 'string', default: resolve(rootDir, 'dist') },
     snapshot: { type: 'string', default: resolve(rootDir, 'public/latest-banzuke.json') },
+    lower: { type: 'string', default: resolve(rootDir, 'public/latest-lower.json') },
   },
 })
+
+async function readLower(path: string, bashoId: number) {
+  try {
+    const result = validateLowerSnapshot(JSON.parse(await readFile(path, 'utf8')))
+    if (result.ok) return normalizeLowerSnapshot(result.snapshot, bashoId)
+    console.warn(`Ignoring ${path}: ${result.errors[0]}`)
+  } catch {
+    // No lower file: the sekitori's pages only.
+  }
+  return null
+}
 
 async function main(): Promise<number> {
   const dist = resolve(args.dist as string)
@@ -37,9 +53,11 @@ async function main(): Promise<number> {
     console.error(`Cannot read snapshot: ${validation.errors[0]}`)
     return 2
   }
-  const data = normalizeSnapshot(validation.snapshot, 'live')
+  const sekitori = normalizeSnapshot(validation.snapshot, 'live')
+  const lower = await readLower(resolve(args.lower as string), sekitori.makuuchi.basho.id)
+  const data = { ...sekitori, ...(lower ?? {}) }
   const bashoName = data.makuuchi.basho.name.en
-  const everyone = [...data.makuuchi.rikishi, ...(data.juryo?.rikishi ?? [])]
+  const everyone = everyRikishi(data)
   const stubs = everyone.map((r) => wrestlerStub(r, bashoName))
   const heyaIds = [...new Set(everyone.map((r) => r.heya.id).filter((id) => id > 0))].sort(
     (a, b) => a - b

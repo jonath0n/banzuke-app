@@ -192,3 +192,51 @@ describe('diffBanzuke with the previous results', () => {
     ).toBeUndefined()
   })
 })
+
+describe('the divisions below Juryo', () => {
+  const Ms = (id: number, n: number) =>
+    makeRikishi({ id, rankCode: 700, rankLevel: 'makushita', rankNumber: n })
+
+  it('orders Makushita below Juryo and Jonidan past a hundred above Jonokuchi', () => {
+    const p = (rankCode: number, rankNumber = 1) => rankPosition({ rankCode, rankNumber })
+    expect(p(600, 14)).toBeLessThan(p(700, 1))
+    expect(p(900, 100)).toBeLessThan(p(1000, 1))
+  })
+
+  it('finds a Juryo man in Makushita and does not call the uncompared new', () => {
+    // The previous archive carries only the sekitori: Makushita is not compared,
+    // except for the one who dropped there from Juryo.
+    const previous = makeArchivedBanzuke()
+    const current = [
+      ...withDivision([M(3842, 1)], 'makuuchi'),
+      ...withDivision([Ms(3983, 3), Ms(9001, 4)], 'makushita'),
+    ]
+    const diff = diffBanzuke(current, previous)
+    expect(diff.movements.get(3983)).toMatchObject({ kind: 'down', previous: { rankCode: 600 } })
+    expect(diff.movements.has(9001)).toBe(false)
+    expect(diff.byDivision.juryo.moved).toEqual([
+      expect.objectContaining({ nowDivision: 'makushita' }),
+    ])
+    expect(diff.byDivision.makushita).toEqual({ moved: [], gone: [] })
+  })
+
+  it('calls a wrestler new once the previous archive carries his division', () => {
+    const previous = makeArchivedBanzuke({
+      divisions: ['makuuchi', 'juryo', 'makushita'],
+    })
+    const diff = diffBanzuke(withDivision([Ms(9001, 4)], 'makushita'), previous)
+    expect(diff.movements.get(9001)?.kind).toBe('new')
+  })
+
+  it('labels lower ranks by their prefixes', () => {
+    const rank = { division: 'makushita' as const, rankCode: 700, rankNumber: 3, seat: 1 }
+    expect(previousRankLabel({ ...rank, side: 'east' }, 'en')).toBe('Ms3')
+    expect(previousRankLabel({ ...rank, side: 'east' }, 'jp')).toBe('幕下三')
+    expect(
+      previousRankLabel(
+        { division: 'jonidan', rankCode: 900, rankNumber: 100, seat: 1, side: 'west' },
+        'jp'
+      )
+    ).toBe('序二段百')
+  })
+})

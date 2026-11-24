@@ -4,6 +4,7 @@ import { useLanguage } from '../../contexts/LanguageContext'
 import { useStrings } from '../../i18n/useStrings'
 import { langAttr } from '../../i18n/strings'
 import { DIVISION_KANJI } from '../../data/kanji'
+import { DIVISIONS } from '../../data/schema'
 import { profileUrl } from '../../utils/formatting'
 import { previousRankLabel, type Departure, type Departures } from '../../utils/diff'
 import styles from './Departed.module.css'
@@ -12,31 +13,39 @@ interface DepartedProps {
   division: Division
   departures: Departures
   sinceLabel: string
+  /** Whether the divisions below Juryo are loaded, so "gone" means off the banzuke. */
+  lowerLoaded?: boolean
   onSelectRikishi?: (rikishi: Rikishi) => void
 }
 
 /**
  * The names that left this division since the previous banzuke, in a smaller
- * hand below the paper: first those still on the sheet in the other
- * division, then those on neither — retired, injured, or below Juryo.
+ * hand below the paper: first those still on the sheet, by the division they
+ * are in now, then those in none that is loaded — retired or off the banzuke
+ * (or, while the lower divisions are not loaded, somewhere below Juryo).
  */
-export function Departed({ division, departures, sinceLabel, onSelectRikishi }: DepartedProps) {
+export function Departed({
+  division,
+  departures,
+  sinceLabel,
+  lowerLoaded = false,
+  onSelectRikishi,
+}: DepartedProps) {
   const { language } = useLanguage()
   const strings = useStrings()
   const headingId = useId()
   const lang = langAttr(language)
-  const divisionName = language === 'jp' ? DIVISION_KANJI[division] : strings.division[division]
-  const otherDivision: Division = division === 'makuuchi' ? 'juryo' : 'makuuchi'
-  const otherName =
-    language === 'jp' ? DIVISION_KANJI[otherDivision] : strings.division[otherDivision]
+  const divisionLabel = (d: Division) =>
+    language === 'jp' ? DIVISION_KANJI[d] : strings.division[d]
+  const divisionName = divisionLabel(division)
 
   const name = (d: Departure) => d.was.shikona[language] || d.was.shikona.en
   const wasRank = (d: Departure) => previousRankLabel(d.was, language)
   const nowRank = (d: Departure) =>
-    d.now
+    d.now && d.nowDivision
       ? previousRankLabel(
           {
-            division: otherDivision,
+            division: d.nowDivision,
             rankCode: d.now.rankCode,
             rankNumber: d.now.rankNumber,
             seat: d.now.seat,
@@ -46,6 +55,9 @@ export function Departed({ division, departures, sinceLabel, onSelectRikishi }: 
         )
       : ''
 
+  const movedGroups = DIVISIONS.map(
+    (to) => [to, departures.moved.filter((d) => d.nowDivision === to)] as const
+  ).filter(([, group]) => group.length > 0)
   const empty = departures.moved.length === 0 && departures.gone.length === 0
 
   return (
@@ -54,11 +66,11 @@ export function Departed({ division, departures, sinceLabel, onSelectRikishi }: 
         {strings.departedHeading(divisionName, sinceLabel)}
       </h2>
       {empty && <p className={styles.none}>{strings.departedNone}</p>}
-      {departures.moved.length > 0 && (
-        <div>
-          <h3 className={styles.subheading}>{strings.departedMovedTo(otherName)}</h3>
+      {movedGroups.map(([to, group]) => (
+        <div key={to}>
+          <h3 className={styles.subheading}>{strings.departedMovedTo(divisionLabel(to))}</h3>
           <ul className={styles.list}>
-            {departures.moved.map((d) => (
+            {group.map((d) => (
               <li key={d.was.id}>
                 {onSelectRikishi ? (
                   <button
@@ -80,10 +92,12 @@ export function Departed({ division, departures, sinceLabel, onSelectRikishi }: 
             ))}
           </ul>
         </div>
-      )}
+      ))}
       {departures.gone.length > 0 && (
         <div>
-          <h3 className={styles.subheading}>{strings.departedGone}</h3>
+          <h3 className={styles.subheading}>
+            {lowerLoaded ? strings.departedOffBanzuke : strings.departedGone}
+          </h3>
           <ul className={styles.list}>
             {departures.gone.map((d) => (
               <li key={d.was.id}>

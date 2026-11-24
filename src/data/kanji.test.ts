@@ -26,9 +26,16 @@ describe('toKanjiNumber', () => {
     expect(toKanjiNumber(99)).toBe('九十九')
   })
 
-  it('falls back to digits outside 1–99', () => {
+  it('counts past a hundred for Jonidan', () => {
+    expect(toKanjiNumber(100)).toBe('百')
+    expect(toKanjiNumber(105)).toBe('百五')
+    expect(toKanjiNumber(110)).toBe('百十')
+    expect(toKanjiNumber(213)).toBe('二百十三')
+  })
+
+  it('falls back to digits outside 1–999', () => {
     expect(toKanjiNumber(0)).toBe('0')
-    expect(toKanjiNumber(100)).toBe('100')
+    expect(toKanjiNumber(1000)).toBe('1000')
   })
 })
 

@@ -7,8 +7,19 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { archiveFileName, validateArchive, validateArchiveIndex } from './archive'
-import { snapshotBashoId, validateSnapshot } from './schema'
+import {
+  archiveFileName,
+  isLowerArchive,
+  lowerArchiveFileName,
+  validateArchive,
+  validateArchiveIndex,
+} from './archive'
+import {
+  lowerSnapshotBashoId,
+  snapshotBashoId,
+  validateLowerSnapshot,
+  validateSnapshot,
+} from './schema'
 
 const dir = resolve(__dirname, '../../public/banzuke')
 const read = (name: string): unknown => JSON.parse(readFileSync(resolve(dir, name), 'utf8'))
@@ -23,7 +34,10 @@ describe('public/banzuke', () => {
 
   it('lists exactly the archive files present', () => {
     if (!index.ok) throw new Error(index.error)
-    expect(index.index.basho.map((b) => b.file).sort()).toEqual([...files].sort())
+    const listed = index.index.basho.flatMap((b) =>
+      b.lowerFile ? [b.file, b.lowerFile] : [b.file]
+    )
+    expect(listed.sort()).toEqual([...files].sort())
   })
 
   it('has valid archives whose ids match their file names and index entries', () => {
@@ -32,7 +46,18 @@ describe('public/banzuke', () => {
       const result = validateArchive(read(entry.file))
       if (!result.ok) throw new Error(`${entry.file}: ${result.error}`)
       expect(archiveFileName(result.archive.bashoId)).toBe(entry.file)
-      expect(result.archive.divisions).toEqual(entry.divisions)
+      expect(isLowerArchive(result.archive)).toBe(false)
+      let divisions = result.archive.divisions
+      if (entry.lowerFile) {
+        const lower = validateArchive(read(entry.lowerFile))
+        if (!lower.ok) throw new Error(`${entry.lowerFile}: ${lower.error}`)
+        expect(lowerArchiveFileName(lower.archive.bashoId)).toBe(entry.lowerFile)
+        expect(isLowerArchive(lower.archive)).toBe(true)
+        expect(lower.archive.startDate).toBe(entry.startDate)
+        expect(lower.archive.rikishi.length).toBeGreaterThanOrEqual(300)
+        divisions = [...divisions, ...lower.archive.divisions]
+      }
+      expect(divisions).toEqual(entry.divisions)
       expect(result.archive.startDate).toBe(entry.startDate)
       expect(result.archive.rikishi.length).toBeGreaterThanOrEqual(40)
       const yearMonth = `${result.archive.year}-${String(result.archive.month).padStart(2, '0')}`
@@ -46,6 +71,16 @@ describe('public/banzuke', () => {
     if (!live.ok) throw new Error(live.errors.join('; '))
     const liveId = snapshotBashoId(live.snapshot)
     expect(index.index.basho.at(-1)?.bashoId).toBe(liveId)
+  })
+
+  it('archives the live lower divisions when the lower file is for the live tournament', () => {
+    if (!index.ok) throw new Error(index.error)
+    const live = validateSnapshot(read('../latest-banzuke.json'))
+    const lower = validateLowerSnapshot(read('../latest-lower.json'))
+    if (!live.ok || !lower.ok) throw new Error('snapshot invalid')
+    const liveId = snapshotBashoId(live.snapshot)
+    if (lowerSnapshotBashoId(lower.snapshot) !== liveId) return
+    expect(index.index.basho.at(-1)?.lowerFile).toBe(lowerArchiveFileName(liveId))
   })
 
   it('is contiguous — no tournament missing between first and last', () => {

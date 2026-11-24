@@ -11,6 +11,7 @@ import type { ArchivedBanzuke, ArchivedRikishi } from '../data/archive'
 import { scoreLabel, type RikishiRecord } from '../data/results'
 import { getRankLabel, getRankLevelFromCode, RANK_LEVEL_KANJI } from '../constants/ranks'
 import { jpRankShort } from '../data/kanji'
+import { DIVISIONS } from '../data/schema'
 
 export type MovementKind = 'up' | 'down' | 'same' | 'new'
 
@@ -34,14 +35,19 @@ export interface Movement {
 
 export interface Departure {
   was: ArchivedRikishi
-  /** The current row when the wrestler is still on the sheet in the other division. */
+  /** The current row when the wrestler is still on the sheet in another division. */
   now: Rikishi | null
+  /** That division; null with `now`. */
+  nowDivision: Division | null
 }
 
 export interface Departures {
-  /** Left this division for the other one. */
+  /** Left this division for another one that is loaded. */
   moved: Departure[]
-  /** On neither division now: retired, injured, or below Juryo. */
+  /**
+   * In no loaded division now: retired or off the banzuke, or (when the lower
+   * divisions are not loaded) somewhere below Juryo.
+   */
   gone: Departure[]
 }
 
@@ -81,6 +87,12 @@ function previousRank(entry: ArchivedRikishi): PreviousRank {
   return { division, rankCode, rankNumber, seat, side }
 }
 
+/**
+ * Compares the current rows with the previous tournament's archive. Only the
+ * divisions the archive carries can say who is new: before the lower
+ * divisions were archived, a Makushita wrestler is simply not compared (unless
+ * he dropped from Juryo, whose archive still finds him).
+ */
 export function diffBanzuke(
   current: CurrentRow[],
   previous: ArchivedBanzuke,
@@ -89,11 +101,15 @@ export function diffBanzuke(
   const previousById = new Map(previous.rikishi.map((r) => [r.id, r]))
   const currentById = new Map(current.map((row) => [row.rikishi.id, row]))
 
+  const covered = new Set<Division>(previous.divisions)
+
   const movements = new Map<number, Movement>()
-  for (const { rikishi } of current) {
+  for (const { rikishi, division } of current) {
     const before = previousById.get(rikishi.id)
     if (!before) {
-      movements.set(rikishi.id, { kind: 'new', previous: null, sideChanged: false })
+      if (covered.has(division)) {
+        movements.set(rikishi.id, { kind: 'new', previous: null, sideChanged: false })
+      }
       continue
     }
     const kind = compareMovement(rikishi, before)
@@ -105,22 +121,21 @@ export function diffBanzuke(
     })
   }
 
-  const byDivision: Record<Division, Departures> = {
-    makuuchi: { moved: [], gone: [] },
-    juryo: { moved: [], gone: [] },
-  }
+  const byDivision = Object.fromEntries(
+    DIVISIONS.map((division) => [division, { moved: [], gone: [] }])
+  ) as unknown as Record<Division, Departures>
   for (const was of previous.rikishi) {
     const now = currentById.get(was.id)
     if (now && now.division === was.division) continue
     const bucket = byDivision[was.division]
-    if (now) bucket.moved.push({ was, now: now.rikishi })
-    else bucket.gone.push({ was, now: null })
+    if (now) bucket.moved.push({ was, now: now.rikishi, nowDivision: now.division })
+    else bucket.gone.push({ was, now: null, nowDivision: null })
   }
 
   return { previousBashoId: previous.bashoId, movements, byDivision }
 }
 
-/** 'M5' / 'K' / 'J2' in English; 前頭五 / 小結 / 十両二 in Japanese. */
+/** 'M5' / 'K' / 'J2' / 'Ms3' in English; 前頭五 / 小結 / 十両二 / 幕下三 in Japanese. */
 export function previousRankLabel(previous: PreviousRank, language: Language): string {
   if (language === 'jp') {
     return (

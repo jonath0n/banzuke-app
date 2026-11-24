@@ -9,7 +9,7 @@
  */
 import type { Banzuke, BanzukeSet, Division, Localized, Rikishi, Side } from '../types/banzuke'
 import { getRankLevelFromCode, isSanyaku, RANK_LEVEL_NAMES } from '../constants/ranks'
-import { DIVISIONS } from './schema'
+import { DIVISIONS, LOWER_DIVISIONS, SEKITORI_DIVISIONS } from './schema'
 import { bashoYearMonth } from './bashoIds'
 import { jpBashoName, jpEraYear, jpNumberKanji, jpRankName } from './kanji'
 
@@ -41,7 +41,11 @@ export interface ArchivedBanzuke {
   source: ArchiveSource
   /** The divisions this file actually carries. */
   divisions: Division[]
-  /** Banzuke order: Makuuchi then Juryo, East before West within a position. */
+  /**
+   * Banzuke order, top division first, East before West within a position.
+   * `{id}.json` carries Makuuchi and Juryo; `{id}-lower.json`, when there is
+   * one, Makushita down to Jonokuchi.
+   */
   rikishi: ArchivedRikishi[]
 }
 
@@ -52,7 +56,10 @@ export interface ArchiveIndexEntry {
   startDate: string
   file: string
   source: ArchiveSource
+  /** Every division archived for this tournament, across both files. */
   divisions: Division[]
+  /** The lower divisions' file, when they were archived (from 2026-11 on). */
+  lowerFile?: string
 }
 
 export interface ArchiveIndex {
@@ -63,7 +70,7 @@ export interface ArchiveIndex {
 }
 
 const SOURCES: readonly ArchiveSource[] = ['jsa', 'sumo-api']
-const RANK_CODES = new Set([100, 200, 300, 400, 500, 600])
+const RANK_CODES = new Set([100, 200, 300, 400, 500, 600, 700, 800, 900, 1000])
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -134,6 +141,12 @@ function entryProblem(entry: unknown): string | null {
   if (typeof entry.file !== 'string' || !/^\d+\.json$/.test(entry.file)) return 'file'
   if (!SOURCES.includes(entry.source as ArchiveSource)) return 'source'
   if (!Array.isArray(entry.divisions) || !entry.divisions.every(isDivision)) return 'divisions'
+  if (
+    entry.lowerFile !== undefined &&
+    (typeof entry.lowerFile !== 'string' || !/^\d+-lower\.json$/.test(entry.lowerFile))
+  ) {
+    return 'lowerFile'
+  }
   return null
 }
 
@@ -173,8 +186,15 @@ function archiveRikishi(rikishi: Rikishi, division: Division): ArchivedRikishi {
   }
 }
 
-/** The archive entry for the tournament a normalized set describes. */
-export function archiveFromBanzukeSet(set: BanzukeSet): ArchivedBanzuke {
+/**
+ * The archive entry for the tournament a normalized set describes, over the
+ * given divisions: the sekitori by default (`{id}.json`), or
+ * `LOWER_DIVISIONS` for the lower file. Null when the set holds none of them.
+ */
+export function archiveFromBanzukeSet(
+  set: BanzukeSet,
+  over: readonly Division[] = SEKITORI_DIVISIONS
+): ArchivedBanzuke {
   const { basho } = set.makuuchi
   const { year, month } = bashoYearMonth(basho.id)
   // A cancelled tournament that consumes no id would shift every later label
@@ -184,11 +204,10 @@ export function archiveFromBanzukeSet(set: BanzukeSet): ArchivedBanzuke {
       `basho ${basho.id}: id arithmetic says ${year}-${month} but the snapshot says ${basho.year}-${basho.month}; check ANCHOR in bashoIds.ts`
     )
   }
-  const divisions: Division[] = set.juryo ? ['makuuchi', 'juryo'] : ['makuuchi']
-  const rikishi = [
-    ...set.makuuchi.rikishi.map((r) => archiveRikishi(r, 'makuuchi')),
-    ...(set.juryo?.rikishi ?? []).map((r) => archiveRikishi(r, 'juryo')),
-  ]
+  const divisions = over.filter((division) => set[division] != null)
+  const rikishi = divisions.flatMap((division) =>
+    (set[division]?.rikishi ?? []).map((r) => archiveRikishi(r, division))
+  )
   return {
     version: 1,
     bashoId: basho.id,
@@ -206,7 +225,20 @@ export function archiveFileName(bashoId: number): string {
   return `${bashoId}.json`
 }
 
-export function indexEntry(archive: ArchivedBanzuke): ArchiveIndexEntry {
+export function lowerArchiveFileName(bashoId: number): string {
+  return `${bashoId}-lower.json`
+}
+
+/** True for an archive of the divisions below Juryo (`{id}-lower.json`). */
+export function isLowerArchive(archive: ArchivedBanzuke): boolean {
+  return archive.divisions.length > 0 && archive.divisions.every((d) => isLower(d))
+}
+
+function isLower(division: Division): boolean {
+  return (LOWER_DIVISIONS as readonly Division[]).includes(division)
+}
+
+export function indexEntry(archive: ArchivedBanzuke, lower?: ArchivedBanzuke): ArchiveIndexEntry {
   return {
     bashoId: archive.bashoId,
     year: archive.year,
@@ -214,13 +246,23 @@ export function indexEntry(archive: ArchivedBanzuke): ArchiveIndexEntry {
     startDate: archive.startDate,
     file: archiveFileName(archive.bashoId),
     source: archive.source,
-    divisions: archive.divisions,
+    divisions: [...archive.divisions, ...(lower?.divisions ?? [])],
+    ...(lower ? { lowerFile: lowerArchiveFileName(archive.bashoId) } : {}),
   }
 }
 
-/** One entry per archive, ascending; two archives for one tournament is a bug. */
+/**
+ * One entry per tournament, ascending; two sekitori archives for one
+ * tournament is a bug. A lower archive joins its tournament's entry.
+ */
 export function buildIndex(archives: ArchivedBanzuke[], generatedAt: string): ArchiveIndex {
-  const entries = archives.map(indexEntry).sort((a, b) => a.bashoId - b.bashoId)
+  const lowerById = new Map(
+    archives.filter(isLowerArchive).map((archive) => [archive.bashoId, archive])
+  )
+  const entries = archives
+    .filter((archive) => !isLowerArchive(archive))
+    .map((archive) => indexEntry(archive, lowerById.get(archive.bashoId)))
+    .sort((a, b) => a.bashoId - b.bashoId)
   for (let i = 1; i < entries.length; i++) {
     if (entries[i].bashoId === entries[i - 1].bashoId) {
       throw new Error(`two archives for basho ${entries[i].bashoId}`)
@@ -284,28 +326,47 @@ export function rikishiFromArchived(row: ArchivedRikishi): Rikishi {
   }
 }
 
-/** The archived tournament as a BanzukeSet, so every view can show it as it shows the live one. */
-export function banzukeSetFromArchive(archive: ArchivedBanzuke): BanzukeSet {
-  const basho: Banzuke['basho'] = {
-    id: archive.bashoId,
-    name: { en: enBashoName(archive.month), jp: jpBashoName(archive.month) },
-    year: archive.year,
-    yearJp: jpEraYear(archive.year),
-    month: archive.month,
-    startDate: archive.startDate,
-    endDate: archive.endDate,
-    announcedAt: null,
-    venueId: null,
-  }
-  const division = (name: Division): Banzuke => ({
+function banzukeFromArchive(archive: ArchivedBanzuke, name: Division): Banzuke {
+  return {
     division: name,
-    basho,
+    basho: {
+      id: archive.bashoId,
+      name: { en: enBashoName(archive.month), jp: jpBashoName(archive.month) },
+      year: archive.year,
+      yearJp: jpEraYear(archive.year),
+      month: archive.month,
+      startDate: archive.startDate,
+      endDate: archive.endDate,
+      announcedAt: null,
+      venueId: null,
+    },
     rikishi: archive.rikishi.filter((r) => r.division === name).map(rikishiFromArchived),
     fetchedAt: `${archive.startDate}T00:00:00+09:00`,
     source: 'live',
-  })
+  }
+}
+
+/** Every division an archive file carries, in the app's model. */
+export function banzukesFromArchive(archive: ArchivedBanzuke): Partial<Record<Division, Banzuke>> {
+  return Object.fromEntries(
+    DIVISIONS.filter((name) => archive.divisions.includes(name)).map((name) => [
+      name,
+      banzukeFromArchive(archive, name),
+    ])
+  )
+}
+
+/**
+ * The archived tournament as a BanzukeSet, so every view can show it as it
+ * shows the live one; the lower file's divisions join it when given.
+ */
+export function banzukeSetFromArchive(
+  archive: ArchivedBanzuke,
+  lower?: ArchivedBanzuke | null
+): BanzukeSet {
   return {
-    makuuchi: division('makuuchi'),
-    juryo: archive.divisions.includes('juryo') ? division('juryo') : null,
+    ...banzukesFromArchive(archive),
+    ...(lower ? banzukesFromArchive(lower) : {}),
+    makuuchi: banzukeFromArchive(archive, 'makuuchi'),
   }
 }

@@ -4,12 +4,19 @@ import {
   archiveFromBanzukeSet,
   banzukeSetFromArchive,
   buildIndex,
+  isLowerArchive,
   previousEntry,
   rikishiFromArchived,
   validateArchive,
   validateArchiveIndex,
 } from './archive'
-import { makeArchivedBanzuke, makeArchiveIndex, makeBanzukeSet } from '../test/fixtures'
+import {
+  makeArchivedBanzuke,
+  makeArchiveIndex,
+  makeBanzukeSet,
+  makeMakushitaBanzuke,
+} from '../test/fixtures'
+import { LOWER_DIVISIONS } from './schema'
 
 describe('archiveFromBanzukeSet', () => {
   it('flattens both divisions in banzuke order with ring names only', () => {
@@ -36,7 +43,7 @@ describe('archiveFromBanzukeSet', () => {
   })
 
   it('records only the divisions the set carries', () => {
-    const archive = archiveFromBanzukeSet(makeBanzukeSet({ juryo: null }))
+    const archive = archiveFromBanzukeSet(makeBanzukeSet({ juryo: undefined }))
     expect(archive.divisions).toEqual(['makuuchi'])
     expect(archive.rikishi.every((r) => r.division === 'makuuchi')).toBe(true)
   })
@@ -71,10 +78,10 @@ describe('validateArchive', () => {
       },
     ],
     [
-      'rankCode outside 100–600',
+      'rankCode outside 100–1000',
       {
         ...makeArchivedBanzuke(),
-        rikishi: [{ ...makeArchivedBanzuke().rikishi[0], rankCode: 700 }],
+        rikishi: [{ ...makeArchivedBanzuke().rikishi[0], rankCode: 1100 }],
       },
     ],
     [
@@ -165,6 +172,46 @@ describe('the archive as the app sees it', () => {
     })
     expect(set.makuuchi.rikishi.map((r) => r.id)).toEqual([3842, 4227, 4055])
     expect(set.juryo?.rikishi.map((r) => r.id)).toEqual([3983])
-    expect(banzukeSetFromArchive(makeArchivedBanzuke({ divisions: ['makuuchi'] })).juryo).toBeNull()
+    expect(
+      banzukeSetFromArchive(makeArchivedBanzuke({ divisions: ['makuuchi'] })).juryo
+    ).toBeUndefined()
+  })
+})
+
+describe('the lower divisions in the archive', () => {
+  const set = makeBanzukeSet({ makushita: makeMakushitaBanzuke() })
+  const sekitori = archiveFromBanzukeSet(set)
+  const lower = archiveFromBanzukeSet(set, LOWER_DIVISIONS)
+
+  it('keeps them out of the sekitori file and in a file of their own', () => {
+    expect(sekitori.divisions).toEqual(['makuuchi', 'juryo'])
+    expect(lower.divisions).toEqual(['makushita'])
+    expect(lower.rikishi.map((r) => [r.id, r.rankCode])).toEqual([
+      [4242, 700],
+      [4156, 700],
+    ])
+    expect(isLowerArchive(lower)).toBe(true)
+    expect(isLowerArchive(sekitori)).toBe(false)
+    expect(validateArchive(lower).ok).toBe(true)
+  })
+
+  it('joins the lower file to its tournament in the index', () => {
+    const index = buildIndex([sekitori, lower], '2026-11-24T00:00:00.000Z')
+    expect(index.basho).toHaveLength(1)
+    expect(index.basho[0]).toMatchObject({
+      file: `${sekitori.bashoId}.json`,
+      lowerFile: `${sekitori.bashoId}-lower.json`,
+      divisions: ['makuuchi', 'juryo', 'makushita'],
+    })
+    expect(validateArchiveIndex(index).ok).toBe(true)
+  })
+
+  it('reads both files back as one set', () => {
+    const back = banzukeSetFromArchive(sekitori, lower)
+    expect(back.makushita?.rikishi.map((r) => r.rankName)).toEqual([
+      { en: 'Makushita #1', jp: '幕下筆頭' },
+      { en: 'Makushita #1', jp: '幕下筆頭' },
+    ])
+    expect(banzukeSetFromArchive(sekitori).makushita).toBeUndefined()
   })
 })

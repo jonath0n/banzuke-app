@@ -148,6 +148,15 @@
     font-size: var(--text-md);
   }
 
+  /* Below Juryo the rail holds the position alone (三 lines at most), and there
+     are a hundred rows of it: let it be as tall as that, not a fixed stamp. */
+  .row[data-rank-level='makushita'] .rail,
+  .row[data-rank-level='sandanme'] .rail,
+  .row[data-rank-level='jonidan'] .rail,
+  .row[data-rank-level='jonokuchi'] .rail {
+    min-height: 0;
+  }
+
   .romaji {
     display: none;
   }

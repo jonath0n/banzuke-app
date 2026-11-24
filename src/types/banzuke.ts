@@ -16,7 +16,17 @@ export type Language = 'en' | 'jp'
 export type Side = 'east' | 'west'
 
 /** Rank tiers, used for styling and grouping. */
-export type RankLevel = 'yokozuna' | 'ozeki' | 'sekiwake' | 'komusubi' | 'maegashira' | 'juryo'
+export type RankLevel =
+  | 'yokozuna'
+  | 'ozeki'
+  | 'sekiwake'
+  | 'komusubi'
+  | 'maegashira'
+  | 'juryo'
+  | 'makushita'
+  | 'sandanme'
+  | 'jonidan'
+  | 'jonokuchi'
 
 export interface Localized {
   en: string
@@ -41,7 +51,7 @@ export interface Rikishi {
   /** JSA rikishi id; stable across tournaments and the key into profile pages. */
   id: number
   side: Side
-  /** 100 Yokozuna … 500 Maegashira, 600 Juryo */
+  /** 100 Yokozuna … 500 Maegashira, 600 Juryo, 700 Makushita … 1000 Jonokuchi */
   rankCode: number
   rankLevel: RankLevel
   /** Position within a numbered rank (Maegashira 1 → 1); 1 for sanyaku. */
@@ -99,13 +109,14 @@ export interface Banzuke {
 }
 
 /**
- * Every division of one tournament. Makuuchi is always present; Juryo is
- * null when the snapshot did not include it.
+ * Every division of one tournament. Makuuchi is always present; any other
+ * division is absent when its data is not (or not yet) loaded: Juryo when the
+ * snapshot lacks it, the divisions below Juryo until `latest-lower.json`
+ * arrives (see `useLowerBanzuke`).
  */
-export interface BanzukeSet {
-  makuuchi: Banzuke
-  juryo: Banzuke | null
-}
+export type BanzukeSet = { makuuchi: Banzuke } & Partial<
+  Record<Exclude<Division, 'makuuchi'>, Banzuke>
+>
 
 /**
  * A paired row in the banzuke grid showing the East and West wrestlers at

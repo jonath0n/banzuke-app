@@ -87,6 +87,11 @@ describe('NotoSerifJP subset', () => {
     expect(missingGlyphs(manifest.glyphs, [snapshot])).toEqual([])
   })
 
+  it('covers every Japanese character in the lower divisions', () => {
+    const lower = readFileSync(resolve(root, 'public/latest-lower.json'), 'utf8')
+    expect(missingGlyphs(manifest.glyphs, [lower])).toEqual([])
+  })
+
   it('covers every Japanese character in the source code', () => {
     const texts = sourceFiles(resolve(root, 'src')).map((path) => readFileSync(path, 'utf8'))
     expect(missingGlyphs(manifest.glyphs, texts)).toEqual([])

@@ -6,6 +6,7 @@ import type {
   Division,
   Lang,
   RawDivisionSnapshot,
+  RawLowerSnapshot,
   RawPayload,
   RawRikishi,
   RawSnapshot,
@@ -16,7 +17,11 @@ import type { ArchivedBanzuke, ArchivedRikishi, ArchiveIndex } from '../data/arc
 import type { Bout, RikishiRecord, ResultsFile } from '../data/results'
 import type { Stable, StablesFile } from '../data/stables'
 
-const NAMES: Record<Division, Record<Lang, string[]>> = {
+import { DIVISION_IDS, MIN_ROWS } from '../data/schema'
+import { RANK_LEVEL_NAMES, getRankLevelFromCode } from '../constants/ranks'
+import { RANK_KANJI } from '../data/kanji'
+
+const NAMES: Partial<Record<Division, Record<Lang, string[]>>> = {
   makuuchi: {
     en: ['Hoshoryu', 'Onosato', 'Kirishima', 'Kotozakura'],
     jp: ['豊昇龍　智勝', '大の里　泰輝', '霧島　鐵力', '琴櫻　将且'],
@@ -25,11 +30,33 @@ const NAMES: Record<Division, Record<Lang, string[]>> = {
     en: ['Dewanoryu', 'Kyokukaiyu', 'Daiseizan', 'Nishikigi'],
     jp: ['出羽ノ龍　大樹', '旭海雄　英明', '大青山　優仁', '錦木　徹也'],
   },
+  makushita: {
+    en: ['Inami', 'Izumifuji'],
+    jp: ['伊波　大和', '泉富士　海'],
+  },
+  jonokuchi: {
+    en: ['Hirose', 'Kototerao'],
+    jp: ['廣瀬　大', '琴寺尾　和'],
+  },
 }
 
 const KAKUZUKE: Record<Division, Record<Lang, string>> = {
   makuuchi: { en: 'Makuuchi&nbsp;Division', jp: '幕内' },
   juryo: { en: 'Juryo&nbsp;Division', jp: '十両' },
+  makushita: { en: 'Makushita&nbsp;Division', jp: '幕下' },
+  sandanme: { en: 'Sandanme&nbsp;Division', jp: '三段目' },
+  jonidan: { en: 'Jonidan&nbsp;Division', jp: '序二段' },
+  jonokuchi: { en: 'Jonokuchi&nbsp;Division', jp: '序ノ口' },
+}
+
+/** Rank code of a division below Makuuchi: Juryo 600 … Jonokuchi 1000. */
+function divisionRankCode(division: Division): number {
+  return 400 + DIVISION_IDS[division] * 100
+}
+
+/** First rikishi_id of a division's fixture rows: 1000 Makuuchi, 2000 Juryo … 6000 Jonokuchi. */
+export function fixtureIdBase(division: Division): number {
+  return DIVISION_IDS[division] * 1000
 }
 
 export function makeRawRow(
@@ -39,30 +66,37 @@ export function makeRawRow(
   division: Division = 'makuuchi'
 ): RawRikishi {
   const juryo = division === 'juryo'
-  const rankCode = juryo ? 600 : index < 2 ? 100 : index < 4 ? 200 : 500
-  const number = juryo ? Math.floor(index / 2) + 1 : index < 4 ? 1 : Math.floor((index - 4) / 2) + 1
-  const rankEn = juryo ? `Juryo #${number}` : `Maegashira #${number}`
-  const rankJp = juryo ? `十両${number}枚目` : `前頭${number}枚目`
+  const numbered = division !== 'makuuchi'
+  const rankCode = numbered ? divisionRankCode(division) : index < 2 ? 100 : index < 4 ? 200 : 500
+  const number = numbered
+    ? Math.floor(index / 2) + 1
+    : index < 4
+      ? 1
+      : Math.floor((index - 4) / 2) + 1
+  const level = RANK_LEVEL_NAMES[getRankLevelFromCode(rankCode)]
+  const rankEn = numbered ? `${level} #${number}` : `Maegashira #${number}`
+  const rankJp = numbered ? `${RANK_KANJI[rankCode]}${number}枚目` : `前頭${number}枚目`
+  const lower = numbered && !juryo
   return {
     // Upstream composite key: rank/100 (3 digits) + position (7) + seat (5)
     sort: `${String(rankCode / 100).padStart(3, '0')}${String(number).padStart(7, '0')}00001`,
     banzuke_name: lang === 'en' ? rankEn : rankJp,
     ew: index % 2 === 0 ? 1 : 2,
     banzuke_id: index + 1,
-    kakuzuke_id: juryo ? '2' : '1',
-    rikishi_id: (juryo ? 2000 : 1000) + index,
+    kakuzuke_id: String(DIVISION_IDS[division]),
+    rikishi_id: fixtureIdBase(division) + index,
     rikishi_banzuke_id: 100 + index,
     rank: rankCode,
-    rank_new: index === 5 ? (juryo ? '新十両' : '新入幕') : '',
+    rank_new: index === 5 && !lower ? (juryo ? '新十両' : '新入幕') : '',
     seat_order: 1,
     number,
     numberKanji: lang === 'en' ? `#${number}` : '筆頭',
-    photo: `${juryo ? '2021' : '2020'}${String(index).padStart(4, '0')}.jpg`,
+    photo: `${2019 + DIVISION_IDS[division]}${String(index).padStart(4, '0')}.jpg`,
     pref_id: 13,
     pref_name: lang === 'en' ? 'Tokyo' : '東京都',
     heya_id: 1,
     heya_name: lang === 'en' ? 'Tatsunami' : '立浪',
-    shikona: NAMES[division][lang][index] ?? `${lang}-${division}-${index}`,
+    shikona: NAMES[division]?.[lang][index] ?? `${lang}-${division}-${index}`,
     ...overrides,
   }
 }
@@ -79,7 +113,7 @@ export function makeRawPayload(
     basho_name: lang === 'en' ? 'September Grand Sumo Tournament' : '九月場所',
     year_jp: lang === 'en' ? '2026' : '令和八年',
     lang: lang.toUpperCase(),
-    kakuzuke_id: division === 'juryo' ? '2' : '1',
+    kakuzuke_id: String(DIVISION_IDS[division]),
     page: '1',
     Kakuzuke: KAKUZUKE[division][lang],
     list_max: table.length,
@@ -109,12 +143,22 @@ export function makeRawPayload(
   }
 }
 
-/** One division of a snapshot (24 makuuchi rows or 28 juryo rows by default). */
+/** Default fixture rows per division: just over each division's validation minimum. */
+const FIXTURE_ROWS: Record<Division, number> = {
+  makuuchi: 24,
+  juryo: 28,
+  makushita: MIN_ROWS.makushita,
+  sandanme: MIN_ROWS.sandanme,
+  jonidan: MIN_ROWS.jonidan,
+  jonokuchi: 12,
+}
+
+/** One division of a snapshot (24 makuuchi rows, 28 juryo rows, 100 makushita, 12 jonokuchi …). */
 export function makeRawDivision(
   division: Division = 'makuuchi',
   overrides: Partial<RawDivisionSnapshot> = {}
 ): RawDivisionSnapshot {
-  const rows = division === 'juryo' ? 28 : 24
+  const rows = FIXTURE_ROWS[division]
   return {
     sources: {
       en: `https://example.test/en/${division}`,
@@ -127,7 +171,25 @@ export function makeRawDivision(
     readings:
       division === 'juryo'
         ? { '2000': 'でわのりゅう', '2001': 'きょくかいゆう' }
-        : { '1000': 'ほうしょうりゅう', '1001': 'おおのさと' },
+        : division === 'makuuchi'
+          ? { '1000': 'ほうしょうりゅう', '1001': 'おおのさと' }
+          : division === 'makushita'
+            ? { '3000': 'いなみ' }
+            : {},
+    ...overrides,
+  }
+}
+
+/**
+ * A `latest-lower.json` for the same tournament as `makeRawSnapshot`, with
+ * Makushita (ids 3000…) and Jonokuchi (ids 6000…) — enough to cover the
+ * top and the bottom of the lower ladder.
+ */
+export function makeRawLowerSnapshot(overrides: Partial<RawLowerSnapshot> = {}): RawLowerSnapshot {
+  return {
+    version: 2,
+    fetchedAt: '2026-09-04T00:00:00.000Z',
+    divisions: { makushita: makeRawDivision('makushita'), jonokuchi: makeRawDivision('jonokuchi') },
     ...overrides,
   }
 }
@@ -302,6 +364,44 @@ export function makeJuryoBanzuke(overrides: Partial<Banzuke> = {}): Banzuke {
         heya: { id: 5, en: 'Oshima', jp: '大島' },
         photo: '20230071.jpg',
         promotion: { kind: 'new-rank', raw: '新十両' },
+      }),
+    ],
+    ...overrides,
+  })
+}
+
+/** A normalized Makushita banzuke: Ms1 East/West and a Jonidan-sized number further down. */
+export function makeMakushitaBanzuke(overrides: Partial<Banzuke> = {}): Banzuke {
+  return makeBanzuke({
+    division: 'makushita',
+    rikishi: [
+      makeRikishi({
+        id: 4242,
+        side: 'east',
+        rankCode: 700,
+        rankLevel: 'makushita',
+        rankNumber: 1,
+        rankName: { en: 'Makushita #1', jp: '幕下筆頭' },
+        sortKey: '007000000100001',
+        shikona: { en: 'Inami', jp: '伊波' },
+        reading: 'いなみ',
+        heya: { id: 10008, en: 'Onoe', jp: '尾上' },
+        photo: '20240006.jpg',
+        promotion: null,
+      }),
+      makeRikishi({
+        id: 4156,
+        side: 'west',
+        rankCode: 700,
+        rankLevel: 'makushita',
+        rankNumber: 1,
+        rankName: { en: 'Makushita #1', jp: '幕下筆頭' },
+        sortKey: '007000000100001',
+        shikona: { en: 'Izumifuji', jp: '泉富士' },
+        reading: null,
+        heya: { id: 1, en: 'Tatsunami', jp: '立浪' },
+        photo: '20220041.jpg',
+        promotion: null,
       }),
     ],
     ...overrides,

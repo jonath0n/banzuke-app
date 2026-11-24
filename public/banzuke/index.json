@@ -1,6 +1,6 @@
 {
  "version": 1,
- "generatedAt": "2026-10-26T00:20:05.436Z",
+ "generatedAt": "2026-11-24T15:51:54.015Z",
  "basho": [
   {
    "bashoId": 632,
@@ -83,8 +83,13 @@
    "source": "jsa",
    "divisions": [
     "makuuchi",
-    "juryo"
-   ]
+    "juryo",
+    "makushita",
+    "sandanme",
+    "jonidan",
+    "jonokuchi"
+   ],
+   "lowerFile": "638-lower.json"
   }
  ]
 }

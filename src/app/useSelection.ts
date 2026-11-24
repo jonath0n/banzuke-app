@@ -4,6 +4,7 @@ import type { Stable } from '../data/stables'
 import { useStableState } from '../hooks/useStables'
 import { clearUrlParam, setUrlParam, setUrlParams } from '../hooks/useUrlState'
 import { rosterFor, type StableRoster } from '../utils/stables'
+import { divisionsIn, everyRikishi } from '../data/divisions'
 
 export interface Selection {
   /** Everyone on the banzuke by id: the dialog reads an opponent's rank off it. */
@@ -25,18 +26,18 @@ export interface Selection {
 /**
  * The two dialogs, driven by ?rikishi= and ?heya=. One at a time: the
  * wrestler wins when a URL carries both. A link to someone or somewhere the
- * loaded set does not know is cleared. Opening one from the other pushes an
- * entry so Back walks the chain back; stepping and closing replace.
+ * loaded set does not know is cleared — but only once `settled`, that is
+ * once the lower divisions have loaded or failed, since a link may name a
+ * Jonidan wrestler before his file is here. Opening one from the other pushes
+ * an entry so Back walks the chain back; stepping and closing replace.
  */
 export function useSelection(
   data: BanzukeSet | null,
   selectedId: string | null,
-  heyaParam: string | null
+  heyaParam: string | null,
+  settled = true
 ): Selection {
-  const everyone = useMemo(
-    () => (data ? [...data.makuuchi.rikishi, ...(data.juryo?.rikishi ?? [])] : []),
-    [data]
-  )
+  const everyone = useMemo(() => (data ? everyRikishi(data) : []), [data])
   const rankById = useMemo(() => new Map(everyone.map((r) => [r.id, r])), [everyone])
 
   const selectedRikishi = useMemo(
@@ -45,12 +46,11 @@ export function useSelection(
   )
 
   // Previous and next in banzuke order (East then West at each rank), within
-  // the selected wrestler's own division — the walk never crosses the Juryo line.
+  // the selected wrestler's own division — the walk never crosses a division line.
   const neighbours = useMemo(() => {
     if (!selectedRikishi || !data) return undefined
-    const rows = data.makuuchi.rikishi.includes(selectedRikishi)
-      ? data.makuuchi.rikishi
-      : (data.juryo?.rikishi ?? [])
+    const division = divisionsIn(data).find((d) => data[d]?.rikishi.includes(selectedRikishi))
+    const rows = (division && data[division]?.rikishi) || []
     const i = rows.indexOf(selectedRikishi)
     return { previous: rows[i - 1] ?? null, next: rows[i + 1] ?? null }
   }, [data, selectedRikishi])
@@ -67,11 +67,13 @@ export function useSelection(
   const { loading: stableLoading, stable } = useStableState(selectedHeyaId)
 
   useEffect(() => {
-    if (selectedId && data && !selectedRikishi) clearUrlParam('rikishi')
-  }, [data, selectedId, selectedRikishi])
+    if (selectedId && data && settled && !selectedRikishi) clearUrlParam('rikishi')
+  }, [data, selectedId, selectedRikishi, settled])
   useEffect(() => {
-    if (selectedHeyaId != null && !roster && !stableLoading && !stable) clearUrlParam('heya')
-  }, [selectedHeyaId, roster, stableLoading, stable])
+    if (selectedHeyaId != null && settled && !roster && !stableLoading && !stable) {
+      clearUrlParam('heya')
+    }
+  }, [selectedHeyaId, roster, stableLoading, stable, settled])
 
   return {
     rankById,

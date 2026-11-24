@@ -9,8 +9,12 @@
  * previous entry (if any) and never fails the run.
  *
  * Usage:
- *   tsx scripts/fetch-stables.ts [--snapshot <path>] [--out <path>] [--previous <path>]
- *                                [--delay <ms>] [--limit <n>] [--force]
+ *   tsx scripts/fetch-stables.ts [--snapshot <path>] [--lower <path>] [--out <path>]
+ *                                [--previous <path>] [--delay <ms>] [--limit <n>] [--force]
+ *
+ * --lower  The lower-division snapshot (default: public/latest-lower.json): its
+ *          stables join the sekitori's when it is for the same tournament, so a
+ *          stable with no sekitori still names its master.
  *
  * In GitHub Actions the script appends `changed` to $GITHUB_OUTPUT.
  */
@@ -23,9 +27,12 @@ import { buildStable, parseEnStable, parseJpStable } from './lib/stable-parser.t
 import { readJson, setOutput, sleep } from './lib/run-io.ts'
 import {
   isPlaceholderRow,
+  lowerSnapshotBashoId,
   snapshotBashoId,
   snapshotDivisions,
+  validateLowerSnapshot,
   validateSnapshot,
+  type RawDivisionFile,
   type RawDivisionSnapshot,
 } from '../src/data/schema.ts'
 import { validateStablesFile, type Stable, type StablesFile } from '../src/data/stables.ts'
@@ -35,6 +42,7 @@ const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const { values: args } = parseArgs({
   options: {
     snapshot: { type: 'string', default: resolve(rootDir, 'public/latest-banzuke.json') },
+    lower: { type: 'string', default: resolve(rootDir, 'public/latest-lower.json') },
     out: { type: 'string', default: resolve(rootDir, 'public/stables.json') },
     previous: { type: 'string' },
     delay: { type: 'string', default: '400' },
@@ -73,14 +81,21 @@ async function main(): Promise<number> {
   const snapshot = validation.snapshot
   const bashoId = snapshotBashoId(snapshot)
 
-  // Distinct stable ids across both divisions, in order of first appearance.
+  const files: RawDivisionFile[] = [snapshot]
+  const lower = validateLowerSnapshot(await readJson(resolve(args.lower as string)))
+  if (lower.ok && lowerSnapshotBashoId(lower.snapshot) === bashoId) files.push(lower.snapshot)
+  else console.warn('No lower-division snapshot for this tournament; sekitori stables only.')
+
+  // Distinct stable ids across every division, in order of first appearance.
   const ids = new Set<number>()
-  for (const division of snapshotDivisions(snapshot)) {
-    const en = (snapshot.divisions[division] as RawDivisionSnapshot).payloads.en
-    for (const row of en.BanzukeTable) {
-      if (isPlaceholderRow(row)) continue
-      const id = Number(row.heya_id)
-      if (Number.isInteger(id) && id > 0) ids.add(id)
+  for (const file of files) {
+    for (const division of snapshotDivisions(file)) {
+      const en = (file.divisions[division] as RawDivisionSnapshot).payloads.en
+      for (const row of en.BanzukeTable) {
+        if (isPlaceholderRow(row)) continue
+        const id = Number(row.heya_id)
+        if (Number.isInteger(id) && id > 0) ids.add(id)
+      }
     }
   }
 
@@ -122,7 +137,7 @@ async function main(): Promise<number> {
     }
   }
 
-  // Stables with no sekitori left are dropped from the file.
+  // Stables with nobody left on the banzuke are dropped from the file.
   const dropped = Object.keys(existing).filter((key) => !(key in stables))
   if (dropped.length > 0) changed = true
 

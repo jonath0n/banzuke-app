@@ -14,12 +14,45 @@ export type Lang = 'en' | 'jp'
 export const LANGS: readonly Lang[] = ['en', 'jp'] as const
 
 /** Divisions the app knows about, in banzuke order (top first). */
-export const DIVISIONS = ['makuuchi', 'juryo'] as const
+export const DIVISIONS = [
+  'makuuchi',
+  'juryo',
+  'makushita',
+  'sandanme',
+  'jonidan',
+  'jonokuchi',
+] as const
 
 export type Division = (typeof DIVISIONS)[number]
 
+/** The salaried divisions, carried by `latest-banzuke.json`. */
+export const SEKITORI_DIVISIONS = ['makuuchi', 'juryo'] as const satisfies readonly Division[]
+
+export type SekitoriDivision = (typeof SEKITORI_DIVISIONS)[number]
+
+/** The divisions below Juryo, carried by `latest-lower.json` and loaded on demand. */
+export const LOWER_DIVISIONS = [
+  'makushita',
+  'sandanme',
+  'jonidan',
+  'jonokuchi',
+] as const satisfies readonly Division[]
+
+export type LowerDivision = (typeof LOWER_DIVISIONS)[number]
+
+export function isLowerDivision(division: Division): division is LowerDivision {
+  return (LOWER_DIVISIONS as readonly string[]).includes(division)
+}
+
 /** Upstream `kakuzuke_id` for each division. */
-export const DIVISION_IDS: Record<Division, number> = { makuuchi: 1, juryo: 2 }
+export const DIVISION_IDS: Record<Division, number> = {
+  makuuchi: 1,
+  juryo: 2,
+  makushita: 3,
+  sandanme: 4,
+  jonidan: 5,
+  jonokuchi: 6,
+}
 
 /** A single wrestler row as returned by the API. */
 export interface RawRikishi {
@@ -32,7 +65,10 @@ export interface RawRikishi {
   kakuzuke_id: string
   rikishi_id: number | string
   rikishi_banzuke_id: number | string
-  /** 100 Yokozuna, 200 Ozeki, 300 Sekiwake, 400 Komusubi, 500 Maegashira, 600 Juryo. */
+  /**
+   * 100 Yokozuna, 200 Ozeki, 300 Sekiwake, 400 Komusubi, 500 Maegashira, 600 Juryo,
+   * 700 Makushita, 800 Sandanme, 900 Jonidan, 1000 Jonokuchi.
+   */
   rank: number | string
   /** Promotion flag such as "新入幕", "再入幕", "新小結". Japanese in both languages. */
   rank_new?: string
@@ -100,7 +136,25 @@ export interface RawSnapshot {
   version: 2
   /** ISO timestamp of when the data was fetched. */
   fetchedAt: string
-  divisions: { makuuchi: RawDivisionSnapshot } & Partial<Record<Division, RawDivisionSnapshot>>
+  divisions: { makuuchi: RawDivisionSnapshot } & Partial<
+    Record<SekitoriDivision, RawDivisionSnapshot>
+  >
+}
+
+/**
+ * The file written to `public/latest-lower.json`: the divisions below Juryo,
+ * in the same per-division shape, loaded by the app only when needed.
+ */
+export interface RawLowerSnapshot {
+  version: 2
+  fetchedAt: string
+  divisions: Partial<Record<LowerDivision, RawDivisionSnapshot>>
+}
+
+/** Either file: what the shared helpers below need. */
+export interface RawDivisionFile {
+  fetchedAt: string
+  divisions: Partial<Record<Division, RawDivisionSnapshot>>
 }
 
 /** The original single-division file layout, still accepted on read. */
@@ -112,8 +166,26 @@ export interface RawSnapshotV1 extends RawDivisionSnapshot {
 export type ValidationResult =
   { ok: true; snapshot: RawSnapshot; warnings: string[] } | { ok: false; errors: string[] }
 
-/** Minimum plausible number of wrestlers in a division payload. */
-const MIN_ROWS = 20
+export type LowerValidationResult =
+  { ok: true; snapshot: RawLowerSnapshot; warnings: string[] } | { ok: false; errors: string[] }
+
+/**
+ * Minimum plausible number of wrestlers in each division's payload: well under
+ * the usual size, so only a truncated fetch trips it. Makushita is fixed at
+ * 120; Jonokuchi swings with each year's recruits.
+ */
+export const MIN_ROWS: Record<Division, number> = {
+  makuuchi: 20,
+  juryo: 20,
+  makushita: 100,
+  sandanme: 120,
+  jonidan: 120,
+  jonokuchi: 10,
+}
+
+const KAKUZUKE_TO_DIVISION = new Map<number, Division>(
+  DIVISIONS.map((division) => [DIVISION_IDS[division], division])
+)
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
 
@@ -182,8 +254,10 @@ export function validatePayload(payload: unknown, label = 'payload'): string[] {
   }
 
   const realRows = table.filter((row) => !isPlaceholderRow(row))
-  if (realRows.length < MIN_ROWS) {
-    errors.push(`${label}: only ${realRows.length} wrestlers (expected at least ${MIN_ROWS})`)
+  const division = KAKUZUKE_TO_DIVISION.get(Number(payload.kakuzuke_id))
+  const minRows = MIN_ROWS[division ?? 'makuuchi']
+  if (realRows.length < minRows) {
+    errors.push(`${label}: only ${realRows.length} wrestlers (expected at least ${minRows})`)
   }
 
   realRows.forEach((row, index) => validateRow(row, `${label}.BanzukeTable[${index}]`, errors))
@@ -274,6 +348,74 @@ export function validateDivision(
   return { errors, warnings }
 }
 
+interface CheckedDivisions {
+  present: Division[]
+  valid: Partial<Record<Division, RawDivisionSnapshot>>
+}
+
+/**
+ * The checks both files share: every present division (of `allowed`) is valid,
+ * carries its expected `kakuzuke_id`, describes the same tournament as the
+ * first one present, and no wrestler appears in two of them.
+ */
+function checkDivisions(
+  divisions: Record<string, unknown>,
+  allowed: readonly Division[],
+  errors: string[],
+  warnings: string[]
+): CheckedDivisions | null {
+  const present = allowed.filter((division) => division in divisions)
+  for (const division of present) {
+    const result = validateDivision(divisions[division], `divisions.${division}`)
+    errors.push(...result.errors)
+    warnings.push(...result.warnings)
+  }
+  for (const key of Object.keys(divisions)) {
+    if (!(allowed as readonly string[]).includes(key)) {
+      warnings.push(`divisions.${key} is not expected in this file and will be ignored`)
+    }
+  }
+
+  if (errors.length > 0 || present.length === 0) return null
+
+  const valid = divisions as Record<Division, RawDivisionSnapshot>
+  const first = present[0]
+  const bashoId = Number(valid[first].payloads.en.basho_id)
+  const seen = new Map<string, Division>()
+  for (const division of present) {
+    const en = valid[division].payloads.en
+    const expectedId = DIVISION_IDS[division]
+    if (Number(en.kakuzuke_id) !== expectedId) {
+      errors.push(`divisions.${division}: kakuzuke_id is ${en.kakuzuke_id}, expected ${expectedId}`)
+    }
+    if (Number(en.basho_id) !== bashoId) {
+      errors.push(
+        `divisions.${division}: basho_id ${en.basho_id} differs from ${first} (${bashoId})`
+      )
+    }
+    for (const id of realIds(en)) {
+      const other = seen.get(id)
+      if (other) errors.push(`rikishi_id ${id} appears in both ${other} and ${division}`)
+      seen.set(id, division)
+    }
+  }
+
+  if (errors.length > 0) return null
+  return { present, valid }
+}
+
+function pickDivisions({
+  present,
+  valid,
+}: CheckedDivisions): Partial<Record<Division, RawDivisionSnapshot>> {
+  return Object.fromEntries(
+    present.map((division) => {
+      const { sources, payloads, readings } = valid[division] as RawDivisionSnapshot
+      return [division, { sources, payloads, ...(readings ? { readings } : {}) }]
+    })
+  )
+}
+
 /**
  * Validates a complete snapshot in either file format and returns it in the
  * current (version 2) shape. Every present division must be valid, describe
@@ -301,55 +443,49 @@ export function validateSnapshot(input: unknown): ValidationResult {
     return { ok: false, errors: [...errors, 'divisions.makuuchi is missing'] }
   }
 
-  const present = DIVISIONS.filter((division) => division in divisions)
-  for (const division of present) {
-    const result = validateDivision(divisions[division], `divisions.${division}`)
-    errors.push(...result.errors)
-    warnings.push(...result.warnings)
-  }
-  for (const key of Object.keys(divisions)) {
-    if (!(DIVISIONS as readonly string[]).includes(key)) {
-      warnings.push(`divisions.${key} is not a known division and will be ignored`)
-    }
-  }
-
-  if (errors.length > 0) return { ok: false, errors }
-
-  const valid = divisions as Record<Division, RawDivisionSnapshot>
-  const bashoId = Number(valid.makuuchi.payloads.en.basho_id)
-  const seen = new Map<string, Division>()
-  for (const division of present) {
-    const en = valid[division].payloads.en
-    const expectedId = DIVISION_IDS[division]
-    if (Number(en.kakuzuke_id) !== expectedId) {
-      errors.push(`divisions.${division}: kakuzuke_id is ${en.kakuzuke_id}, expected ${expectedId}`)
-    }
-    if (Number(en.basho_id) !== bashoId) {
-      errors.push(
-        `divisions.${division}: basho_id ${en.basho_id} differs from makuuchi (${bashoId})`
-      )
-    }
-    for (const id of realIds(en)) {
-      const other = seen.get(id)
-      if (other) errors.push(`rikishi_id ${id} appears in both ${other} and ${division}`)
-      seen.set(id, division)
-    }
-  }
-
-  if (errors.length > 0) return { ok: false, errors }
+  const checked = checkDivisions(divisions, SEKITORI_DIVISIONS, errors, warnings)
+  if (!checked || errors.length > 0) return { ok: false, errors }
 
   const snapshot: RawSnapshot = {
     version: 2,
     fetchedAt: input.fetchedAt as string,
-    divisions: Object.fromEntries(
-      present.map((division) => {
-        const { sources, payloads, readings } = valid[division]
-        return [division, { sources, payloads, ...(readings ? { readings } : {}) }]
-      })
-    ) as RawSnapshot['divisions'],
+    divisions: pickDivisions(checked) as RawSnapshot['divisions'],
   }
 
   return { ok: true, snapshot, warnings }
+}
+
+/**
+ * Validates `latest-lower.json`: the same per-division checks as
+ * `validateSnapshot`, over the divisions below Juryo, at least one of which
+ * must be present. Whether it matches the live tournament is the caller's
+ * check (`lowerSnapshotBashoId`).
+ */
+export function validateLowerSnapshot(input: unknown): LowerValidationResult {
+  const errors: string[] = []
+  const warnings: string[] = []
+
+  if (!isRecord(input)) return { ok: false, errors: ['snapshot is not an object'] }
+  if (typeof input.fetchedAt !== 'string' || Number.isNaN(Date.parse(input.fetchedAt))) {
+    errors.push('fetchedAt is not a valid timestamp')
+  }
+  if (!isRecord(input.divisions)) {
+    return { ok: false, errors: [...errors, 'divisions is missing'] }
+  }
+
+  const checked = checkDivisions(input.divisions, LOWER_DIVISIONS, errors, warnings)
+  if (errors.length > 0) return { ok: false, errors }
+  if (!checked) return { ok: false, errors: ['no division below Juryo is present'] }
+
+  return {
+    ok: true,
+    snapshot: {
+      version: 2,
+      fetchedAt: input.fetchedAt as string,
+      divisions: pickDivisions(checked) as RawLowerSnapshot['divisions'],
+    },
+    warnings,
+  }
 }
 
 /**
@@ -365,11 +501,11 @@ const VOLATILE_BASHO_INFO_KEYS = ['today', 'JpDate', 'BattleNow', 'day'] as cons
  * (`today`, `JpDate`, `BattleNow`, `day`). Used to decide whether a refreshed
  * snapshot is worth committing.
  */
-export function snapshotsEqualIgnoringFetchedAt(a: RawSnapshot, b: RawSnapshot): boolean {
+export function snapshotsEqualIgnoringFetchedAt(a: RawDivisionFile, b: RawDivisionFile): boolean {
   return stableStringify(comparable(a)) === stableStringify(comparable(b))
 }
 
-function comparable(snapshot: RawSnapshot): unknown {
+function comparable(snapshot: RawDivisionFile): unknown {
   return Object.fromEntries(
     snapshotDivisions(snapshot).map((division) => {
       const { payloads, readings } = snapshot.divisions[division] as RawDivisionSnapshot
@@ -394,12 +530,22 @@ function stableStringify(value: unknown): string {
   return JSON.stringify(value) ?? 'null'
 }
 
-/** Divisions present in a valid snapshot, top division first. */
-export function snapshotDivisions(snapshot: RawSnapshot): Division[] {
-  return DIVISIONS.filter((division) => snapshot.divisions[division] != null)
+/** Divisions present in a valid snapshot (either file), top division first. */
+export function snapshotDivisions<F extends RawDivisionFile>(
+  snapshot: F
+): (keyof F['divisions'] & Division)[] {
+  return DIVISIONS.filter(
+    (division) => snapshot.divisions[division] != null
+  ) as (keyof F['divisions'] & Division)[]
 }
 
 /** Convenience accessor for the tournament id of a valid snapshot. */
 export function snapshotBashoId(snapshot: RawSnapshot): number {
   return Number(snapshot.divisions.makuuchi.payloads.en.basho_id)
+}
+
+/** The tournament id of a valid lower-division snapshot. */
+export function lowerSnapshotBashoId(snapshot: RawLowerSnapshot): number {
+  const first = snapshotDivisions(snapshot)[0]
+  return Number(snapshot.divisions[first]?.payloads.en.basho_id)
 }

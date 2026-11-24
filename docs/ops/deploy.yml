@@ -138,6 +138,8 @@ jobs:
           npx tsx scripts/fetch-banzuke.ts \
             --out .data/latest-banzuke.json \
             --previous public/latest-banzuke.json \
+            --lower-out .data/latest-lower.json \
+            --lower-previous public/latest-lower.json \
             --if-changed
 
       - name: Fall back to the committed snapshot
@@ -154,8 +156,19 @@ jobs:
           mkdir -p .data
           cp public/latest-banzuke.json .data/latest-banzuke.json
 
-      - name: Validate the snapshot that will ship
-        run: npx tsx scripts/validate-banzuke.ts .data/latest-banzuke.json
+      # The divisions below Juryo are a best effort of the fetch: whenever it
+      # wrote none (unchanged, failed, or a results-only run) the committed file ships.
+      - name: Use the committed lower divisions when none were fetched
+        run: |
+          if [ ! -f .data/latest-lower.json ] && [ -f public/latest-lower.json ]; then
+            cp public/latest-lower.json .data/latest-lower.json
+          fi
+
+      - name: Validate the snapshots that will ship
+        run: |
+          files=".data/latest-banzuke.json"
+          if [ -f .data/latest-lower.json ]; then files="$files .data/latest-lower.json"; fi
+          npx tsx scripts/validate-banzuke.ts $files
 
       # Every tournament the site has shown stays available under
       # public/banzuke/, which is what "changes since last basho" reads.
@@ -166,6 +179,7 @@ jobs:
           cp public/banzuke/*.json .data/banzuke/
           npx tsx scripts/archive-banzuke.ts \
             --snapshot .data/latest-banzuke.json \
+            --lower-snapshot .data/latest-lower.json \
             --out-dir .data/banzuke
 
       # A new wrestler can bring a kanji the shikona glossary lacks. Never a
@@ -187,6 +201,7 @@ jobs:
           if [ -f public/stables.json ]; then cp public/stables.json .data/stables.json; fi
           npx tsx scripts/fetch-stables.ts \
             --snapshot .data/latest-banzuke.json \
+            --lower .data/latest-lower.json \
             --previous public/stables.json \
             --out .data/stables.json
 
@@ -211,6 +226,7 @@ jobs:
           cp public/assets/fonts/NotoSerifJP-OFL.txt .data/assets/fonts/
           npx tsx scripts/subset-fonts.ts \
             --snapshot .data/latest-banzuke.json \
+            --lower .data/latest-lower.json \
             --out-dir .data/assets/fonts \
             --archive-dir .data/banzuke \
             --stables .data/stables.json \
@@ -258,6 +274,7 @@ jobs:
         if: steps.fetch.outputs.changed == 'true' || steps.profiles.outputs.changed == 'true' || steps.stables.outputs.changed == 'true' || steps.results.outputs.changed == 'true'
         run: |
           cp .data/latest-banzuke.json public/latest-banzuke.json
+          if [ -f .data/latest-lower.json ]; then cp .data/latest-lower.json public/latest-lower.json; fi
           if [ -f .data/rikishi-profiles.json ]; then cp .data/rikishi-profiles.json public/rikishi-profiles.json; fi
           if [ -f .data/stables.json ]; then cp .data/stables.json public/stables.json; fi
           if [ -d .data/assets/fonts ]; then cp .data/assets/fonts/* public/assets/fonts/; fi
@@ -266,6 +283,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add public/latest-banzuke.json public/assets/fonts public/banzuke public/results
+          if [ -f public/latest-lower.json ]; then git add public/latest-lower.json; fi
           if [ -f public/rikishi-profiles.json ]; then git add public/rikishi-profiles.json; fi
           if [ -f public/stables.json ]; then git add public/stables.json; fi
           if git diff --cached --quiet; then

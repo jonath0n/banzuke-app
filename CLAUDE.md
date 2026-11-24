@@ -1,13 +1,13 @@
 # banzuke-app
 
-Static React viewer for the official grand sumo banzuke (Makuuchi and Juryo), bilingual
+Static React viewer for the official grand sumo banzuke (all six divisions), bilingual
 English/Japanese, served by Cloudflare (Workers static assets) at https://banzuke.app/. No
 backend: GitHub Actions fetch the data, commit it to `main` and redeploy; the browser reads only
 the JSON files under `public/`.
 
 **Before touching a feature, read its section in [`docs/architecture.md`](docs/architecture.md)**
-(the List, keyboard, dialogs, fonts, archive, Changes, Results, service worker, share
-pages, deploy). Much of the code looks odd and is intentional; that file says why.
+(the List, lower divisions, keyboard, dialogs, fonts, archive, Changes, Results, service
+worker, share pages, deploy). Much of the code looks odd and is intentional; that file says why.
 
 ## Stack
 
@@ -37,7 +37,7 @@ npm run glossary-gaps  # list ring-name kanji the shikona glossary lacks
 Data-writing scripts (hit upstream and rewrite committed files; the deploy job runs them):
 
 ```sh
-npm run fetch-remote     # latest banzuke → public/latest-banzuke.json
+npm run fetch-remote     # latest banzuke → public/latest-banzuke.json + latest-lower.json
 npm run fetch-profiles   # wrestler profiles → public/rikishi-profiles.json (optional)
 npm run fetch-stables    # stables on the sheet → public/stables.json (optional)
 npm run fetch-results    # in season: public/results/{id}.json from sumo-api
@@ -54,7 +54,9 @@ npx tsx scripts/measure-upstream.ts  # tournament evening: CSV of when sumo-api 
 
 1. `scripts/fetch-banzuke.ts` fetches the English JSON endpoint and the Japanese rikishi list
    page from sumo.or.jp for each division and writes a `RawSnapshot` (`src/data/schema.ts`,
-   format 2: `divisions.makuuchi` and `divisions.juryo`; format 1 files are still read).
+   format 2: `divisions.makuuchi` and `divisions.juryo`; format 1 files are still read), and
+   Makushita to Jonokuchi into a second file, `public/latest-lower.json` (`RawLowerSnapshot`),
+   that the app loads on demand.
 2. `validateSnapshot` (same module, shared by scripts and app) is the only gate on upstream data.
 3. `normalizeSnapshot` (`src/data/normalize.ts`) converts raw JSON into a `BanzukeSet` in
    `src/types/banzuke.ts`: numeric ids, `side: 'east' | 'west'`, `Localized { en, jp }` text.
@@ -73,8 +75,8 @@ and formats in `Asia/Tokyo`.
   rovingFocus, dates). `src/sw/` — the service worker. `src/styles/` — tokens and global CSS.
 - `scripts/` — data fetchers and build steps; parsers and IO in `scripts/lib/` with fixtures in
   `scripts/lib/__fixtures__/`.
-- `public/` — committed data: `latest-banzuke.json`, `banzuke/` (archive), `results/`,
-  profiles, stables, fonts.
+- `public/` — committed data: `latest-banzuke.json`, `latest-lower.json`, `banzuke/` (archive),
+  `results/`, profiles, stables, fonts.
 - `e2e/` — Playwright smoke spec. `design/` — OG image and icon renderers.
 
 ## Conventions

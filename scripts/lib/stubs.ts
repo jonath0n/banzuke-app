@@ -8,6 +8,7 @@
  */
 import type { BanzukeSet, Rikishi } from '../../src/types/banzuke.ts'
 import { rosterFor } from '../../src/utils/stables.ts'
+import { DIVISIONS } from '../../src/data/schema.ts'
 import { SITE_URL } from './site.ts'
 
 export const SITE = SITE_URL
@@ -47,14 +48,21 @@ export function wrestlerStub(rikishi: Rikishi, bashoName: string): Stub {
   }
 }
 
+/** Names a stable's share page lists before "and N more". */
+const STABLE_NAMES = 8
+
 export function stableStub(data: BanzukeSet, heyaId: number, bashoName: string): Stub | null {
   const roster = rosterFor(data, heyaId)
   if (!roster) return null
-  const names = roster.members.map((r) => r.shikona.en).join(', ')
+  // Top of the stable first; a big stable's tail of lower-division names is counted, not listed.
+  const shown = roster.members.slice(0, STABLE_NAMES)
+  const rest = roster.members.length - shown.length
+  const names = `${shown.map((r) => r.shikona.en).join(', ')}${rest > 0 ? ` and ${rest} more` : ''}`
+  const count = roster.members.length
   return {
     path: `heya/${heyaId}/`,
     title: `${roster.name.en} stable ${roster.name.jp}部屋 · Grand Sumo Banzuke`,
-    description: `${roster.members.length} sekitori on the ${bashoName} banzuke: ${names}.`,
+    description: `${count} ${count === 1 ? 'wrestler' : 'wrestlers'} on the ${bashoName} banzuke: ${names}.`,
     image: `${SITE}og-image.png`,
     imageAlt: 'Grand Sumo Banzuke: the rankings sheet',
     target: `?heya=${heyaId}`,
@@ -116,7 +124,7 @@ export function renderSitemap(stubs: Stub[]): string {
     `  <url>\n    <loc>${loc}</loc>\n    <changefreq>${changefreq}</changefreq>\n${alternates(loc)}\n  </url>`
   const entries = [
     page(SITE, 'daily'),
-    page(`${SITE}?div=juryo`, 'daily'),
+    ...DIVISIONS.filter((d) => d !== 'makuuchi').map((d) => page(`${SITE}?div=${d}`, 'daily')),
     ...stubs.map((s) => page(`${SITE}${s.path}`, 'weekly')),
   ]
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${entries.join('\n')}\n</urlset>\n`

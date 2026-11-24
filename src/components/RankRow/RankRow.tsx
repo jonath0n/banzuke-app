@@ -1,8 +1,8 @@
 import { memo } from 'react'
 import type { RankGroup, Rikishi } from '../../types/banzuke'
 import { formatRankLabel } from '../../utils/formatting'
-import { isSanyaku, RANK_LEVEL_NAMES } from '../../constants/ranks'
-import { jpRankName, jpRankShort } from '../../data/kanji'
+import { isSanyaku, RANK_CODES, RANK_LEVEL_NAMES } from '../../constants/ranks'
+import { jpRankName, jpRankShort, toKanjiNumber } from '../../data/kanji'
 import { SideCell } from '../SideCell/SideCell'
 import type { Movement } from '../../utils/diff'
 import type { RikishiRecord } from '../../data/results'
@@ -46,7 +46,15 @@ export const RankRow = memo(function RankRow({
   tabbableId,
   championIds,
 }: RankRowProps) {
-  const short = jpRankShort(group.rankCode, group.rankNumber) || group.name.jp
+  // Below Juryo the short form is the position alone (筆頭, 五十七): the tier band
+  // above already names the division, and 序二段五十七 set one character a line
+  // on a phone would make every row of two hundred twice as tall.
+  const short =
+    group.rankCode >= RANK_CODES.MAKUSHITA
+      ? group.rankNumber === 1
+        ? '筆頭'
+        : toKanjiNumber(group.rankNumber)
+      : jpRankShort(group.rankCode, group.rankNumber) || group.name.jp
   // The full printed rank on a wide sheet, the short form on a narrow one.
   // Both are rendered and CSS picks one, so the rail never reflows on resize.
   // The sanyaku ranks are written the same either way, so they render once.

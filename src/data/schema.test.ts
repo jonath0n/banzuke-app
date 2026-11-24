@@ -6,6 +6,8 @@ import {
   snapshotsEqualIgnoringFetchedAt,
   validateDivision,
   validatePayload,
+  lowerSnapshotBashoId,
+  validateLowerSnapshot,
   validateSnapshot,
   type Lang,
   type RawDivisionSnapshot,
@@ -17,6 +19,7 @@ import {
   makeRawPayload,
   makeRawSnapshot,
   makeRawSnapshotV1,
+  makeRawLowerSnapshot,
   placeholderRow,
 } from '../test/fixtures'
 
@@ -266,5 +269,51 @@ describe('snapshotsEqualIgnoringFetchedAt', () => {
     const b = structuredClone(a)
     b.divisions.makuuchi.payloads.en.BanzukeTable[0].shikona = 'Someone'
     expect(snapshotsEqualIgnoringFetchedAt(a, b)).toBe(false)
+  })
+})
+
+describe('validateLowerSnapshot', () => {
+  it('accepts the divisions below Juryo and names their tournament', () => {
+    const result = validateLowerSnapshot(makeRawLowerSnapshot())
+    expect(result.ok).toBe(true)
+    if (!result.ok) return
+    expect(snapshotDivisions(result.snapshot)).toEqual(['makushita', 'jonokuchi'])
+    expect(lowerSnapshotBashoId(result.snapshot)).toBe(637)
+  })
+
+  it('ignores a sekitori division in the lower file', () => {
+    const result = validateLowerSnapshot(
+      makeRawLowerSnapshot({
+        divisions: { makushita: makeRawDivision('makushita'), makuuchi: makeRawDivision() },
+      } as never)
+    )
+    expect(result.ok).toBe(true)
+    if (!result.ok) return
+    expect(snapshotDivisions(result.snapshot)).toEqual(['makushita'])
+    expect(result.warnings.join()).toMatch(/makuuchi/)
+  })
+
+  it('rejects a file with no lower division', () => {
+    expect(validateLowerSnapshot(makeRawLowerSnapshot({ divisions: {} })).ok).toBe(false)
+  })
+
+  it('holds each division to its own minimum: a short Makushita is a truncated fetch', () => {
+    const short = makeRawDivision('makushita')
+    short.payloads.en = makeRawPayload('en', 60, {}, 'makushita')
+    short.payloads.jp = makeRawPayload('jp', 60, {}, 'makushita')
+    const result = validateLowerSnapshot(makeRawLowerSnapshot({ divisions: { makushita: short } }))
+    expect(result.ok).toBe(false)
+    if (result.ok) return
+    expect(result.errors.join()).toMatch(/only 60 wrestlers \(expected at least 100\)/)
+  })
+
+  it('rejects divisions from different tournaments', () => {
+    const jonokuchi = makeRawDivision('jonokuchi')
+    jonokuchi.payloads.en = { ...jonokuchi.payloads.en, basho_id: 638 }
+    jonokuchi.payloads.jp = { ...jonokuchi.payloads.jp, basho_id: 638 }
+    const result = validateLowerSnapshot(
+      makeRawLowerSnapshot({ divisions: { makushita: makeRawDivision('makushita'), jonokuchi } })
+    )
+    expect(result.ok).toBe(false)
   })
 })

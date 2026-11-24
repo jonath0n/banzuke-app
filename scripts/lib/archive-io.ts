@@ -3,6 +3,8 @@ import { join } from 'node:path'
 import {
   archiveFileName,
   buildIndex,
+  isLowerArchive,
+  lowerArchiveFileName,
   validateArchive,
   type ArchivedBanzuke,
   type ArchiveIndex,
@@ -30,7 +32,10 @@ export async function readArchives(dir: string): Promise<ArchivedBanzuke[]> {
 
 export async function writeArchive(dir: string, archive: ArchivedBanzuke): Promise<string> {
   await mkdir(dir, { recursive: true })
-  const path = join(dir, archiveFileName(archive.bashoId))
+  const name = isLowerArchive(archive)
+    ? lowerArchiveFileName(archive.bashoId)
+    : archiveFileName(archive.bashoId)
+  const path = join(dir, name)
   await writeFile(path, `${JSON.stringify(archive, null, 1)}\n`, 'utf8')
   return path
 }

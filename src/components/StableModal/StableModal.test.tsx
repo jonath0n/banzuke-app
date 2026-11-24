@@ -106,10 +106,10 @@ describe('StableModal', () => {
     expect(props.onShowOnBanzuke).toHaveBeenCalledWith('Tatsunami')
   })
 
-  it('shows the empty line for a stable with no sekitori left', () => {
+  it('shows the empty line for a stable with nobody left', () => {
     renderModal({ roster: null })
     expect(screen.getByRole('dialog')).toHaveAccessibleName('Tatsunami')
-    expect(screen.getByText('No sekitori on this banzuke')).toBeInTheDocument()
+    expect(screen.getByText('Nobody on this banzuke')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Show on the banzuke' })).toBeNull()
   })
 

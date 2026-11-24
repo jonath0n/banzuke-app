@@ -11,7 +11,14 @@ import {
   jpNumberKanji,
   jpRankName,
 } from '../../src/data/kanji.ts'
-import { isPlaceholderRow, type RawPayload, type RawRikishi } from '../../src/data/schema.ts'
+import {
+  DIVISION_IDS,
+  DIVISIONS,
+  isPlaceholderRow,
+  type Division,
+  type RawPayload,
+  type RawRikishi,
+} from '../../src/data/schema.ts'
 import type { JpSearchPage } from './jp-search-page.ts'
 
 export interface JpBuildResult {
@@ -20,6 +27,10 @@ export interface JpBuildResult {
   readings: Record<string, string>
   /** rikishi_ids in the English payload that the Japanese page did not list */
   missing: number[]
+}
+
+function divisionOfKakuzuke(id: string | number): Division {
+  return DIVISIONS.find((division) => DIVISION_IDS[division] === Number(id)) ?? 'makuuchi'
 }
 
 function tournamentMonth(startDate: string): number {
@@ -72,7 +83,7 @@ export function buildJpPayload(en: RawPayload, page: JpSearchPage): JpBuildResul
     basho_name: month ? jpBashoName(month) : en.BashoInfo?.basho_name || en.basho_name,
     year_jp: yearJp || en.year_jp,
     lang: 'JP',
-    Kakuzuke: String(en.kakuzuke_id) === '2' ? DIVISION_KANJI.juryo : DIVISION_KANJI.makuuchi,
+    Kakuzuke: DIVISION_KANJI[divisionOfKakuzuke(en.kakuzuke_id)],
   }
 
   return { payload, readings, missing }
