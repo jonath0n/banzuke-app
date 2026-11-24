@@ -89,7 +89,7 @@
 }
 
 .photoWrapper[data-rank-level='yokozuna']::after {
-  box-shadow: inset 0 0 0 3px var(--gold);
+  box-shadow: inset 0 0 0 3px var(--accent);
 }
 
 .photoWrapper img {
@@ -183,9 +183,10 @@
   font-weight: 600;
 }
 
-/* Focused programmatically after a step; :focus-visible from base.css still
-   applies when a keyboard user tabs to it directly. */
-.primaryName:focus:not(:focus-visible) {
+/* Focused programmatically on open and after a step (tabIndex -1, so never a
+   Tab stop): the screen reader hears the name; the eye needs no ring on a
+   heading — on a share link it arrived boxed in ink. */
+.primaryName:focus {
   outline: none;
 }
 

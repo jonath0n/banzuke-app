@@ -114,16 +114,12 @@ function splitIntoTiers(groups: RankGroup[]): Tier[] {
   return tiers
 }
 
-/** An open brush circle (ensō): the sheet has nothing to show here. */
-function EnsoIcon() {
+/** A vacant slot, as the sheet prints one: an empty square with a rule. */
+function VacantIcon() {
   return (
-    <svg width="56" height="56" viewBox="0 0 56 56" fill="none" aria-hidden="true">
-      <path
-        d="M39 9.5A21 21 0 1 0 47.5 27"
-        stroke="currentColor"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-      />
+    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+      <rect x="1" y="1" width="46" height="46" stroke="currentColor" strokeWidth="2" />
+      <path d="M14 24h20" stroke="currentColor" strokeWidth="3" />
     </svg>
   )
 }
@@ -146,7 +142,7 @@ function EmptyState({
     // two announcements for one keystroke is one too many.
     <div className={styles.emptyState} lang={langAttr(language)}>
       <div className={styles.emptyIcon}>
-        <EnsoIcon />
+        <VacantIcon />
       </div>
       {reason === 'no-matches' ? (
         <>
@@ -227,23 +223,28 @@ export function BanzukeGrid({
        keyboard delegation for the buttons inside; not itself interactive */
     <div
       className={styles.grid}
+      data-searching={highlight ? '' : undefined}
       onKeyDown={(e) => handleRovingKey(e.currentTarget, e)}
       onFocus={(e) => {
         const id = Number((e.target as HTMLElement).dataset.id)
         if (Number.isInteger(id) && id !== activeId) setActiveId(id)
       }}
     >
-      {splitIntoTiers(grouped).map((tier) => (
+      {splitIntoTiers(grouped).map((tier, tierIndex) => (
         <section
           key={tier.level}
           className={styles.tier}
           aria-labelledby={`tier-${tier.level}`}
           data-rank-level={tier.level}
         >
-          {/* Sanyaku headings stay for structure but the rail already shows them */}
+          {/* Every tier keeps its heading for structure. A section bar marks
+              where the tier changes inside a sheet; the first tier is headed by
+              the selected tab above it, and the sanyaku by the rail's stamps. */}
           <h2
             id={`tier-${tier.level}`}
-            className={BANDED_TIERS.has(tier.level) ? styles.tierDivider : 'visually-hidden'}
+            className={
+              BANDED_TIERS.has(tier.level) && tierIndex > 0 ? styles.tierDivider : 'visually-hidden'
+            }
             data-rank-level={tier.level}
           >
             <span className={styles.tierKanji} lang="ja">

@@ -20,8 +20,8 @@
   left: 1rem;
   z-index: var(--z-skip-link);
   padding: 0.6rem 1rem;
-  background: var(--accent);
-  color: var(--on-accent);
+  background: var(--text);
+  color: var(--on-ink);
   border-radius: var(--radius);
   font-weight: 600;
   text-decoration: none;

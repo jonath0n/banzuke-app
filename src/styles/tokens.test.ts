@@ -54,17 +54,23 @@ const TEXT_PAIRS: Array<[string, string]> = [
   ['on-accent', 'accent'],
   ['danger', 'bg'],
   ['warning', 'bg'],
+  // Section bars and selected controls: the sheet's colour on ink
+  ['on-ink', 'text'],
+  // Section bars
+  ['on-bar', 'bar'],
+  // The masthead band
+  ['on-band', 'band'],
+  // The highlighter screen, and the ink a screened cell keeps
+  ['on-highlight', 'highlight'],
 ]
 
 /**
  * [token, background] pairs drawn as rules and rings rather than text. WCAG
- * gives non-text elements a 3:1 floor; --gold marks the Yokozuna edge and has
- * to stay visible on both the page and the sheet.
+ * gives non-text elements a 3:1 floor: the highlighter has to read as a
+ * screen, and the ink focus ring has to show on it. Inputs draw their
+ * boundary in ink, so --border is decoration and is not paired.
  */
-const EDGE_PAIRS: Array<[string, string]> = [
-  ['gold', 'bg'],
-  ['gold', 'card-bg'],
-]
+const EDGE_PAIRS: Array<[string, string]> = [['text', 'highlight']]
 
 describe.each([
   ['light', light],

@@ -1,54 +1,79 @@
 .bouts {
-  border-top: 1px solid var(--rule);
-  padding-top: var(--space-2);
-  margin-top: var(--space-5);
+  background: var(--card-bg);
+  padding: 0 var(--space-3) var(--space-3);
 }
 
+.bouts + .bouts,
+* + .bouts {
+  margin-top: var(--space-4);
+}
+
+/* The section bar: ink, reversed, like the tier bars on the sheet */
 .head {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: var(--space-3);
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin: 0 calc(-1 * var(--space-3)) var(--space-2);
+  padding: 0.25rem;
+  background: var(--bar);
+  color: var(--on-bar);
 }
 
 .heading {
-  font-size: var(--text-base);
-  font-weight: var(--label-weight);
-  letter-spacing: var(--tracking-caps);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 900;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--on-bar);
   margin: 0;
 }
 
 .heading:lang(ja) {
+  font-family: var(--font-jp-serif);
+  font-weight: 700;
   text-transform: none;
   letter-spacing: 0.1em;
 }
 
 .step {
-  font: inherit;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 800;
   background: none;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  min-width: 32px;
-  min-height: 32px;
-  color: var(--muted);
+  border: 1px solid rgb(255 255 255 / 0.4);
+  min-width: 36px;
+  min-height: 36px;
+  color: var(--on-bar);
   cursor: pointer;
 }
 
 .step:disabled {
-  opacity: 0.35;
+  opacity: 0.3;
   cursor: default;
 }
 
 .step:hover:not(:disabled) {
-  color: var(--text);
+  background: var(--on-bar);
+  color: var(--bar);
+}
+
+@media (max-width: 600px) {
+  .step {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+.step:focus-visible {
+  outline: 2px solid var(--on-bar);
+  outline-offset: 1px;
 }
 
 .list {
   list-style: none;
   display: grid;
-  gap: var(--space-1);
 }
 
 .match {
@@ -56,8 +81,12 @@
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: baseline;
   gap: var(--space-3);
-  padding: var(--space-1) 0;
+  padding: 0.3rem 0;
   border-top: 1px solid var(--rule);
+}
+
+.match:first-child {
+  border-top: 0;
 }
 
 .east {
@@ -68,11 +97,44 @@
   text-align: start;
 }
 
+/* The sports page's notation beside each name, on the result side: ○ won,
+   ● lost — the same marks as the star chart on the sheet. Decorative: the
+   winner is also <strong>, and the result names the kimarite. */
+.match[data-decided] .east::after,
+.match[data-decided] .west::before {
+  content: '●' / '';
+  display: inline-block;
+  width: 1em;
+  font-family: var(--font-jp-serif);
+  font-weight: 700;
+  text-align: center;
+  color: var(--muted);
+}
+
+.match[data-decided] .east::after {
+  margin-inline-start: var(--space-2);
+}
+
+.match[data-decided] .west::before {
+  margin-inline-end: var(--space-2);
+}
+
+.match[data-decided] .east[data-won]::after,
+.match[data-decided] .west[data-won]::before {
+  content: '○' / '';
+  color: var(--text);
+}
+
 .result {
   font-size: var(--text-sm);
   color: var(--muted);
   text-align: center;
   min-width: 6ch;
+}
+
+.result:not(:lang(ja)) {
+  font-family: var(--font-display);
+  font-weight: 600;
 }
 
 .result:lang(ja) {
@@ -85,8 +147,9 @@
   border: 0;
   padding: 0;
   color: inherit;
-  font-family: var(--font-names);
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: 650;
 }
 
 .fighter:lang(ja) {
@@ -95,7 +158,13 @@
 }
 
 .fighter strong {
-  font-weight: 800;
+  font-weight: 850;
+}
+
+.clickable:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.15em;
 }
 
 .clickable {
@@ -112,13 +181,14 @@
 .playoff {
   margin-top: var(--space-4);
   padding-top: var(--space-3);
-  border-top: 1px solid var(--rule);
+  border-top: 2px solid var(--text);
 }
 
 .playoffHeading {
   margin: 0;
-  font-size: var(--text-base);
-  font-weight: var(--label-weight);
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: 800;
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
   text-align: center;

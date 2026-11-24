@@ -1,10 +1,10 @@
 /* The star chart: ○ won, ● lost, 休 absent, · not yet fought. Weight and
    ink carry the state — kachi-koshi bold, make-koshi muted — no new hue. */
 .badge {
-  font-family: var(--font-names);
-  font-weight: 600;
-  font-size: var(--text-xs);
-  letter-spacing: 0.04em;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-sm);
+  letter-spacing: 0.02em;
   line-height: 1.2;
   color: var(--text);
   white-space: nowrap;
@@ -13,12 +13,12 @@
   display: inline-flex;
   align-items: baseline;
   flex-wrap: wrap;
-  gap: var(--space-1) var(--space-2);
+  gap: var(--space-1) 0.375rem;
   margin-top: 0.15rem;
 }
 
 .badge[data-state='kachikoshi'] {
-  font-weight: 700;
+  font-weight: 850;
 }
 
 .badge[data-state='makekoshi'] {
@@ -31,19 +31,31 @@
    and paints "2–0" as "0–2", and a strip laid out rtl puts day 1 on the right.
    `.detail` in SideCell.module.css declares ltr for the same reason. */
 
-/* Day 1 is leftmost, whichever side of the rail the cell is on */
+/* Day 1 is leftmost, whichever side of the rail the cell is on. Set as a
+   sports page's 星取表: fixed cells in three groups of five, so day 9 is
+   the fourth mark of the second group rather than a count. */
 .strip {
   direction: ltr;
   font-family: var(--font-jp-serif);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
   color: var(--text);
+  white-space: nowrap;
+  /* Fifteen cells and two group gaps measure 14.5em: on a phone the marks
+     shrink to the cell rather than run past it (the List never scrolls
+     sideways). Outside a sized cell — the stable dialog — the token holds. */
+  font-size: min(var(--text-sm), 6.5cqi);
 }
 
 .cell {
   display: inline-block;
-  width: 1em;
+  width: 0.92em;
   text-align: center;
+}
+
+.cell[data-day='5'],
+.cell[data-day='10'] {
+  margin-inline-end: 0.35em;
 }
 
 .cell[data-outcome='loss'],
@@ -65,11 +77,16 @@
 /* Wins–losses–absences, in that order, on both sides of the rail */
 .score {
   direction: ltr;
-  font-weight: 700;
+  font-weight: inherit;
+}
+
+/* Kachi-koshi and make-koshi are carried by weight and ink, not a caption:
+   the word stays in the wrestler's accessible name and in the dialog. */
+.state:not(.seal) {
+  display: none;
 }
 
 .state {
-  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: var(--tracking-caps);
 }
@@ -80,20 +97,18 @@
   letter-spacing: 0.1em;
 }
 
-/* The champion's mark: a hairline seal in ink */
+/* The champion's mark: stamped in the paper's red */
 .seal {
   display: inline-grid;
   place-items: center;
-  min-width: 1.2em;
-  min-height: 1.2em;
-  padding-inline: 0.15em;
-  font-family: var(--font-names);
-  font-weight: 700;
-  color: var(--text);
-  border: 1px solid var(--text);
-  border-radius: var(--radius-sm);
-  text-transform: none;
-  letter-spacing: 0;
+  min-height: 1.3em;
+  padding: 0.05em 0.35em;
+  font-family: var(--font-display);
+  font-weight: 850;
+  color: var(--on-band);
+  background: var(--band);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .seal:lang(ja) {

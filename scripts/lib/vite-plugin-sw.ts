@@ -38,8 +38,7 @@ export function serviceWorker(): Plugin {
       const files = [
         ...emitted,
         'index.html',
-        'assets/FranSans-Solid.otf',
-        'assets/fonts/Archivo-latin.woff2',
+        'assets/fonts/SofiaSansCondensed-latin.woff2',
         'assets/fonts/NotoSerifJP-700-core.woff2',
         'manifest.webmanifest',
         'favicon.svg',

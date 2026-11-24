@@ -114,7 +114,7 @@ describe('Hero', () => {
         <Hero data={banzuke} results={results} rankById={rankById} />
       </LanguageProvider>
     )
-    expect(screen.getByText('Yusho: Onosato (10–2)')).toBeInTheDocument()
+    expect(screen.getByText(/Yusho: Onosato/)).toHaveTextContent('Yusho: Onosato (10–2)')
     expect(screen.getByText('Fighting Spirit').parentElement).toHaveTextContent(
       'Fighting Spirit Wakatakakage, Dewanoryu'
     )

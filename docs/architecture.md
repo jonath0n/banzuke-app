@@ -161,7 +161,7 @@ never a step count — steps are undefined across sanyaku and the Juryo line. On
 previous archive carries can call a wrestler "new" (tournaments before 2026-11 have no lower
 file); a sekitori who dropped below Juryo is listed under "Now in Makushita" once the lower
 divisions are loaded. Arrows are
-ink/muted; "new" borrows the promotion pill's vermilion, and a newcomer who already carries a
+ink/muted; "new" borrows the promotion pill's red, and a newcomer who already carries a
 printed flag (新入幕 …) gets no "new" badge. The previous banzuke and its results are loaded
 whenever there is one, because the kadoban mark reads them too.
 
@@ -172,7 +172,10 @@ whenever there is one, because the kadoban mark reads them too.
   finished — until the next banzuke replaces it — `Hoshitori` shows the ○●休 strip and the
   score on the List, `Bouts` lists the day's card, selected by who is fighting
   (cross-division bouts are published on the Makuuchi card only). An absence counts as a loss
-  for make-koshi. The yusho mark is an ink seal — `--gold` is still the Yokozuna's alone.
+  for make-koshi. The yusho mark is a red stamp, and the champion's name carries the highlighter.
+  KACHI-KOSHI / MAKE-KOSHI captions are hidden on the List (weight and ink carry them); the
+  word stays in the accessible name. The strip sets its marks in three groups of five and sizes
+  itself to the cell (`cqi`), so fifteen days never push the List sideways.
 - Kimarite are stored as sumo-api romaji; `src/data/kimarite.ts` supplies the kanji. Before
   day 1 the file is the card only (no 0–0 under seventy names).
 - Above the card, `YushoRace` (`yushoRace()` in `results.ts`) reads the race by losses — the

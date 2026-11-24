@@ -87,9 +87,11 @@ and formats in `Asia/Tokyo`.
   text, contrast ≥ 4.5:1, focus visible. `eslint-plugin-jsx-a11y` is enabled.
 - Colours, spacing and motion come from the tokens in `src/styles/tokens.css` (with `base.css`
   and `a11y.css` alongside it); do not hand-type accent RGB values in component CSS.
-- **The palette is six values plus `--gold`.** Rank is expressed by type size, never by hue;
-  `--gold` marks the Yokozuna and nothing else. `src/styles/tokens.test.ts` enforces contrast
-  on every pair, so adding a colour means adding it there too.
+- **Three inks, three jobs** (the sports-page world in `DESIGN.md`): red (`--accent`) marks
+  rank and stamps, black (`--text`, `--bar`) marks selection and section bars, yellow
+  (`--highlight`) is a screen under ink for what matters now — one highlight per screen. Rank
+  is still carried by type size first. `src/styles/tokens.test.ts` enforces contrast on every
+  pair, so adding a colour means adding it there too.
 - **Motion budget: four keyframe effects in the whole app** (three in use: `fadeIn`,
   `modalSlideUp`, `riseIn`; one slot free), and no infinite animations — this is a printed
   document. Adding one means removing one. Entrance animation plays once per page load (the

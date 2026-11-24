@@ -28,7 +28,7 @@
 }
 
 .row:hover {
-  background: rgb(var(--ink-rgb) / 0.035);
+  background: rgb(var(--ink-rgb) / 0.04);
 }
 
 /* East is DOM-first and, on a banzuke, sits on the right */
@@ -73,30 +73,42 @@
 }
 
 .romaji {
-  font-family: var(--font-body);
-  font-weight: var(--label-weight);
+  font-family: var(--font-display);
+  font-weight: 800;
   font-size: var(--text-xs);
-  letter-spacing: var(--tracking-caps);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted);
   white-space: nowrap;
 }
 
-/* Sanyaku ranks are stamped in vermilion; the Yokozuna rail is edged in gold */
-.row[data-rank-level='yokozuna'] .kanji,
+/* Sanyaku ranks are set in the paper's red */
 .row[data-rank-level='ozeki'] .kanji,
 .row[data-rank-level='sekiwake'] .kanji,
 .row[data-rank-level='komusubi'] .kanji {
   color: var(--accent);
 }
 
+/* The Yokozuna rail is the one stamped solid: red ground, rank reversed out */
 .row[data-rank-level='yokozuna'] .rail {
-  border-inline-color: var(--gold);
+  align-self: stretch;
+  background: var(--band);
+  border-inline-color: var(--band);
+}
+
+.row[data-rank-level='yokozuna'] .kanji,
+.row[data-rank-level='yokozuna'] .romaji {
+  color: var(--on-band);
 }
 
 .row[data-rank-level='yokozuna'] .kanji,
 .row[data-rank-level='ozeki'] .kanji {
-  font-size: var(--text-2xl);
+  font-size: var(--text-3xl);
+}
+
+.row[data-rank-level='sekiwake'] .kanji,
+.row[data-rank-level='komusubi'] .kanji {
+  font-size: var(--text-xl);
 }
 
 @media (min-width: 768px) {
