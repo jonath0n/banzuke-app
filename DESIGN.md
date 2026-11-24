@@ -1,6 +1,6 @@
 ---
 name: banzuke.app
-description: The grand sumo banzuke set as a Japanese sports daily's results page — newsprint, kin-aka red, black section bars, and a yellow highlighter on what matters now.
+description: The grand sumo banzuke set as a Japanese sports daily's results page — newsprint, kin-aka red for rank and rises, 藍 indigo section bars and falls, and a yellow highlighter on what matters now.
 colors:
   newsprint: "#e9e9e4"
   sheet: "#ffffff"
@@ -12,7 +12,8 @@ colors:
   kin-aka: "#d10010"
   kin-aka-deep: "#a3000c"
   on-kin-aka: "#ffffff"
-  section-bar: "#111111"
+  section-bar: "#1e2c6b"
+  fall: "#2a43a0"
   on-section-bar: "#ffffff"
   masthead-band: "#d10010"
   on-masthead-band: "#ffffff"
@@ -30,7 +31,8 @@ colors:
   night-hairline: "rgba(242, 242, 238, 0.12)"
   night-kin-aka: "#ff4a4f"
   night-kin-aka-hover: "#ff7276"
-  night-section-bar: "#66665f"
+  night-section-bar: "#2e3d82"
+  night-fall: "#8ea4ff"
   night-on-section-bar: "#f2f2ee"
   night-masthead-band: "#a3000c"
   night-band-rule: "#5c0007"
@@ -204,7 +206,7 @@ components:
 
 The banzuke as the results page of a Japanese sports daily on the morning after a day of the
 basho: newsprint grey under a white sheet, a kin-aka red masthead band closed by an ink rule,
-black section bars where the rank tier changes, condensed heavy names that scale with rank, the ○● record
+indigo section bars where the rank tier changes, condensed heavy names that scale with rank, the ○● record
 set as a 星取表 in fixed day columns grouped by five, and a yellow highlighter screened over the
 thing that matters now: the champion's name, the yusho race while it is open, the name you
 searched for.
@@ -238,13 +240,15 @@ Dialogs under Components.
 
 ## Colors
 
-Restrained in area, committed in role: three inks with fixed jobs on a newsprint ground.
+Committed in role: ink and two spot plates, red and 藍 indigo, plus a highlighter, on a newsprint
+ground. Each plate does one job as a fill and one as a letterform, so a reader can learn the page
+in one look: red rose, indigo fell.
 
 ### Primary
 
 - **Kin-aka** (`--accent`; night `--accent` brighter for contrast): the paper's red as **text**.
-  Sanyaku rank kanji in the rail (Ozeki, Sekiwake, Komusubi) and the "new" movement mark.
-  Ranking emphasis and identity.
+  Sanyaku rank kanji in the rail (Ozeki, Sekiwake, Komusubi), the ▲ and "new" movement marks, and
+  a kachi-koshi score. Rank, and what rises in it.
 - **Masthead Red** (`--band`, with `--on-band`; night `--band` deepens so the band is not a glare):
   the paper's red as a **fill**. The masthead band, the Yokozuna's solid rail block, the 優勝 stamp
   in the headline and the star chart, promotion stamps (新入幕 / New), and the red characters of
@@ -254,6 +258,12 @@ Restrained in area, committed in role: three inks with fixed jobs on a newsprint
 
 ### Secondary
 
+- **Ai** (`--fall`; night a light indigo for contrast): the indigo plate as **text**. What fell:
+  the ▼ movement mark, a make-koshi score, a lost bout's ● in the star chart and the bout list.
+  Red's counterpart, and always paired with a shape (▼, ●) so it never carries meaning alone.
+- **Section Bar** (`--bar`, with `--on-bar`): the indigo plate as a **fill**. The bars over rank
+  tiers, the heads of the side boxes, and the tier bars in the dialogs. Deep indigo by day, a
+  raised indigo by night (a white bar on a dark page glares).
 - **Highlighter** (`--highlight`, with `--on-highlight`; night a deep olive screen with white
   ink): a screen laid under ink, never a text colour. The champion's name on the sheet, each
   search match, the undecided yusho race box, the outer focus ring of the search field, and text
@@ -262,15 +272,13 @@ Restrained in area, committed in role: three inks with fixed jobs on a newsprint
 ### Neutral
 
 - **Ink** (`--text`, with `--on-ink`): text, and the UI's selection colour: the selected division
-  tab, a pressed toggle, the sheet's 5px opening rule, the footer's top rule, focus outlines.
-- **Section Bar** (`--bar`, with `--on-bar`): the bars over rank tiers and the heads of the side
-  boxes. Ink by day; by night a raised mid-grey, because a white bar on a dark page glares.
+  tab, a pressed toggle, the sheet's 5px opening rule, the footer's top rule, focus outlines. A
+  won bout's ○.
 - **Band Rule** (`--band-rule`): the 6px rule closing the masthead band (ink by day, a dark red by
   night).
 - **Newsprint** (`--bg`): the page ground.
 - **Sheet** (`--card-bg`): the table, the side boxes, controls, inputs, dialogs.
-- **Pencil** (`--muted`): secondary text, romaji under rank kanji, counts, make-koshi records,
-  losses in the star chart.
+- **Pencil** (`--muted`): secondary text, romaji under rank kanji, counts, kimarite.
 - **Column Rule** (`--border`): tab and side-seal outlines, unfought days in the star chart,
   dividers inside the basho picker.
 - **Hairline** (`--rule`): the 13% ink rule between rows and either side of the rank rail.
@@ -278,8 +286,10 @@ Restrained in area, committed in role: three inks with fixed jobs on a newsprint
 
 ### Named Rules
 
-**The Three Inks Rule.** Red ranks, black selects, yellow highlights. A colour never borrows
-another's job.
+**The Two Plates Rule.** Red ranks and rises, indigo structures and falls, black selects, yellow
+highlights. Each plate has one job as a fill (red: masthead and stamps; indigo: section bars) and
+one as a letterform (red: rank and rises; indigo: falls and losses). A colour never borrows
+another's job, and no fifth hue joins them: data problems keep their own danger and warning.
 
 **The Highlighter Rule.** Yellow only ever sits under text, and only on what the reader is looking
 for or what matters now. If two things on screen are highlighted, one of them is wrong: the yusho
@@ -316,8 +326,8 @@ sets them in body text. Reading text stays in the system face. All figures are t
   line in a 1.1em column.
 - **Label** (800, `--text-sm`, `--tracking-caps`, uppercase): tabs, toggles, picker, section-bar
   labels, side-box heads, status badge. Japanese labels drop the caps and track at 0.06–0.1em.
-- **Score** (700, `--text-sm`, tabular): records under names; kachi-koshi rises to 850,
-  make-koshi drops to pencil.
+- **Score** (700, `--text-sm`, tabular): records under names; kachi-koshi rises to 850 in red,
+  make-koshi stays 700 in indigo.
 - **Body** (400, 1rem, line-height 1.5): reading text, dates, help.
 - **Caption** (400, `--text-xs`): provenance and the footer's small print.
 
@@ -353,7 +363,7 @@ band), 960px, 1200px (side rail).
 
 ## Elevation & Depth
 
-Flat print. Separation comes from the white sheet on newsprint, black section bars, 3px ink rules
+Flat print. Separation comes from the white sheet on newsprint, indigo section bars, 3px ink rules
 and hairlines. Section bars pin (`position: sticky`) while their rows scroll past; that is layering
 by position, not by shadow. Only things that float over the page cast a shadow.
 
@@ -499,8 +509,8 @@ A 44px ink square, fixed bottom right, with the float shadow; fades in past the 
 
 ### Do:
 
-- **Do** keep red for rank and stamps, black for selection, yellow for the highlighter (The Three
-  Inks Rule).
+- **Do** keep red for rank, rises and stamps, indigo for section bars and falls, black for
+  selection, yellow for the highlighter (The Two Plates Rule).
 - **Do** fill with `--band` / `--on-band` and write with `--accent`.
 - **Do** set names in Sofia Sans Condensed at ladder sizes and Japanese names and rank kanji in
   Noto Serif JP 700.
@@ -517,7 +527,7 @@ A 44px ink square, fixed bottom right, with the float shadow; fades in past the 
 - **Don't** highlight two things on one screen.
 - **Don't** use cream, gold, or a decorative seal; a red stamp always states a fact (優勝,
   promotion, the wordmark's 番付).
-- **Don't** tell rank by hue alone.
+- **Don't** tell rank, or a rise or a fall, by hue alone: ▲▼, ○● and type size say it first.
 - **Don't** add a fifth keyframe effect (four budgeted, all in use: `fadeIn`, `riseIn`,
   `modalSlideUp`, `stampPress`) or anything that loops.
 - **Don't** draw Rising Sun rays or other decorative Japanese motifs.

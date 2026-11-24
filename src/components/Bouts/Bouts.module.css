@@ -108,7 +108,7 @@
   font-family: var(--font-jp-serif);
   font-weight: 700;
   text-align: center;
-  color: var(--muted);
+  color: var(--fall);
 }
 
 .match[data-decided] .east::after {

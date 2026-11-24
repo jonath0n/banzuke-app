@@ -4,12 +4,14 @@
  * accent RGB values: use `rgb(var(--accent-rgb) / 0.2)` for tints.
  *
  * Identity: the banzuke set as a Japanese sports daily's results page.
- * Newsprint under a white sheet, ink, the paper's kin-aka red, and a yellow
- * highlighter screened over what matters now. Three inks, three jobs:
- *   red (--accent)      ranks and stamps — sanyaku, the Yokozuna, promotions, 優勝
- *   black (--text)      selection — the chosen tab, a pressed toggle, section bars
- *   yellow (--highlight) a screen under ink — the champion, a search match
- * Rank hierarchy is still carried by type size first.
+ * Newsprint under a white sheet, ink, two spot plates — the paper's kin-aka
+ * red and 藍 (ai) indigo — and a yellow highlighter screened over what matters
+ * now. Each plate does one thing as a fill and one as a letterform:
+ *   red    fill (--band)  the masthead and stamps; text (--accent) rank and rises
+ *   indigo fill (--bar)   section bars;           text (--fall)   falls and losses
+ *   black (--text)        selection — the chosen tab, a pressed toggle
+ *   yellow (--highlight)  a screen under ink — the champion, a search match
+ * Rank hierarchy is still carried by type size first; colour never alone.
  */
 :root {
   color-scheme: light dark;
@@ -33,14 +35,17 @@
   --ink-rgb: 17 17 17;
   /* Inverse: white text on the black section bars and selected controls */
   --on-ink: #ffffff;
-  /* Section bars over tiers and side-rail boxes: ink by day, a raised dark
-     sheet by night (a white bar is glare on a phone in the evening) */
-  --bar: #111111;
+  /* Section bars over tiers and side-rail boxes: the indigo plate as a fill,
+     deep by day, a raised indigo by night (never white: glare in the evening) */
+  --bar: #1e2c6b;
   --on-bar: #ffffff;
   /* The masthead band, closed by an ink rule */
   --band: #d10010;
   --on-band: #ffffff;
   --band-rule: #111111;
+  /* The indigo plate as a letterform: what fell — ▼ movement, make-koshi,
+     a lost bout (●). Red's counterpart for rises; shape always says it too. */
+  --fall: #2a43a0;
 
   /* The highlighter (網掛け): a screen laid under ink, never a text colour */
   --highlight: #ffe34d;
@@ -170,11 +175,12 @@
     --on-accent: #0f0f0f;
     --ink-rgb: 242 242 238;
     --on-ink: #0f0f0f;
-    --bar: #66665f;
+    --bar: #2e3d82;
     --on-bar: #f2f2ee;
     --band: #a3000c;
     --on-band: #ffffff;
     --band-rule: #5c0007;
+    --fall: #8ea4ff;
 
     --highlight: #524600;
     --on-highlight: #ffffff;

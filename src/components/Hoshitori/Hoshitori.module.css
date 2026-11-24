@@ -1,5 +1,6 @@
-/* The star chart: ○ won, ● lost, 休 absent, · not yet fought. Weight and
-   ink carry the state — kachi-koshi bold, make-koshi muted — no new hue. */
+/* The star chart: ○ won, ● lost, 休 absent, · not yet fought. Wins stand in
+   ink, losses in the indigo plate. The score takes the plate of where the
+   record sends him — kachi-koshi red and heavier, make-koshi indigo. */
 .badge {
   font-family: var(--font-display);
   font-weight: 700;
@@ -19,10 +20,6 @@
 
 .badge[data-state='kachikoshi'] {
   font-weight: 850;
-}
-
-.badge[data-state='makekoshi'] {
-  color: var(--muted);
 }
 
 /* The West cell inherits the row's `direction: rtl` (SideCell mirrors the cell
@@ -60,7 +57,7 @@
 
 .cell[data-outcome='loss'],
 .cell[data-outcome='fusen-loss'] {
-  color: var(--muted);
+  color: var(--fall);
 }
 
 /* A draw is neither: the mark stands in ink, lighter than a win */
@@ -80,7 +77,16 @@
   font-weight: inherit;
 }
 
-/* Kachi-koshi and make-koshi are carried by weight and ink, not a caption:
+/* The score takes the plate of where the record sends him */
+.badge[data-state='kachikoshi'] .score {
+  color: var(--accent);
+}
+
+.badge[data-state='makekoshi'] .score {
+  color: var(--fall);
+}
+
+/* Kachi-koshi and make-koshi are carried by weight and plate, not a caption:
    the word stays in the wrestler's accessible name and in the dialog. */
 .state:not(.seal) {
   display: none;

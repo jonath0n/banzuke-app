@@ -9,7 +9,7 @@ related_targets: ["src/components/StableModal/StableModal.tsx"]
 
 Scope: the wrestler dialog (`?rikishi=`) and its sibling the stable dialog (`?heya=`), opened from the List. Visitor mode: Operate.
 Audience and job: a fan who tapped a name — on a phone in the evening, "how is he doing this basho, what does he need, who is he"; on desktop, a look-up. Hop wrestler → stable → member and back.
-Constraints: content, behaviour, focus handling, URL push/replace and keyboard stepping unchanged; inherits the Sports Page world in DESIGN.md (square, three inks, flat print, three keyframes); controls ≥44px on a phone; works without profiles or stables files; works without a photo.
+Constraints: content, behaviour, focus handling, URL push/replace and keyboard stepping unchanged; inherits the Sports Page world in DESIGN.md (square, two plates and ink, flat print, three keyframes); controls ≥44px on a phone; works without profiles or stables files; works without a photo.
 Memorable moment: the champion's card — name under the highlighter, 優勝 stamped on the record bar.
 
 ## Direction contract

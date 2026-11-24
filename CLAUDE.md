@@ -87,8 +87,10 @@ and formats in `Asia/Tokyo`.
   text, contrast ≥ 4.5:1, focus visible. `eslint-plugin-jsx-a11y` is enabled.
 - Colours, spacing and motion come from the tokens in `src/styles/tokens.css` (with `base.css`
   and `a11y.css` alongside it); do not hand-type accent RGB values in component CSS.
-- **Three inks, three jobs** (the sports-page world in `DESIGN.md`): red (`--accent`) marks
-  rank and stamps, black (`--text`, `--bar`) marks selection and section bars, yellow
+- **Two plates, ink and a highlighter** (the sports-page world in `DESIGN.md`): red marks rank
+  and rises (`--accent` text; `--band` fill for the masthead and stamps), indigo marks falls and
+  structure (`--fall` text for ▼, make-koshi, lost bouts; `--bar` fill for section bars), black
+  (`--text`) marks selection, yellow
   (`--highlight`) is a screen under ink for what matters now — one highlight per screen. Rank
   is still carried by type size first. `src/styles/tokens.test.ts` enforces contrast on every
   pair, so adding a colour means adding it there too.
