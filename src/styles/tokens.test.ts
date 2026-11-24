@@ -51,6 +51,9 @@ const TEXT_PAIRS: Array<[string, string]> = [
   ['muted', 'card-bg'],
   ['accent', 'bg'],
   ['accent', 'card-bg'],
+  // Falls and losses: ▼ movement, make-koshi scores, lost bouts
+  ['fall', 'bg'],
+  ['fall', 'card-bg'],
   ['on-accent', 'accent'],
   ['danger', 'bg'],
   ['warning', 'bg'],

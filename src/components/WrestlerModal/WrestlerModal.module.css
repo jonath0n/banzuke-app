@@ -429,7 +429,7 @@
   padding-bottom: var(--space-3);
 }
 
-/* As the sheet heads a tier: ink ground, reversed caps, pinned under the
+/* As the sheet heads a tier: indigo ground, reversed caps, pinned under the
    toolbar while its section scrolls past */
 .bar {
   position: sticky;

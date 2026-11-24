@@ -184,7 +184,7 @@
   margin-top: var(--space-2);
 }
 
-/* As the sheet heads a tier: ink ground, reversed caps, pinned under the toolbar */
+/* As the sheet heads a tier: indigo ground, reversed caps, pinned under the toolbar */
 .bar {
   position: sticky;
   top: var(--toolbar-h);

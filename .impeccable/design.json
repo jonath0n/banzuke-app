@@ -145,18 +145,18 @@
         ]
       },
       "section-bar": {
-        "role": "neutral",
+        "role": "secondary",
         "displayName": "Section Bar",
-        "canonical": "oklch(17.8% 0.000 89.9)",
+        "canonical": "oklch(32.2% 0.111 269.7)",
         "tonalRamp": [
-          "#0b0b0b",
-          "#252525",
-          "#424242",
-          "#616161",
-          "#828282",
-          "#a5a5a5",
-          "#c9c9c9",
-          "#eeeeee"
+          "#04082b",
+          "#111b4d",
+          "#243473",
+          "#3d5092",
+          "#5b70b6",
+          "#7a91da",
+          "#a5b9f1",
+          "#dbe7ff"
         ]
       },
       "on-section-bar": {
@@ -172,6 +172,21 @@
           "#a5a5a5",
           "#c9c9c9",
           "#eeeeee"
+        ]
+      },
+      "fall": {
+        "role": "secondary",
+        "displayName": "Ai (Fall)",
+        "canonical": "oklch(42.2% 0.154 267.8)",
+        "tonalRamp": [
+          "#03062f",
+          "#0d1a53",
+          "#1d317f",
+          "#314ba9",
+          "#4d6dce",
+          "#7391e4",
+          "#a0b9f8",
+          "#d8e8ff"
         ]
       },
       "masthead-band": {
@@ -405,18 +420,18 @@
         ]
       },
       "night-section-bar": {
-        "role": "neutral",
+        "role": "secondary",
         "displayName": "Night Section Bar",
-        "canonical": "oklch(50.8% 0.011 106.8)",
+        "canonical": "oklch(38.7% 0.117 270.8)",
         "tonalRamp": [
-          "#0b0b0a",
-          "#252522",
-          "#42423e",
-          "#62625b",
-          "#83837c",
-          "#a5a5a0",
-          "#c9c9c6",
-          "#eeefec"
+          "#050928",
+          "#131c4a",
+          "#263472",
+          "#3e4f96",
+          "#5b6fb9",
+          "#7d91d6",
+          "#a8b9ed",
+          "#dce7ff"
         ]
       },
       "night-on-section-bar": {
@@ -432,6 +447,21 @@
           "#a5a5a3",
           "#c9c9c7",
           "#eeeeed"
+        ]
+      },
+      "night-fall": {
+        "role": "secondary",
+        "displayName": "Night Ai (Fall)",
+        "canonical": "oklch(73.9% 0.134 272.4)",
+        "tonalRamp": [
+          "#050136",
+          "#12115e",
+          "#262f7f",
+          "#3d4c9e",
+          "#5a6dc2",
+          "#7a8ee7",
+          "#a1b6ff",
+          "#d8e6ff"
         ]
       },
       "night-masthead-band": {
@@ -789,8 +819,8 @@
     ],
     "rules": [
       {
-        "name": "The Three Inks Rule",
-        "body": "Red ranks, black selects, yellow highlights. A colour never borrows another's job.",
+        "name": "The Two Plates Rule",
+        "body": "Red ranks and rises, indigo structures and falls, black selects, yellow highlights. Each plate has one job as a fill (red: masthead and stamps; indigo: section bars) and one as a letterform (red: rank and rises; indigo: falls and losses). A colour never borrows another's job, and no fifth hue joins them: data problems keep their own danger and warning.",
         "section": "colors"
       },
       {
@@ -825,7 +855,7 @@
       }
     ],
     "dos": [
-      "**Do** keep red for rank and stamps, black for selection, yellow for the highlighter (The Three Inks Rule).",
+      "**Do** keep red for rank, rises and stamps, indigo for section bars and falls, black for selection, yellow for the highlighter (The Two Plates Rule).",
       "**Do** fill with `--band` / `--on-band` and write with `--accent`.",
       "**Do** set names in Sofia Sans Condensed at ladder sizes and Japanese names and rank kanji in Noto Serif JP 700.",
       "**Do** draw controls square: 1.5px ink border, sheet face, ink fill when selected.",

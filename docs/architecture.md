@@ -182,7 +182,7 @@ whenever there is one, because the kadoban mark reads them too.
   score on the List, `Bouts` lists the day's card, selected by who is fighting
   (cross-division bouts are published on the Makuuchi card only). An absence counts as a loss
   for make-koshi. The yusho mark is a red stamp, and the champion's name carries the highlighter.
-  KACHI-KOSHI / MAKE-KOSHI captions are hidden on the List (weight and ink carry them); the
+  KACHI-KOSHI / MAKE-KOSHI captions are hidden on the List (weight and plate carry them: kachi-koshi red, make-koshi indigo); the
   word stays in the accessible name. The strip sets its marks in three groups of five and sizes
   itself to the cell (`cqi`), so fifteen days never push the List sideways.
 - Kimarite are stored as sumo-api romaji; `src/data/kimarite.ts` supplies the kanji. Before
