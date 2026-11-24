@@ -135,14 +135,17 @@ export function StableModal({
     >
       {heyaId != null && (
         <div className={styles.content}>
-          <button
-            className={styles.close}
-            onClick={onClose}
-            type="button"
-            aria-label={strings.closeStable}
-          >
-            <CloseIcon />
-          </button>
+          {/* Pinned while the roster scrolls: the way out never scrolls away */}
+          <div className={styles.toolbar}>
+            <button
+              className={styles.close}
+              onClick={onClose}
+              type="button"
+              aria-label={strings.closeStable}
+            >
+              <CloseIcon />
+            </button>
+          </div>
 
           <div className={styles.head}>
             <h2 id={nameId} ref={headingRef} tabIndex={-1} className={styles.name} lang={lang}>
@@ -165,7 +168,9 @@ export function StableModal({
           </div>
 
           <div className={styles.body}>
-            <h3 className={styles.membersTitle}>{strings.members}</h3>
+            <div className={styles.bar}>
+              <h3 className={styles.membersTitle}>{strings.members}</h3>
+            </div>
             {roster ? (
               <ol className={styles.members}>
                 {roster.members.map((rikishi) => (
