@@ -9,6 +9,7 @@ import { useLanguage } from '../../contexts/LanguageContext'
 import { useStrings } from '../../i18n/useStrings'
 import { langAttr } from '../../i18n/strings'
 import { useProfileState } from '../../hooks/useProfiles'
+import { useLingeringProps } from '../../hooks/useLingeringProps'
 import { ageOn, formatBirthDate, formatMeasure, formatYearMonth } from '../../utils/profile'
 import {
   boutMark,
@@ -56,18 +57,23 @@ interface WrestlerModalProps {
  * handles Escape. The element stays mounted so open/close transitions work;
  * its content renders only while a wrestler is selected.
  */
-export function WrestlerModal({
-  rikishi,
-  onClose,
-  record,
-  results,
-  rankById,
-  neighbours,
-  onStep,
-  onSelectStable,
-  kadoban = false,
-  champion = false,
-}: WrestlerModalProps) {
+export function WrestlerModal(props: WrestlerModalProps) {
+  // The file renders from `shown`, which holds the last wrestler through the
+  // close fade; opening and closing follow the live selection.
+  const live = props.rikishi
+  const [shown, release] = useLingeringProps(props, live != null)
+  const {
+    rikishi,
+    onClose,
+    record,
+    results,
+    rankById,
+    neighbours,
+    onStep,
+    onSelectStable,
+    kadoban = false,
+    champion = false,
+  } = shown
   const dialogRef = useRef<HTMLDialogElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
   const openerRef = useRef<Element | null>(null)
@@ -85,24 +91,36 @@ export function WrestlerModal({
   useEffect(() => {
     const dialog = dialogRef.current
     if (!dialog) return
-    if (rikishi) {
+    if (live) {
       if (!dialog.open) {
         openerRef.current = document.activeElement
-        openedIdRef.current = rikishi.id
+        openedIdRef.current = live.id
         handingOverRef.current = false
+        // A hop from the sibling dialog: its sheet has just gone, so the scrim
+        // is already down and must not fade in again (data-hop, in the CSS).
+        dialog.toggleAttribute(
+          'data-hop',
+          document.querySelector('dialog[open], dialog[data-handoff]') !== null
+        )
+        dialog.removeAttribute('data-handoff')
         dialog.showModal()
         // The name, not the first button: a reader hears who opened, then walks down.
         headingRef.current?.focus()
-      } else if (currentIdRef.current !== rikishi.id) {
+      } else if (currentIdRef.current !== live.id) {
         // Stepped to a neighbour while already open: move focus to the new name.
         headingRef.current?.focus()
       }
-      currentIdRef.current = rikishi.id
-    } else if (dialog.open) {
-      dialog.close()
+      currentIdRef.current = live.id
+    } else {
+      // Escape has already closed it natively; the close button and Back have not.
+      // Handing over to the sibling dialog: go at once (data-handoff), so the
+      // incoming sheet never rises over this one still fading.
+      dialog.toggleAttribute('data-handoff', handingOverRef.current)
+      if (dialog.open) dialog.close()
+      release(dialog)
     }
     setCopied(false)
-  }, [rikishi])
+  }, [live, release])
 
   // Fires for Escape, the close button and programmatic close alike.
   const handleClose = () => {

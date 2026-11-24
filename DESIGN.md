@@ -233,6 +233,8 @@ Dialogs under Components.
 - Flat print: only what floats over the page (dialogs, the scroll button) casts a shadow.
 - Four keyframe effects, entrance once per page load, nothing loops. The one authored moment is
   the 優勝 stamp, pressed like a hanko when the champion first appears.
+- Dialogs leave the way they came, faster: 200ms ease-in, a 12px drop and a fade, by
+  transition (not a fifth keyframe). A hop from one dialog to the other is a swap, not a close.
 
 ## Colors
 
