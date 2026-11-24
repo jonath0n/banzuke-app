@@ -1,21 +1,12 @@
 /* Global base styles: fonts, reset, page frame, shared keyframes, print. */
 
+/* Sofia Sans Condensed (SIL OFL 1.1, see public/assets/fonts/SofiaSansCondensed-OFL.txt):
+   variable weight, Latin subset — the sports-page voice for names, scores,
+   labels and the masthead. */
 @font-face {
-  font-family: 'FranSans Solid';
-  src: url('/assets/FranSans-Solid.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* Archivo (SIL OFL 1.1, see public/assets/fonts/Archivo-OFL.txt): variable
-   weight, Latin subset, for ring names and labels. The weight axis runs to
-   900 so the heaviest Latin names hold their own beside mincho kanji; the
-   width axis is left out because it costs 55 kB. */
-@font-face {
-  font-family: 'Archivo';
-  src: url('/assets/fonts/Archivo-latin.woff2') format('woff2');
-  font-weight: 100 900;
+  font-family: 'Sofia Sans Condensed';
+  src: url('/assets/fonts/SofiaSansCondensed-latin.woff2') format('woff2');
+  font-weight: 1 1000;
   font-style: normal;
   font-display: swap;
   unicode-range:
@@ -34,7 +25,7 @@
 
 /* The one fade, shared by the header and the list's arrival. CSS Modules scope
    keyframes per file, so the single declaration lives here and modules refer to
-   it as global(fadeIn). Four effects in all: fadeIn, riseIn, backdropIn, modalSlideUp. */
+   it as global(fadeIn). Three effects in use: fadeIn, riseIn, modalSlideUp. */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -77,27 +68,39 @@ html {
   scroll-behavior: smooth;
 }
 
+/* The page is full-bleed so the masthead band can run edge to edge; the
+   header, main and footer each hold their own measure. */
 body {
   background: var(--bg);
   color: var(--text);
   line-height: 1.5;
-  max-width: var(--sheet-max);
-  margin: 0 auto;
-  padding: var(--space-4) var(--space-5) var(--space-6);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   position: relative;
   min-height: 100vh;
+  font-variant-numeric: tabular-nums;
 }
 
-/* Paper grain: a still, faint fibre texture (no animation, no colour wash) */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.13 0 0 0 0 0.11 0 0 0 0 0.09 0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: -1;
+main,
+.page-measure {
+  /* Width, not padding, holds the measure, so rules drawn on these boxes
+     line up with their content */
+  width: min(100% - 2 * var(--space-5), var(--sheet-max));
+  margin-inline: auto;
+}
+
+@media (min-width: 1200px) {
+  main,
+  .page-measure {
+    width: min(100% - 2 * var(--space-6), var(--page-max));
+  }
+}
+
+@media (max-width: 600px) {
+  main,
+  .page-measure {
+    width: calc(100% - 2 * var(--space-3));
+  }
 }
 
 main {
@@ -105,8 +108,8 @@ main {
 }
 
 ::selection {
-  background: var(--accent);
-  color: var(--on-accent);
+  background: var(--highlight);
+  color: var(--on-highlight);
 }
 
 /* Lock page scroll while a modal dialog is open */
@@ -115,7 +118,7 @@ body:has(dialog[open]) {
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--text);
   outline-offset: 2px;
 }
 
@@ -130,18 +133,10 @@ body:has(dialog[open]) {
 
 ::-webkit-scrollbar-thumb {
   background: var(--border);
-  border-radius: var(--radius-sm);
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--muted);
-}
-
-@media (prefers-color-scheme: dark) {
-  body::before {
-    opacity: 0.5;
-    filter: invert(1);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -159,17 +154,15 @@ body:has(dialog[open]) {
   body {
     background: #ffffff;
     color: #000000;
-    max-width: none;
-    margin: 0;
-    padding: 0.5rem;
+  }
+
+  main,
+  .page-measure {
+    width: auto;
   }
 
   /* Controls that make no sense on paper (search, toggles, scroll button) */
   [data-print='hide'] {
     display: none !important;
-  }
-
-  body::before {
-    display: none;
   }
 }

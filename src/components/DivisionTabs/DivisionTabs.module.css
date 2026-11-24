@@ -1,97 +1,90 @@
-/* Paper tabs sitting on the top edge of the sheet. Each is drawn without
-   a bottom border: the panel beneath pulls up under them by the width of its
-   own frame (App's `.seated`), so that frame closes the unselected tabs, and
-   the selected one, painted above it, opens a notch in it and joins the paper. */
+/* Section tabs standing on the sheet's heavy top rule. The panel beneath pulls
+   up under them by the width of that rule (App's `.seated`), so the rule runs
+   along the foot of every tab and the selected one — filled in the same ink —
+   joins it. */
 .tabs {
   display: flex;
-  gap: var(--space-2);
-  margin: var(--space-4) 0 0;
-  padding: 0 var(--space-3);
+  gap: 2px;
+  margin: var(--space-5) 0 0;
 }
 
 .tab {
   display: inline-flex;
-  align-items: baseline;
   gap: var(--space-2);
-  min-height: 44px;
-  padding: var(--space-2) var(--space-4) calc(var(--space-2) + var(--space-2));
-  background: var(--bg);
-  color: var(--muted);
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 56px;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  padding: var(--space-2) var(--space-3) calc(var(--space-2) + 5px);
+  background: var(--card-bg);
+  color: var(--text);
   border: 1px solid var(--border);
   border-bottom: none;
-  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
   cursor: pointer;
   transition:
-    color var(--dur-base) ease,
-    background var(--dur-base) ease;
+    color var(--dur-fast) ease,
+    background var(--dur-fast) ease;
 }
 
 .tab:hover {
-  color: var(--text);
+  background: rgb(var(--ink-rgb) / 0.06);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+  position: relative;
+  z-index: 2;
 }
 
 .tab.selected {
   position: relative;
   z-index: 1;
-  background: var(--card-bg);
-  color: var(--text);
-  box-shadow: inset 0 3px 0 var(--accent);
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--on-ink);
 }
 
 .kanji {
   font-family: var(--font-jp-serif);
   font-weight: 700;
   font-size: var(--text-lg);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
 }
 
 .name,
 .abbr {
-  font-family: var(--font-body);
-  font-weight: var(--label-weight);
-  font-size: var(--text-sm);
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--text-lg);
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
 }
 
 .abbr {
   display: none;
-  text-transform: none;
-  letter-spacing: 0.04em;
 }
 
 .count {
-  font-family: var(--font-names);
-  font-weight: 600;
-  font-size: var(--text-xs);
-  letter-spacing: 0.06em;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-sm);
   color: var(--muted);
 }
 
 .tab.selected .count {
-  color: var(--accent);
+  color: var(--on-ink);
+  opacity: 0.75;
 }
 
 /* No matches in this division for the current search */
-.count.none,
-.tab.selected .count.none {
-  color: var(--muted);
-}
-
-/* Six tabs share the sheet's top edge, each an equal share of it. */
-.tab {
-  flex: 1 1 0;
-  min-width: 0;
-  justify-content: center;
-  white-space: nowrap;
+.count.none {
+  opacity: 0.6;
 }
 
 @media (max-width: 960px) {
-  .tabs {
-    gap: var(--space-1);
-    padding-inline: var(--space-2);
-  }
-
   .tab {
     padding-inline: var(--space-1);
   }
@@ -99,10 +92,6 @@
   .kanji {
     font-size: var(--text-md);
     letter-spacing: 0;
-  }
-
-  .name {
-    letter-spacing: 0.04em;
   }
 }
 
@@ -123,11 +112,16 @@
 
   .abbr {
     display: inline;
-    font-size: var(--text-md);
+    font-size: var(--text-lg);
+    text-transform: none;
   }
 }
 
 @media (max-width: 600px) {
+  .tabs {
+    margin-top: var(--space-4);
+  }
+
   /* At phone width the label alone carries the tab; the count stays in the
      search line. */
   .count {

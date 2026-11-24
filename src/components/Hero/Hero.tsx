@@ -61,10 +61,10 @@ function TournamentStatus({ data }: { data: Banzuke }) {
 const SEPARATOR = ' · '
 
 /**
- * The head of the sheet, not a title card above it: the wordmark and seal, the
- * tournament in a single line beneath, and the banzuke's own printed masthead
- * (令和八年九月場所, set vertically in mincho) as a spine down the right edge
- * of both.
+ * The front page: the paper's red masthead band (wordmark, 番付, the era
+ * masthead 令和八年九月場所, the language switch), then on newsprint the
+ * tournament in one line and, once it is decided, the champion as the
+ * headline with the 優勝 stamp.
  */
 export function Hero({ data, resultsFetchedAt = null, results = null, rankById }: HeroProps) {
   // "updated 3 minutes ago" keeps counting on an evening the tab stays open.
@@ -113,68 +113,88 @@ export function Hero({ data, resultsFetchedAt = null, results = null, rankById }
     provenance.push(checked ? `${strings.dataFrom}${comma}${label(checked)}` : strings.dataFrom)
   }
 
+  const headline = champion
+    ? strings.headlineYusho(champion, championRecord ? scoreLabel(championRecord, language) : '')
+    : ''
+  // The 優勝 stamp carries the word in Japanese; in English it echoes "Yusho:".
+  const headlineText = language === 'jp' ? headline.replace(/^優勝\s*/, '') : headline
+  // The record in brackets never breaks across lines: "(13–" / "2)" is not a headline
+  const [, headlineHead = headlineText, headlineRecord = ''] =
+    /^(.*?)([（(][^（(]*[）)])$/.exec(headlineText) ?? []
+
   return (
     <header className={styles.hero} lang={langAttr(language)}>
-      <div className={styles.titleRow}>
-        <div className={styles.title}>
-          <h1 lang={langAttr(language)}>{strings.appTitle}</h1>
-          <span className={styles.seal} lang="ja" aria-hidden="true">
-            番付
-          </span>
-        </div>
-        <div className={styles.toggle}>
-          <LanguageToggle language={language} onLanguageChange={setLanguage} />
-        </div>
-      </div>
-      {/* A spine down the right edge, beside the wordmark and the deck both,
-          rather than an item in the title row: eight characters stand taller
-          than the wordmark, and in the row they set its height and left the
-          wordmark floating halfway down. */}
-      {masthead && (
-        <span className={styles.masthead} lang="ja" aria-hidden="true">
-          {masthead}
-        </span>
-      )}
-
-      <p className={styles.deck}>
-        {data ? (
-          <>
-            <strong>{bashoName}</strong>
-            {nickname ? ` (${nickname})` : ''}
-            {venue ? `${SEPARATOR}${venue[language]}` : ''}
-            {dates ? `${SEPARATOR}${dates}` : ''}
-            <TournamentStatus data={data} />
-          </>
-        ) : (
-          '—'
-        )}
-      </p>
-
-      {champion && (
-        <p className={styles.headline}>
-          <span className={styles.champion}>
-            {strings.headlineYusho(
-              champion,
-              championRecord ? scoreLabel(championRecord, language) : ''
-            )}
-          </span>
-          {prizes.length > 0 && (
-            <span className={styles.prizes}>
-              {prizes.map(({ kind, names }) => (
-                <span key={kind} className={styles.prize}>
-                  <span className={styles.prizeName}>{strings.sansho[kind]}</span>{' '}
-                  {names.join(language === 'jp' ? '、' : ', ')}
-                </span>
-              ))}
+      {/* The masthead band: the paper's red, edge to edge */}
+      <div className={styles.band}>
+        <div className={`${styles.bandInner} page-measure`}>
+          <div className={styles.title}>
+            <h1 lang={langAttr(language)}>{strings.appTitle}</h1>
+            <span className={styles.seal} lang="ja" aria-hidden="true">
+              番付
+            </span>
+          </div>
+          {masthead && (
+            <span className={styles.masthead} lang="ja" aria-hidden="true">
+              {masthead}
             </span>
           )}
-          {juryoChampion && (
-            <span className={styles.juryo}>{strings.headlineJuryoYusho(juryoChampion)}</span>
+          <div className={styles.toggle}>
+            <LanguageToggle language={language} onLanguageChange={setLanguage} />
+          </div>
+        </div>
+      </div>
+
+      <div className={`${styles.front} page-measure`}>
+        <p className={styles.deck}>
+          {data ? (
+            <>
+              <span className={styles.name}>
+                <strong className={styles.bashoName}>{bashoName}</strong>
+                {nickname ? ` (${nickname})` : ''}
+              </span>
+              <span className={styles.where}>
+                {[venue?.[language], dates].filter(Boolean).join(SEPARATOR)}
+              </span>
+              <TournamentStatus data={data} />
+            </>
+          ) : (
+            '—'
           )}
         </p>
-      )}
 
-      {provenance.length > 0 && <p className={styles.provenance}>{provenance.join(SEPARATOR)}</p>}
+        {champion && (
+          <div className={styles.headline}>
+            <p className={styles.champion}>
+              <span
+                className={styles.stamp}
+                lang="ja"
+                aria-hidden={language === 'jp' ? undefined : true}
+              >
+                優勝
+              </span>
+              <span className={styles.championText}>
+                {headlineHead}
+                {headlineRecord && <span className={styles.record}>{headlineRecord}</span>}
+              </span>
+            </p>
+            {(prizes.length > 0 || juryoChampion) && (
+              <p className={styles.prizes}>
+                {prizes.map(({ kind, names }) => (
+                  <span key={kind} className={styles.prize}>
+                    <span className={styles.prizeName}>{strings.sansho[kind]}</span>{' '}
+                    {names.join(language === 'jp' ? '、' : ', ')}
+                  </span>
+                ))}
+                {juryoChampion && (
+                  <span className={styles.juryo}>{strings.headlineJuryoYusho(juryoChampion)}</span>
+                )}
+              </p>
+            )}
+          </div>
+        )}
+
+        {provenance.length > 0 && <p className={styles.provenance}>{provenance.join(SEPARATOR)}</p>}
+      </div>
     </header>
   )
 }

@@ -8,9 +8,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--card-bg);
-  color: var(--muted);
-  border: 1px solid var(--border);
+  background: var(--text);
+  color: var(--on-ink);
+  border: 1.5px solid var(--text);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-md);
   cursor: pointer;
@@ -28,12 +28,13 @@
 }
 
 .button:hover {
-  color: var(--accent);
-  border-color: var(--accent);
+  background: var(--band);
+  border-color: var(--band);
+  color: var(--on-band);
 }
 
 .button:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--text);
   outline-offset: 2px;
 }
 

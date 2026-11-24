@@ -261,14 +261,6 @@ function AppContent() {
         rankById={rankById}
       />
       <main id="main" tabIndex={-1} data-entered={entered || undefined}>
-        {banzuke && allRows.length > 0 && (
-          <SearchBar
-            value={query}
-            onChange={(value) => setSearchQuery(value || null)}
-            totalCount={allRows.length}
-            matchedCount={matchedCount}
-          />
-        )}
         {status === 'loading' && <BanzukeGridSkeleton />}
         {problemMessage && !data && (
           <div role="alert" className={`${styles.status} ${styles.error}`}>
@@ -280,33 +272,45 @@ function AppContent() {
             {problemMessage}
           </div>
         )}
-        {banzuke && (
-          <div className={styles.controls}>
-            {prevEntry && (
-              <ChangesToggle
-                on={diffOn}
-                onChange={(on) => setDiffParam(on === changesDefault ? null : on ? '1' : '0')}
-                sinceLabel={sinceLabel}
-              />
-            )}
-            {results.results && (
-              <ResultsToggle
-                on={resultsOn}
-                onChange={(on) => setResultsParam(on ? null : '0')}
-                day={results.results.day}
-              />
-            )}
-            {archiveIndex && archiveIndex.basho.length > 0 && (
-              <BashoPicker
-                current={archive.entry}
-                previous={archive.entry ? archive.previous : (archiveIndex.basho.at(-1) ?? null)}
-                next={archive.next}
-                nextIsLive={archive.nextIsLive}
-                onChange={handleChangeBasho}
-              />
-            )}
-          </div>
-        )}
+        {/* Search and the overlay switches as one toolbar: a single row on a
+            wide screen, stacked on a phone. */}
+        <div className={styles.toolbar}>
+          {banzuke && allRows.length > 0 && (
+            <SearchBar
+              value={query}
+              onChange={(value) => setSearchQuery(value || null)}
+              totalCount={allRows.length}
+              matchedCount={matchedCount}
+            />
+          )}
+          {banzuke && (
+            <div className={styles.controls}>
+              {prevEntry && (
+                <ChangesToggle
+                  on={diffOn}
+                  onChange={(on) => setDiffParam(on === changesDefault ? null : on ? '1' : '0')}
+                  sinceLabel={sinceLabel}
+                />
+              )}
+              {results.results && (
+                <ResultsToggle
+                  on={resultsOn}
+                  onChange={(on) => setResultsParam(on ? null : '0')}
+                  day={results.results.day}
+                />
+              )}
+              {archiveIndex && archiveIndex.basho.length > 0 && (
+                <BashoPicker
+                  current={archive.entry}
+                  previous={archive.entry ? archive.previous : (archiveIndex.basho.at(-1) ?? null)}
+                  next={archive.next}
+                  nextIsLive={archive.nextIsLive}
+                  onChange={handleChangeBasho}
+                />
+              )}
+            </div>
+          )}
+        </div>
         {/* In season, today's line: the day, the card so far, the leader, the freshness. */}
         {banzuke && file && !lowerTab && tournamentStatus?.kind === 'live' && (
           <TodayStrip
@@ -317,92 +321,100 @@ function AppContent() {
             totalDays={tournamentStatus.totalDays}
           />
         )}
-        {/* The tabs are cut as paper tabs — open along the bottom — so they
-            belong against the top edge of the list, not in the controls row
-            above it, where a wrap left them floating with that edge open. The
-            tablist also reads better immediately before the panel it labels. */}
-        {banzuke && showTabs && (
-          <DivisionTabs
-            value={division}
-            onChange={handleChangeDivision}
-            divisions={offered}
-            counts={counts}
-            matched={search.matchedByDivision}
-          />
-        )}
-        {banzuke && (
-          <ErrorBoundary>
-            <div
-              id={PANEL_ID}
-              className={showTabs ? styles.seated : undefined}
-              role={showTabs ? 'tabpanel' : undefined}
-              aria-labelledby={showTabs ? tabId(division) : undefined}
-              onPointerEnter={prefetchProfiles}
-              onFocus={prefetchProfiles}
-            >
-              {/* The division as a heading for readers walking the outline; the
+        {/* The tabs sit on the top edge of the list, not in the controls row
+            above it, and the tablist reads best immediately before the panel
+            it labels. Tabs and panel share a wrapper so that, beside a side
+            rail, the tabs keep the sheet's width. */}
+        <div className={styles.board}>
+          {banzuke && showTabs && (
+            <DivisionTabs
+              value={division}
+              onChange={handleChangeDivision}
+              divisions={offered}
+              counts={counts}
+              matched={search.matchedByDivision}
+            />
+          )}
+          {banzuke && (
+            <ErrorBoundary>
+              <div
+                id={PANEL_ID}
+                className={`${styles.panel} ${showTabs ? styles.seated : ''}`}
+                role={showTabs ? 'tabpanel' : undefined}
+                aria-labelledby={showTabs ? tabId(division) : undefined}
+                onPointerEnter={prefetchProfiles}
+                onFocus={prefetchProfiles}
+              >
+                {/* The division as a heading for readers walking the outline; the
                   tab already names it for the eye. */}
-              <h2 className="visually-hidden">{strings.division[division]}</h2>
-              {lowerMessage === 'loading' && (
-                <div role="status" className={styles.status}>
-                  {strings.lowerLoading}
-                </div>
-              )}
-              {lowerMessage === 'unavailable' && (
-                <div role="alert" className={`${styles.status} ${styles.warning}`}>
-                  {strings.lowerUnavailable}
-                </div>
-              )}
-              {lowerMessage === 'loading' && <BanzukeGridSkeleton />}
-              {!lowerMessage && (
-                <BanzukeGrid
-                  key={division}
-                  rows={allRows}
-                  highlight={highlight}
-                  movements={movements}
-                  kadoban={kadoban}
-                  records={overlayRecords}
-                  champions={champions}
-                  onSelectRikishi={handleSelectRikishi}
-                  onSelectStable={selection.onSelectStable}
-                  emptyReason={isFiltering ? 'no-matches' : 'no-data'}
-                  query={query}
-                  otherMatches={otherMatches}
-                  onClearSearch={handleClearSearch}
-                />
-              )}
-              {diffWanted && previous.status === 'loading' && (
-                <div role="status" className="visually-hidden">
-                  {strings.loading}
-                </div>
-              )}
-              {diffWanted && previous.status === 'unavailable' && (
-                <div role="status" className={`${styles.status} ${styles.warning}`}>
-                  {strings.changesUnavailable}
-                </div>
-              )}
-              {diffWanted && diff && !isFiltering && (
-                <Departed
-                  division={division}
-                  departures={diff.byDivision[division]}
-                  sinceLabel={sinceLabel}
-                  lowerLoaded={data != null && divisionsIn(data).some(isLowerDivision)}
-                  onSelectRikishi={handleSelectRikishi}
-                />
-              )}
-              {file && !isFiltering && !lowerTab && (
-                <Bouts
-                  results={file}
-                  division={division}
-                  rows={allRows}
-                  day={day}
-                  onChangeDay={setBoutsDay}
-                  onSelectRikishi={handleSelectRikishi}
-                />
-              )}
-            </div>
-          </ErrorBoundary>
-        )}
+                <h2 className="visually-hidden">{strings.division[division]}</h2>
+                {lowerMessage === 'loading' && (
+                  <div role="status" className={styles.status}>
+                    {strings.lowerLoading}
+                  </div>
+                )}
+                {lowerMessage === 'unavailable' && (
+                  <div role="alert" className={`${styles.status} ${styles.warning}`}>
+                    {strings.lowerUnavailable}
+                  </div>
+                )}
+                {lowerMessage === 'loading' && <BanzukeGridSkeleton />}
+                {!lowerMessage && (
+                  <BanzukeGrid
+                    key={division}
+                    rows={allRows}
+                    highlight={highlight}
+                    movements={movements}
+                    kadoban={kadoban}
+                    records={overlayRecords}
+                    champions={champions}
+                    onSelectRikishi={handleSelectRikishi}
+                    onSelectStable={selection.onSelectStable}
+                    emptyReason={isFiltering ? 'no-matches' : 'no-data'}
+                    query={query}
+                    otherMatches={otherMatches}
+                    onClearSearch={handleClearSearch}
+                  />
+                )}
+                {diffWanted && previous.status === 'loading' && (
+                  <div role="status" className="visually-hidden">
+                    {strings.loading}
+                  </div>
+                )}
+                {diffWanted && previous.status === 'unavailable' && (
+                  <div role="status" className={`${styles.status} ${styles.warning}`}>
+                    {strings.changesUnavailable}
+                  </div>
+                )}
+                {((diffWanted && diff && !isFiltering) || (file && !isFiltering && !lowerTab)) && (
+                  // Who left and the day's bouts: beside the sheet on a wide
+                  // screen, after it otherwise (App.module.css).
+                  <div className={styles.aside} data-aside="">
+                    {diffWanted && diff && !isFiltering && (
+                      <Departed
+                        division={division}
+                        departures={diff.byDivision[division]}
+                        sinceLabel={sinceLabel}
+                        lowerLoaded={data != null && divisionsIn(data).some(isLowerDivision)}
+                        onSelectRikishi={handleSelectRikishi}
+                      />
+                    )}
+                    {file && !isFiltering && !lowerTab && (
+                      <Bouts
+                        results={file}
+                        division={division}
+                        rows={allRows}
+                        day={day}
+                        onChangeDay={setBoutsDay}
+                        onSelectRikishi={handleSelectRikishi}
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
+            </ErrorBoundary>
+          )}
+        </div>
       </main>
       <Footer
         helpOpen={helpOpen}

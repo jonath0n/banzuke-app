@@ -28,8 +28,7 @@ describe('Footer', () => {
       'href',
       'https://www.sumo-api.com/'
     )
-    expect(screen.getByRole('link', { name: 'Emily Sneddon' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Omnibus-Type' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Lettersoup' })).toBeInTheDocument()
     expect(
       screen.getByText(new RegExp(`© ${new Date().getFullYear()} Jon Allen`))
     ).toBeInTheDocument()
@@ -41,8 +40,8 @@ describe('Footer', () => {
     renderFooter('jp')
     expect(screen.getByRole('link', { name: '日本相撲協会' })).toBeInTheDocument()
     expect(screen.getByText(/非公式のファンプロジェクト/)).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Emily Sneddon' }).parentElement).toHaveTextContent(
-      'Fran Sans（Emily Sneddon 作）'
+    expect(screen.getByRole('link', { name: 'Lettersoup' }).parentElement).toHaveTextContent(
+      'Sofia Sans Condensed（Lettersoup 作）'
     )
   })
 

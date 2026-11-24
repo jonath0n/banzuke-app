@@ -10,15 +10,82 @@
   margin-top: calc(-1 * var(--frame, 1px));
 }
 
-/* The overlay and archive controls. They read as one group, so they sit
-   together at the start of the row rather than spread across it; the division
-   tabs are not here — they belong against the list's top edge. */
+/* The overlay and archive controls: one row of square controls; the division
+   tabs are not here — they sit on the sheet's top edge. */
 .controls {
   display: flex;
-  align-items: flex-end;
-  gap: var(--space-3);
+  align-items: center;
+  gap: var(--space-2);
   flex-wrap: wrap;
-  margin-top: var(--space-4);
+  margin-top: var(--space-3);
+}
+
+@media (max-width: 600px) {
+  .controls {
+    gap: 6px;
+  }
+}
+
+/* Search beside the controls once there is room for both */
+@media (min-width: 900px) {
+  .toolbar {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .toolbar > :first-child {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .toolbar .controls {
+    flex-wrap: nowrap;
+    margin-top: var(--space-4);
+  }
+
+  /* Level with the search field */
+  .toolbar .controls > * {
+    min-height: 48px;
+  }
+}
+
+/* The panel: the sheet, and on a wide screen a side rail beside it for what
+   is not the ranking — who left, the day's bouts and the yusho race — so the
+   evening's answer is level with the top of the banzuke, not under 42 rows. */
+@media (min-width: 1200px) {
+  .panel:has(> [data-aside]) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--aside-width);
+    column-gap: var(--space-6);
+    align-items: start;
+  }
+
+  .panel:has(> [data-aside]) > * {
+    grid-column: 1;
+  }
+
+  .panel:has(> [data-aside]) > [data-aside] {
+    grid-column: 2;
+    grid-row: 1 / span 8;
+    position: sticky;
+    top: var(--space-4);
+    max-height: calc(100vh - 2 * var(--space-4));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  /* The tabs keep the sheet's width when a rail stands beside it */
+  .board:has([data-aside]) > [role='tablist'] {
+    margin-inline-end: calc(var(--aside-width) + var(--space-6));
+  }
+}
+
+/* Below the rail's width the side content follows the sheet */
+@media (max-width: 1199px) {
+  .aside {
+    margin-top: var(--space-6);
+  }
 }
 
 .status {
@@ -30,7 +97,6 @@
 .error {
   color: var(--danger);
   background: rgb(var(--danger-rgb) / 0.08);
-  border-radius: var(--radius);
   margin: var(--space-4) 0;
   padding: var(--space-4);
   border: 1px solid rgb(var(--danger-rgb) / 0.2);
@@ -39,7 +105,6 @@
 .warning {
   color: var(--warning);
   background: rgb(var(--warning-rgb) / 0.08);
-  border-radius: var(--radius);
   margin: var(--space-4) 0;
   padding: var(--space-3) var(--space-4);
   font-size: var(--text-base);

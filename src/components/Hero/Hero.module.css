@@ -1,152 +1,211 @@
+/* The front page: a red masthead band, then the tournament on newsprint. */
 .hero {
-  padding: var(--space-4) 0;
-  margin-bottom: var(--space-2);
-  position: relative;
   animation: global(fadeIn) var(--dur-slow) var(--ease-out-expo);
 }
 
-/* Wordmark and seal on the left, the language toggle at the right. */
-.titleRow {
+/* The masthead band runs edge to edge; its contents keep the page measure. */
+.band {
+  background: var(--band);
+  color: var(--on-band);
+  /* A masthead's heavy rule */
+  border-bottom: 6px solid var(--band-rule);
+}
+
+.bandInner {
   display: flex;
   align-items: center;
   gap: var(--space-4);
-  flex-wrap: wrap;
+  min-height: 7rem;
+  padding-block: var(--space-3);
 }
 
 .title {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
   gap: var(--space-3);
   min-width: 0;
 }
 
-.toggle {
-  margin-inline-start: auto;
-}
-
 .hero h1 {
   margin: 0;
-  font-family: var(--font-wordmark);
-  font-weight: 400;
+  font-family: var(--font-display);
+  font-weight: 900;
   font-size: var(--text-display);
-  letter-spacing: 0.01em;
-  line-height: 1.05;
-  color: var(--text);
+  line-height: 0.88;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: var(--on-band);
+  white-space: nowrap;
 }
 
-/* The 番付 seal beside the wordmark */
+.hero h1:lang(ja) {
+  font-family: var(--font-jp-serif);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+/* 番付, reversed out of the band: a white box with red characters */
 .seal {
+  flex-shrink: 0;
   display: inline-grid;
   place-items: center;
-  padding: 0.2rem 0.35rem;
+  padding: 0.25rem 0.35rem;
   font-family: var(--font-jp-serif);
-  font-size: var(--text-md);
+  font-size: var(--text-xl);
   font-weight: 700;
   line-height: 1;
-  letter-spacing: 0.1em;
-  color: var(--on-accent);
-  background: var(--accent);
-  border-radius: var(--radius-sm);
-  box-shadow:
-    inset 0 0 0 1.5px var(--on-accent),
-    inset 0 0 0 2.5px var(--accent);
+  letter-spacing: 0.08em;
+  color: var(--band);
+  background: var(--on-band);
 }
 
-/* 令和八年九月場所, set the way the sheet prints it: one narrow column of
-   characters, read top to bottom. The stacked-character technique (a 1em
-   column plus CJK line breaking) is used rather than writing-mode, because
-   it needs no vertical font metrics — the same call RankRow makes.
-   The column is taller than the wordmark, so it stands in a grid column of
-   its own beside the title row, the deck and the provenance, top-aligned
-   with the wordmark, and sets no row's height. */
+/* 令和八年十一月場所: the era masthead, set small in the band */
 .masthead {
-  grid-column: 2;
-  grid-row: 1 / span 3;
-  align-self: start;
-  /* The width is the character column itself, so the padding and the two
-     rules sit outside it — under the global border-box reset they would eat
-     into it instead, leaving 6.8px for a 16px glyph, which then hangs off
-     the right rule (an overflowing line box starts at the line's start edge;
-     text-align has no leftover space to centre). */
-  box-sizing: content-box;
-  width: 1.15em;
   font-family: var(--font-jp-serif);
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
   font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: 0;
-  text-align: center;
-  word-break: break-all;
-  color: var(--muted);
-  border-inline: 1px solid var(--rule);
-  padding: var(--space-2) 0.3rem;
+  letter-spacing: 0.12em;
+  color: var(--on-band);
+  white-space: nowrap;
+  padding-inline-start: var(--space-4);
+  border-inline-start: 1px solid rgb(255 255 255 / 0.45);
 }
 
-/* Tournament, venue, dates and status as one line */
+.toggle {
+  margin-inline-start: auto;
+  flex-shrink: 0;
+}
+
+/* Below the band, on newsprint */
+.front {
+  padding-top: var(--space-4);
+}
+
+/* Tournament · venue · dates, then the status */
 .deck {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
-  gap: var(--space-2) var(--space-3);
-  margin: var(--space-4) 0 0;
-  padding-top: var(--space-3);
-  border-top: 1px solid var(--rule);
-  font-size: var(--text-lg);
+  gap: var(--space-1) var(--space-3);
+  margin: 0;
+  font-size: var(--text-md);
   line-height: 1.3;
-  overflow-wrap: anywhere;
-}
-
-.deck strong {
-  font-weight: 600;
-}
-
-/* Status is ink on paper; nothing here blinks */
-.statusBadge {
-  display: inline-flex;
-  align-items: center;
-  font-family: var(--font-names);
-  font-weight: var(--label-weight);
-  font-size: var(--text-xs);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
-  padding: 0.3rem 0.6rem;
-  border: 1px solid var(--rule);
-  border-radius: var(--radius-sm);
   color: var(--text);
-  background: var(--card-bg);
-  white-space: nowrap;
 }
 
-.statusBadge[data-status='live'] {
-  border-color: rgb(var(--accent-rgb) / 0.5);
+.bashoName {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--text-lg);
+  letter-spacing: 0.01em;
 }
 
-.statusBadge[data-status='completed'] {
+.bashoName:lang(ja) {
+  font-family: var(--font-jp-serif);
+  font-weight: 700;
+}
+
+.name {
+  color: var(--text);
+}
+
+.where {
   color: var(--muted);
 }
 
-/* Announcement, source and freshness */
-/* The champion's line: the record a finished basho is remembered by */
+/* Status: ink on paper, nothing blinks. Live gets the band's red. */
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-display);
+  font-weight: var(--label-weight);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  line-height: 1;
+  padding: 0.3rem 0.5rem;
+  color: var(--on-ink);
+  background: var(--text);
+  white-space: nowrap;
+}
+
+.statusBadge:lang(ja) {
+  font-family: var(--font-jp-serif);
+  text-transform: none;
+}
+
+.statusBadge[data-status='live'] {
+  background: var(--band);
+  color: var(--on-band);
+}
+
+.statusBadge[data-status='upcoming'] {
+  color: var(--text);
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--text);
+}
+
+/* The champion: the one headline on the page */
 .headline {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--space-1) var(--space-4);
-  margin: var(--space-2) 0 0;
-  font-size: var(--text-base);
-  line-height: 1.4;
+  margin-top: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 6px solid var(--text);
 }
 
 .champion {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin: 0;
+}
+
+/* 優勝, stamped in the paper's red */
+.stamp {
+  flex-shrink: 0;
+  display: inline-grid;
+  place-items: center;
+  align-self: stretch;
+  display: inline-grid;
+  place-items: center;
+  padding: 0.3em 0.35em;
+  font-family: var(--font-jp-serif);
+  font-size: clamp(var(--text-lg), 3.3vw, var(--text-3xl));
   font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: var(--on-band);
+  background: var(--band);
+}
+
+.championText {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--text-headline);
+  line-height: 0.86;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
   color: var(--text);
 }
 
+.record {
+  /* Inherit the headline's face; the global :lang(ja) gothic would take it */
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.championText:lang(ja),
+.hero:lang(ja) .championText {
+  font-family: var(--font-jp-serif);
+  font-weight: 700;
+}
+
 .prizes {
-  display: inline-flex;
+  display: flex;
   flex-wrap: wrap;
-  gap: var(--space-1) var(--space-3);
+  gap: var(--space-1) var(--space-4);
+  margin: var(--space-2) 0 0;
+  font-size: var(--text-sm);
+  line-height: 1.4;
   color: var(--text);
 }
 
@@ -155,8 +214,17 @@
 }
 
 .prizeName {
+  font-family: var(--font-display);
   font-weight: var(--label-weight);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
   color: var(--muted);
+}
+
+.prizeName:lang(ja),
+.hero:lang(ja) .prizeName {
+  font-family: var(--font-jp);
+  text-transform: none;
 }
 
 .juryo {
@@ -164,54 +232,61 @@
 }
 
 .provenance {
-  margin: var(--space-2) 0 0;
-  font-size: var(--text-sm);
+  margin: var(--space-3) 0 0;
+  font-size: var(--text-xs);
+  line-height: 1.5;
   color: var(--muted);
 }
 
-@media (min-width: 601px) {
-  .hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    column-gap: var(--space-4);
-  }
-
-  .titleRow,
-  .deck,
-  .provenance {
-    grid-column: 1;
+/* The era masthead needs the room of a wide band */
+@media (max-width: 900px) {
+  .masthead {
+    display: none;
   }
 }
 
-/* On a phone the wordmark takes its own line and the seal drops beneath it,
-   with the language toggle on the next. */
 @media (max-width: 600px) {
-  .titleRow {
-    gap: var(--space-3);
+  .band {
+    border-bottom-width: 4px;
+  }
+
+  .bandInner {
+    min-height: 3.5rem;
+    padding-block: var(--space-2);
+    gap: var(--space-2);
   }
 
   .title {
-    flex-basis: 100%;
     gap: var(--space-2);
   }
 
   .hero h1 {
-    flex-basis: 100%;
+    font-size: var(--text-xl);
   }
 
-  /* The masthead costs a screen-height of column on a phone and repeats what
-     the deck says on the next line, so it stays on wider sheets. */
-  .masthead {
-    display: none;
+  .seal {
+    font-size: var(--text-xs);
+    padding: 0.15rem 0.2rem;
+  }
+
+  .headline {
+    border-top-width: 4px;
+    padding-top: var(--space-3);
+  }
+
+  .champion {
+    gap: var(--space-3);
+  }
+
+  .front {
+    padding-top: var(--space-3);
   }
 
   .deck {
-    font-size: var(--text-md);
+    font-size: var(--text-sm);
   }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  .hero {
-    animation: none;
+  .bashoName {
+    font-size: var(--text-md);
   }
 }

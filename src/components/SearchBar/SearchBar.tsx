@@ -40,7 +40,7 @@ export function SearchBar({ value, onChange, totalCount, matchedCount }: SearchB
           aria-hidden="true"
         >
           <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
-          <path d="M16 16l4.5 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          <path d="M16 16l4.5 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="square" />
         </svg>
         <input
           ref={inputRef}

@@ -64,7 +64,7 @@ export function Footer({
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className={styles.footer}>
+    <footer className={`${styles.footer} page-measure`}>
       <p className={styles.line}>
         <span className={styles.credit}>
           {strings.footerMadeBy}
@@ -89,17 +89,10 @@ export function Footer({
           {strings.footerType}
           {gap}
           <FontCredit
-            name="Fran Sans"
-            className={styles.franSans}
-            author="Emily Sneddon"
-            href="https://emilysneddon.com"
-          />
-          {comma}
-          <FontCredit
-            name="Archivo"
-            className={styles.archivo}
-            author="Omnibus-Type"
-            href="https://github.com/Omnibus-Type/Archivo"
+            name="Sofia Sans Condensed"
+            className={styles.sofia}
+            author="Lettersoup"
+            href="https://github.com/lettersoup/Sofia-Sans"
           />
         </span>
       </p>

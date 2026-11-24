@@ -1,4 +1,5 @@
-import type { MouseEvent } from 'react'
+import type { MouseEvent, ReactNode } from 'react'
+import { ChevronIcon } from '../ChevronIcon/ChevronIcon'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { useStrings } from '../../i18n/useStrings'
 import { langAttr } from '../../i18n/strings'
@@ -34,7 +35,7 @@ export function BashoPicker({ current, previous, next, nextIsLive, onChange }: B
     else url.searchParams.set('basho', String(id))
     return `${url.pathname}${url.search}${url.hash}`
   }
-  const link = (id: number | null, label: string, title: string, className: string) => (
+  const link = (id: number | null, label: ReactNode, title: string, className: string) => (
     <a
       className={className}
       href={href(id)}
@@ -54,13 +55,13 @@ export function BashoPicker({ current, previous, next, nextIsLive, onChange }: B
       {previous ? (
         link(
           previous.bashoId,
-          '‹',
+          <ChevronIcon direction="previous" />,
           `${strings.archivePrevious}: ${bashoLabel(previous, language)}`,
           styles.step
         )
       ) : (
         <span className={`${styles.step} ${styles.disabled}`} aria-hidden="true">
-          ‹
+          <ChevronIcon direction="previous" />
         </span>
       )}
       <span className={styles.label}>
@@ -68,11 +69,11 @@ export function BashoPicker({ current, previous, next, nextIsLive, onChange }: B
       </span>
       {current &&
         (nextIsLive
-          ? link(null, '›', strings.archiveCurrent, styles.step)
+          ? link(null, <ChevronIcon direction="next" />, strings.archiveCurrent, styles.step)
           : next
             ? link(
                 next.bashoId,
-                '›',
+                <ChevronIcon direction="next" />,
                 `${strings.archiveNext}: ${bashoLabel(next, language)}`,
                 styles.step
               )

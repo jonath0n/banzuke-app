@@ -1,3 +1,4 @@
+import { ExternalIcon } from '../ExternalIcon/ExternalIcon'
 import { useId } from 'react'
 import type { Division, Rikishi } from '../../types/banzuke'
 import { useLanguage } from '../../contexts/LanguageContext'
@@ -110,7 +111,7 @@ export function Departed({
                   <span className={styles.shikona}>{name(d)}</span>
                   <span className={styles.rank}>{strings.departedWas(wasRank(d))}</span>
                   <span className={styles.external} aria-hidden="true">
-                    ↗
+                    <ExternalIcon />
                   </span>
                 </a>
               </li>

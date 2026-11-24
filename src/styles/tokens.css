@@ -3,37 +3,48 @@
  * component should come from here. Component stylesheets must not hand-type
  * accent RGB values: use `rgb(var(--accent-rgb) / 0.2)` for tints.
  *
- * Identity: a banzuke is sumi ink on kinari (unbleached) paper with a
- * vermilion seal. Light mode is paper; dark mode is ink on aged indigo.
- * Rank hierarchy is expressed by type size, not by hue.
- *
- * The palette is six values plus one rank hue. If a new colour seems needed,
- * the answer is almost always a size or a rule instead.
+ * Identity: the banzuke set as a Japanese sports daily's results page.
+ * Newsprint under a white sheet, ink, the paper's kin-aka red, and a yellow
+ * highlighter screened over what matters now. Three inks, three jobs:
+ *   red (--accent)      ranks and stamps — sanyaku, the Yokozuna, promotions, 優勝
+ *   black (--text)      selection — the chosen tab, a pressed toggle, section bars
+ *   yellow (--highlight) a screen under ink — the champion, a search match
+ * Rank hierarchy is still carried by type size first.
  */
 :root {
   color-scheme: light dark;
 
   /* Colour --------------------------------------------------------------- */
-  --bg: #f3ede2;
-  --card-bg: #faf6ee;
-  --text: #221c18;
-  --muted: #5f574f;
-  --border: #d9d0c0;
-  /* Hairline rules between ranks on the sheet */
-  --rule: rgba(34, 28, 24, 0.14);
-  /* Vermilion (shu), the seal colour */
-  --accent: #b3301f;
-  --accent-hover: #8f2617;
-  --accent-rgb: 179 48 31;
+  /* Newsprint: the page ground */
+  --bg: #e9e9e4;
+  /* The sheet: the table, dialogs, inputs */
+  --card-bg: #ffffff;
+  --text: #111111;
+  --muted: #55554f;
+  --border: #c9c9c2;
+  /* Hairlines between rows */
+  --rule: rgba(17, 17, 17, 0.13);
+  /* Kin-aka, the paper's red */
+  --accent: #d10010;
+  --accent-hover: #a3000c;
+  --accent-rgb: 209 0 16;
   --on-accent: #ffffff;
-  /* Ink tint for tier headings and hover states */
-  --ink-rgb: 34 28 24;
+  /* Ink tint for hover and quiet fills */
+  --ink-rgb: 17 17 17;
+  /* Inverse: white text on the black section bars and selected controls */
+  --on-ink: #ffffff;
+  /* Section bars over tiers and side-rail boxes: ink by day, a raised dark
+     sheet by night (a white bar is glare on a phone in the evening) */
+  --bar: #111111;
+  --on-bar: #ffffff;
+  /* The masthead band, closed by an ink rule */
+  --band: #d10010;
+  --on-band: #ffffff;
+  --band-rule: #111111;
 
-  /* The one rank hue. Yokozuna only, as an edge — never a fill behind small
-     text. Every other rank is told apart by size, which is the whole thesis.
-     Deep ochre rather than bright kin: the old #c9a227 was 2.2:1 on paper and
-     did not actually read as a rule. */
-  --gold: #9a7615;
+  /* The highlighter (網掛け): a screen laid under ink, never a text colour */
+  --highlight: #ffe34d;
+  --on-highlight: #111111;
 
   /* Problem colours for data warnings (AA on --bg at small sizes). The -rgb
      triplets are the same colours, for tints; tokens.test.ts keeps them in step. */
@@ -43,12 +54,12 @@
   --warning-rgb: 160 74 8;
 
   /* Typography ----------------------------------------------------------- */
-  /* The wordmark only: FranSans is a poster face whose M and A blur at text sizes */
-  --font-wordmark: 'FranSans Solid', 'Archivo', system-ui, sans-serif;
-  /* Names voice: ring names, rank badges, tabs, chips (self-hosted, OFL).
-     Variable to 900. */
-  --font-names: 'Archivo', 'Segoe UI', system-ui, -apple-system, sans-serif;
-  /* Reading text and every small label: hero facts, search, modal details, footer */
+  /* The sports-page voice: masthead, names, scores, labels, controls.
+     Condensed so a name can be set larger on a phone than a regular face
+     allows. Self-hosted, OFL, variable to 1000. */
+  --font-display: 'Sofia Sans Condensed', 'Arial Narrow', 'Roboto Condensed', sans-serif;
+  --font-names: var(--font-display);
+  /* Reading text: dates, provenance, help */
   --font-body:
     system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
     'Hiragino Sans', 'Yu Gothic', 'Noto Sans JP', sans-serif;
@@ -56,33 +67,34 @@
   --font-jp:
     'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'YuGothic', 'Meiryo', 'Noto Sans JP',
     'Noto Sans CJK JP', system-ui, sans-serif;
-  /* Japanese mincho for ring names and rank kanji, the calligraphic voice.
-     The self-hosted subset (base.css) leads, so Windows and Android — which
-     usually ship no mincho at all — render the names the way macOS does. */
+  /* Japanese mincho for ring names and rank kanji, as a paper sets names in
+     its body face. The self-hosted subset (base.css) leads. */
   --font-jp-serif:
     'Noto Serif JP', 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', 'YuMincho',
     'Noto Serif CJK JP', 'MS PMincho', serif;
-  /* The smallest text on the page: the province band, the strip under a name. */
-  --text-2xs: 0.6rem;
-  --text-xs: 0.65rem;
-  --text-sm: 0.75rem;
-  --text-base: 0.875rem;
+  /* The type ladder. Nothing a reader taps is set below --text-xs (12px). */
+  --text-2xs: 0.7rem;
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.9375rem;
   --text-md: 1rem;
-  --text-lg: 1.15rem;
+  --text-lg: 1.2rem;
+  --text-xl: 1.45rem;
   --text-2xl: 1.75rem;
-  --text-display: clamp(1.9rem, 5.5vw, 2.6rem);
-  --tracking-caps: 0.08em;
-  /* Small caps labels (dt, tier labels, counts): body face, never the display faces */
-  --label-weight: 600;
+  --text-3xl: 2.25rem;
+  --text-display: clamp(1.6rem, 5vw, 4rem);
+  --text-headline: clamp(2.4rem, 7.5vw, 6rem);
+  --tracking-caps: 0.04em;
+  /* Condensed caps labels: weight, not tracking, makes them legible */
+  --label-weight: 700;
 
-  /* Rank name sizes: the size ladder carries the hierarchy, so it has to be
-     wide enough to read as a ladder — a shade over 2x top to bottom. The
-     clamps hold that ratio on a phone instead of flattening it. */
-  --name-yokozuna: clamp(1.5rem, 5.5vw, 2.1rem);
-  --name-ozeki: clamp(1.3rem, 4.6vw, 1.75rem);
-  --name-sekiwake: clamp(1.15rem, 4vw, 1.45rem);
-  --name-komusubi: clamp(1.1rem, 3.6vw, 1.3rem);
-  --name-maegashira: clamp(0.95rem, 3vw, 1.05rem);
+  /* Rank name sizes: the size ladder carries the hierarchy, about 2.2x top to
+     bottom. The condensed face lets the phone ladder stay large. */
+  --name-yokozuna: clamp(1.75rem, 6.5vw, 3.4rem);
+  --name-ozeki: clamp(1.5rem, 5.2vw, 2.6rem);
+  --name-sekiwake: clamp(1.3rem, 4.5vw, 2.05rem);
+  --name-komusubi: clamp(1.2rem, 4vw, 1.75rem);
+  --name-maegashira: clamp(1.05rem, 3.4vw, 1.3rem);
 
   /* Spacing (4px base) --------------------------------------------------- */
   --space-1: 0.25rem;
@@ -95,33 +107,34 @@
 
   /* Layout --------------------------------------------------------------- */
   --sheet-max: 840px;
+  /* With the side rail (bouts, yusho race) beside the sheet */
+  --page-max: 1240px;
+  --aside-width: 360px;
   /* The rank rail is one fixed width for every row, so the rules line up down
      the list; it has to hold the longest label it is asked to set. The short
      form (前頭十七, 前頭筆頭) measures 4 characters, the full printed one
      (前頭十七枚目) six, so the rail steps up with the label the row shows. */
   --rail-width: 5.5rem;
 
-  /* Radii: seals and sheets are square-cornered. Nothing here is round. */
-  --radius-sm: 2px;
-  --radius: 4px;
+  /* Radii: print is square. The tokens stay so a component can name them. */
+  --radius-sm: 0;
+  --radius: 0;
 
   /* Motion --------------------------------------------------------------- */
-  --dur-fast: 150ms;
-  --dur-base: 250ms;
-  --dur-slow: 400ms;
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 360ms;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* Layers --------------------------------------------------------------- */
   --z-sticky: 10;
   --z-fab: 100;
   --z-skip-link: 1100;
 
-  /* Shadows: paper lies flat; keep them faint ---------------------------- */
-  --shadow-sm: 0 1px 2px rgba(34, 28, 24, 0.06);
-  --shadow-md: 0 2px 8px rgba(34, 28, 24, 0.08), 0 1px 2px rgba(34, 28, 24, 0.06);
-  --shadow-lg: 0 12px 32px rgba(34, 28, 24, 0.18), 0 2px 6px rgba(34, 28, 24, 0.08);
-  --shadow-glow: 0 0 0 3px rgb(var(--accent-rgb) / 0.15);
+  /* Shadows: print is flat; only what floats over the page casts one ------ */
+  --shadow-sm: none;
+  --shadow-md: 0 4px 14px rgba(17, 17, 17, 0.16);
+  --shadow-lg: 0 18px 48px rgba(17, 17, 17, 0.28), 0 3px 8px rgba(17, 17, 17, 0.12);
 }
 
 /* Wide enough for the full printed rank, which RankRow swaps in at this width */
@@ -131,50 +144,47 @@
   }
 }
 
-@media (min-width: 1024px) {
-  :root {
-    --sheet-max: 960px;
-  }
-}
-
-/* A phone row gives each name about 130px. The ladder keeps its order but
-   steps down so the longest names on the sheet (Wakatakakage, Kotozakura)
-   fit on one line; 1.5 → 0.85 is still a ladder of near 2x. */
+/* A phone row gives each name about 140px. The condensed face keeps the
+   longest names (Wakatakakage, Kotozakura) on one line at these sizes. */
 @media (max-width: 600px) {
   :root {
-    --name-yokozuna: 1.5rem;
-    --name-ozeki: 1.25rem;
-    --name-sekiwake: 1.05rem;
-    --name-komusubi: 0.95rem;
-    --name-maegashira: 0.85rem;
+    --name-yokozuna: 1.75rem;
+    --name-ozeki: 1.45rem;
+    --name-sekiwake: 1.25rem;
+    --name-komusubi: 1.15rem;
+    --name-maegashira: 1.05rem;
   }
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #15181d;
-    --card-bg: #1c2027;
-    --text: #ece6da;
-    --muted: #a9a297;
-    --border: #343a44;
-    --rule: rgba(236, 230, 218, 0.12);
-    --accent: #e8664f;
-    --accent-hover: #f08470;
-    --accent-rgb: 232 102 79;
-    /* The dark accent is light enough that ink reads better on it */
-    --on-accent: #15181d;
-    --ink-rgb: 236 230 218;
+    --bg: #0f0f0f;
+    --card-bg: #181818;
+    --text: #f2f2ee;
+    --muted: #a3a39b;
+    --border: #3a3a35;
+    --rule: rgba(242, 242, 238, 0.12);
+    --accent: #ff4a4f;
+    --accent-hover: #ff7276;
+    --accent-rgb: 255 74 79;
+    --on-accent: #0f0f0f;
+    --ink-rgb: 242 242 238;
+    --on-ink: #0f0f0f;
+    --bar: #66665f;
+    --on-bar: #f2f2ee;
+    --band: #a3000c;
+    --on-band: #ffffff;
+    --band-rule: #5c0007;
 
-    --gold: #e8c547;
+    --highlight: #524600;
+    --on-highlight: #ffffff;
 
     --danger: #fca5a5;
     --danger-rgb: 252 165 165;
     --warning: #fcd34d;
     --warning-rgb: 252 211 77;
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.35);
-    --shadow-glow: 0 0 0 3px rgb(var(--accent-rgb) / 0.25);
+    --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.7), 0 3px 8px rgba(0, 0, 0, 0.4);
   }
 }

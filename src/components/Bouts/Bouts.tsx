@@ -1,3 +1,4 @@
+import { ChevronIcon } from '../ChevronIcon/ChevronIcon'
 import { useId } from 'react'
 import type { Division, Rikishi } from '../../types/banzuke'
 import { useLanguage } from '../../contexts/LanguageContext'
@@ -80,14 +81,25 @@ export function Bouts({ results, division, rows, day, onChangeDay, onSelectRikis
   }
 
   const matchRow = (m: Match) => (
-    <li key={`${m.division}-${m.matchNo}`} className={styles.match}>
-      <span className={styles.east}>
+    <li
+      key={`${m.division}-${m.matchNo}`}
+      className={styles.match}
+      data-decided={m.winnerId !== null || undefined}
+    >
+      {/* data-won drives the ○/● marks beside each name (CSS, decorative) */}
+      <span
+        className={styles.east}
+        data-won={(m.winnerId !== null && m.winnerId === m.east.id) || undefined}
+      >
         {fighter(m.east, m.winnerId !== null && m.winnerId === m.east.id)}
       </span>
       <span className={styles.result} title={kimariteGloss(m.kimarite) ?? undefined}>
         {m.winnerId === null ? strings.undecided : kimariteLabel(m.kimarite, language)}
       </span>
-      <span className={styles.west}>
+      <span
+        className={styles.west}
+        data-won={(m.winnerId !== null && m.winnerId === m.west.id) || undefined}
+      >
         {fighter(m.west, m.winnerId !== null && m.winnerId === m.west.id)}
       </span>
     </li>
@@ -103,7 +115,7 @@ export function Bouts({ results, division, rows, day, onChangeDay, onSelectRikis
           disabled={day <= 1}
           aria-label={strings.previousDay}
         >
-          ‹
+          <ChevronIcon direction="previous" />
         </button>
         <h2 id={headingId} className={styles.heading} aria-live="polite">
           {strings.dayName(day, MAX_DAYS)}
@@ -115,19 +127,13 @@ export function Bouts({ results, division, rows, day, onChangeDay, onSelectRikis
           disabled={day >= last}
           aria-label={strings.nextDay}
         >
-          ›
+          <ChevronIcon direction="next" />
         </button>
       </div>
       {race && (
         <YushoRace race={race} records={results.records} onSelectRikishi={onSelectRikishi} />
       )}
-      {matches.length === 0 ? (
-        <p className={styles.none}>{strings.boutsNone}</p>
-      ) : (
-        <ol className={styles.list} role="list">
-          {matches.map(matchRow)}
-        </ol>
-      )}
+      {/* The playoff decided the yusho: it leads, ahead of the day's card */}
       {playoff.length > 0 && (
         <section className={styles.playoff} aria-labelledby={playoffHeadingId}>
           <h3 id={playoffHeadingId} className={styles.playoffHeading}>
@@ -138,6 +144,13 @@ export function Bouts({ results, division, rows, day, onChangeDay, onSelectRikis
             {playoff.map(matchRow)}
           </ol>
         </section>
+      )}
+      {matches.length === 0 ? (
+        <p className={styles.none}>{strings.boutsNone}</p>
+      ) : (
+        <ol className={styles.list} role="list">
+          {matches.map(matchRow)}
+        </ol>
       )}
     </section>
   )

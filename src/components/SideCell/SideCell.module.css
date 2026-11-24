@@ -15,6 +15,8 @@
   align-items: stretch;
   min-width: 0;
   width: 100%;
+  /* The star chart sizes itself to the cell (Hoshitori.module.css) */
+  container-type: inline-size;
 }
 
 .cell[data-side='east'] {
@@ -46,7 +48,7 @@
 }
 
 .wrestler:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--text);
   outline-offset: 0;
 }
 
@@ -62,26 +64,45 @@
   font-weight: 700;
   line-height: 1;
   color: var(--muted);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
   transition:
     color var(--dur-fast) ease,
+    background var(--dur-fast) ease,
     border-color var(--dur-fast) ease;
 }
 
 .wrestler:hover .side-seal {
-  color: var(--accent);
-  border-color: var(--accent);
+  color: var(--on-ink);
+  background: var(--text);
+  border-color: var(--text);
 }
 
 /* Name over its record, ranged against the rail on both sides */
 .text {
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   text-align: start;
   min-width: 0;
   gap: 0.1rem;
+}
+
+/* The name and its stamps (promotion, kadoban, movement), ranged against the
+   rail; a stamp that will not fit drops under the name, never the score */
+.nameLine {
+  /* As wide as the cell, so the name's max-width resolves against a definite
+     width (a shrink-wrapped line once cut 大の里 to "大…") */
+  align-self: stretch;
+  display: flex;
+  /* The shadow-drawn highlighter edges must not be clipped by the name's box */
+  padding-inline: 0.2em;
+  margin-inline: -0.2em;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  max-width: 100%;
+  min-width: 0;
 }
 
 /* Stable · region: only where the sheet is wide enough to carry a second line.
@@ -129,12 +150,12 @@
 
 .stableButton:hover,
 .stableButton:focus-visible {
-  color: var(--accent);
+  color: var(--text);
   text-decoration: underline;
 }
 
 .stableButton:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--text);
   outline-offset: 1px;
 }
 
@@ -160,11 +181,11 @@
 /* Ring name: the size ladder is the hierarchy */
 .name {
   max-width: 100%;
-  font-family: var(--font-names);
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-weight: 700;
   font-size: var(--name-maegashira);
-  letter-spacing: -0.01em;
-  line-height: 1.15;
+  letter-spacing: 0;
+  line-height: 1.05;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -174,30 +195,54 @@
 
 .name:lang(ja) {
   font-family: var(--font-jp-serif);
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.02em;
 }
 
-/* Vermilion rule under the name, struck rather than drawn */
+/* An ink rule under the name on hover */
 .wrestler:hover .name {
   text-decoration: underline;
-  text-decoration-color: var(--accent);
+  text-decoration-color: var(--text);
 }
 
 .cell[data-rank-level='yokozuna'] .name {
   font-size: var(--name-yokozuna);
+  font-weight: 850;
 }
 
 .cell[data-rank-level='ozeki'] .name {
   font-size: var(--name-ozeki);
+  font-weight: 800;
 }
 
 .cell[data-rank-level='sekiwake'] .name {
   font-size: var(--name-sekiwake);
+  font-weight: 800;
 }
 
 .cell[data-rank-level='komusubi'] .name {
   font-size: var(--name-komusubi);
+  font-weight: 750;
+}
+
+/* The highlighter (網掛け): a yellow screen laid under the name a reader is
+   looking for — the champion, and each match while searching. */
+.cell[data-champion] .name,
+[data-searching] .cell:not([data-dimmed], .vacant) .name {
+  background: var(--highlight);
+  color: var(--on-highlight);
+  /* The screen runs a little past the letters without taking layout room,
+     so a highlighted name measures exactly what it does unhighlighted */
+  box-shadow:
+    -0.18em 0 0 var(--highlight),
+    0.18em 0 0 var(--highlight);
+}
+
+/* While searching, the highlighter belongs to the matches alone */
+[data-searching] .cell[data-champion][data-dimmed] .name {
+  background: none;
+  box-shadow: none;
+  color: inherit;
 }
 
 /* Promotion seal: 新入幕 / New */

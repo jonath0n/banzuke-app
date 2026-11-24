@@ -81,13 +81,17 @@ function SideCellInner({
         {SIDE_KANJI[side]}
       </span>
       <span className={styles.text}>
-        <span className={styles.name} lang={langAttr}>
-          {displayName}
+        {/* Stamps ride on the name's line, so the star chart and the score
+            below keep one aligned line on every row */}
+        <span className={styles.nameLine}>
+          <span className={styles.name} lang={langAttr}>
+            {displayName}
+          </span>
+          {badge}
+          {movement && <MovementBadge movement={movement} />}
         </span>
         {record && <Hoshitori record={record} champion={champion} />}
       </span>
-      {badge}
-      {movement && <MovementBadge movement={movement} />}
     </>
   )
 
@@ -138,6 +142,7 @@ function SideCellInner({
         data-side={side}
         data-rank-level={rankLevel}
         data-dimmed={dimmed || undefined}
+        data-champion={champion || undefined}
       >
         <button
           type="button"
@@ -163,6 +168,7 @@ function SideCellInner({
       data-side={side}
       data-rank-level={rankLevel}
       data-dimmed={dimmed || undefined}
+      data-champion={champion || undefined}
       data-id={rikishi?.id}
       data-pair={pairKey}
     >

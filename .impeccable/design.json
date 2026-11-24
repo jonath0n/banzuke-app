@@ -1,0 +1,832 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-24T17:53:18.000Z",
+  "title": "Design System: banzuke.app",
+  "extensions": {
+    "colorMeta": {
+      "newsprint": {
+        "role": "neutral",
+        "displayName": "Newsprint",
+        "canonical": "oklch(93.3% 0.007 106.5)",
+        "tonalRamp": [
+          "#0b0b0a",
+          "#252523",
+          "#42423f",
+          "#61615e",
+          "#83837e",
+          "#a5a5a2",
+          "#c9c9c7",
+          "#eeeeed"
+        ]
+      },
+      "sheet": {
+        "role": "neutral",
+        "displayName": "Sheet",
+        "canonical": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "oklch(17.8% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "on-ink": {
+        "role": "neutral",
+        "displayName": "Ink Reverse",
+        "canonical": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "pencil": {
+        "role": "neutral",
+        "displayName": "Pencil",
+        "canonical": "oklch(44.8% 0.010 106.8)",
+        "tonalRamp": [
+          "#0b0b0a",
+          "#252523",
+          "#42423e",
+          "#62625c",
+          "#83837d",
+          "#a5a5a1",
+          "#c9c9c6",
+          "#eeeeed"
+        ]
+      },
+      "column-rule": {
+        "role": "neutral",
+        "displayName": "Column Rule",
+        "canonical": "oklch(83.4% 0.010 106.6)",
+        "tonalRamp": [
+          "#0b0b0a",
+          "#252523",
+          "#42423e",
+          "#62625c",
+          "#83837d",
+          "#a5a5a1",
+          "#c9c9c6",
+          "#eeeeed"
+        ]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "rgba(17, 17, 17, 0.13)"
+      },
+      "kin-aka": {
+        "role": "primary",
+        "displayName": "Kin-aka",
+        "canonical": "oklch(54.1% 0.221 27.8)",
+        "tonalRamp": [
+          "#1f0000",
+          "#4d0103",
+          "#800308",
+          "#b70810",
+          "#e04038",
+          "#f57b6e",
+          "#ffb3a9",
+          "#ffe9e6"
+        ]
+      },
+      "kin-aka-deep": {
+        "role": "primary",
+        "displayName": "Kin-aka Deep",
+        "canonical": "oklch(45.0% 0.184 27.4)",
+        "tonalRamp": [
+          "#1c0202",
+          "#470d0a",
+          "#771c18",
+          "#ab2c27",
+          "#d35248",
+          "#ea8479",
+          "#feb4aa",
+          "#fee9e6"
+        ]
+      },
+      "on-kin-aka": {
+        "role": "primary",
+        "displayName": "On Kin-aka",
+        "canonical": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "section-bar": {
+        "role": "neutral",
+        "displayName": "Section Bar",
+        "canonical": "oklch(17.8% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "on-section-bar": {
+        "role": "neutral",
+        "displayName": "On Section Bar",
+        "canonical": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "masthead-band": {
+        "role": "primary",
+        "displayName": "Masthead Red",
+        "canonical": "oklch(54.1% 0.221 27.8)",
+        "tonalRamp": [
+          "#1f0000",
+          "#4d0103",
+          "#800308",
+          "#b70810",
+          "#e04038",
+          "#f57b6e",
+          "#ffb3a9",
+          "#ffe9e6"
+        ]
+      },
+      "on-masthead-band": {
+        "role": "primary",
+        "displayName": "On Masthead Red",
+        "canonical": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "band-rule": {
+        "role": "neutral",
+        "displayName": "Band Rule",
+        "canonical": "oklch(17.8% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "highlighter": {
+        "role": "secondary",
+        "displayName": "Highlighter",
+        "canonical": "oklch(91.3% 0.164 98.4)",
+        "tonalRamp": [
+          "#0f0b00",
+          "#2c2501",
+          "#4d4202",
+          "#706102",
+          "#968202",
+          "#b7a64b",
+          "#d6ca8f",
+          "#f6f0ce"
+        ]
+      },
+      "on-highlighter": {
+        "role": "secondary",
+        "displayName": "On Highlighter",
+        "canonical": "oklch(17.8% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "danger": {
+        "role": "error",
+        "displayName": "Danger",
+        "canonical": "oklch(50.5% 0.190 27.5)",
+        "tonalRamp": [
+          "#1c0202",
+          "#480b09",
+          "#791916",
+          "#ad2823",
+          "#d54f45",
+          "#ec8377",
+          "#feb3a9",
+          "#fee9e6"
+        ]
+      },
+      "warning": {
+        "role": "warning",
+        "displayName": "Warning",
+        "canonical": "oklch(51.1% 0.132 49.5)",
+        "tonalRamp": [
+          "#170601",
+          "#3d1a04",
+          "#67310c",
+          "#954916",
+          "#ba6b3c",
+          "#d49471",
+          "#ecbea5",
+          "#feeadf"
+        ]
+      },
+      "night-newsprint": {
+        "role": "neutral",
+        "displayName": "Night Newsprint",
+        "canonical": "oklch(16.8% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "night-sheet": {
+        "role": "neutral",
+        "displayName": "Night Sheet",
+        "canonical": "oklch(20.9% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "night-ink": {
+        "role": "neutral",
+        "displayName": "Night Ink",
+        "canonical": "oklch(96.0% 0.005 106.5)",
+        "tonalRamp": [
+          "#0b0b0a",
+          "#252524",
+          "#424240",
+          "#61615e",
+          "#82827f",
+          "#a5a5a3",
+          "#c9c9c7",
+          "#eeeeed"
+        ]
+      },
+      "night-on-ink": {
+        "role": "neutral",
+        "displayName": "Night Ink Reverse",
+        "canonical": "oklch(16.8% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "night-pencil": {
+        "role": "neutral",
+        "displayName": "Night Pencil",
+        "canonical": "oklch(71.3% 0.011 106.7)",
+        "tonalRamp": [
+          "#0b0b0a",
+          "#252522",
+          "#42423e",
+          "#62625b",
+          "#83837c",
+          "#a5a5a0",
+          "#c9c9c5",
+          "#efefec"
+        ]
+      },
+      "night-column-rule": {
+        "role": "neutral",
+        "displayName": "Night Column Rule",
+        "canonical": "oklch(34.7% 0.008 106.8)",
+        "tonalRamp": [
+          "#0b0b0a",
+          "#252523",
+          "#42423f",
+          "#62625d",
+          "#83837d",
+          "#a5a5a1",
+          "#c9c9c6",
+          "#eeeeed"
+        ]
+      },
+      "night-hairline": {
+        "role": "neutral",
+        "displayName": "Night Hairline",
+        "canonical": "rgba(242, 242, 238, 0.12)"
+      },
+      "night-kin-aka": {
+        "role": "primary",
+        "displayName": "Night Kin-aka",
+        "canonical": "oklch(67.0% 0.217 23.9)",
+        "tonalRamp": [
+          "#1e0002",
+          "#4c0209",
+          "#7f0515",
+          "#b60b23",
+          "#df4145",
+          "#f47b76",
+          "#ffb2ad",
+          "#fee9e7"
+        ]
+      },
+      "night-kin-aka-hover": {
+        "role": "primary",
+        "displayName": "Night Kin-aka Deep",
+        "canonical": "oklch(72.3% 0.172 20.7)",
+        "tonalRamp": [
+          "#1b0304",
+          "#450e13",
+          "#741f25",
+          "#a73039",
+          "#ce5559",
+          "#e68585",
+          "#fbb4b2",
+          "#ffe8e7"
+        ]
+      },
+      "night-section-bar": {
+        "role": "neutral",
+        "displayName": "Night Section Bar",
+        "canonical": "oklch(50.8% 0.011 106.8)",
+        "tonalRamp": [
+          "#0b0b0a",
+          "#252522",
+          "#42423e",
+          "#62625b",
+          "#83837c",
+          "#a5a5a0",
+          "#c9c9c6",
+          "#eeefec"
+        ]
+      },
+      "night-on-section-bar": {
+        "role": "neutral",
+        "displayName": "Night On Section Bar",
+        "canonical": "oklch(96.0% 0.005 106.5)",
+        "tonalRamp": [
+          "#0b0b0a",
+          "#252524",
+          "#424240",
+          "#61615e",
+          "#82827f",
+          "#a5a5a3",
+          "#c9c9c7",
+          "#eeeeed"
+        ]
+      },
+      "night-masthead-band": {
+        "role": "primary",
+        "displayName": "Night Masthead Red",
+        "canonical": "oklch(45.0% 0.184 27.4)",
+        "tonalRamp": [
+          "#1c0202",
+          "#470d0a",
+          "#771c18",
+          "#ab2c27",
+          "#d35248",
+          "#ea8479",
+          "#feb4aa",
+          "#fee9e6"
+        ]
+      },
+      "night-band-rule": {
+        "role": "neutral",
+        "displayName": "Night Band Rule",
+        "canonical": "oklch(29.9% 0.121 25.8)",
+        "tonalRamp": [
+          "#170605",
+          "#3d1816",
+          "#672e2a",
+          "#954540",
+          "#bb6760",
+          "#d5918a",
+          "#edbbb6",
+          "#fee9e6"
+        ]
+      },
+      "night-highlighter": {
+        "role": "secondary",
+        "displayName": "Night Highlighter",
+        "canonical": "oklch(39.5% 0.082 98.0)",
+        "tonalRamp": [
+          "#0e0b02",
+          "#2a250d",
+          "#4a421d",
+          "#6c622d",
+          "#8e834e",
+          "#aea67e",
+          "#d0caad",
+          "#f2efde"
+        ]
+      },
+      "night-on-highlighter": {
+        "role": "secondary",
+        "displayName": "Night On Highlighter",
+        "canonical": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "night-danger": {
+        "role": "error",
+        "displayName": "Night Danger",
+        "canonical": "oklch(80.8% 0.103 19.6)",
+        "tonalRamp": [
+          "#150607",
+          "#3a1a1b",
+          "#623132",
+          "#8e4a4b",
+          "#b36b6c",
+          "#ce9393",
+          "#e8bdbc",
+          "#ffe8e8"
+        ]
+      },
+      "night-warning": {
+        "role": "warning",
+        "displayName": "Night Warning",
+        "canonical": "oklch(87.9% 0.153 91.6)",
+        "tonalRamp": [
+          "#100b00",
+          "#2f2400",
+          "#514003",
+          "#765e04",
+          "#9d7f03",
+          "#bda352",
+          "#dbc892",
+          "#f9eecf"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "masthead": {
+        "displayName": "Masthead",
+        "purpose": "The uppercase wordmark, 900, in the 7rem red band (--text-xl on a phone)."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "The champion's name, 900 at up to 6rem under a 6px ink rule, beside a 優勝 stamp stretched to its height; the one headline on the page."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "The tournament name in the deck line (--text-lg 800)."
+      },
+      "name-yokozuna": {
+        "displayName": "Name: Yokozuna",
+        "purpose": "Top of the name ladder."
+      },
+      "name-ozeki": {
+        "displayName": "Name: Ozeki",
+        "purpose": "Name ladder."
+      },
+      "name-sekiwake": {
+        "displayName": "Name: Sekiwake",
+        "purpose": "Name ladder."
+      },
+      "name-komusubi": {
+        "displayName": "Name: Komusubi",
+        "purpose": "Name ladder."
+      },
+      "name-maegashira": {
+        "displayName": "Name: Maegashira",
+        "purpose": "Foot of the name ladder; also Juryo and the lower divisions."
+      },
+      "name-jp": {
+        "displayName": "Japanese Name",
+        "purpose": "Ring names and rank kanji in mincho."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Condensed caps for toggles, picker, stamps and the status badge at --text-sm 800; tab names, section-bar labels and side-box heads step up to --text-lg 900."
+      },
+      "score": {
+        "displayName": "Score",
+        "purpose": "Records under names; tabular figures."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Reading text, dates, help."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Provenance and small print."
+      }
+    },
+    "shadows": [
+      {
+        "name": "shadow-sm",
+        "value": "none",
+        "purpose": "Print is flat; nothing in the page flow casts a shadow."
+      },
+      {
+        "name": "shadow-md",
+        "value": "0 4px 14px rgba(17, 17, 17, 0.16)",
+        "purpose": "Float: the scroll-to-top button and the skip link. Night: 0 4px 14px rgba(0, 0, 0, 0.5)."
+      },
+      {
+        "name": "shadow-lg",
+        "value": "0 18px 48px rgba(17, 17, 17, 0.28), 0 3px 8px rgba(17, 17, 17, 0.12)",
+        "purpose": "The wrestler and stable dialogs. Night: 0 18px 48px rgba(0, 0, 0, 0.7), 0 3px 8px rgba(0, 0, 0, 0.4)."
+      },
+      {
+        "name": "highlighter-edges",
+        "value": "-0.18em 0 0 var(--highlight), 0.18em 0 0 var(--highlight)",
+        "purpose": "Not depth: extends the highlighter screen past a name without changing its measure."
+      }
+    ],
+    "motion": [
+      {
+        "name": "dur-fast",
+        "value": "120ms",
+        "purpose": "Hover tints, colour changes on controls."
+      },
+      {
+        "name": "dur-base",
+        "value": "200ms",
+        "purpose": "Language slider, sheet fade on tab switch, search focus ring."
+      },
+      {
+        "name": "dur-slow",
+        "value": "360ms",
+        "purpose": "The header entrance fade."
+      },
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Entrances and the language slider."
+      },
+      {
+        "name": "fadeIn",
+        "value": "@keyframes opacity 0 → 1",
+        "purpose": "Header entrance, sheet arrival, dialog backdrop."
+      },
+      {
+        "name": "riseIn",
+        "value": "@keyframes translateY(4px) → 0, 200ms, 25ms stagger on the first ten rows",
+        "purpose": "Rows, once per page load (gated by data-entered on <main>)."
+      },
+      {
+        "name": "modalSlideUp",
+        "value": "@keyframes translateY(24px) scale(0.96) → none",
+        "purpose": "Dialog entrance. Budget: four effects, three in use, none loop."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "phone",
+        "value": "600px"
+      },
+      {
+        "name": "tab-abbr",
+        "value": "720px"
+      },
+      {
+        "name": "full-rank",
+        "value": "768px"
+      },
+      {
+        "name": "toolbar",
+        "value": "900px"
+      },
+      {
+        "name": "tab-tight",
+        "value": "960px"
+      },
+      {
+        "name": "side-rail",
+        "value": "1200px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Masthead Band",
+      "kind": "nav",
+      "refersTo": "masthead-band",
+      "description": "Full-bleed red band, 7rem tall, closed by a 6px band rule (4px and 3.5rem on a phone): 900 wordmark, reversed 番付 box, era masthead at ≥900px, language toggle.",
+      "html": "<header class=\"ds-band\"><div class=\"ds-band-title\"><span class=\"ds-band-word\">Banzuke</span><span class=\"ds-band-box\" lang=\"ja\">番付</span><span class=\"ds-band-era\" lang=\"ja\">令和八年十一月場所</span></div><div class=\"ds-lang\"><button class=\"ds-lang-opt ds-lang-on\">EN</button><button class=\"ds-lang-opt\" lang=\"ja\">日本語</button></div></header>",
+      "css": ".ds-band { display: flex; align-items: center; gap: var(--space-4); min-height: 7rem; padding: var(--space-3) var(--space-5); background: var(--band); color: var(--on-band); border-bottom: 6px solid var(--band-rule); } .ds-band-title { display: flex; align-items: center; gap: var(--space-3); min-width: 0; } .ds-band-word { font-family: var(--font-display); font-weight: 900; font-size: var(--text-display); line-height: 0.88; letter-spacing: 0; text-transform: uppercase; white-space: nowrap; } .ds-band-box { display: inline-grid; place-items: center; padding: 0.25rem 0.35rem; font-family: var(--font-jp-serif); font-weight: 700; font-size: var(--text-xl); line-height: 1; letter-spacing: 0.08em; color: var(--band); background: var(--on-band); } .ds-band-era { padding-inline-start: var(--space-4); border-inline-start: 1px solid rgb(255 255 255 / 0.45); font-family: var(--font-jp-serif); font-weight: 700; font-size: var(--text-sm); letter-spacing: 0.12em; white-space: nowrap; } .ds-lang { margin-inline-start: auto; flex-shrink: 0; display: inline-flex; border: 1.5px solid var(--on-band); } .ds-lang-opt { min-width: 3.25rem; min-height: 40px; padding: 0.3rem 0.6rem; font-family: var(--font-display); font-weight: 800; font-size: var(--text-sm); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--on-band); background: transparent; border: 0; cursor: pointer; } .ds-lang-opt[lang='ja'] { font-family: var(--font-jp-serif); font-weight: 700; text-transform: none; letter-spacing: 0.06em; } .ds-lang-opt:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.2em; } .ds-lang-on { background: var(--on-band); color: var(--band); } .ds-lang-on:hover { text-decoration: none; } .ds-lang-opt:focus-visible { outline: 2px solid var(--on-band); outline-offset: 2px; } @media (max-width: 900px) { .ds-band-era { display: none; } } @media (max-width: 600px) { .ds-band { min-height: 3.5rem; padding-block: var(--space-2); gap: var(--space-2); border-bottom-width: 4px; } .ds-band-word { font-size: var(--text-xl); } .ds-band-box { font-size: var(--text-xs); padding: 0.15rem 0.2rem; } .ds-lang-opt { min-width: 2.75rem; min-height: 44px; padding-inline: 0.45rem; } }"
+    },
+    {
+      "name": "Champion Headline",
+      "kind": "custom",
+      "refersTo": "stamp",
+      "description": "The one headline: a 6px ink rule, then the champion's name at --text-headline 900 beside a 優勝 stamp stretched to its height; the bracketed record never breaks.",
+      "html": "<div class=\"ds-headline\"><p class=\"ds-champion\"><span class=\"ds-yusho\" lang=\"ja\">優勝</span><span class=\"ds-champ-text\">Hoshoryu <span class=\"ds-champ-rec\">(13–2)</span></span></p></div>",
+      "css": ".ds-headline { padding-top: var(--space-4); border-top: 6px solid var(--text); } .ds-champion { display: flex; align-items: center; gap: var(--space-4); margin: 0; } .ds-yusho { flex-shrink: 0; align-self: stretch; display: inline-grid; place-items: center; padding: 0.3em 0.35em; font-family: var(--font-jp-serif); font-weight: 700; font-size: clamp(var(--text-lg), 3.3vw, var(--text-3xl)); line-height: 1; letter-spacing: 0.06em; color: var(--on-band); background: var(--band); } .ds-champ-text { font-family: var(--font-display); font-weight: 900; font-size: var(--text-headline); line-height: 0.86; letter-spacing: -0.01em; text-wrap: balance; color: var(--text); } .ds-champ-rec { white-space: nowrap; } @media (max-width: 600px) { .ds-headline { border-top-width: 4px; padding-top: var(--space-3); } .ds-champion { gap: var(--space-3); } }"
+    },
+    {
+      "name": "Square Toggle",
+      "kind": "button",
+      "refersTo": "toggle",
+      "description": "Overlay switch: 1.5px ink outline on the sheet, 8% ink tint on hover, ink fill when on; 40px (44px on a phone).",
+      "html": "<div class=\"ds-row\"><button class=\"ds-toggle\" aria-pressed=\"false\"><span class=\"ds-mark\" aria-hidden=\"true\">▲▼</span>Changes</button><button class=\"ds-toggle ds-toggle-on\" aria-pressed=\"true\">Results</button></div>",
+      "css": ".ds-row { display: flex; gap: var(--space-2); } .ds-toggle { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 40px; padding: 0.35rem 0.8rem; font-family: var(--font-display); font-weight: 800; font-size: var(--text-sm); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--text); background: var(--card-bg); border: 1.5px solid var(--text); border-radius: 0; cursor: pointer; transition: color var(--dur-fast) ease, background var(--dur-fast) ease; } .ds-toggle:hover { background: rgb(var(--ink-rgb) / 0.08); } .ds-toggle-on { color: var(--on-ink); background: var(--text); } .ds-toggle-on:hover { background: rgb(var(--ink-rgb) / 0.85); } .ds-toggle:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; } .ds-mark { font-size: 0.7em; letter-spacing: -0.1em; } @media (max-width: 600px) { .ds-toggle { min-height: 44px; padding-inline: 0.55rem; gap: var(--space-1); } }"
+    },
+    {
+      "name": "Basho Picker",
+      "kind": "nav",
+      "refersTo": "basho-picker",
+      "description": "The archive stepper: chevron, tournament label, chevron and, while browsing the archive, a \"Current banzuke\" link in ink, joined in one square frame.",
+      "html": "<nav class=\"ds-picker\"><a class=\"ds-step\" href=\"#\" aria-label=\"Previous\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 20 20\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12.5 4L6.5 10l6 6\" stroke=\"currentColor\" stroke-width=\"2.25\" stroke-linecap=\"square\" stroke-linejoin=\"miter\"/></svg></a><span class=\"ds-picker-label\">Nov 2025</span><a class=\"ds-step\" href=\"#\" aria-label=\"Next\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 20 20\" fill=\"none\" aria-hidden=\"true\"><path d=\"M7.5 4l6 6-6 6\" stroke=\"currentColor\" stroke-width=\"2.25\" stroke-linecap=\"square\" stroke-linejoin=\"miter\"/></svg></a><a class=\"ds-current\" href=\"#\">Current banzuke</a></nav>",
+      "css": ".ds-picker { display: inline-flex; align-items: stretch; min-height: 40px; font-family: var(--font-display); font-weight: 800; font-size: var(--text-sm); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--text); background: var(--card-bg); border: 1.5px solid var(--text); } .ds-step { display: inline-flex; align-items: center; justify-content: center; min-width: 40px; color: var(--text); text-decoration: none; transition: background var(--dur-fast) ease; } .ds-step:hover { background: rgb(var(--ink-rgb) / 0.08); } .ds-step:focus-visible, .ds-current:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; } .ds-step-off { color: var(--border); } .ds-step-off:hover { background: none; } .ds-picker-label { display: inline-flex; align-items: center; padding-inline: var(--space-3); border-inline: 1px solid var(--border); white-space: nowrap; } .ds-current { display: inline-flex; align-items: center; padding-inline: var(--space-3); color: var(--text); border-inline-start: 1px solid var(--border); text-decoration: none; } .ds-current:hover { text-decoration-color: var(--text); } @media (max-width: 600px) { .ds-picker { min-height: 44px; } .ds-current { padding-inline: var(--space-2); } }"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "search-input",
+      "description": "Square search, 48px, glyph on the left and a / key hint on the right; focus doubles the ink edge and lays a 4px highlighter ring outside it.",
+      "html": "<label class=\"ds-search\"><svg class=\"ds-search-icon\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"M16 16l4.5 4.5\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"square\"/></svg><input class=\"ds-search-input\" type=\"search\" placeholder=\"Search wrestlers\"><kbd class=\"ds-kbd\">/</kbd></label>",
+      "css": ".ds-search { position: relative; display: block; max-width: 420px; } .ds-search-icon { position: absolute; left: var(--space-3); top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; } .ds-search-input { box-sizing: border-box; width: 100%; min-height: 48px; padding: var(--space-2) 2.75rem var(--space-2) 2.5rem; font-family: var(--font-body); font-size: var(--text-md); color: var(--text); caret-color: var(--accent); background: var(--card-bg); border: 1.5px solid var(--text); border-radius: 0; text-overflow: ellipsis; transition: box-shadow var(--dur-base) ease; } .ds-search-input::placeholder { color: var(--muted); opacity: 1; } .ds-search-input:focus { outline: none; box-shadow: inset 0 0 0 1.5px var(--text), 0 0 0 4px var(--highlight); } .ds-search-input:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; } .ds-kbd { position: absolute; right: var(--space-3); top: 50%; transform: translateY(-50%); min-width: 1.5rem; padding: 0.15rem 0.4rem; font-family: var(--font-display); font-weight: 800; font-size: var(--text-sm); line-height: 1.2; text-align: center; color: var(--muted); border: 1px solid var(--border); pointer-events: none; } .ds-search-input:focus ~ .ds-kbd { display: none; }"
+    },
+    {
+      "name": "Division Tabs",
+      "kind": "nav",
+      "refersTo": "division-tab",
+      "description": "56px square tabs seated on the sheet's 5px ink rule (the sheet pulls up by --frame); labels in --text-lg 900 caps; the selected tab fills with ink and joins the rule.",
+      "html": "<div class=\"ds-tabs\" role=\"tablist\"><button class=\"ds-tab ds-tab-on\" role=\"tab\" aria-selected=\"true\"><span class=\"ds-tab-kanji\" lang=\"ja\">幕内</span><span class=\"ds-tab-name\">Makuuchi</span><span class=\"ds-tab-count\">42</span></button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\"><span class=\"ds-tab-kanji\" lang=\"ja\">十両</span><span class=\"ds-tab-name\">Juryo</span><span class=\"ds-tab-count\">28</span></button></div><div class=\"ds-tabs-sheet\"></div>",
+      "css": ".ds-tabs { display: flex; gap: 2px; } .ds-tab { flex: 1 1 0; min-width: 0; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); min-height: 56px; padding: var(--space-2) var(--space-3) calc(var(--space-2) + 5px); white-space: nowrap; color: var(--text); background: var(--card-bg); border: 1px solid var(--border); border-bottom: none; cursor: pointer; transition: color var(--dur-fast) ease, background var(--dur-fast) ease; } .ds-tab:hover { background: rgb(var(--ink-rgb) / 0.06); } .ds-tab:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; position: relative; z-index: 2; } .ds-tab-on, .ds-tab-on:hover { position: relative; z-index: 1; background: var(--text); border-color: var(--text); color: var(--on-ink); } .ds-tab-kanji { font-family: var(--font-jp-serif); font-weight: 700; font-size: var(--text-lg); letter-spacing: 0.06em; } .ds-tab-name { font-family: var(--font-display); font-weight: 900; font-size: var(--text-lg); letter-spacing: var(--tracking-caps); text-transform: uppercase; } .ds-tab-count { font-family: var(--font-display); font-weight: 700; font-size: var(--text-sm); color: var(--muted); } .ds-tab-on .ds-tab-count { color: var(--on-ink); opacity: 0.75; } .ds-tabs-sheet { --frame: 5px; position: relative; margin-top: calc(-1 * var(--frame)); height: 2rem; background: var(--card-bg); border-top: var(--frame) solid var(--text); }"
+    },
+    {
+      "name": "Sheet Row",
+      "kind": "custom",
+      "refersTo": "rank-rail-yokozuna",
+      "description": "The sheet opens on a 5px ink rule; a section bar (--text-xl kanji, --text-lg 900 label) marks a tier change; each row is East | rank rail | West, right to left. The Yokozuna rail is a solid band block; the champion's name carries the highlighter; records are a 星取表 in groups of five.",
+      "html": "<div class=\"ds-sheet\"><h2 class=\"ds-bar\"><span lang=\"ja\" class=\"ds-bar-kanji\">前頭</span><span class=\"ds-bar-label\">Maegashira</span></h2><div class=\"ds-row-grid\"><div class=\"ds-cell ds-east\"><button class=\"ds-name ds-hl\">Hoshoryu</button><div class=\"ds-rec\"><span class=\"ds-strip\" lang=\"ja\"><i>○</i><i>○</i><i>○</i><i>●</i><i>○</i><i>○</i><i>○</i><i>○</i><i>○</i><i>○</i><i>○</i><i>●</i><i>○</i><i>○</i><i>○</i></span><b>13–2</b><span class=\"ds-stamp\" lang=\"ja\">優勝</span></div></div><div class=\"ds-rail ds-rail-yz\"><span lang=\"ja\" class=\"ds-kanji\">横綱</span><span class=\"ds-romaji\">Y</span></div><div class=\"ds-cell ds-west\"><button class=\"ds-name\">Onosato</button><div class=\"ds-rec\"><b>11–4</b></div></div></div></div>",
+      "css": ".ds-sheet { --frame: 5px; position: relative; background: var(--card-bg); border-top: var(--frame) solid var(--text); border-bottom: 1px solid var(--border); container-type: inline-size; } .ds-bar { display: flex; justify-content: center; align-items: baseline; gap: var(--space-3); margin: 0; padding: 0.55rem var(--space-3); font: inherit; background: var(--bar); color: var(--on-bar); } .ds-bar-kanji { font-family: var(--font-jp-serif); font-weight: 700; font-size: var(--text-xl); letter-spacing: 0.2em; } .ds-bar-label { font-family: var(--font-display); font-weight: 900; font-size: var(--text-lg); letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; } .ds-row-grid { display: grid; grid-template-columns: minmax(0,1fr) var(--rail-width, 5.5rem) minmax(0,1fr); gap: var(--space-3); align-items: center; padding: var(--space-2) var(--space-3); } .ds-cell { min-width: 0; } .ds-east { order: 3; } .ds-west { order: 1; text-align: right; } .ds-rail { order: 2; align-self: stretch; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.15rem; min-height: 2.75rem; border-inline: 1px solid var(--rule); line-height: 1; } .ds-rail-yz { background: var(--band); border-inline-color: var(--band); color: var(--on-band); } .ds-kanji { font-family: var(--font-jp-serif); font-weight: 700; font-size: var(--text-2xl); letter-spacing: 0.05em; } .ds-romaji { font-family: var(--font-display); font-weight: 800; font-size: var(--text-xs); letter-spacing: 0.06em; } .ds-name { font: inherit; font-family: var(--font-display); font-weight: 850; font-size: var(--name-yokozuna); line-height: 1.05; color: var(--text); background: none; border: 0; padding: 0; cursor: pointer; text-decoration-thickness: 2px; text-underline-offset: 0.15em; } .ds-name:hover { text-decoration: underline; } .ds-name:focus-visible { outline: 2px solid var(--text); } .ds-hl { background: var(--highlight); color: var(--on-highlight); box-shadow: -0.18em 0 0 var(--highlight), 0.18em 0 0 var(--highlight); } .ds-rec { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-2); margin-top: 0.15rem; font-family: var(--font-display); font-weight: 850; font-size: var(--text-sm); font-variant-numeric: tabular-nums; } .ds-west .ds-rec { justify-content: flex-end; } .ds-strip { direction: ltr; font-family: var(--font-jp-serif); font-weight: 700; font-size: min(var(--text-sm), 6.5cqi); white-space: nowrap; } .ds-strip i { display: inline-block; width: 0.95em; text-align: center; font-style: normal; } .ds-strip i:nth-child(5), .ds-strip i:nth-child(10) { margin-inline-end: 0.4em; } .ds-strip i:nth-child(4), .ds-strip i:nth-child(12) { color: var(--muted); } .ds-stamp { display: inline-grid; place-items: center; min-height: 1.3em; padding: 0.05em 0.35em; font-family: var(--font-jp-serif); font-weight: 700; color: var(--on-band); background: var(--band); }"
+    },
+    {
+      "name": "Stamps",
+      "kind": "chip",
+      "refersTo": "stamp",
+      "description": "Solid band rectangles that state a fact (promotion, 優勝, live status); kadoban is the one ink outline, the status badge an ink block (outlined while upcoming).",
+      "html": "<div class=\"ds-stamps\"><span class=\"ds-pill\">New</span><span class=\"ds-pill\" lang=\"ja\">新入幕</span><span class=\"ds-pill ds-kadoban\">Kadoban</span><span class=\"ds-seal\" lang=\"ja\">優勝</span><span class=\"ds-status\" data-status=\"live\">Day 15</span><span class=\"ds-status\">Final</span><span class=\"ds-status\" data-status=\"upcoming\">Upcoming</span></div>",
+      "css": ".ds-stamps { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; } .ds-pill { padding: 0.2rem 0.35rem; font-family: var(--font-display); font-weight: 850; font-size: var(--text-xs); letter-spacing: var(--tracking-caps); text-transform: uppercase; line-height: 1.1; color: var(--on-band); background: var(--band); white-space: nowrap; } .ds-pill:lang(ja) { font-family: var(--font-jp-serif); font-weight: 700; letter-spacing: 0.08em; text-transform: none; } .ds-kadoban { color: var(--text); background: none; box-shadow: inset 0 0 0 1.5px var(--text); } .ds-seal { padding: 0.3rem 0.4rem; font-family: var(--font-jp-serif); font-weight: 700; font-size: var(--text-lg); line-height: 1; letter-spacing: 0.06em; color: var(--on-band); background: var(--band); } .ds-status { display: inline-flex; align-items: center; padding: 0.3rem 0.5rem; font-family: var(--font-display); font-weight: var(--label-weight); font-size: var(--text-sm); letter-spacing: var(--tracking-caps); text-transform: uppercase; line-height: 1; color: var(--on-ink); background: var(--text); white-space: nowrap; } .ds-status[data-status='live'] { color: var(--on-band); background: var(--band); } .ds-status[data-status='upcoming'] { color: var(--text); background: transparent; box-shadow: inset 0 0 0 1.5px var(--text); }"
+    },
+    {
+      "name": "Side Rail Box",
+      "kind": "card",
+      "refersTo": "side-box",
+      "description": "Bouts, yusho race and departed: a sheet box headed by a bled section bar (--text-lg 900); the open race is screened with the highlighter; each decided bout marks ○ (winner, ink) / ● (loser, pencil) beside the names on the result side.",
+      "html": "<section class=\"ds-box\"><div class=\"ds-box-head\"><button class=\"ds-box-step\" aria-label=\"Previous day\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 20 20\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12.5 4L6.5 10l6 6\" stroke=\"currentColor\" stroke-width=\"2.25\" stroke-linecap=\"square\" stroke-linejoin=\"miter\"/></svg></button><h3 class=\"ds-box-title\">Day 15</h3><button class=\"ds-box-step\" aria-label=\"Next day\" disabled><svg width=\"16\" height=\"16\" viewBox=\"0 0 20 20\" fill=\"none\" aria-hidden=\"true\"><path d=\"M7.5 4l6 6-6 6\" stroke=\"currentColor\" stroke-width=\"2.25\" stroke-linecap=\"square\" stroke-linejoin=\"miter\"/></svg></button></div><p class=\"ds-race\"><span class=\"ds-race-label\">Yusho race</span> 1 loss: <button class=\"ds-race-name\">Hoshoryu</button></p><ul class=\"ds-bouts\"><li data-decided><span class=\"ds-east\" data-won><button class=\"ds-fighter\"><strong>Hoshoryu</strong></button></span><span class=\"ds-result\">yorikiri</span><span class=\"ds-west\"><button class=\"ds-fighter\">Onosato</button></span></li><li data-decided><span class=\"ds-east\"><button class=\"ds-fighter\">Kotozakura</button></span><span class=\"ds-result\">oshidashi</span><span class=\"ds-west\" data-won><button class=\"ds-fighter\"><strong>Takayasu</strong></button></span></li></ul></section>",
+      "css": ".ds-box { width: 360px; max-width: 100%; box-sizing: border-box; background: var(--card-bg); padding: 0 var(--space-3) var(--space-3); } .ds-box-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); margin: 0 calc(-1 * var(--space-3)) var(--space-2); padding: 0.25rem; background: var(--bar); color: var(--on-bar); } .ds-box-title { margin: 0; font-family: var(--font-display); font-weight: 900; font-size: var(--text-lg); letter-spacing: 0.06em; text-transform: uppercase; color: var(--on-bar); } .ds-box-step { display: inline-grid; place-items: center; min-width: 36px; min-height: 36px; color: var(--on-bar); background: none; border: 1px solid rgb(255 255 255 / 0.4); cursor: pointer; } .ds-box-step:hover:not(:disabled) { background: var(--on-bar); color: var(--bar); } .ds-box-step:disabled { opacity: 0.3; cursor: default; } .ds-box-step:focus-visible { outline: 2px solid var(--on-bar); outline-offset: 1px; } .ds-race { margin: 0 0 var(--space-2); padding: var(--space-2) var(--space-3); font-size: var(--text-sm); color: var(--on-highlight); background: var(--highlight); } .ds-race-label { font-family: var(--font-display); font-weight: 800; letter-spacing: var(--tracking-caps); text-transform: uppercase; } .ds-race-name { font: inherit; font-family: var(--font-display); font-weight: 750; font-size: var(--text-md); color: inherit; background: none; border: 0; padding: 0; cursor: pointer; } .ds-race-name:hover { text-decoration: underline; text-decoration-thickness: 2px; } .ds-bouts { list-style: none; margin: 0; padding: 0; } .ds-bouts li { display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); gap: var(--space-3); align-items: baseline; padding: 0.3rem 0; border-top: 1px solid var(--rule); } .ds-bouts li:first-child { border-top: 0; } .ds-east { text-align: end; } .ds-west { text-align: start; } .ds-bouts li[data-decided] .ds-east::after, .ds-bouts li[data-decided] .ds-west::before { content: '●' / ''; display: inline-block; width: 1em; font-family: var(--font-jp-serif); font-weight: 700; text-align: center; color: var(--muted); } .ds-bouts li[data-decided] .ds-east::after { margin-inline-start: var(--space-2); } .ds-bouts li[data-decided] .ds-west::before { margin-inline-end: var(--space-2); } .ds-bouts li[data-decided] .ds-east[data-won]::after, .ds-bouts li[data-decided] .ds-west[data-won]::before { content: '○' / ''; color: var(--text); } .ds-result { min-width: 6ch; text-align: center; font-family: var(--font-display); font-weight: 600; font-size: var(--text-sm); color: var(--muted); } .ds-fighter { font: inherit; font-family: var(--font-display); font-weight: 650; font-size: var(--text-md); color: var(--text); background: none; border: 0; padding: 0; cursor: pointer; } .ds-fighter strong { font-weight: 850; } .ds-fighter:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.15em; }"
+    },
+    {
+      "name": "Empty Sheet",
+      "kind": "card",
+      "refersTo": "side-box",
+      "description": "No matches: the sheet stays a sheet, white and opened by the 5px ink rule, with a vacant-slot square in column rule, an 800 condensed line, a body hint and an ink action.",
+      "html": "<div class=\"ds-empty\"><div class=\"ds-empty-icon\"><svg width=\"48\" height=\"48\" viewBox=\"0 0 48 48\" fill=\"none\" aria-hidden=\"true\"><rect x=\"1\" y=\"1\" width=\"46\" height=\"46\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"M14 24h20\" stroke=\"currentColor\" stroke-width=\"3\"/></svg></div><p class=\"ds-empty-line\">No wrestlers match “Tera”</p><p class=\"ds-empty-hint\">Try a ring name in English or Japanese.</p><button class=\"ds-empty-action\">Clear search</button></div>",
+      "css": ".ds-empty { --frame: 5px; position: relative; display: flex; flex-direction: column; align-items: center; gap: var(--space-2); padding: var(--space-7) var(--space-4); text-align: center; color: var(--muted); background: var(--card-bg); border-top: var(--frame) solid var(--text); } .ds-empty-icon { color: var(--border); margin-bottom: var(--space-2); } .ds-empty-line { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: var(--text-lg); color: var(--text); } .ds-empty-hint { margin: 0; font-family: var(--font-body); font-size: var(--text-base); color: var(--muted); } .ds-empty-action { margin-top: var(--space-3); min-height: 44px; padding: var(--space-2) var(--space-5); font-family: var(--font-display); font-weight: 800; font-size: var(--text-md); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--on-ink); background: var(--text); border: 1.5px solid var(--text); border-radius: 0; cursor: pointer; transition: background var(--dur-fast) ease; } .ds-empty-action:hover { background: rgb(var(--ink-rgb) / 0.85); } .ds-empty-action:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }"
+    },
+    {
+      "name": "Icons",
+      "kind": "custom",
+      "refersTo": "scroll-to-top",
+      "description": "Inline SVG strokes in currentColor on a 20-unit box: ChevronIcon and ExternalIcon square-capped at 2.25 (the chevron mitred); CloseIcon 2 (shipped with round caps).",
+      "html": "<div class=\"ds-icons\"><span><svg width=\"16\" height=\"16\" viewBox=\"0 0 20 20\" fill=\"none\" aria-hidden=\"true\"><path d=\"M12.5 4L6.5 10l6 6\" stroke=\"currentColor\" stroke-width=\"2.25\" stroke-linecap=\"square\" stroke-linejoin=\"miter\"/></svg></span><span><svg width=\"16\" height=\"16\" viewBox=\"0 0 20 20\" fill=\"none\" aria-hidden=\"true\"><path d=\"M7.5 4l6 6-6 6\" stroke=\"currentColor\" stroke-width=\"2.25\" stroke-linecap=\"square\" stroke-linejoin=\"miter\"/></svg></span><span><svg width=\"12\" height=\"12\" viewBox=\"0 0 20 20\" fill=\"none\" aria-hidden=\"true\"><path d=\"M8 4H4v12h12v-4M11 3h6v6M17 3l-8 8\" stroke=\"currentColor\" stroke-width=\"2.25\" stroke-linecap=\"square\"/></svg></span><span><svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"none\" aria-hidden=\"true\"><path d=\"M15 5L5 15M5 5l10 10\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"square\"/></svg></span></div>",
+      "css": ".ds-icons { display: flex; gap: var(--space-4); align-items: center; color: var(--text); } .ds-icons span { display: inline-grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--border); }"
+    },
+    {
+      "name": "Scroll to Top",
+      "kind": "button",
+      "refersTo": "scroll-to-top",
+      "description": "A 44px ink square with the float shadow; fills with the band red on hover.",
+      "html": "<button class=\"ds-top\" aria-label=\"Back to top\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 20 20\" fill=\"none\" aria-hidden=\"true\"><path d=\"M4 12.5l6-6 6 6\" stroke=\"currentColor\" stroke-width=\"2.25\" stroke-linecap=\"square\" stroke-linejoin=\"miter\"/></svg></button>",
+      "css": ".ds-top { width: 44px; height: 44px; display: inline-grid; place-items: center; color: var(--on-ink); background: var(--text); border: 1.5px solid var(--text); border-radius: 0; box-shadow: var(--shadow-md); cursor: pointer; transition: color var(--dur-fast) ease, border-color var(--dur-fast) ease; } .ds-top:hover { background: var(--band); border-color: var(--band); color: var(--on-band); } .ds-top:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Sports Page",
+    "overview": "The banzuke as the results page of a Japanese sports daily on the morning after a day of the basho: newsprint grey under a white sheet, a kin-aka red masthead band closed by an ink rule, black section bars where the rank tier changes, condensed heavy names that scale with rank, the ○● record set as a 星取表 in fixed day columns grouped by five, and a yellow highlighter screened over the thing that matters now: the champion's name, the yusho race while it is open, the name you searched for.\n\nIt is a working table first. The world lends four things only: type (Sofia Sans Condensed with a newspaper's appetite for weight, Noto Serif JP mincho for Japanese names and rank kanji as a paper sets names in its body text), palette (newsprint, ink, kin-aka, highlighter), density (a sports table's tight, aligned rhythm on a 4px base), and one signature move: **the highlighter**, 網掛け, the yellow screen a sports desk lays over the leader's line.\n\n**What this deliberately avoids:** the cream-paper-and-vermilion-seal look this site used to wear (and that every \"Japanese\" interface defaults to); dark stats dashboards with neon; gold; rounded cards, pills and soft shadows; small tracked caps under 12px; rank told by hue alone; decorative Japanese motifs. No Rising Sun forms, ever: the masthead is a flat band, never rays.\n\nThe wrestler and stable dialogs were not redesigned in this pass. They inherit the tokens (square, the new palette, the dialog shadow) but their layouts are not part of this record; they get their own pass.",
+    "keyCharacteristics": [
+      "A full-bleed red band closed by a 6px masthead rule (4px on phones), then everything on newsprint.",
+      "One white sheet opened by a 5px ink rule that the division tabs stand on.",
+      "Rank carried by type size (about 2.6x from Yokozuna to Maegashira on desktop), with red reserved for sanyaku kanji and the Yokozuna's solid rail block.",
+      "Square everything: radius 0, 1.5px ink borders on controls, 1px hairlines between rows.",
+      "Flat print: only what floats over the page (dialogs, the scroll button) casts a shadow.",
+      "Three keyframe effects, entrance once per page load, nothing loops."
+    ],
+    "rules": [
+      {
+        "name": "The Three Inks Rule",
+        "body": "Red ranks, black selects, yellow highlights. A colour never borrows another's job.",
+        "section": "colors"
+      },
+      {
+        "name": "The Highlighter Rule",
+        "body": "Yellow only ever sits under text, and only on what the reader is looking for or what matters now. If two things on screen are highlighted, one of them is wrong: the yusho race drops its screen once the champion is decided, and while searching the champion's screen yields to the matches.",
+        "section": "colors"
+      },
+      {
+        "name": "The Fill-Is-Band Rule",
+        "body": "Red as a ground is `--band` with `--on-band`; red as a letterform is `--accent`. Never fill with `--accent`.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ladder Rule",
+        "body": "Rank is told by name size and weight first, red second, never by hue alone.",
+        "section": "typography"
+      },
+      {
+        "name": "The 12px Floor",
+        "body": "Nothing a reader taps or needs is set below `--text-xs` (12px); condensed caps labels sit at `--text-sm` (13px) and get their legibility from weight, not tracking.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Sheet Rule",
+        "body": "Nothing in the document flow casts a shadow. `box-shadow` inside the sheet is only ever a drawing tool: the highlighter's edges, a kadoban outline, a focus ring.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Tier Change Rule",
+        "body": "A section bar marks where the tier changes inside a sheet. The first tier of any sheet is headed by the selected tab directly above it (and the sanyaku by the rail's own stamps), so no division draws a bar under its own tab; in Makuuchi only 前頭 gets one. Every tier keeps its `<h2>` for structure, visually hidden where no bar is drawn.",
+        "section": "components"
+      }
+    ],
+    "dos": [
+      "**Do** keep red for rank and stamps, black for selection, yellow for the highlighter (The Three Inks Rule).",
+      "**Do** fill with `--band` / `--on-band` and write with `--accent`.",
+      "**Do** set names in Sofia Sans Condensed at ladder sizes and Japanese names and rank kanji in Noto Serif JP 700.",
+      "**Do** draw controls square: 1.5px ink border, sheet face, ink fill when selected.",
+      "**Do** draw the highlighter with a background plus two hard `box-shadow` edges, so highlighting never changes layout.",
+      "**Do** keep every control ≥44px tall on a phone and every label ≥12px.",
+      "**Do** keep the List free of sideways scroll from 360px; shrink marks with `cqi` before letting anything overflow."
+    ],
+    "donts": [
+      "**Don't** round a corner, add a gradient, or cast a shadow from anything in the page flow.",
+      "**Don't** highlight two things on one screen.",
+      "**Don't** use cream, gold, or a decorative seal; a red stamp always states a fact (優勝, promotion, the wordmark's 番付).",
+      "**Don't** tell rank by hue alone.",
+      "**Don't** add a fifth keyframe effect (four budgeted, three in use: `fadeIn`, `riseIn`, `modalSlideUp`) or anything that loops.",
+      "**Don't** draw Rising Sun rays or other decorative Japanese motifs."
+    ]
+  }
+}
