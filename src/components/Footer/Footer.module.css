@@ -72,16 +72,19 @@
 .hanko {
   display: inline-grid;
   place-items: center;
-  width: 1.4rem;
-  height: 1.4rem;
+  width: 1.65rem;
+  height: 1.65rem;
   margin-left: var(--space-2);
   font-family: var(--font-jp-serif);
-  font-size: var(--text-md);
+  font-size: var(--text-lg);
   font-weight: 700;
   color: var(--accent);
   border: 2px solid var(--accent);
   border-radius: var(--radius-sm);
-  vertical-align: -0.35em;
+  /* Centred on the cap height of the credit beside it, not its baseline */
+  vertical-align: middle;
+  position: relative;
+  top: -0.1em;
   line-height: 1;
 }
 
