@@ -17,6 +17,10 @@
   width: 100%;
   /* The star chart sizes itself to the cell (Hoshitori.module.css) */
   container-type: inline-size;
+  /* The name's size on the ladder, set per rank below. The seal reads it too,
+     so it can sit centred on the name's capitals at every rank. */
+  --name-size: var(--name-maegashira);
+  --name-leading: 1.05;
 }
 
 .cell[data-side='east'] {
@@ -52,9 +56,13 @@
   outline-offset: 0;
 }
 
-/* 東 / 西 side seal, always the character nearest the rail */
+/* 東 / 西 side seal, always the character nearest the rail, centred on the
+   name's line (not its baseline, which left it hanging off the bottom of a
+   Yokozuna's name and floating mid-name on a Maegashira's) */
 .side-seal {
   flex-shrink: 0;
+  align-self: flex-start;
+  margin-block-start: max(0px, calc((var(--name-size) * var(--name-leading) - 1.35rem) / 2));
   display: inline-grid;
   place-items: center;
   width: 1.35rem;
@@ -171,11 +179,11 @@
   opacity: 1;
 }
 
-/* A vacant slot reads as empty, not as an error */
+/* A vacant slot reads as empty, not as an error. The dash is set at the size
+   of the name it stands in for, so it sits level with its partner. */
 .vacant .name {
   color: var(--muted);
   font-weight: 400;
-  font-size: var(--text-md);
 }
 
 /* Ring name: the size ladder is the hierarchy */
@@ -183,9 +191,9 @@
   max-width: 100%;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: var(--name-maegashira);
+  font-size: var(--name-size);
   letter-spacing: 0;
-  line-height: 1.05;
+  line-height: var(--name-leading);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -205,23 +213,35 @@
   text-decoration-color: var(--text);
 }
 
+.cell[data-rank-level='yokozuna'] {
+  --name-size: var(--name-yokozuna);
+}
+
 .cell[data-rank-level='yokozuna'] .name {
-  font-size: var(--name-yokozuna);
   font-weight: 850;
 }
 
+.cell[data-rank-level='ozeki'] {
+  --name-size: var(--name-ozeki);
+}
+
 .cell[data-rank-level='ozeki'] .name {
-  font-size: var(--name-ozeki);
   font-weight: 800;
+}
+
+.cell[data-rank-level='sekiwake'] {
+  --name-size: var(--name-sekiwake);
 }
 
 .cell[data-rank-level='sekiwake'] .name {
-  font-size: var(--name-sekiwake);
   font-weight: 800;
 }
 
+.cell[data-rank-level='komusubi'] {
+  --name-size: var(--name-komusubi);
+}
+
 .cell[data-rank-level='komusubi'] .name {
-  font-size: var(--name-komusubi);
   font-weight: 750;
 }
 
