@@ -9,6 +9,7 @@ import { MovementBadge } from '../MovementBadge/MovementBadge'
 import { PromotionPill } from '../PromotionPill/PromotionPill'
 import type { RikishiRecord } from '../../data/results'
 import { Hoshitori } from '../Hoshitori/Hoshitori'
+import { usePressOnEntry } from '../../hooks/usePressOnEntry'
 import styles from './SideCell.module.css'
 
 interface SideCellProps {
@@ -33,6 +34,16 @@ interface SideCellProps {
   tabbable?: boolean
   /** Pair key for keyboard navigation (shared by east/west partners). */
   pairKey?: string
+}
+
+/** The yusho stamp beside the champion's name, pressed in while the page enters */
+function YushoStamp({ label, lang }: { label: string; lang: string }) {
+  const press = usePressOnEntry()
+  return (
+    <span className={styles.yusho} lang={lang} aria-hidden="true" data-press={press || undefined}>
+      {label}
+    </span>
+  )
 }
 
 /** Gets the display name for a rikishi based on current language */
@@ -87,10 +98,11 @@ function SideCellInner({
           <span className={styles.name} lang={langAttr}>
             {displayName}
           </span>
+          {champion && <YushoStamp label={strings.yusho} lang={langAttr} />}
           {badge}
           {movement && <MovementBadge movement={movement} />}
         </span>
-        {record && <Hoshitori record={record} champion={champion} />}
+        {record && <Hoshitori record={record} champion={champion} sealNarrowOnly />}
       </span>
     </>
   )

@@ -26,13 +26,35 @@
 /* The one fade, shared by the header and the list's arrival. CSS Modules scope
    keyframes per file, so the single declaration lives here and modules refer to
    it as global(fadeIn). The four effects in the budget: fadeIn, riseIn,
-   modalSlideUp, and the 優勝 stamp's stampPress (Hero). */
+   modalSlideUp, and the 優勝 stamp's stampPress (the headline's, then the
+   sheet's yusho stamp beside the name). The champion's gold foil, its glint
+   and sparkle on the List are transitions, not a fifth keyframe. */
 @keyframes fadeIn {
   from {
     opacity: 0;
   }
   to {
     opacity: 1;
+  }
+}
+
+/* A hanko pressed into the paper: the 優勝 stamps, headline and sheet */
+@keyframes stampPress {
+  from {
+    opacity: 0;
+    transform: scale(1.32) rotate(-5deg);
+    /* Accelerate into the paper, as a hand does */
+    animation-timing-function: cubic-bezier(0.55, 0, 0.9, 0.45);
+  }
+  45% {
+    opacity: 1;
+    transform: scale(0.95) rotate(0deg);
+    /* Then the slight give of the seal against the paper */
+    animation-timing-function: var(--ease-out-expo);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
   }
 }
 

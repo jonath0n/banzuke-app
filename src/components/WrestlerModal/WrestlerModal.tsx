@@ -303,7 +303,7 @@ export function WrestlerModal(props: WrestlerModalProps) {
                 className={styles.primaryName}
                 lang={lang}
               >
-                <span className={champion ? styles.highlight : undefined}>
+                <span className={champion ? styles.gold : undefined}>
                   {rikishi.shikona[language] || rikishi.shikona.en}
                 </span>
               </h2>

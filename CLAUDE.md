@@ -91,7 +91,8 @@ and formats in `Asia/Tokyo`.
   and rises (`--accent` text; `--band` fill for the masthead and stamps), indigo marks falls and
   structure (`--fall` text for ▼, make-koshi, lost bouts; `--bar` fill for section bars), black
   (`--text`) marks selection, yellow
-  (`--highlight`) is a screen under ink for what matters now — one highlight per screen. Rank
+  (`--highlight`) is a screen under ink for what matters now — one highlight per screen; gold
+  foil (`--gold*`) is the champion's name alone, the one gradient in the app. Rank
   is still carried by type size first. `src/styles/tokens.test.ts` enforces contrast on every
   pair, so adding a colour means adding it there too.
 - **Motion budget: four keyframe effects in the whole app, all in use** (`fadeIn`,

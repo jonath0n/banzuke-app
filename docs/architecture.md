@@ -181,7 +181,10 @@ whenever there is one, because the kadoban mark reads them too.
   finished — until the next banzuke replaces it — `Hoshitori` shows the ○●休 strip and the
   score on the List, `Bouts` lists the day's card, selected by who is fighting
   (cross-division bouts are published on the Makuuchi card only). An absence counts as a loss
-  for make-koshi. The yusho mark is a red stamp, and the champion's name carries the highlighter.
+  for make-koshi. The yusho mark is a red stamp beside the name (on the score line on a phone, where
+  `Hoshitori`'s `sealNarrowOnly` copy shows), and the champion's name is laid in gold foil (the
+  one gradient in the app), drawn across once while the page enters and then glinted: names without it hold a zero-width band until
+  `data-entered`, so the stroke starts when the results add `data-champion`.
   KACHI-KOSHI / MAKE-KOSHI captions are hidden on the List (weight and plate carry them: kachi-koshi red, make-koshi indigo); the
   word stays in the accessible name. The strip sets its marks in three groups of five and sizes
   itself to the cell (`cqi`), so fifteen days never push the List sideways.

@@ -208,7 +208,7 @@ The banzuke as the results page of a Japanese sports daily on the morning after 
 basho: newsprint grey under a white sheet, a kin-aka red masthead band closed by an ink rule,
 indigo section bars where the rank tier changes, condensed heavy names that scale with rank, the ○● record
 set as a 星取表 in fixed day columns grouped by five, and a yellow highlighter screened over the
-thing that matters now: the champion's name, the yusho race while it is open, the name you
+thing that matters now: the yusho race while it is open, the name you
 searched for.
 
 It is a working table first. The world lends four things only: type (Sofia Sans Condensed with a
@@ -218,7 +218,7 @@ table's tight, aligned rhythm on a 4px base), and one signature move: **the high
 the yellow screen a sports desk lays over the leader's line.
 
 **What this deliberately avoids:** the cream-paper-and-vermilion-seal look this site used to wear
-(and that every "Japanese" interface defaults to); dark stats dashboards with neon; gold; rounded
+(and that every "Japanese" interface defaults to); dark stats dashboards with neon; gold as ornament (it is the champion's alone); rounded
 cards, pills and soft shadows; small tracked caps under 12px; rank told by hue alone; decorative
 Japanese motifs. No Rising Sun forms, ever: the masthead is a flat band, never rays.
 
@@ -234,7 +234,10 @@ Dialogs under Components.
 - Square everything: radius 0, 1.5px ink borders on controls, 1px hairlines between rows.
 - Flat print: only what floats over the page (dialogs, the scroll button) casts a shadow.
 - Four keyframe effects, entrance once per page load, nothing loops. The one authored moment is
-  the 優勝 stamp, pressed like a hanko when the champion first appears.
+  the 優勝 stamp, pressed like a hanko when the champion first appears, and pressed again a
+  beat later beside the champion's name on the sheet (the same `stampPress`); there the
+  gold foil is then laid across the champion's name once, left to right, and a glint runs over
+  it, by transition. Pointing at the name tilts the foil: the glint slides back.
 - Dialogs leave the way they came, faster: 200ms ease-in, a 12px drop and a fade, by
   transition (not a fifth keyframe). A hop from one dialog to the other is a swap, not a close.
 
@@ -265,9 +268,15 @@ in one look: red rose, indigo fell.
   tiers, the heads of the side boxes, and the tier bars in the dialogs. Deep indigo by day, a
   raised indigo by night (a white bar on a dark page glares).
 - **Highlighter** (`--highlight`, with `--on-highlight`; night a deep olive screen with white
-  ink): a screen laid under ink, never a text colour. The champion's name on the sheet, each
-  search match, the undecided yusho race box, the outer focus ring of the search field, and text
+  ink): a screen laid under ink, never a text colour. Each search match, the undecided yusho race box, the outer focus ring of the search field, and text
   selection.
+- **Gold Foil** (`--gold`, `--gold-light`, `--gold-deep`, with `--on-gold`; ink on all three, by
+  night too): 金箔 pressed under the champion's name on the sheet, and nowhere else. The one
+  place a gradient is allowed: the three tones brushed along the band so it catches light like
+  foil, with a glint over it; the ink carries a faint warm halo (`--gold-halo`) to lift it off
+  the metal; it is drawn square on a layer of its own behind the letters; and the glint carries four small four-pointed sparkles (`--gold-spark`) that cross
+  at different speeds and rise as they go. Gold is an honour, not a decoration: one name per
+  sheet.
 
 ### Neutral
 
@@ -287,13 +296,13 @@ in one look: red rose, indigo fell.
 ### Named Rules
 
 **The Two Plates Rule.** Red ranks and rises, indigo structures and falls, black selects, yellow
-highlights. Each plate has one job as a fill (red: masthead and stamps; indigo: section bars) and
+highlights, gold crowns the champion. Each plate has one job as a fill (red: masthead and stamps; indigo: section bars) and
 one as a letterform (red: rank and rises; indigo: falls and losses). A colour never borrows
 another's job, and no fifth hue joins them: data problems keep their own danger and warning.
 
 **The Highlighter Rule.** Yellow only ever sits under text, and only on what the reader is looking
 for or what matters now. If two things on screen are highlighted, one of them is wrong: the yusho
-race drops its screen once the champion is decided, and while searching the champion's screen
+race drops its screen once the champion is decided, and while searching the champion's gold
 yields to the matches.
 
 **The Fill-Is-Band Rule.** Red as a ground is `--band` with `--on-band`; red as a letterform is
@@ -430,9 +439,14 @@ below 720px) and a count (hidden on a phone).
 - **Name ladder:** each side cell holds a 東/西 side seal (1px outline, fills ink on hover; dropped
   on a phone), the name at its rank size, its stamps, the record, and at ≥768px a stable · region
   line in pencil. Hover underlines the name with a 2px ink rule.
-- **Highlighter:** the champion's name, and each match while searching, gets a `--highlight`
-  ground with `--on-highlight` ink, extended 0.18em past the letters by two hard `box-shadow`
-  edges so the screen overruns the word without changing its measure. A match's partner fades to
+- **Highlighter and foil:** each match while searching gets a `--highlight` band under
+  `--on-highlight` ink, and the champion's name the gold foil in the same cut, cut to the type rather than the line box: from just above the
+  capitals to just under the baseline (`--hl-top`, `--hl-height` on the cell; the full line for
+  mincho, whose kanji fill it), so descenders run through it as under a marker. The band's edge
+  stands on the name column and the letters sit `--hl-run` inside it, with an even 0.08em of screen all round the ink, clear of the
+  東/西 seal. While the page enters, the champion's foil is laid left to right (480ms, 700ms in,
+  after the headline stamp lands) and a glint, a narrow run of white light with its sparkles,
+  crosses it (1000ms, from 1150ms); after that the foil is simply there, and hover or focus slides the glint back. A match's partner fades to
   0.62 opacity (still 4.5:1).
 - **Star chart (星取表):** mincho ○●, fifteen fixed 0.95em cells in three groups of five (0.4em
   gaps after days 5 and 10), always left to right on both sides of the rail. Losses in pencil,
@@ -465,8 +479,9 @@ decided. At ≥1200px they stack in the sticky rail; below, they follow the shee
 ### Stamps
 
 Solid rectangles in `--band` with `--on-band` condensed 850 caps (mincho 700 in Japanese):
-the **promotion stamp** (新入幕 / New) beside a name, the **優勝 seal** in the star chart line and,
-larger, beside the champion headline, where it is pressed once like a hanko (`stampPress`: down
+the **promotion stamp** (新入幕 / New) beside a name, the **優勝 stamp** beside the champion's
+name on the sheet (a step up from the promotion stamp; on a phone, where the name line has no
+room, it moves to the score line), and, larger, beside the champion headline, where it is pressed once like a hanko (`stampPress`: down
 a touch large and askew, a slight give, square; a plain fade under reduced motion). **Kadoban** is the one outlined stamp: ink type in an inset
 1.5px ink frame, since the printed banzuke carries no such flag. The status badge in the deck is
 an ink block (outlined for "upcoming").
@@ -495,8 +510,10 @@ The wrestler and stable dialogs are files on the sheet, not cards. The dialog op
   value.
 - **Career:** stops along a 2px ink rule, as hollow ink squares; the stop for the rank he holds now
   is stamped `--band`.
-- **Highlighter:** the champion's name, or while a basho is open what he still needs: one per
-  dialog.
+- **Gold and highlighter:** the champion's name is laid in the same gold foil as on the sheet
+  (`--foil-image`), and its glint and sparkles cross it once each time the dialog opens, after
+  it has risen; while a basho is open, what he still needs takes the yellow highlighter. One
+  of the two per dialog.
 - **Stable dialog:** the same frame, toolbar and bar, then the members as the List's cells on a
   ladder stepped under the stable's own name (`--text-3xl` down to `--text-lg`).
 - **Actions:** square 1.5px-ink controls in condensed caps after a 3px ink rule.
@@ -524,8 +541,10 @@ A 44px ink square, fixed bottom right, with the float shadow; fades in past the 
 ### Don't:
 
 - **Don't** round a corner, add a gradient, or cast a shadow from anything in the page flow.
+  The champion's gold foil is the one exception to the gradient: it stays square, like the
+  stamps beside it (a rounded, feathered edge was tried and read as blur).
 - **Don't** highlight two things on one screen.
-- **Don't** use cream, gold, or a decorative seal; a red stamp always states a fact (優勝,
+- **Don't** use cream, gold anywhere but under the champion's name, or a decorative seal; a red stamp always states a fact (優勝,
   promotion, the wordmark's 番付).
 - **Don't** tell rank, or a rise or a fall, by hue alone: ▲▼, ○● and type size say it first.
 - **Don't** add a fifth keyframe effect (four budgeted, all in use: `fadeIn`, `riseIn`,
