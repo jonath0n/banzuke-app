@@ -114,7 +114,10 @@ for (const division of DIVISIONS) {
           contentType: 'image/png',
         })
 
-        // Accessibility: nothing serious or critical
+        // Accessibility: nothing serious or critical, on the settled page. The entrance (rows
+        // rising, the 優勝 stamps pressed in) passes through partial opacity on purpose, and axe
+        // would measure a stamp mid-press as low contrast.
+        await page.locator('main[data-entered]').waitFor()
         await page.addScriptTag({ path: AXE })
         const violations = await page.evaluate(async () => {
           type Result = { violations: Array<{ id: string; impact: string; nodes: unknown[] }> }

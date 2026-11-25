@@ -133,6 +133,29 @@ describe('SideCell', () => {
     )
   })
 
+  it('stamps the champion beside the name, keeping the chart seal for a phone', () => {
+    const { container } = render(
+      <LanguageProvider>
+        <SideCell
+          rikishi={rikishi}
+          side="east"
+          rankLevel="yokozuna"
+          record={makeRecord()}
+          champion
+        />
+      </LanguageProvider>
+    )
+    const stamps = screen.getAllByText('Yusho')
+    expect(stamps).toHaveLength(2)
+    const [beside, inChart] = stamps
+    // Beside the name, on the name's own line, and silent: the button says it
+    expect(beside.parentElement).toBe(screen.getByText('Test').parentElement)
+    expect(beside).toHaveAttribute('aria-hidden', 'true')
+    // The chart's copy shows only on a narrow sheet (CSS)
+    expect(inChart).toHaveAttribute('data-narrow-only')
+    expect(container.querySelector('[data-champion]')).not.toBeNull()
+  })
+
   it('makes the stable a button of its own, out of the Tab order, when given somewhere to go', async () => {
     const user = userEvent.setup()
     const onSelect = vi.fn()

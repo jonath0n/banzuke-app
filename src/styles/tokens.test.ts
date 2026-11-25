@@ -65,6 +65,10 @@ const TEXT_PAIRS: Array<[string, string]> = [
   ['on-band', 'band'],
   // The highlighter screen, and the ink a screened cell keeps
   ['on-highlight', 'highlight'],
+  // The champion's gold foil, at every tone the ink crosses
+  ['on-gold', 'gold'],
+  ['on-gold', 'gold-light'],
+  ['on-gold', 'gold-deep'],
 ]
 
 /**

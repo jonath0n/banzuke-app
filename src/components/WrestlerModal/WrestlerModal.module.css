@@ -301,8 +301,63 @@
   outline: none;
 }
 
-/* The highlighter (網掛け), as on the sheet: the champion's name, or what
-   he still needs. Hard edges overrun the letters without taking room. */
+/* The champion's name in gold foil, as on the sheet (--foil-image in
+   tokens.css): a band cut to the type, 0.08em of gold round the ink, its
+   edge on the column the rank stamps above stand on. Drawn on a layer of its
+   own behind the letters. Each time the dialog opens, once it has risen into
+   place, the glint and its sparkles cross the name; nothing loops. */
+.gold {
+  /* Where the band sits in this heading's line box: Sofia Sans Condensed at
+     0.95 leading puts the capitals' ink 0.12em down and the baseline 0.775em */
+  --band-top: 0.04em;
+  --band-height: 0.84em;
+  --band-run: 0.06em;
+
+  display: inline-block;
+  position: relative;
+  isolation: isolate;
+  padding-inline: var(--band-run);
+  color: var(--on-gold);
+  text-shadow: 0 0 0.1em var(--gold-halo);
+}
+
+/* Mincho at 1.1 leading: the kanji fill their em box, 0.1em down */
+.primaryName:lang(ja) .gold {
+  --band-top: 0.05em;
+  --band-height: 1.08em;
+  --band-run: 0.04em;
+}
+
+.gold::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset-inline: 0;
+  top: var(--band-top);
+  height: var(--band-height);
+  pointer-events: none;
+  background-image: var(--foil-image);
+  background-repeat: no-repeat;
+  background-position: var(--fx-out);
+  background-size:
+    var(--fx-sizes),
+    100% 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .gold::before {
+    transition: background-position 1000ms cubic-bezier(0.3, 0, 0.2, 1) 380ms;
+  }
+
+  @starting-style {
+    .gold::before {
+      background-position: var(--fx-in);
+    }
+  }
+}
+
+/* The highlighter (網掛け), as on the sheet: what he still needs. Hard
+   edges overrun the letters without taking room. */
 .highlight {
   background: var(--highlight);
   color: var(--on-highlight);

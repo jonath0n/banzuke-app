@@ -10,7 +10,8 @@
  *   red    fill (--band)  the masthead and stamps; text (--accent) rank and rises
  *   indigo fill (--bar)   section bars;           text (--fall)   falls and losses
  *   black (--text)        selection — the chosen tab, a pressed toggle
- *   yellow (--highlight)  a screen under ink — the champion, a search match
+ *   yellow (--highlight)  a screen under ink — what the reader is looking for
+ *   gold   (--gold)       foil under ink — the champion's name, and nothing else
  * Rank hierarchy is still carried by type size first; colour never alone.
  */
 :root {
@@ -50,6 +51,55 @@
   /* The highlighter (網掛け): a screen laid under ink, never a text colour */
   --highlight: #ffe34d;
   --on-highlight: #111111;
+
+  /* Gold foil (金箔), pressed under the champion's name alone: a mid tone,
+     the light it catches and the shade it falls into, all under ink */
+  --gold: #f2cd6c;
+  --gold-light: #fdf1c4;
+  --gold-deep: #e0b44f;
+  --on-gold: #111111;
+  /* Light, not colours: the glint that runs over the foil, the sparkle it
+     carries, and the warm halo that lifts the ink off the gold */
+  --gold-glint: rgb(255 255 255 / 0.8);
+  --gold-spark: rgb(255 255 255 / 0.95);
+  --gold-halo: rgb(255 246 214 / 0.65);
+
+  /* The foil itself, shared by the sheet and the wrestler dialog: layers,
+     top to bottom, a glint, four four-pointed sparkles (two crossed streaks
+     each) and the brushed gold. --fx-in / --fx-out place the glint and its
+     sparkles before and after their pass (each sparkle on a layer of its own
+     width, so they cross at different speeds, rising as they go); the foil
+     always sits at left top. Lengths in em resolve where they are used. */
+  --foil-image:
+    linear-gradient(105deg, transparent 35%, var(--gold-glint) 50%, transparent 65%),
+    radial-gradient(0.16em 0.016em at 30% 28%, var(--gold-spark), transparent),
+    radial-gradient(0.016em 0.16em at 30% 28%, var(--gold-spark), transparent),
+    radial-gradient(0.21em 0.016em at 68% 64%, var(--gold-spark), transparent),
+    radial-gradient(0.016em 0.21em at 68% 64%, var(--gold-spark), transparent),
+    radial-gradient(0.12em 0.016em at 50% 20%, var(--gold-spark), transparent),
+    radial-gradient(0.016em 0.12em at 50% 20%, var(--gold-spark), transparent),
+    radial-gradient(0.17em 0.016em at 24% 74%, var(--gold-spark), transparent),
+    radial-gradient(0.016em 0.17em at 24% 74%, var(--gold-spark), transparent),
+    linear-gradient(
+      100deg,
+      var(--gold-deep) 0%,
+      var(--gold) 14%,
+      var(--gold-light) 30%,
+      var(--gold) 48%,
+      var(--gold-deep) 66%,
+      var(--gold) 82%,
+      var(--gold-light) 100%
+    );
+  --fx-in:
+    -2.5em 0, -1.1em 0.14em, -1.1em 0.14em, -1.7em 0.1em, -1.7em 0.1em, -0.8em 0.2em, -0.8em 0.2em,
+    -2.1em 0.08em, -2.1em 0.08em, left top;
+  --fx-out:
+    calc(100% + 2.5em) 0, calc(100% + 1.1em) -0.12em, calc(100% + 1.1em) -0.12em,
+    calc(100% + 1.7em) -0.16em, calc(100% + 1.7em) -0.16em, calc(100% + 0.8em) -0.1em,
+    calc(100% + 0.8em) -0.1em, calc(100% + 2.1em) -0.2em, calc(100% + 2.1em) -0.2em, left top;
+  --fx-sizes:
+    2.5em 100%, 1.1em 100%, 1.1em 100%, 1.7em 100%, 1.7em 100%, 0.8em 100%, 0.8em 100%, 2.1em 100%,
+    2.1em 100%;
 
   /* Problem colours for data warnings (AA on --bg at small sizes). The -rgb
      triplets are the same colours, for tints; tokens.test.ts keeps them in step. */
@@ -184,6 +234,12 @@
 
     --highlight: #524600;
     --on-highlight: #ffffff;
+
+    /* Foil keeps its shine at night: a little deeper, still under ink */
+    --gold: #e8c060;
+    --gold-light: #f8e5a8;
+    --gold-deep: #d2a640;
+    --on-gold: #111111;
 
     --danger: #fca5a5;
     --danger-rgb: 252 165 165;

@@ -27,11 +27,35 @@
      a little above the line box's own middle (0.525). The seal and the
      stamps beside the name centre on this line. */
   --name-mid: 0.4975;
+  /* Where the name's column edge is: the stable line's first stroke, about
+     0.1em of its 14px in. The name box starts a capital's side bearing
+     (C and O 0.054em, H and K 0.065em) before that, so its first stroke
+     stands on the same edge as the star chart and the stable line. */
+  --name-column: calc(0.1 * var(--text-sm));
+  --name-bearing: 0.055em;
+  /* The highlighter band, cut to the type rather than the line box, with
+     one margin of screen (0.08em) all round the ink: above the capitals'
+     ink (0.177em down the line box; ascenders, at 0.115em, stay inside),
+     under the baseline's (0.85em, round letters' overshoot included), and
+     past the first and last letters, whose own side bearing (about 0.03em)
+     makes up the rest. Descenders run through the bottom edge, as they
+     would under a marker. Measured off the rendered pixels. */
+  --hl-top: 0.097em;
+  --hl-height: 0.833em;
+  --hl-run: 0.05em;
 }
 
-/* Noto Serif JP sits lower in its line box: the middle of the kanji ink */
+/* Noto Serif JP sits lower in its line box: the middle of the kanji ink,
+   which fills the em box, so the band covers nearly the whole line */
 .cell:has(.name:lang(ja)) {
   --name-mid: 0.5725;
+  --name-column: 0px;
+  --name-bearing: 0px;
+  --hl-top: 0px;
+  --hl-height: 100%;
+  /* The line box leaves about 0.055em above and below the kanji; the sides
+     match it */
+  --hl-run: 0.025em;
 }
 
 .cell[data-side='east'] {
@@ -114,9 +138,6 @@
      width (a shrink-wrapped line once cut 大の里 to "大…") */
   align-self: stretch;
   display: flex;
-  /* The shadow-drawn highlighter edges must not be clipped by the name's box */
-  padding-inline: 0.2em;
-  margin-inline: -0.2em;
   align-items: baseline;
   flex-wrap: wrap;
   gap: var(--space-1) var(--space-2);
@@ -210,19 +231,14 @@
   text-overflow: ellipsis;
   text-underline-offset: 0.15em;
   text-decoration-thickness: 2px;
-  /* At display size a capital's side bearing (C and O 0.054em, H and K
-     0.065em) is a visible gap the small stable line below does not have
-     (its own is about 0.1em of 14px). Pull the name back by the difference,
-     so its first stroke stands on the same edge as the star chart and the
-     stable line, at every rank. */
-  margin-inline-start: calc(0.1 * var(--text-sm) - 0.055em);
+  /* Pull the name back by its side bearing (see --name-column) */
+  margin-inline-start: calc(var(--name-column) - var(--name-bearing));
 }
 
 .name:lang(ja) {
   font-family: var(--font-jp-serif);
   font-weight: 700;
   letter-spacing: 0.02em;
-  margin-inline-start: 0;
 }
 
 /* The stamps beside the name (promotion, kadoban, movement) centre on the
@@ -274,23 +290,181 @@
 }
 
 /* The highlighter (網掛け): a yellow screen laid under the name a reader is
-   looking for — the champion, and each match while searching. */
+   looking for, each match while searching; the champion's name gets gold foil
+   in the same cut. A band cut to the type (sized and placed against the
+   font's metrics), not the whole line box. Its leading edge stands on the
+   column edge, where an unscreened name's first stroke would, and the
+   letters sit --hl-run inside it: the screen keeps the column and clears the
+   東/西 seal. */
 .cell[data-champion] .name,
 [data-searching] .cell:not([data-dimmed], .vacant) .name {
-  background: var(--highlight);
-  color: var(--on-highlight);
-  /* The screen runs a little past the letters without taking layout room,
-     so a highlighted name measures exactly what it does unhighlighted */
-  box-shadow:
-    -0.18em 0 0 var(--highlight),
-    0.18em 0 0 var(--highlight);
+  padding-inline: var(--hl-run);
+  margin-inline-start: var(--name-column);
+  max-width: calc(100% - var(--name-column));
 }
 
-/* While searching, the highlighter belongs to the matches alone */
-[data-searching] .cell[data-champion][data-dimmed] .name {
+[data-searching] .cell:not([data-dimmed], .vacant) .name {
+  color: var(--on-highlight);
+  background: linear-gradient(var(--highlight), var(--highlight)) no-repeat left var(--hl-top) /
+    100% var(--hl-height);
+}
+
+/* Gold foil (金箔) for the champion: a brushed sweep of the three gold tones,
+   so the band catches light along its length the way pressed foil does on
+   paper, the ink lifted off it by a faint warm halo. Over the foil travels a
+   glint, a narrow run of light, carrying four sparkles, each a four-pointed
+   star of two crossed streaks of light; each rides a layer of its own
+   width, so on the same %-positions they cross at different speeds, and
+   each rises a little as it goes, like bubbles through champagne (the
+   layers are --foil-image in tokens.css, shared with the wrestler dialog).
+   At rest the glint and its sparkles wait just past the band's far end.
+
+   The foil is a layer of its own behind the letters (::before), cut square
+   like the stamps beside it: a softened edge was tried, and read as blur. */
+
+.cell[data-champion] .name {
+  position: relative;
+  isolation: isolate;
+  color: var(--on-gold);
+  text-shadow: 0 0 0.1em var(--gold-halo);
   background: none;
-  box-shadow: none;
+}
+
+/* While the page enters every name holds an empty foil layer (see below) */
+.cell[data-champion] .name::before,
+:where(main:not([data-entered])) .cell:not(.vacant) .name::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset-inline: 0;
+  top: var(--hl-top);
+  height: var(--hl-height);
+  pointer-events: none;
+}
+
+:where(main:not([data-entered])) .cell:not(.vacant) .name {
+  position: relative;
+  isolation: isolate;
+}
+
+.cell[data-champion] .name::before {
+  background-image: var(--foil-image);
+  background-repeat: no-repeat;
+  background-position: var(--fx-out);
+  background-size:
+    var(--fx-sizes),
+    100% 100%;
+}
+
+/* Tilt the foil: pointed at, the light and its sparkle slide back across
+   the name, and run off again when the pointer leaves */
+.cell[data-champion] .wrestler:hover .name::before,
+.cell[data-champion] .wrestler:focus-visible .name::before {
+  background-position: var(--fx-in);
+}
+
+/* On arrival the foil is laid across the champion's name once, left to
+   right like a marker, after the rows have risen and the headline's 優勝 is
+   pressed; then the glint and its sparkle run across it. Transitions, not
+   keyframes, and their delays only while the page enters: after that (tab
+   switches, searches) the foil is simply there, and only the hover tilt
+   moves. Nothing loops. */
+@media (prefers-reduced-motion: no-preference) {
+  .cell[data-champion] .name::before {
+    transition:
+      background-size 480ms cubic-bezier(0.6, 0, 0.2, 1),
+      background-position 1000ms cubic-bezier(0.3, 0, 0.2, 1),
+      filter var(--dur-fast) ease-out;
+  }
+
+  :where(main:not([data-entered])) .cell[data-champion] .name::before {
+    transition-delay: 700ms, 1150ms, 0ms;
+  }
+}
+
+/* Pointed at during the entrance, the tilt answers at once rather than
+   waiting out the entrance delays */
+.cell[data-champion] .wrestler:hover .name::before,
+.cell[data-champion] .wrestler:focus-visible .name::before {
+  transition-delay: 0s;
+}
+
+/* Once the page has entered, leaving the name puts the glint back past the
+   far end at once: both ends of its run are off the band, so the reset is
+   unseen, and one pass over the name is one sweep, not two */
+main[data-entered] .cell[data-champion] .wrestler:not(:hover, :focus-visible) .name::before {
+  transition-duration: 480ms, 0s, var(--dur-fast);
+}
+
+/* Pressed, the foil gives: it darkens a shade under the finger, as foil
+   does when it is pushed into the paper, and comes back on release */
+.cell[data-champion] .wrestler:active .name::before {
+  filter: brightness(0.92);
+}
+
+/* The results usually land after the sheet, so the champion is often an
+   existing name that gains [data-champion]: while the page enters, every
+   other name holds an empty foil layer, and the glint waits before it, for
+   the stroke and the glint to start from. Ten empty images, or the browser
+   trims these lists to one layer and the foil has nothing to start from. */
+:where(main:not([data-entered])) .cell:not([data-champion], .vacant) .name::before {
+  background-image: none, none, none, none, none, none, none, none, none, none;
+  background-position: var(--fx-in);
+  background-size:
+    var(--fx-sizes),
+    0 100%;
+}
+
+/* …and a champion on the first render starts from the same place */
+@starting-style {
+  main:not([data-entered]) .cell[data-champion] .name::before {
+    background-position: var(--fx-in);
+    background-size:
+      var(--fx-sizes),
+      0 100%;
+  }
+}
+
+/* While searching, the screen belongs to the matches alone */
+[data-searching] .cell[data-champion][data-dimmed] .name {
+  text-shadow: none;
+  padding-inline: 0;
+  margin-inline-start: calc(var(--name-column) - var(--name-bearing));
   color: inherit;
+}
+
+[data-searching] .cell[data-champion][data-dimmed] .name::before {
+  content: none;
+}
+
+/* The yusho stamp beside the champion's name, as in the headline: a step up
+   from the promotion flag, which is the stamp's only neighbour on the line.
+   While the page enters it is pressed like the headline's 優勝, a beat after
+   it, just before the foil is laid across the name (data-press is decided
+   at mount by usePressOnEntry, so a press once started always finishes). */
+.yusho[data-press] {
+  animation: global(stampPress) 560ms 420ms backwards;
+}
+
+.yusho {
+  flex-shrink: 0;
+  padding: 0.15rem 0.4rem;
+  font-family: var(--font-display);
+  font-weight: 850;
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  line-height: 1.1;
+  color: var(--on-band);
+  background: var(--band);
+  white-space: nowrap;
+}
+
+.yusho:lang(ja) {
+  font-family: var(--font-jp-serif);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: none;
 }
 
 /* Promotion seal: 新入幕 / New */
@@ -321,6 +495,11 @@
     letter-spacing: -0.02em;
     white-space: normal;
     overflow-wrap: anywhere;
+  }
+
+  /* The yusho stamp moves to the score line (Hoshitori), where there is room */
+  .yusho {
+    display: none;
   }
 
   /* The 東/西 seal goes: the rail and the side of the row already say it,

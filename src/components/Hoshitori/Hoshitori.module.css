@@ -121,6 +121,19 @@
   font-family: var(--font-jp-serif);
 }
 
+/* On a phone the List's yusho stamp rides here, and is pressed while the page
+   enters, as it is beside the name on a wider sheet (SideCell.module.css;
+   data-press is decided at mount by usePressOnEntry) */
+.seal[data-press] {
+  animation: global(stampPress) 560ms 420ms backwards;
+}
+
+@media (min-width: 601px) {
+  .seal[data-narrow-only] {
+    display: none;
+  }
+}
+
 @media (max-width: 600px) {
   .strip {
     letter-spacing: 0.02em;
