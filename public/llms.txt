@@ -13,4 +13,4 @@ The page draws these plain JSON files; they are the same data, refreshed on ever
 
 ## Notes
 
-- Unofficial fan project, not affiliated with the Japan Sumo Association. Rankings and results come from sumo.or.jp.
+- Unofficial fan project, not affiliated with the Japan Sumo Association. Rankings come from sumo.or.jp; daily results from sumo-api.com.

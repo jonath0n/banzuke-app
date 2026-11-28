@@ -160,6 +160,8 @@ export function Hero({ data, resultsFetchedAt = null, results = null, rankById }
       </div>
 
       <div className={`${styles.front} page-measure`}>
+        {/* The standfirst: what this page is, for a reader who arrived from a search */}
+        <p className={styles.standfirst}>{strings.standfirst}</p>
         <p className={styles.deck}>
           {data ? (
             <>

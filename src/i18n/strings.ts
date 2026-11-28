@@ -11,6 +11,8 @@ import type { Division, Language, Side } from '../types/banzuke'
 
 const en = {
   appTitle: 'Grand Sumo Banzuke',
+  standfirst:
+    'Every rank in all six divisions, in English and Japanese, with each wrestler’s move since the last tournament.',
   /** The home page's title, which is also what search results show: dated, with the Japanese term. */
   homeTitle: (basho: string) => `Grand Sumo Banzuke · ${basho} Rankings · 大相撲番付`,
   skipLink: 'Skip to the banzuke',
@@ -24,9 +26,9 @@ const en = {
   statusUpcomingTomorrow: 'Starts tomorrow',
   statusUpcoming: (days: number) => `Starts in ${days} days`,
   statusCompleted: 'Completed',
-  dataFrom: 'Data from sumo.or.jp',
+  dataFrom: 'Banzuke from sumo.or.jp',
   checked: (relative: string) => `checked ${relative}`,
-  resultsUpdated: (relative: string) => `results updated ${relative}`,
+  resultsUpdated: (relative: string) => `results via sumo-api.com, updated ${relative}`,
   sampleData: 'Bundled sample data',
   division: {
     makuuchi: 'Makuuchi',
@@ -129,7 +131,7 @@ const en = {
   searchCount: (matched: number, total: number) => `${matched} of ${total} wrestlers`,
   noMatches: (query: string) => `Nothing on the sheet for “${query}”.`,
   noMatchesHint:
-    'Try a ring name, stable, region, or a rank like "M5" or "ozeki", in either language.',
+    'Try a ring name, stable, region, or a rank like “M5” or “ozeki”, in either language.',
   noData: 'No rikishi available right now.',
   noDataHint: 'Check back when the next banzuke is announced.',
   loading: 'Loading the banzuke…',
@@ -186,7 +188,7 @@ const en = {
   errorStale: 'Could not refresh the banzuke. Showing the last saved copy.',
   errorNone: 'Could not load the banzuke. Please check your connection and refresh to try again.',
   errorTitle: 'Something went wrong',
-  errorMessage: 'An unexpected error occurred while displaying this content.',
+  errorMessage: 'This part of the page could not be displayed.',
   errorDetails: 'Error details',
   errorRetry: 'Try again',
   errorDialog: 'The details could not be loaded. Reload the page to try again.',
@@ -217,7 +219,7 @@ const en = {
   guide: [
     'The banzuke is the ranking sheet for a grand sumo tournament. The Japan Sumo Association publishes it about two weeks before each of the six tournaments a year: Tokyo in January, May and September, Osaka in March, Nagoya in July and Fukuoka in November.',
     'Wrestlers rank from Yokozuna down through Ozeki, Sekiwake, Komusubi and the numbered Maegashira, across six divisions from Makuuchi to Jonokuchi. At each rank the East side is listed first and stands a half step above the West.',
-    'A majority of wins (kachi-koshi) usually means a rise on the next banzuke and a losing record (make-koshi) a fall; ▲ and ▼ show the move since the last tournament. During a tournament ○ is a win and ● a loss (□ and ■ when one side did not show up, 休 a day absent), a record of three numbers counts wins, losses and absences, and the best record in each division takes the yusho, the championship.',
+    'A majority of wins (kachi-koshi) usually means a rise on the next banzuke and a losing record (make-koshi) a fall; ▲ and ▼ show the move since the last tournament. During a tournament ○ is a win and ● a loss, □ and ■ a forfeit win or loss, and 休 a day absent. A record of three numbers counts wins, losses and absences. The best record in each division takes the yusho, the championship.',
   ],
 }
 
@@ -225,6 +227,7 @@ export type Strings = typeof en
 
 const jp: Strings = {
   appTitle: '大相撲 番付表',
+  standfirst: '日本相撲協会発表の番付を、幕内から序ノ口まで英語と日本語で。',
   homeTitle: (basho: string) => `大相撲 番付表 · ${basho}`,
   skipLink: '番付表へ移動',
   scrollToTop: 'ページの先頭へ',
@@ -236,9 +239,9 @@ const jp: Strings = {
   statusUpcomingTomorrow: '明日初日',
   statusUpcoming: (days: number) => `初日まであと${days}日`,
   statusCompleted: '終了',
-  dataFrom: '出典：日本相撲協会',
+  dataFrom: '番付：日本相撲協会',
   checked: (relative: string) => `${relative}に更新`,
-  resultsUpdated: (relative: string) => `星取は${relative}に更新`,
+  resultsUpdated: (relative: string) => `星取：sumo-api.com（${relative}に更新）`,
   sampleData: 'サンプルデータを表示中',
   division: {
     makuuchi: '幕内',
