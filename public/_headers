@@ -1,0 +1,8 @@
+# Response headers for Workers static assets (copied into dist/ by Vite).
+# Caching is left alone on purpose: everything revalidates (see docs/architecture.md, Deploy),
+# and the fonts under /assets/fonts/ keep their names when they are regenerated.
+/*
+  Strict-Transport-Security: max-age=31536000
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY

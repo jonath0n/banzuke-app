@@ -1,7 +1,7 @@
 {
   "name": "Grand Sumo Banzuke",
   "short_name": "Banzuke",
-  "description": "The official grand sumo banzuke: Makuuchi and Juryo rankings for every tournament, in English and Japanese.",
+  "description": "An unofficial English and Japanese viewer of the grand sumo banzuke: all six divisions, rank changes and daily results, from Japan Sumo Association data.",
   "id": "/",
   "start_url": "/",
   "scope": "/",

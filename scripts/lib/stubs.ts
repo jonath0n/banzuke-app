@@ -7,8 +7,8 @@
  * does the reading and writing.
  */
 import type { BanzukeSet, Rikishi } from '../../src/types/banzuke.ts'
+import { getVenue } from '../../src/constants/venues.ts'
 import { rosterFor } from '../../src/utils/stables.ts'
-import { DIVISIONS } from '../../src/data/schema.ts'
 import { SITE_URL } from './site.ts'
 
 export const SITE = SITE_URL
@@ -112,22 +112,13 @@ export function renderStub(stub: Stub): string {
 `
 }
 
-/** The sitemap: the app's pages with their language alternates, then every stub. */
-export function renderSitemap(stubs: Stub[]): string {
-  const alternates = (loc: string) =>
-    [
-      `    <xhtml:link rel="alternate" hreflang="en" href="${loc}${loc.includes('?') ? '&amp;' : '?'}lang=en" />`,
-      `    <xhtml:link rel="alternate" hreflang="ja" href="${loc}${loc.includes('?') ? '&amp;' : '?'}lang=jp" />`,
-      `    <xhtml:link rel="alternate" hreflang="x-default" href="${loc}" />`,
-    ].join('\n')
-  const page = (loc: string, changefreq: string) =>
-    `  <url>\n    <loc>${loc}</loc>\n    <changefreq>${changefreq}</changefreq>\n${alternates(loc)}\n  </url>`
-  const entries = [
-    page(SITE, 'daily'),
-    ...DIVISIONS.filter((d) => d !== 'makuuchi').map((d) => page(`${SITE}?div=${d}`, 'daily')),
-    ...stubs.map((s) => page(`${SITE}${s.path}`, 'weekly')),
-  ]
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${entries.join('\n')}\n</urlset>\n`
+/**
+ * The sitemap: the app's one page and nothing else. Every view (`?div=`, `?lang=`, `?rikishi=`,
+ * `?heya=`, `?basho=`) is the same document with a canonical to `/`, and the share pages are
+ * `noindex`, so listing any of them would only contradict those signals.
+ */
+export function renderSitemap(): string {
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>${SITE}</loc>\n  </url>\n</urlset>\n`
 }
 
 /** robots.txt: everything is crawlable, and the sitemap is at the site root. */
@@ -138,14 +129,31 @@ export function renderRobots(): string {
 /** JSON-LD for the tournament on the sheet, injected into the built index.html. */
 export function renderJsonLd(data: BanzukeSet): string {
   const basho = data.makuuchi.basho
+  const venue = getVenue(basho.month)
+  const site = {
+    '@type': 'WebSite',
+    '@id': `${SITE}#website`,
+    name: 'Grand Sumo Banzuke',
+    alternateName: '大相撲番付',
+    url: SITE,
+    inLanguage: ['en', 'ja'],
+  }
   const event = {
-    '@context': 'https://schema.org',
     '@type': 'SportsEvent',
     name: basho.name.en,
     alternateName: basho.name.jp,
     sport: 'Sumo',
     startDate: basho.startDate,
     endDate: basho.endDate,
+    eventStatus: 'https://schema.org/EventScheduled',
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    ...(venue && {
+      location: {
+        '@type': 'Place',
+        name: venue.en,
+        address: { '@type': 'PostalAddress', addressCountry: 'JP' },
+      },
+    }),
     url: SITE,
     organizer: {
       '@type': 'SportsOrganization',
@@ -153,5 +161,6 @@ export function renderJsonLd(data: BanzukeSet): string {
       url: 'https://www.sumo.or.jp/',
     },
   }
-  return `<script type="application/ld+json">${JSON.stringify(event)}</script>`
+  const graph = { '@context': 'https://schema.org', '@graph': [site, event] }
+  return `<script type="application/ld+json">${JSON.stringify(graph)}</script>`
 }

@@ -6,18 +6,15 @@
     <title>Grand Sumo Banzuke</title>
     <meta
       name="description"
-      content="The official grand sumo banzuke: Makuuchi and Juryo rankings for every tournament, in English and Japanese."
+      content="An unofficial English and Japanese viewer of the grand sumo banzuke: all six divisions, rank changes and daily results, from Japan Sumo Association data."
     />
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#d10010" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#a3000c" />
     <link rel="canonical" href="%SITE_URL%" />
-    <link rel="alternate" hreflang="en" href="%SITE_URL%?lang=en" />
-    <link rel="alternate" hreflang="ja" href="%SITE_URL%?lang=jp" />
-    <link rel="alternate" hreflang="x-default" href="%SITE_URL%" />
     <meta property="og:title" content="Grand Sumo Banzuke" />
     <meta
       property="og:description"
-      content="The official grand sumo banzuke: Makuuchi and Juryo rankings for every tournament, in English and Japanese."
+      content="An unofficial English and Japanese viewer of the grand sumo banzuke: all six divisions, rank changes and daily results, from Japan Sumo Association data."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="%SITE_URL%" />
@@ -30,7 +27,7 @@
     <meta name="twitter:title" content="Grand Sumo Banzuke" />
     <meta
       name="twitter:description"
-      content="The official grand sumo banzuke: Makuuchi and Juryo rankings for every tournament, in English and Japanese."
+      content="An unofficial English and Japanese viewer of the grand sumo banzuke: all six divisions, rank changes and daily results, from Japan Sumo Association data."
     />
     <meta name="twitter:image" content="%SITE_URL%og-image.png" />
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
@@ -38,6 +35,8 @@
     <link rel="manifest" href="%BASE_URL%manifest.webmanifest" />
     <meta name="apple-mobile-web-app-title" content="Banzuke" />
     <meta name="application-name" content="Banzuke" />
+    <!-- The banzuke the app fetches first (useBanzuke's DATA_URL): start it with the HTML, not after the JS -->
+    <link rel="preload" as="fetch" href="%BASE_URL%latest-banzuke.json" crossorigin />
     <!-- Portraits are loaded only when a dialog opens: resolve the host early, connect on demand -->
     <link rel="dns-prefetch" href="https://www.sumo.or.jp" />
     <link
@@ -57,10 +56,22 @@
     />
   </head>
   <body>
+    <!-- The page text for crawlers that do not run JavaScript (Bing often, AI search bots always) -->
     <noscript>
+      <h1>Grand Sumo Banzuke</h1>
       <p lang="en">
-        The banzuke needs JavaScript to draw. The data it draws is at
-        <a href="latest-banzuke.json">latest-banzuke.json</a>.
+        An unofficial English and Japanese viewer of the grand sumo banzuke, the official ranking
+        sheet the Japan Sumo Association publishes before each tournament. It shows all six
+        divisions, from Makuuchi to Jonokuchi, each wrestler's rise or fall from the last
+        tournament, and the day-by-day results while a tournament is on.
+      </p>
+      <p lang="ja">
+        大相撲の番付を英語と日本語で表示する非公式サイトです。幕内から序ノ口までの全六段、前場所からの昇降、本場所中の毎日の結果を、日本相撲協会のデータをもとに掲載しています。
+      </p>
+      <p lang="en">
+        The viewer needs JavaScript. The data it draws is plain JSON:
+        <a href="latest-banzuke.json">Makuuchi and Juryo</a> and
+        <a href="latest-lower.json">Makushita to Jonokuchi</a>.
       </p>
     </noscript>
     <div id="root"></div>
