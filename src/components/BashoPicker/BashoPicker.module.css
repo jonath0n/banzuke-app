@@ -37,6 +37,7 @@
 }
 
 .step:focus-visible,
+.label:focus-visible,
 .current:focus-visible {
   outline: 2px solid var(--text);
   outline-offset: 2px;
@@ -72,8 +73,19 @@
 }
 
 @media (max-width: 600px) {
+  /* Never wider than the phone: on one line, an archived sheet's label and
+     "Current banzuke" pushed the page sideways (WCAG 1.4.10), so on a phone
+     their words wrap inside the control instead. */
   .picker {
     min-height: 44px;
+    max-width: 100%;
+  }
+
+  .label,
+  .current {
+    white-space: normal;
+    min-width: 0;
+    padding-block: var(--space-1);
   }
 
   .step {

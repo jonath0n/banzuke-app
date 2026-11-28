@@ -63,9 +63,23 @@ export function Bouts({ results, division, rows, day, onChangeDay, onSelectRikis
   const playoffHeadingId = `${headingId}-playoff`
 
   const name = (f: Fighter) => f.shikona[language] || f.shikona.en
-  const fighter = (f: Fighter, winner: boolean) => {
+  // The ○/● marks and the bold are only for the eye, so a decided bout also says
+  // who won in words, after the name (WCAG 1.3.1); the name still leads the
+  // button's accessible name, as it leads what is visible.
+  const fighter = (f: Fighter, winner: boolean, decided: boolean) => {
     const rikishi = f.id !== null ? byId.get(f.id) : undefined
-    const text = winner ? <strong>{name(f)}</strong> : name(f)
+    const outcome = decided ? (
+      <span className="visually-hidden">
+        {language === 'jp' ? '、' : ', '}
+        {winner ? strings.boutWin : strings.boutLoss}
+      </span>
+    ) : null
+    const text = (
+      <>
+        {winner ? <strong>{name(f)}</strong> : name(f)}
+        {outcome}
+      </>
+    )
     if (rikishi && onSelectRikishi) {
       return (
         <button
@@ -91,7 +105,7 @@ export function Bouts({ results, division, rows, day, onChangeDay, onSelectRikis
         className={styles.east}
         data-won={(m.winnerId !== null && m.winnerId === m.east.id) || undefined}
       >
-        {fighter(m.east, m.winnerId !== null && m.winnerId === m.east.id)}
+        {fighter(m.east, m.winnerId !== null && m.winnerId === m.east.id, m.winnerId !== null)}
       </span>
       <span className={styles.result} title={kimariteGloss(m.kimarite) ?? undefined}>
         {m.winnerId === null ? strings.undecided : kimariteLabel(m.kimarite, language)}
@@ -100,7 +114,7 @@ export function Bouts({ results, division, rows, day, onChangeDay, onSelectRikis
         className={styles.west}
         data-won={(m.winnerId !== null && m.winnerId === m.west.id) || undefined}
       >
-        {fighter(m.west, m.winnerId !== null && m.winnerId === m.west.id)}
+        {fighter(m.west, m.winnerId !== null && m.winnerId === m.west.id, m.winnerId !== null)}
       </span>
     </li>
   )

@@ -46,7 +46,18 @@ describe('useKeyboardShortcuts', () => {
     expect(onFocusSearch).not.toHaveBeenCalled()
   })
 
-  it('does not fire letter shortcuts while typing, but Escape blurs the field', () => {
+  it('keeps focus in a field with text on Escape, so the reader can type again', () => {
+    const { onEscape } = setup()
+    const input = document.createElement('input')
+    input.value = 'ura'
+    document.body.appendChild(input)
+    input.focus()
+    press('Escape', {}, input)
+    expect(onEscape).toHaveBeenCalledTimes(1)
+    expect(document.activeElement).toBe(input)
+  })
+
+  it('does not fire letter shortcuts while typing, but Escape blurs an empty field', () => {
     const { onToggleLanguage, onEscape } = setup()
     const input = document.createElement('input')
     document.body.appendChild(input)

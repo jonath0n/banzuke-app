@@ -79,9 +79,11 @@
   opacity: 0.75;
 }
 
-/* No matches in this division for the current search */
+/* No matches in this division for the current search: lighter, not fainter.
+   Opacity took the muted count to 2.9:1 (WCAG 1.4.3 wants 4.5:1), and the
+   token contrast test cannot see it; the "0/" says the rest. */
 .count.none {
-  opacity: 0.6;
+  font-weight: 400;
 }
 
 @media (max-width: 960px) {
@@ -96,7 +98,7 @@
 }
 
 /* Where the English names no longer fit, the rank prefix (M, J, Ms …) stands
-   in for them; the name stays in the accessible name. */
+   in for them; the name, visually hidden, stays in the accessible name with it. */
 @media (max-width: 720px) {
   .name {
     position: absolute;

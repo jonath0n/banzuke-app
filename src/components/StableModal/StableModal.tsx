@@ -1,6 +1,7 @@
 import { useEffect, useId, useMemo, useRef } from 'react'
 import { useLingeringProps } from '../../hooks/useLingeringProps'
 import { createPortal } from 'react-dom'
+import { focusFirst } from '../../utils/focus'
 import type { Division, Rikishi } from '../../types/banzuke'
 import type { Stable } from '../../data/stables'
 import type { StableRoster } from '../../utils/stables'
@@ -67,6 +68,9 @@ export function StableModal(props: StableModalProps) {
   // Set when a member is opened from here: the wrestler dialog takes over, so
   // this dialog's close must not pull focus back out of it.
   const handingOverRef = useRef(false)
+  // Set by "Show on the banzuke": the way out is the filtered sheet, so focus
+  // goes to the search field that now holds the stable's name.
+  const showingRef = useRef(false)
   const { language } = useLanguage()
   const strings = useStrings()
   const nameId = useId()
@@ -79,6 +83,7 @@ export function StableModal(props: StableModalProps) {
       if (!dialog.open) {
         openerRef.current = document.activeElement
         handingOverRef.current = false
+        showingRef.current = false
         // A hop from the sibling dialog: its sheet has just gone, so the scrim
         // is already down and must not fade in again (data-hop, in the CSS).
         dialog.toggleAttribute(
@@ -105,7 +110,13 @@ export function StableModal(props: StableModalProps) {
     openerRef.current = null
     onClose()
     if (handingOverRef.current) return
-    if (opener instanceof HTMLElement && document.contains(opener)) opener.focus()
+    // The opener is usually the stable button in the wrestler dialog, which may have
+    // closed (and a deep link has none), so fall back to the sheet rather than <body>.
+    const search = showingRef.current
+      ? document.querySelector<HTMLElement>('[data-search-input]')
+      : null
+    showingRef.current = false
+    focusFirst([search, opener, document.getElementById('main')])
   }
 
   // A click on the dialog element itself (not its content) is a backdrop click.
@@ -213,7 +224,10 @@ export function StableModal(props: StableModalProps) {
               <button
                 type="button"
                 className={styles.action}
-                onClick={() => onShowOnBanzuke(roster.name[language] || roster.name.en)}
+                onClick={() => {
+                  showingRef.current = true
+                  onShowOnBanzuke(roster.name[language] || roster.name.en)
+                }}
               >
                 {strings.showOnBanzuke}
               </button>

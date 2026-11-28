@@ -91,6 +91,20 @@ Older links may carry `?view=` or `?guide=` from the removed Sheet view; both ar
 - **Arrow keys are spatial**: ↑ ↓ walk ranks and ← → cross the row to the East/West partner.
   `keyTarget()` in `src/utils/rovingFocus.ts` works from the `data-side`/`data-pair` attributes
   on every wrestler button.
+- `scroll-margin-block` on the wrestler button keeps the focused one clear of the sticky tier
+  bar above and the scroll-to-top button below (WCAG 2.4.11); arrowing up without it left the
+  wrestler wholly under the bar.
+- **Focus never falls to `<body>`** (WCAG 2.4.3). A dialog's close goes through `focusFirst()`
+  (`src/utils/focus.ts`), which skips an opener that is gone, is `<body>` (a deep link), or sits
+  in the sibling dialog that has since closed, for the wrestler's List button, then `<main>`;
+  "Show on the banzuke" lands in the search field. Controls that remove themselves (the basho
+  picker's links while an archive loads, the empty state's buttons) ask `usePendingFocus()` in
+  `App` for their successor by selector: the same picker control on the new sheet (else its
+  label, which is then announced in a status line), the division tab, the search field.
+- The skip link focuses `<main>` without writing `#main`: with the hash in the URL, the dialog's
+  `history.back()` restored focus to `<main>` instead of the wrestler.
+- Escape in a search field with text empties it and keeps focus there; in an empty field it
+  lets go.
 - The dialog's ‹ › and ← → follow canonical order (`banzuke.rikishi`) laid out right to left like
   the printed banzuke — ‹ and ← go to the next (lower) rank, › and → to the previous — and **replace** the
   URL entry so Back still closes.
