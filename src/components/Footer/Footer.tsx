@@ -107,7 +107,11 @@ export function Footer({
         </span>
       </p>
       <p className={styles.small}>
-        <span>{strings.footerDisclaimer}</span> <span>{strings.footerRights(currentYear)}</span>
+        <span>{strings.footerDisclaimer}</span>{' '}
+        <ExternalLink href="https://github.com/jonath0n/banzuke-app/issues">
+          {strings.footerCorrections}
+        </ExternalLink>{' '}
+        <span>{strings.footerRights(currentYear)}</span>
       </p>
       {onToggleHelp && (
         <ShortcutsHelp

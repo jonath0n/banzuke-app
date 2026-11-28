@@ -137,7 +137,12 @@ export function dataModified(data: BanzukeSet, results: ResultsFile | null): str
 }
 
 /** JSON-LD for the page and the tournament on the sheet, injected into the built index.html. */
-export function renderJsonLd(data: BanzukeSet, results: ResultsFile | null = null): string {
+export function renderJsonLd(
+  data: BanzukeSet,
+  results: ResultsFile | null = null,
+  /** The page's own title and description, so the markup says what the <head> says. */
+  page: { name: string; description: string } | null = null
+): string {
   const basho = data.makuuchi.basho
   const venue = getVenue(basho.month)
   const city = getVenueCity(basho.month)
@@ -181,16 +186,17 @@ export function renderJsonLd(data: BanzukeSet, results: ResultsFile | null = nul
       url: 'https://www.sumo.or.jp/',
     },
   }
-  const page = {
+  const webPage = {
     '@type': 'WebPage',
     '@id': `${SITE}#page`,
     url: SITE,
-    name: 'Grand Sumo Banzuke',
+    name: page?.name ?? 'Grand Sumo Banzuke',
+    ...(page && { description: page.description }),
     isPartOf: { '@id': site['@id'] },
     about: { '@id': event['@id'] },
     inLanguage: 'en',
     dateModified: dataModified(data, results),
   }
-  const graph = { '@context': 'https://schema.org', '@graph': [site, page, event] }
+  const graph = { '@context': 'https://schema.org', '@graph': [site, webPage, event] }
   return `<script type="application/ld+json">${JSON.stringify(graph)}</script>`
 }

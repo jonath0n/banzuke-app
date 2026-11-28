@@ -99,6 +99,12 @@ describe('share pages', () => {
     })
   })
 
+  it('names the page with its own title and description when given them', () => {
+    const json = renderJsonLd(data, null, { name: 'A title', description: 'A description' })
+    expect(json).toContain('"@type":"WebPage","@id":"https://banzuke.app/#page"')
+    expect(json).toContain('"name":"A title","description":"A description"')
+  })
+
   it('dates the page by whichever of the banzuke and its results changed last', () => {
     const banzuke = { makuuchi: makeBanzuke({ fetchedAt: '2026-08-25T00:00:00.000Z' }) }
     expect(dataModified(banzuke, null)).toBe('2026-08-25T00:00:00.000Z')

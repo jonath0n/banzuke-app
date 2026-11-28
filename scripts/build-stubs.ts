@@ -18,7 +18,7 @@ import { normalizeLowerSnapshot, normalizeSnapshot } from '../src/data/normalize
 import { validateLowerSnapshot, validateSnapshot } from '../src/data/schema.ts'
 import { everyRikishi } from '../src/data/divisions.ts'
 import { validateResults, resultsFileName, type ResultsFile } from '../src/data/results.ts'
-import { injectHome } from './lib/home.ts'
+import { homeTitle, injectHome } from './lib/home.ts'
 import {
   dataModified,
   renderJsonLd,
@@ -98,7 +98,9 @@ async function main(): Promise<number> {
   const indexPath = join(dist, 'index.html')
   let index = injectHome(await readFile(indexPath, 'utf8'), data, results)
   if (!index.includes('application/ld+json')) {
-    index = index.replace('</head>', `    ${renderJsonLd(data, results)}\n  </head>`)
+    const description = /<meta\s+name="description"\s+content="([^"]*)"/.exec(index)?.[1] ?? ''
+    const page = { name: homeTitle(data), description }
+    index = index.replace('</head>', `    ${renderJsonLd(data, results, page)}\n  </head>`)
   }
   await writeFile(indexPath, index, 'utf8')
   console.log(

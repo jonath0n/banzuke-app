@@ -15,3 +15,23 @@
   Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self'; img-src 'self' data: https://www.sumo.or.jp; font-src 'self'; connect-src 'self' https://cloudflareinsights.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()
   Cross-Origin-Opener-Policy: same-origin
+
+# llms.txt has Japanese in it; say so, or clients that default text/* to Latin-1 garble it.
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
+
+# The data files are for the app and for agents (llms.txt), not for search results.
+/latest-banzuke.json
+  X-Robots-Tag: noindex
+/latest-lower.json
+  X-Robots-Tag: noindex
+/sample-data.json
+  X-Robots-Tag: noindex
+/rikishi-profiles.json
+  X-Robots-Tag: noindex
+/stables.json
+  X-Robots-Tag: noindex
+/banzuke/*
+  X-Robots-Tag: noindex
+/results/*
+  X-Robots-Tag: noindex
