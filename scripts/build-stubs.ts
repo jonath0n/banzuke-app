@@ -71,7 +71,7 @@ async function main(): Promise<number> {
     await mkdir(dir, { recursive: true })
     await writeFile(join(dir, 'index.html'), renderStub(stub), 'utf8')
   }
-  await writeFile(join(dist, 'sitemap.xml'), renderSitemap(stubs), 'utf8')
+  await writeFile(join(dist, 'sitemap.xml'), renderSitemap(), 'utf8')
   await writeFile(join(dist, 'robots.txt'), renderRobots(), 'utf8')
 
   const indexPath = join(dist, 'index.html')

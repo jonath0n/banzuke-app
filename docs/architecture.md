@@ -237,9 +237,15 @@ survived a tournament.
 `scripts/build-stubs.ts` runs after `vite build` and writes `dist/r/<id>/` and `dist/heya/<id>/`
 — one small page per wrestler and stable with its own title, description and JSA portrait for
 the unfurl, `noindex`, a canonical to the app and a redirect that keeps `?lang=` — plus the
-sitemap (with en/ja/x-default alternates), `robots.txt` and a `SportsEvent` JSON-LD in `index.html`,
-all on `SITE_URL` from `scripts/lib/site.ts`. The
-dialog's Copy link hands out the share page. They are build output, never committed.
+sitemap, `robots.txt` and a `SportsEvent` JSON-LD in `index.html`, all on `SITE_URL` from
+`scripts/lib/site.ts`. The dialog's Copy link hands out the share page. They are build output,
+never committed.
+
+Only `/` is meant to be in search. Every view (`?div=`, `?lang=`, `?rikishi=`, `?heya=`,
+`?basho=`) is the same document with a canonical to `/`, and the share pages are `noindex`, so the
+sitemap lists `/` alone and `index.html` carries no hreflang alternates. Listing views or share
+pages would contradict those signals (Search Console reports them as "Submitted URL marked
+noindex").
 
 ## Deploy and data refresh
 

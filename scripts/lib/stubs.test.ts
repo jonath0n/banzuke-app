@@ -46,13 +46,13 @@ describe('share pages', () => {
     )
   })
 
-  it('lists the app pages with language alternates and an x-default, then every stub', () => {
-    const xml = renderSitemap([wrestlerStub(makeRikishi(), 'Aki')])
+  it('lists only the app page: no views, share pages or language alternates', () => {
+    const xml = renderSitemap()
+    expect(xml.match(/<loc>/g)).toHaveLength(1)
     expect(xml).toContain('<loc>https://banzuke.app/</loc>')
-    expect(xml).toContain('hreflang="ja" href="https://banzuke.app/?lang=jp"')
-    expect(xml).toContain('hreflang="x-default" href="https://banzuke.app/"')
-    expect(xml).toContain('href="https://banzuke.app/?div=juryo&amp;lang=en"')
-    expect(xml).toContain('<loc>https://banzuke.app/r/3842/</loc>')
+    expect(xml).not.toContain('hreflang')
+    expect(xml).not.toContain('/r/')
+    expect(xml).not.toMatch(/banzuke\.app\/\?/)
   })
 
   it('points robots.txt at the sitemap on the site', () => {
@@ -66,5 +66,19 @@ describe('share pages', () => {
     expect(json).toContain('"@type":"SportsEvent"')
     expect(json).toContain('"startDate":"2026-09-13"')
     expect(json).toContain('"name":"September Grand Sumo Tournament"')
+  })
+
+  it('names the site and places the tournament at its venue', () => {
+    const graph = JSON.parse(
+      renderJsonLd(data)
+        .replace(/^<script[^>]*>/, '')
+        .replace(/<\/script>$/, '')
+    ) as { '@graph': Record<string, unknown>[] }
+    const [site, event] = graph['@graph']
+    expect(site).toMatchObject({ '@type': 'WebSite', url: 'https://banzuke.app/' })
+    expect(event).toMatchObject({
+      eventStatus: 'https://schema.org/EventScheduled',
+      location: { '@type': 'Place', name: 'Ryogoku Kokugikan, Tokyo' },
+    })
   })
 })

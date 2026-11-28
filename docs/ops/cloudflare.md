@@ -25,6 +25,11 @@ refresh. `banzuke.app` is registered at Squarespace and its DNS is a Cloudflare 
    hostname equals `www.banzuke.app`, dynamic redirect to
    `concat("https://banzuke.app", http.request.uri.path)`, status 301, preserve the query string.
 
+6. **Always Use HTTPS.** Cloudflare → banzuke.app → SSL/TLS → Edge Certificates → *Always Use
+   HTTPS* on (turned on 2026-11-28). Plain `http://` then 301s to `https://` with the path and
+   query kept; without it `http://banzuke.app/` answered 200 and showed up in Search Console. The
+   HSTS header in `public/_headers` relies on it.
+
 ## Cutover
 
 1. Before merging the hosting PR, deploy it from the branch to check it: `npm run build`, then
@@ -42,6 +47,7 @@ refresh. `banzuke.app` is registered at Squarespace and its DNS is a Cloudflare 
 
 ```sh
 curl -sI https://banzuke.app/ | head -1                       # 200
+curl -sI http://banzuke.app/ | grep -i location               # https://banzuke.app/
 curl -s https://banzuke.app/robots.txt                        # Sitemap: https://banzuke.app/sitemap.xml
 curl -sI 'https://www.banzuke.app/?lang=jp' | grep -i location  # https://banzuke.app/?lang=jp
 ```
