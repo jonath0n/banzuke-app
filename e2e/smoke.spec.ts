@@ -118,6 +118,11 @@ for (const division of DIVISIONS) {
         // rising, the 優勝 stamps pressed in) passes through partial opacity on purpose, and axe
         // would measure a stamp mid-press as low contrast.
         await page.locator('main[data-entered]').waitFor()
+        // Let the 優勝 stamp's press and the foil finish first: axe samples colours, and a stamp
+        // caught half-pressed reads as low contrast. Nothing in the app loops, so this ends.
+        await page.waitForFunction(() =>
+          document.getAnimations().every((a) => a.playState !== 'running')
+        )
         await page.addScriptTag({ path: AXE })
         const violations = await page.evaluate(async () => {
           type Result = { violations: Array<{ id: string; impact: string; nodes: unknown[] }> }

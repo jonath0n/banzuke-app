@@ -33,6 +33,10 @@ describe('Footer', () => {
       screen.getByText(new RegExp(`© ${new Date().getFullYear()} Jon Allen`))
     ).toBeInTheDocument()
     expect(screen.getByText(/unofficial fan project/)).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Report a correction' })).toHaveAttribute(
+      'href',
+      'https://github.com/jonath0n/banzuke-app/issues'
+    )
     expect(screen.queryByText('Keyboard shortcuts')).toBeNull()
   })
 

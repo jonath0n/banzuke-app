@@ -22,7 +22,7 @@ describe('the home page before JavaScript', () => {
     expect(html).toMatch(/Hoshoryu <span lang="ja">豊昇龍<\/span><\/td><th scope="row">Yokozuna/)
     expect(html).toMatch(/Onosato <span lang="ja">大の里<\/span><\/td><\/tr>/)
     // No results yet: no records, no yusho
-    expect(html).not.toContain('yusho')
+    expect(html).not.toContain('Makuuchi yusho:')
     expect(html).not.toMatch(/\(\d+–\d+\)/)
   })
 
@@ -39,12 +39,20 @@ describe('the home page before JavaScript', () => {
     expect(html).toContain('Onosato <span lang="ja">大の里</span> (10–2)</td>')
   })
 
+  it('says the top of the sheet in a sentence and carries the reading guide in both languages', () => {
+    const html = renderNoscriptFacts(data, null)
+    expect(html).toMatch(/<p>Top of the banzuke\. Yokozuna: Hoshoryu, Onosato\./)
+    expect(html).toContain('<h2 lang="en">Reading the banzuke</h2>')
+    expect(html).toContain('<h2 lang="ja">番付の見方</h2>')
+    expect(html).toMatch(/<p lang="ja">番付は大相撲の本場所の順位表です/)
+  })
+
   it('ignores another tournament’s results', () => {
     const html = renderNoscriptFacts(
       data,
       makeResultsFile({ bashoId: 636, yusho: { makuuchi: 4227 } })
     )
-    expect(html).not.toContain('yusho')
+    expect(html).not.toContain('Makuuchi yusho:')
   })
 
   it('fills the title, social titles, facts and the results preload into the built page', () => {

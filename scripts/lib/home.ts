@@ -85,7 +85,23 @@ export function renderNoscriptFacts(data: BanzukeSet, results: ResultsFile | nul
     .filter((s): s is string => s !== null)
   if (prizes.length) lines.push(`<p>Special prizes (sansho): ${prizes.join('; ')}.</p>`)
 
-  const rows = groupRowsByRank(data.makuuchi.rikishi).map((g) => {
+  // The top of the sheet as a sentence too: some text extractors drop tables.
+  const groups = groupRowsByRank(data.makuuchi.rikishi)
+  const sanyaku = (['yokozuna', 'ozeki', 'sekiwake', 'komusubi'] as const)
+    .map((level) => {
+      const names = groups
+        .filter((g) => g.rankLevel === level)
+        .flatMap((g) => [g.east, g.west])
+        .filter((r): r is Rikishi => r !== null)
+        .map((r) => `${escapeHtml(r.shikona.en)}${record(r)}`)
+      if (names.length === 0) return null
+      const rank = data.makuuchi.rikishi.find((r) => r.rankLevel === level)?.rankName.en ?? level
+      return `${escapeHtml(rank)}: ${names.join(', ')}`
+    })
+    .filter((s): s is string => s !== null)
+  if (sanyaku.length) lines.push(`<p>Top of the banzuke. ${sanyaku.join('. ')}.</p>`)
+
+  const rows = groups.map((g) => {
     const rank = (g.east ?? g.west)?.rankName ?? g.name
     const cell = (r: Rikishi | null) => (r ? `${nameOf(r)}${record(r)}` : '')
     return `<tr><td>${cell(g.east)}</td><th scope="row">${escapeHtml(rank.en)} <span lang="ja">${escapeHtml(
@@ -99,6 +115,14 @@ export function renderNoscriptFacts(data: BanzukeSet, results: ResultsFile | nul
       ''
     )}</tbody></table>`
   )
+  // The guide the footer shows, for readers that never run the app.
+  for (const language of ['en', 'jp'] as const) {
+    const lang = language === 'jp' ? 'ja' : 'en'
+    lines.push(`<h2 lang="${lang}">${escapeHtml(STRINGS[language].guideHeading)}</h2>`)
+    for (const paragraph of STRINGS[language].guide) {
+      lines.push(`<p lang="${lang}">${escapeHtml(paragraph)}</p>`)
+    }
+  }
   return lines.join('\n      ')
 }
 
