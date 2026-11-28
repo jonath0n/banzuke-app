@@ -302,7 +302,7 @@ function AppContent() {
               {archiveIndex && archiveIndex.basho.length > 0 && (
                 <BashoPicker
                   current={archive.entry}
-                  previous={archive.entry ? archive.previous : (archiveIndex.basho.at(-1) ?? null)}
+                  previous={archive.previous}
                   next={archive.next}
                   nextIsLive={archive.nextIsLive}
                   onChange={handleChangeBasho}

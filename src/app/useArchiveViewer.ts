@@ -10,7 +10,11 @@ export interface ArchiveViewer {
   /** The index entry being viewed. */
   entry: ArchiveIndexEntry | null
   loading: boolean
-  /** The entries before and after the one on screen; the live banzuke counts as the last. */
+  /**
+   * The entries before and after the one on screen; the live banzuke counts as the last. On the
+   * live sheet, `previous` is the newest archived tournament that is not the live one (the index
+   * ends at the live tournament, so its last entry is not "previous").
+   */
   previous: ArchiveIndexEntry | null
   next: ArchiveIndexEntry | null
   /** Stepping off the newest archived tournament returns to the live one. */
@@ -52,7 +56,11 @@ export function useArchiveViewer(
   }, [bashoParam, index, entry])
 
   const position = entry && index ? index.basho.findIndex((b) => b.bashoId === entry.bashoId) : -1
-  const previous = position > 0 && index ? index.basho[position - 1] : null
+  const previous = entry
+    ? position > 0 && index
+      ? index.basho[position - 1]
+      : null
+    : ([...(index?.basho ?? [])].reverse().find((b) => b.bashoId !== liveBashoId) ?? null)
   const after = position >= 0 && index ? (index.basho[position + 1] ?? null) : null
   const nextIsLive = entry !== null && (after === null || after.bashoId === liveBashoId)
 
