@@ -65,6 +65,16 @@ export function Footer({
 
   return (
     <footer className={`${styles.footer} page-measure`}>
+      <section className={styles.guide} aria-labelledby="guide-heading">
+        <h2 id="guide-heading" className={styles.guideHeading}>
+          {strings.guideHeading}
+        </h2>
+        {strings.guide.map((paragraph) => (
+          <p key={paragraph} className={styles.guideText}>
+            {paragraph}
+          </p>
+        ))}
+      </section>
       <p className={styles.line}>
         <span className={styles.credit}>
           {strings.footerMadeBy}

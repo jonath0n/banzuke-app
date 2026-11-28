@@ -1,0 +1,16 @@
+# Grand Sumo Banzuke
+
+> An unofficial English and Japanese viewer of the grand sumo banzuke (番付), the ranking sheet the Japan Sumo Association publishes before each of the six yearly tournaments. One page, https://banzuke.app/, shows all six divisions, each wrestler's rise or fall since the last tournament, and the day-by-day results while a tournament is on. Data is refreshed from sumo.or.jp every day.
+
+## Data
+
+The page draws these plain JSON files; they are the same data, refreshed on every deploy.
+
+- [Makuuchi and Juryo banzuke](https://banzuke.app/latest-banzuke.json): the current top two divisions, ranks, sides, stables and birthplaces, in English and Japanese
+- [Makushita to Jonokuchi banzuke](https://banzuke.app/latest-lower.json): the four lower divisions
+- [Archive index](https://banzuke.app/banzuke/index.json): earlier tournaments, each in `banzuke/<id>.json`
+- Results: per tournament at `https://banzuke.app/results/<id>.json` (the id is in the banzuke file), with records, bouts, the yusho and special prizes
+
+## Notes
+
+- Unofficial fan project, not affiliated with the Japan Sumo Association. Rankings and results come from sumo.or.jp.

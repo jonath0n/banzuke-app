@@ -27,6 +27,14 @@ Older links may carry `?view=` or `?guide=` from the removed Sheet view; both ar
   first modal open; the app must work without it.
 - Photos are hot-linked from the JSA CDN with `referrerPolicy="no-referrer"`; only the `60x60`
   and `270x474` sizes exist upstream.
+- **The page draws once.** `index.html` preloads `latest-banzuke.json`, and the build adds a
+  preload for the tournament's `results/<id>.json` while one exists (`scripts/lib/home.ts`).
+  In season `App` holds the first draw until the results file has answered, at most
+  `RESULTS_WAIT_MS` (1 s): the champion's headline arriving after the sheet pushed the whole page
+  down. The skeleton and the footer appear only after `SKELETON_DELAY_MS` (500 ms) of loading,
+  so a quick load paints no interim state for the deck to push down either. Together these took
+  the layout shift from 0.87 (desktop) and 0.15 (mobile) to 0. Don't show the skeleton
+  immediately again without measuring CLS.
 
 ## The List
 
@@ -237,9 +245,22 @@ survived a tournament.
 `scripts/build-stubs.ts` runs after `vite build` and writes `dist/r/<id>/` and `dist/heya/<id>/`
 — one small page per wrestler and stable with its own title, description and JSA portrait for
 the unfurl, `noindex`, a canonical to the app and a redirect that keeps `?lang=` — plus the
-sitemap, `robots.txt` and a `SportsEvent` JSON-LD in `index.html`, all on `SITE_URL` from
+sitemap, `robots.txt` and the JSON-LD in `index.html` (a `WebSite`, a `WebPage` dated by
+`dataModified` and the `SportsEvent` with its venue), all on `SITE_URL` from
 `scripts/lib/site.ts`. The dialog's Copy link hands out the share page. They are build output,
 never committed.
+
+The same step fills in what `index.html` says before JavaScript runs (`scripts/lib/home.ts`):
+the dated title the app also sets (`homeTitle`, and the og/twitter copies), and, at the
+`<!-- banzuke-facts -->` marker inside `<noscript>`, the tournament, the yusho and sansho once
+decided, and a plain Makuuchi table with records. Google renders the app; Bing often and AI
+search crawlers never do, and for them this is the page. It mirrors the rendered page and is
+rebuilt on every data deploy. The sitemap's `<lastmod>` is the same `dataModified` date.
+
+`public/_headers` sets HSTS, a CSP (same-origin, plus JSA portraits and the Cloudflare Web
+Analytics beacon), Permissions-Policy and friends; no inline script or `style` attribute is
+needed, so keep it that way. Unknown paths get `public/404.html` (`not_found_handling`).
+`public/llms.txt` points agents at the JSON.
 
 Only `/` is meant to be in search. Every view (`?div=`, `?lang=`, `?rikishi=`, `?heya=`,
 `?basho=`) is the same document with a canonical to `/`, and the share pages are `noindex`, so the

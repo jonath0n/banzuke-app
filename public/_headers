@@ -1,8 +1,17 @@
 # Response headers for Workers static assets (copied into dist/ by Vite).
 # Caching is left alone on purpose: everything revalidates (see docs/architecture.md, Deploy),
 # and the fonts under /assets/fonts/ keep their names when they are regenerated.
+#
+# CSP: everything is same-origin except the JSA portraits (img) and the Cloudflare Web Analytics
+# beacon the edge injects (script from static.cloudflareinsights.com, beacons to /cdn-cgi/rum or
+# cloudflareinsights.com). No inline script or style attribute is needed: React sets `style`
+# through the CSSOM, and the JSON-LD block is data, not script. The 404 page's CSS is a file.
+# .app is on the HSTS preload list as a whole TLD; the only hosts are the apex and www.
 /*
-  Strict-Transport-Security: max-age=31536000
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: DENY
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self'; img-src 'self' data: https://www.sumo.or.jp; font-src 'self'; connect-src 'self' https://cloudflareinsights.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()
+  Cross-Origin-Opener-Policy: same-origin

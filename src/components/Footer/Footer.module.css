@@ -32,6 +32,27 @@
   outline-offset: 2px;
 }
 
+/* The key a sports page prints under its tables: what the sheet is and how to read it */
+.guide {
+  max-width: 68ch;
+  margin-bottom: var(--space-4);
+  color: var(--text);
+}
+
+.guideHeading {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 800;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.guideText {
+  margin: 0 0 var(--space-2);
+  line-height: 1.6;
+}
+
 /* Credits run on as one line of text, separated by interpuncts */
 .line {
   margin: 0;

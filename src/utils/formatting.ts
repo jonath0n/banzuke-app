@@ -67,8 +67,9 @@ export function groupRowsByRank(rows: Rikishi[]): RankGroup[] {
       const other = rikishi.side === 'east' ? 'west' : 'east'
       if (!group[other]) {
         group[other] = rikishi
-      } else if (import.meta.env.DEV) {
-        // A full position means the data disagrees with itself; never drop silently.
+      } else if (import.meta.env?.DEV) {
+        // A full position means the data disagrees with itself; never drop silently. (`?.`: the
+        // build scripts run this under tsx, where there is no import.meta.env.)
         console.warn(`groupRowsByRank: no slot for ${rikishi.shikona.en} at ${key}`)
       }
     }

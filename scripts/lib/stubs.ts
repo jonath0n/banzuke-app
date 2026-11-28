@@ -7,7 +7,8 @@
  * does the reading and writing.
  */
 import type { BanzukeSet, Rikishi } from '../../src/types/banzuke.ts'
-import { getVenue } from '../../src/constants/venues.ts'
+import { getVenue, getVenueCity } from '../../src/constants/venues.ts'
+import type { ResultsFile } from '../../src/data/results.ts'
 import { rosterFor } from '../../src/utils/stables.ts'
 import { SITE_URL } from './site.ts'
 
@@ -117,8 +118,9 @@ export function renderStub(stub: Stub): string {
  * `?heya=`, `?basho=`) is the same document with a canonical to `/`, and the share pages are
  * `noindex`, so listing any of them would only contradict those signals.
  */
-export function renderSitemap(): string {
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>${SITE}</loc>\n  </url>\n</urlset>\n`
+export function renderSitemap(lastmod?: string): string {
+  const date = lastmod ? `\n    <lastmod>${lastmod.slice(0, 10)}</lastmod>` : ''
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>${SITE}</loc>${date}\n  </url>\n</urlset>\n`
 }
 
 /** robots.txt: everything is crawlable, and the sitemap is at the site root. */
@@ -127,21 +129,34 @@ export function renderRobots(): string {
 }
 
 /** JSON-LD for the tournament on the sheet, injected into the built index.html. */
-export function renderJsonLd(data: BanzukeSet): string {
+/** The newest moment the data on the page changed: the banzuke snapshot or the day's results. */
+export function dataModified(data: BanzukeSet, results: ResultsFile | null): string {
+  const times = [data.makuuchi.fetchedAt]
+  if (results && results.bashoId === data.makuuchi.basho.id) times.push(results.fetchedAt)
+  return times.sort().at(-1) as string
+}
+
+/** JSON-LD for the page and the tournament on the sheet, injected into the built index.html. */
+export function renderJsonLd(data: BanzukeSet, results: ResultsFile | null = null): string {
   const basho = data.makuuchi.basho
   const venue = getVenue(basho.month)
+  const city = getVenueCity(basho.month)
   const site = {
     '@type': 'WebSite',
     '@id': `${SITE}#website`,
     name: 'Grand Sumo Banzuke',
-    alternateName: '大相撲番付',
+    alternateName: ['大相撲番付', 'banzuke.app'],
     url: SITE,
     inLanguage: ['en', 'ja'],
   }
   const event = {
     '@type': 'SportsEvent',
+    '@id': `${SITE}#basho-${basho.id}`,
     name: basho.name.en,
     alternateName: basho.name.jp,
+    description: `The ${basho.name.en} of ${basho.year}: fifteen days of top-division sumo${
+      venue ? ` at ${venue.en}` : ''
+    }, ranked by the banzuke the Japan Sumo Association published before it.`,
     sport: 'Sumo',
     startDate: basho.startDate,
     endDate: basho.endDate,
@@ -151,9 +166,14 @@ export function renderJsonLd(data: BanzukeSet): string {
       location: {
         '@type': 'Place',
         name: venue.en,
-        address: { '@type': 'PostalAddress', addressCountry: 'JP' },
+        address: {
+          '@type': 'PostalAddress',
+          ...(city && { addressLocality: city }),
+          addressCountry: 'JP',
+        },
       },
     }),
+    image: `${SITE}og-image.png`,
     url: SITE,
     organizer: {
       '@type': 'SportsOrganization',
@@ -161,6 +181,16 @@ export function renderJsonLd(data: BanzukeSet): string {
       url: 'https://www.sumo.or.jp/',
     },
   }
-  const graph = { '@context': 'https://schema.org', '@graph': [site, event] }
+  const page = {
+    '@type': 'WebPage',
+    '@id': `${SITE}#page`,
+    url: SITE,
+    name: 'Grand Sumo Banzuke',
+    isPartOf: { '@id': site['@id'] },
+    about: { '@id': event['@id'] },
+    inLanguage: 'en',
+    dateModified: dataModified(data, results),
+  }
+  const graph = { '@context': 'https://schema.org', '@graph': [site, page, event] }
   return `<script type="application/ld+json">${JSON.stringify(graph)}</script>`
 }

@@ -3,6 +3,7 @@ import type { Banzuke, Language, Rikishi } from '../types/banzuke'
 import { pick } from '../i18n/pick'
 import type { Strings } from '../i18n/strings'
 import type { StableRoster } from '../utils/stables'
+import { bashoLabel } from '../utils/formatting'
 
 /** The tab reads what is on screen: the open dialog's subject first, then the app. */
 export function useDocumentTitle(
@@ -13,7 +14,6 @@ export function useDocumentTitle(
   strings: Strings
 ): void {
   useEffect(() => {
-    const bashoName = banzuke ? pick(banzuke.basho.name, language) : ''
     const subject = selectedRikishi
       ? pick(selectedRikishi.shikona, language)
       : roster
@@ -21,8 +21,8 @@ export function useDocumentTitle(
         : ''
     document.title = subject
       ? `${subject} · ${strings.appTitle}`
-      : bashoName
-        ? `${strings.appTitle} · ${bashoName}`
+      : banzuke
+        ? strings.homeTitle(bashoLabel(banzuke.basho, language))
         : strings.appTitle
   }, [banzuke, language, roster, selectedRikishi, strings])
 }

@@ -1,7 +1,7 @@
 {
   "name": "Grand Sumo Banzuke",
   "short_name": "Banzuke",
-  "description": "An unofficial English and Japanese viewer of the grand sumo banzuke: all six divisions, rank changes and daily results, from Japan Sumo Association data.",
+  "description": "Sumo rankings in English and Japanese: the banzuke (番付) for all six divisions, with rank changes and daily results. Unofficial, from Japan Sumo Association data.",
   "id": "/",
   "start_url": "/",
   "scope": "/",
