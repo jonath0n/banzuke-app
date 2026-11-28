@@ -159,6 +159,40 @@ describe('App', () => {
     expect(window.location.search).toBe('')
   })
 
+  it('links the live sheet back to the tournament before it, not to itself', async () => {
+    // The real index ends at the live tournament (archive-files.test.ts insists on it).
+    const archived = makeArchiveIndex().basho[1]
+    vi.stubGlobal(
+      'fetch',
+      vi.fn((url: RequestInfo | URL) =>
+        Promise.resolve(
+          String(url).includes('banzuke/index.json')
+            ? jsonResponse(
+                makeArchiveIndex({
+                  basho: [
+                    archived,
+                    {
+                      ...archived,
+                      bashoId: 637,
+                      month: 9,
+                      startDate: '2026-09-13',
+                      file: '637.json',
+                    },
+                  ],
+                })
+              )
+            : String(url).includes('rikishi-profiles')
+              ? jsonResponse({ version: 1, fetchedAt: '2026-09-04T00:00:00Z', profiles: {} })
+              : jsonResponse(makeRawSnapshot())
+        )
+      )
+    )
+    render(<App />)
+    const link = await screen.findByRole('link', { name: /^Previous tournament/ })
+    expect(link).toHaveAccessibleName('Previous tournament: Jul 2026 (Nagoya)')
+    expect(link).toHaveAttribute('href', '/?basho=636')
+  })
+
   it('ignores a ?basho= the archive does not know', async () => {
     window.history.replaceState(null, '', '/?basho=600')
     render(<App />)
