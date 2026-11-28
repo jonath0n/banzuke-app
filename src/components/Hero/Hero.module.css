@@ -81,6 +81,14 @@
   padding-top: var(--space-4);
 }
 
+/* What the page is, in one line: a newspaper's standfirst, set quieter than the deck */
+.standfirst {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--muted);
+}
+
 /* Tournament · venue · dates, then the status */
 .deck {
   display: flex;

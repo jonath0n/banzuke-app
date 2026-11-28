@@ -35,7 +35,7 @@ describe('Hero', () => {
     expect(screen.getByText(/Ryogoku Kokugikan, Tokyo/)).toBeInTheDocument()
     expect(screen.getByText(/Sep 13\s*[–-]\s*27, 2026/)).toBeInTheDocument()
     expect(
-      screen.getByText(/Banzuke announced Aug 31, 2026,? 6:00\sAM JST · Data from sumo.or.jp/)
+      screen.getByText(/Banzuke announced Aug 31, 2026,? 6:00\sAM JST · Banzuke from sumo.or.jp/)
     ).toBeInTheDocument()
   })
 
@@ -66,14 +66,14 @@ describe('Hero', () => {
   it('reports the results freshness in season in place of the snapshot stamp', () => {
     renderHero('2026-09-20T03:00:00Z', 'en', '2026-09-20T01:00:00Z')
     expect(
-      screen.getByText(/Data from sumo.or.jp, results updated 2 hours ago/)
+      screen.getByText(/Banzuke from sumo.or.jp, results via sumo-api.com, updated 2 hours ago/)
     ).toBeInTheDocument()
     expect(screen.queryByText(/checked/)).toBeNull()
   })
 
   it('reports the results freshness in Japanese', () => {
     renderHero('2026-09-20T03:00:00Z', 'jp', '2026-09-20T01:00:00Z')
-    expect(screen.getByText(/星取は2\s?時間前に更新/)).toBeInTheDocument()
+    expect(screen.getByText(/星取：sumo-api.com（2\s?時間前に更新）/)).toBeInTheDocument()
   })
 
   it('names the bundled sample data as such', () => {
