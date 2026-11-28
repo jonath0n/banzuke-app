@@ -11,6 +11,8 @@ import type { Division, Language, Side } from '../types/banzuke'
 
 const en = {
   appTitle: 'Grand Sumo Banzuke',
+  /** The home page's title, which is also what search results show: dated, with the Japanese term. */
+  homeTitle: (basho: string) => `Grand Sumo Banzuke · ${basho} Rankings · 大相撲番付`,
   skipLink: 'Skip to the banzuke',
   scrollToTop: 'Scroll to top',
   languageGroup: 'Language selection',
@@ -210,12 +212,19 @@ const en = {
   footerDisclaimer:
     'This is an unofficial fan project and is not affiliated with the Japan Sumo Association.',
   footerRights: (year: number) => `© ${year} Jon Allen. All Rights Reserved.`,
+  guideHeading: 'Reading the banzuke',
+  guide: [
+    'The banzuke is the ranking sheet for a grand sumo tournament. The Japan Sumo Association publishes it about two weeks before each of the six tournaments a year: Tokyo in January, May and September, Osaka in March, Nagoya in July and Fukuoka in November.',
+    'Wrestlers rank from Yokozuna down through Ozeki, Sekiwake, Komusubi and the numbered Maegashira, across six divisions from Makuuchi to Jonokuchi. At each rank the East side is listed first and stands a half step above the West.',
+    'A majority of wins (kachi-koshi) usually means a rise on the next banzuke and a losing record (make-koshi) a fall; ▲ and ▼ show the move since the last tournament. During a tournament ○ is a win and ● a loss, and the best record in each division takes the yusho, the championship.',
+  ],
 }
 
 export type Strings = typeof en
 
 const jp: Strings = {
   appTitle: '大相撲 番付表',
+  homeTitle: (basho: string) => `大相撲 番付表 · ${basho}`,
   skipLink: '番付表へ移動',
   scrollToTop: 'ページの先頭へ',
   languageGroup: '言語の選択',
@@ -396,6 +405,12 @@ const jp: Strings = {
   footerFontBy: '作',
   footerDisclaimer: '本サイトは非公式のファンプロジェクトであり、日本相撲協会とは関係ありません。',
   footerRights: (year: number) => `© ${year} Jon Allen. All Rights Reserved.`,
+  guideHeading: '番付の見方',
+  guide: [
+    '番付は大相撲の本場所の順位表です。日本相撲協会が年六場所それぞれの約二週間前に発表します。一月・五月・九月は東京、三月は大阪、七月は名古屋、十一月は福岡で開かれます。',
+    '力士は横綱を頂点に大関・関脇・小結・前頭と続き、幕内から序ノ口まで六つの段に分かれます。同じ地位では東が先に書かれ、西より半枚上です。',
+    '勝ち越しなら次の番付で上がり、負け越しなら下がるのが基本で、▲▼は前場所からの昇降を表します。場所中は○が勝ち、●が負けで、各段で最も成績の良い力士が優勝します。',
+  ],
 }
 
 export const STRINGS: Record<Language, Strings> = { en, jp }

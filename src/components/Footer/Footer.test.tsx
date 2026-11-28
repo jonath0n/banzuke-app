@@ -36,6 +36,18 @@ describe('Footer', () => {
     expect(screen.queryByText('Keyboard shortcuts')).toBeNull()
   })
 
+  it('explains how to read the banzuke, in the reader’s language', () => {
+    renderFooter('en')
+    const guide = screen.getByRole('region', { name: 'Reading the banzuke' })
+    expect(guide).toHaveTextContent(/ranking sheet for a grand sumo tournament/)
+    expect(guide).toHaveTextContent(/kachi-koshi/)
+  })
+
+  it('explains the banzuke in Japanese mode', () => {
+    renderFooter('jp')
+    expect(screen.getByRole('region', { name: '番付の見方' })).toHaveTextContent(/順位表/)
+  })
+
   it('translates its chrome in Japanese mode', () => {
     renderFooter('jp')
     expect(screen.getByRole('link', { name: '日本相撲協会' })).toBeInTheDocument()

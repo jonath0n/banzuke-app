@@ -61,6 +61,18 @@ const EMPTY: Rikishi[] = []
 
 /** How long the entrance cascade may run after the banzuke first renders. */
 const ENTRANCE_MS = 1200
+/**
+ * In season the results file adds the champion's headline and the records. The first draw waits
+ * for it (it is preloaded with the HTML), at most this long, so the page appears once instead of
+ * growing under the reader: the headline arriving late pushed the whole sheet down.
+ */
+const RESULTS_WAIT_MS = 1000
+/**
+ * The skeleton (and the footer under it) appear only when loading is slow. The data is preloaded
+ * with the HTML and nearly always lands first; a skeleton painted under a short masthead was then
+ * pushed down by the tournament's deck as the sheet arrived, the page's whole layout shift.
+ */
+const SKELETON_DELAY_MS = 500
 
 /** The division named in the URL, when it is on offer. */
 function resolveDivision(param: string | null, offered: readonly Division[]): Division {
@@ -129,12 +141,6 @@ function AppContent() {
     [setBashoParam]
   )
 
-  useEffect(() => {
-    if (!data || entered) return
-    const timer = window.setTimeout(() => setEntered(true), ENTRANCE_MS)
-    return () => window.clearTimeout(timer)
-  }, [data, entered])
-
   // Every division the data has, plus the lower ones while their file is on its way.
   const offered = useMemo(
     () =>
@@ -162,6 +168,35 @@ function AppContent() {
     champions,
     on: resultsOn,
   } = useResultsOverlay(banzuke, phase, resultsParam)
+  // The first draw only: once the page has drawn, later loads (another tournament from the
+  // picker, history) behave as before: the skeleton shows at once and nothing unmounts.
+  const [waitedForResults, setWaitedForResults] = useState(false)
+  const resultsExpected = banzuke !== null && phase.inSeason && resultsOn
+  const resultsPending =
+    resultsExpected &&
+    !waitedForResults &&
+    (results.status === 'idle' || results.status === 'loading')
+  const drawn = useEverTrue(banzuke !== null && !resultsPending)
+  const holding = !drawn && resultsPending
+  useEffect(() => {
+    if (drawn || !resultsExpected || waitedForResults) return
+    const timer = window.setTimeout(() => setWaitedForResults(true), RESULTS_WAIT_MS)
+    return () => window.clearTimeout(timer)
+  }, [drawn, resultsExpected, waitedForResults])
+
+  const [slowLoad, setSlowLoad] = useState(false)
+  useEffect(() => {
+    if (drawn || slowLoad) return
+    const timer = window.setTimeout(() => setSlowLoad(true), SKELETON_DELAY_MS)
+    return () => window.clearTimeout(timer)
+  }, [drawn, slowLoad])
+  const showChrome = drawn || slowLoad
+
+  useEffect(() => {
+    if (!data || holding || entered) return
+    const timer = window.setTimeout(() => setEntered(true), ENTRANCE_MS)
+    return () => window.clearTimeout(timer)
+  }, [data, holding, entered])
   // Defaults to the latest fought day; the stepper's › reaches a later
   // published card via lastSteppableDay inside Bouts.
   const day = boutsDay ?? (results.results ? Math.max(1, results.results.day) : 1)
@@ -255,173 +290,180 @@ function AppContent() {
         {strings.skipLink}
       </a>
       <Hero
-        data={banzuke}
+        data={holding ? null : banzuke}
         resultsFetchedAt={results.results?.fetchedAt ?? null}
         results={file}
         rankById={rankById}
       />
       <main id="main" tabIndex={-1} data-entered={entered || undefined}>
-        {status === 'loading' && <BanzukeGridSkeleton />}
-        {problemMessage && !data && (
-          <div role="alert" className={`${styles.status} ${styles.error}`}>
-            {problemMessage}
-          </div>
-        )}
-        {problemMessage && data && (
-          <div role="status" className={`${styles.status} ${styles.warning}`}>
-            {problemMessage}
-          </div>
-        )}
-        {/* Search and the overlay switches as one toolbar: a single row on a
-            wide screen, stacked on a phone. */}
-        <div className={styles.toolbar}>
-          {banzuke && allRows.length > 0 && (
-            <SearchBar
-              value={query}
-              onChange={(value) => setSearchQuery(value || null)}
-              totalCount={allRows.length}
-              matchedCount={matchedCount}
-            />
-          )}
-          {banzuke && (
-            <div className={styles.controls}>
-              {prevEntry && (
-                <ChangesToggle
-                  on={diffOn}
-                  onChange={(on) => setDiffParam(on === changesDefault ? null : on ? '1' : '0')}
-                  sinceLabel={sinceLabel}
+        {(status === 'loading' || holding) && showChrome && <BanzukeGridSkeleton />}
+        {!holding && (
+          <>
+            {problemMessage && !data && (
+              <div role="alert" className={`${styles.status} ${styles.error}`}>
+                {problemMessage}
+              </div>
+            )}
+            {problemMessage && data && (
+              <div role="status" className={`${styles.status} ${styles.warning}`}>
+                {problemMessage}
+              </div>
+            )}
+            {/* Search and the overlay switches as one toolbar: a single row on a
+                wide screen, stacked on a phone. */}
+            <div className={styles.toolbar}>
+              {banzuke && allRows.length > 0 && (
+                <SearchBar
+                  value={query}
+                  onChange={(value) => setSearchQuery(value || null)}
+                  totalCount={allRows.length}
+                  matchedCount={matchedCount}
                 />
               )}
-              {results.results && (
-                <ResultsToggle
-                  on={resultsOn}
-                  onChange={(on) => setResultsParam(on ? null : '0')}
-                  day={results.results.day}
-                />
-              )}
-              {archiveIndex && archiveIndex.basho.length > 0 && (
-                <BashoPicker
-                  current={archive.entry}
-                  previous={archive.previous}
-                  next={archive.next}
-                  nextIsLive={archive.nextIsLive}
-                  onChange={handleChangeBasho}
-                />
+              {banzuke && (
+                <div className={styles.controls}>
+                  {prevEntry && (
+                    <ChangesToggle
+                      on={diffOn}
+                      onChange={(on) => setDiffParam(on === changesDefault ? null : on ? '1' : '0')}
+                      sinceLabel={sinceLabel}
+                    />
+                  )}
+                  {results.results && (
+                    <ResultsToggle
+                      on={resultsOn}
+                      onChange={(on) => setResultsParam(on ? null : '0')}
+                      day={results.results.day}
+                    />
+                  )}
+                  {archiveIndex && archiveIndex.basho.length > 0 && (
+                    <BashoPicker
+                      current={archive.entry}
+                      previous={archive.previous}
+                      next={archive.next}
+                      nextIsLive={archive.nextIsLive}
+                      onChange={handleChangeBasho}
+                    />
+                  )}
+                </div>
               )}
             </div>
-          )}
-        </div>
-        {/* In season, today's line: the day, the card so far, the leader, the freshness. */}
-        {banzuke && file && !lowerTab && tournamentStatus?.kind === 'live' && (
-          <TodayStrip
-            results={file}
-            division={division}
-            rows={allRows}
-            day={tournamentStatus.day}
-            totalDays={tournamentStatus.totalDays}
-          />
-        )}
-        {/* The tabs sit on the top edge of the list, not in the controls row
-            above it, and the tablist reads best immediately before the panel
-            it labels. Tabs and panel share a wrapper so that, beside a side
-            rail, the tabs keep the sheet's width. */}
-        <div className={styles.board}>
-          {banzuke && showTabs && (
-            <DivisionTabs
-              value={division}
-              onChange={handleChangeDivision}
-              divisions={offered}
-              counts={counts}
-              matched={search.matchedByDivision}
-            />
-          )}
-          {banzuke && (
-            <ErrorBoundary>
-              <div
-                id={PANEL_ID}
-                className={`${styles.panel} ${showTabs ? styles.seated : ''}`}
-                role={showTabs ? 'tabpanel' : undefined}
-                aria-labelledby={showTabs ? tabId(division) : undefined}
-                onPointerEnter={prefetchProfiles}
-                onFocus={prefetchProfiles}
-              >
-                {/* The division as a heading for readers walking the outline; the
-                  tab already names it for the eye. */}
-                <h2 className="visually-hidden">{strings.division[division]}</h2>
-                {lowerMessage === 'loading' && (
-                  <div role="status" className={styles.status}>
-                    {strings.lowerLoading}
-                  </div>
-                )}
-                {lowerMessage === 'unavailable' && (
-                  <div role="alert" className={`${styles.status} ${styles.warning}`}>
-                    {strings.lowerUnavailable}
-                  </div>
-                )}
-                {lowerMessage === 'loading' && <BanzukeGridSkeleton />}
-                {!lowerMessage && (
-                  <BanzukeGrid
-                    key={division}
-                    rows={allRows}
-                    highlight={highlight}
-                    movements={movements}
-                    kadoban={kadoban}
-                    records={overlayRecords}
-                    champions={champions}
-                    onSelectRikishi={handleSelectRikishi}
-                    onSelectStable={selection.onSelectStable}
-                    emptyReason={isFiltering ? 'no-matches' : 'no-data'}
-                    query={query}
-                    otherMatches={otherMatches}
-                    onClearSearch={handleClearSearch}
-                  />
-                )}
-                {diffWanted && previous.status === 'loading' && (
-                  <div role="status" className="visually-hidden">
-                    {strings.loading}
-                  </div>
-                )}
-                {diffWanted && previous.status === 'unavailable' && (
-                  <div role="status" className={`${styles.status} ${styles.warning}`}>
-                    {strings.changesUnavailable}
-                  </div>
-                )}
-                {((diffWanted && diff && !isFiltering) || (file && !isFiltering && !lowerTab)) && (
-                  // Who left and the day's bouts: beside the sheet on a wide
-                  // screen, after it otherwise (App.module.css).
-                  <div className={styles.aside} data-aside="">
-                    {diffWanted && diff && !isFiltering && (
-                      <Departed
-                        division={division}
-                        departures={diff.byDivision[division]}
-                        sinceLabel={sinceLabel}
-                        lowerLoaded={data != null && divisionsIn(data).some(isLowerDivision)}
-                        onSelectRikishi={handleSelectRikishi}
-                      />
+            {/* In season, today's line: the day, the card so far, the leader, the freshness. */}
+            {banzuke && file && !lowerTab && tournamentStatus?.kind === 'live' && (
+              <TodayStrip
+                results={file}
+                division={division}
+                rows={allRows}
+                day={tournamentStatus.day}
+                totalDays={tournamentStatus.totalDays}
+              />
+            )}
+            {/* The tabs sit on the top edge of the list, not in the controls row
+                above it, and the tablist reads best immediately before the panel
+                it labels. Tabs and panel share a wrapper so that, beside a side
+                rail, the tabs keep the sheet's width. */}
+            <div className={styles.board}>
+              {banzuke && showTabs && (
+                <DivisionTabs
+                  value={division}
+                  onChange={handleChangeDivision}
+                  divisions={offered}
+                  counts={counts}
+                  matched={search.matchedByDivision}
+                />
+              )}
+              {banzuke && (
+                <ErrorBoundary>
+                  <div
+                    id={PANEL_ID}
+                    className={`${styles.panel} ${showTabs ? styles.seated : ''}`}
+                    role={showTabs ? 'tabpanel' : undefined}
+                    aria-labelledby={showTabs ? tabId(division) : undefined}
+                    onPointerEnter={prefetchProfiles}
+                    onFocus={prefetchProfiles}
+                  >
+                    {/* The division as a heading for readers walking the outline; the
+                      tab already names it for the eye. */}
+                    <h2 className="visually-hidden">{strings.division[division]}</h2>
+                    {lowerMessage === 'loading' && (
+                      <div role="status" className={styles.status}>
+                        {strings.lowerLoading}
+                      </div>
                     )}
-                    {file && !isFiltering && !lowerTab && (
-                      <Bouts
-                        results={file}
-                        division={division}
+                    {lowerMessage === 'unavailable' && (
+                      <div role="alert" className={`${styles.status} ${styles.warning}`}>
+                        {strings.lowerUnavailable}
+                      </div>
+                    )}
+                    {lowerMessage === 'loading' && <BanzukeGridSkeleton />}
+                    {!lowerMessage && (
+                      <BanzukeGrid
+                        key={division}
                         rows={allRows}
-                        day={day}
-                        onChangeDay={setBoutsDay}
+                        highlight={highlight}
+                        movements={movements}
+                        kadoban={kadoban}
+                        records={overlayRecords}
+                        champions={champions}
                         onSelectRikishi={handleSelectRikishi}
+                        onSelectStable={selection.onSelectStable}
+                        emptyReason={isFiltering ? 'no-matches' : 'no-data'}
+                        query={query}
+                        otherMatches={otherMatches}
+                        onClearSearch={handleClearSearch}
                       />
                     )}
+                    {diffWanted && previous.status === 'loading' && (
+                      <div role="status" className="visually-hidden">
+                        {strings.loading}
+                      </div>
+                    )}
+                    {diffWanted && previous.status === 'unavailable' && (
+                      <div role="status" className={`${styles.status} ${styles.warning}`}>
+                        {strings.changesUnavailable}
+                      </div>
+                    )}
+                    {((diffWanted && diff && !isFiltering) ||
+                      (file && !isFiltering && !lowerTab)) && (
+                      // Who left and the day's bouts: beside the sheet on a wide
+                      // screen, after it otherwise (App.module.css).
+                      <div className={styles.aside} data-aside="">
+                        {diffWanted && diff && !isFiltering && (
+                          <Departed
+                            division={division}
+                            departures={diff.byDivision[division]}
+                            sinceLabel={sinceLabel}
+                            lowerLoaded={data != null && divisionsIn(data).some(isLowerDivision)}
+                            onSelectRikishi={handleSelectRikishi}
+                          />
+                        )}
+                        {file && !isFiltering && !lowerTab && (
+                          <Bouts
+                            results={file}
+                            division={division}
+                            rows={allRows}
+                            day={day}
+                            onChangeDay={setBoutsDay}
+                            onSelectRikishi={handleSelectRikishi}
+                          />
+                        )}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            </ErrorBoundary>
-          )}
-        </div>
+                </ErrorBoundary>
+              )}
+            </div>
+          </>
+        )}
       </main>
-      <Footer
-        helpOpen={helpOpen}
-        onToggleHelp={setHelpOpen}
-        singleKeys={singleKeys}
-        onSingleKeysChange={setSingleKeys}
-      />
+      {showChrome && (
+        <Footer
+          helpOpen={helpOpen}
+          onToggleHelp={setHelpOpen}
+          singleKeys={singleKeys}
+          onSingleKeysChange={setSingleKeys}
+        />
+      )}
       <ScrollToTop />
       {/* Each dialog's chunk is fetched on its first open, not with the page, and
           stays mounted afterwards for the close transition. Its own boundary

@@ -1,9 +1,11 @@
 /**
  * After `vite build`: writes the share pages (r/<id>/, heya/<id>/), the
- * sitemap, robots.txt and the tournament's JSON-LD into dist/, from the snapshot the
+ * sitemap, robots.txt and the tournament's JSON-LD into dist/, and fills index.html's
+ * title and <noscript> facts (scripts/lib/home.ts), from the snapshot and results the
  * build shipped. See scripts/lib/stubs.ts.
  *
  * Usage: tsx scripts/build-stubs.ts [--dist <dir>] [--snapshot <path>] [--lower <path>]
+ *   [--results <dir>]
  *
  * The lower divisions (--lower) get share pages too when their file is for the
  * same tournament; without it the sekitori's pages are still written.
@@ -15,7 +17,10 @@ import { parseArgs } from 'node:util'
 import { normalizeLowerSnapshot, normalizeSnapshot } from '../src/data/normalize.ts'
 import { validateLowerSnapshot, validateSnapshot } from '../src/data/schema.ts'
 import { everyRikishi } from '../src/data/divisions.ts'
+import { validateResults, resultsFileName, type ResultsFile } from '../src/data/results.ts'
+import { injectHome } from './lib/home.ts'
 import {
+  dataModified,
   renderJsonLd,
   renderRobots,
   renderSitemap,
@@ -30,6 +35,7 @@ const { values: args } = parseArgs({
     dist: { type: 'string', default: resolve(rootDir, 'dist') },
     snapshot: { type: 'string', default: resolve(rootDir, 'public/latest-banzuke.json') },
     lower: { type: 'string', default: resolve(rootDir, 'public/latest-lower.json') },
+    results: { type: 'string', default: resolve(rootDir, 'public/results') },
   },
 })
 
@@ -40,6 +46,20 @@ async function readLower(path: string, bashoId: number) {
     console.warn(`Ignoring ${path}: ${result.errors[0]}`)
   } catch {
     // No lower file: the sekitori's pages only.
+  }
+  return null
+}
+
+/** The tournament's results, when the results job has written them; null otherwise. */
+async function readResults(dir: string, bashoId: number): Promise<ResultsFile | null> {
+  try {
+    const result = validateResults(
+      JSON.parse(await readFile(join(dir, resultsFileName(bashoId)), 'utf8'))
+    )
+    if (result.ok) return result.results
+    console.warn(`Ignoring results for ${bashoId}: ${result.error}`)
+  } catch {
+    // Before the tournament, or no results job yet: the banzuke alone.
   }
   return null
 }
@@ -71,20 +91,18 @@ async function main(): Promise<number> {
     await mkdir(dir, { recursive: true })
     await writeFile(join(dir, 'index.html'), renderStub(stub), 'utf8')
   }
-  await writeFile(join(dist, 'sitemap.xml'), renderSitemap(), 'utf8')
+  const results = await readResults(resolve(args.results as string), data.makuuchi.basho.id)
+  await writeFile(join(dist, 'sitemap.xml'), renderSitemap(dataModified(data, results)), 'utf8')
   await writeFile(join(dist, 'robots.txt'), renderRobots(), 'utf8')
 
   const indexPath = join(dist, 'index.html')
-  const index = await readFile(indexPath, 'utf8')
+  let index = injectHome(await readFile(indexPath, 'utf8'), data, results)
   if (!index.includes('application/ld+json')) {
-    await writeFile(
-      indexPath,
-      index.replace('</head>', `    ${renderJsonLd(data)}\n  </head>`),
-      'utf8'
-    )
+    index = index.replace('</head>', `    ${renderJsonLd(data, results)}\n  </head>`)
   }
+  await writeFile(indexPath, index, 'utf8')
   console.log(
-    `Wrote ${everyone.length} wrestler and ${stubs.length - everyone.length} stable share pages, the sitemap, robots.txt and the JSON-LD`
+    `Wrote ${everyone.length} wrestler and ${stubs.length - everyone.length} stable share pages, the sitemap, robots.txt, the JSON-LD and the home page's title and facts`
   )
   return 0
 }

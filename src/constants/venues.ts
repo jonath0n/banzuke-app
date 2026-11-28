@@ -16,3 +16,17 @@ const VENUES: Record<number, Localized> = {
 export function getVenue(month: number): Localized | null {
   return VENUES[month] ?? null
 }
+
+/** The host city of each tournament month, for addresses (the venue names above mix it in). */
+const CITIES: Record<number, string> = {
+  1: 'Tokyo',
+  3: 'Osaka',
+  5: 'Tokyo',
+  7: 'Nagoya',
+  9: 'Tokyo',
+  11: 'Fukuoka',
+}
+
+export function getVenueCity(month: number): string | null {
+  return CITIES[month] ?? null
+}

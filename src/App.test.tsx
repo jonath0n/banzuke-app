@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { act, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { type Mock, afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
@@ -85,14 +85,28 @@ describe('App', () => {
     render(<App />)
     expect(await screen.findByRole('button', { name: /Hoshoryu, East/ })).toBeInTheDocument()
     await waitFor(() =>
-      expect(document.title).toBe('Grand Sumo Banzuke · September Grand Sumo Tournament')
+      expect(document.title).toBe('Grand Sumo Banzuke · Sep 2026 (Aki) Rankings · 大相撲番付')
     )
   })
 
-  it('loads behind a skeleton of the list', async () => {
+  it('loads behind a skeleton of the list when the banzuke is slow', async () => {
+    const fetchDefault = vi.mocked(fetch).getMockImplementation()!
+    let release: () => void = () => undefined
+    const gate = new Promise<void>((resolve) => (release = resolve))
+    vi.mocked(fetch).mockImplementation((url, init) =>
+      String(url).includes('latest-banzuke.json')
+        ? gate.then(() => fetchDefault(url, init))
+        : fetchDefault(url, init)
+    )
     render(<App />)
+    // A quick load draws once: no skeleton, no footer, nothing to push down.
+    expect(screen.queryByRole('status', { busy: true })).toBeNull()
+    expect(screen.queryByRole('contentinfo')).toBeNull()
+    await act(() => vi.advanceTimersByTimeAsync(500))
     expect(screen.getByRole('status', { busy: true })).toHaveTextContent('Loading the banzuke')
+    release()
     await screen.findByRole('button', { name: /Hoshoryu, East/ })
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument()
   })
 
   it('still opens links made when there was a Sheet and a guide', async () => {
@@ -231,7 +245,7 @@ describe('App', () => {
     await waitFor(() => expect(document.title).toBe('Hoshoryu · Grand Sumo Banzuke'))
     await user.click(screen.getByRole('button', { name: 'Close wrestler details' }))
     await waitFor(() =>
-      expect(document.title).toBe('Grand Sumo Banzuke · September Grand Sumo Tournament')
+      expect(document.title).toBe('Grand Sumo Banzuke · Sep 2026 (Aki) Rankings · 大相撲番付')
     )
   })
 
@@ -446,6 +460,61 @@ describe('App', () => {
     expect(window.location.search).toBe('?results=0')
     expect(screen.queryByRole('region', { name: 'Day 12' })).toBeNull()
     expect(screen.getByRole('button', { name: /Onosato, West/ })).not.toHaveAccessibleName(/wins/)
+  })
+
+  it('in season, draws the sheet once, with its results, not before them', async () => {
+    vi.setSystemTime(new Date('2026-09-24T12:00:00+09:00'))
+    const fetchDefault = vi.mocked(fetch).getMockImplementation()!
+    let release: () => void = () => undefined
+    const gate = new Promise<void>((resolve) => (release = resolve))
+    vi.mocked(fetch).mockImplementation((url, init) =>
+      String(url).includes('results/637.json')
+        ? gate.then(() => fetchDefault(url, init))
+        : fetchDefault(url, init)
+    )
+    render(<App />)
+    // The banzuke is here, the results are not: no half-drawn sheet yet.
+    await waitFor(() => expect(document.title).toMatch(/Sep 2026/))
+    expect(screen.queryByRole('button', { name: /Onosato, West/ })).toBeNull()
+    release()
+    expect(
+      await screen.findByRole('button', { name: /Onosato, West.*10 wins, 2 losses/ })
+    ).toBeInTheDocument()
+  })
+
+  it('keeps the page in place while another tournament loads after the first draw', async () => {
+    const fetchDefault = vi.mocked(fetch).getMockImplementation()!
+    let release: () => void = () => undefined
+    const gate = new Promise<void>((resolve) => (release = resolve))
+    vi.mocked(fetch).mockImplementation((url, init) =>
+      String(url).includes('banzuke/636.json')
+        ? gate.then(() => fetchDefault(url, init))
+        : fetchDefault(url, init)
+    )
+    const user = userEvent.setup()
+    render(<App />)
+    const previous = await screen.findByRole('link', { name: /^Previous tournament/ })
+    await user.click(previous)
+    // The archive file is on its way: the skeleton at once, as before, and the footer stays.
+    expect(screen.getByRole('status', { busy: true })).toBeInTheDocument()
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument()
+    release()
+    expect(await screen.findByRole('button', { name: /Wakatakakage, East/ })).toBeInTheDocument()
+  })
+
+  it('in season, draws the sheet anyway when the results are slow', async () => {
+    vi.setSystemTime(new Date('2026-09-24T12:00:00+09:00'))
+    const fetchDefault = vi.mocked(fetch).getMockImplementation()!
+    vi.mocked(fetch).mockImplementation((url, init) =>
+      String(url).includes('results/637.json')
+        ? new Promise<Response>(() => undefined)
+        : fetchDefault(url, init)
+    )
+    render(<App />)
+    await waitFor(() => expect(document.title).toMatch(/Sep 2026/))
+    expect(screen.queryByRole('button', { name: /Onosato, West/ })).toBeNull()
+    await act(() => vi.advanceTimersByTimeAsync(1000))
+    expect(await screen.findByRole('button', { name: /Onosato, West/ })).toBeInTheDocument()
   })
 
   it('shows only the card before day 1, with no 0–0 under every name', async () => {

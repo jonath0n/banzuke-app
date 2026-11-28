@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { makeBanzuke, makeJuryoBanzuke, makeRikishi } from '../../src/test/fixtures.ts'
 import {
+  makeBanzuke,
+  makeJuryoBanzuke,
+  makeResultsFile,
+  makeRikishi,
+} from '../../src/test/fixtures.ts'
+import {
+  dataModified,
   renderJsonLd,
   renderRobots,
   renderSitemap,
@@ -74,11 +80,33 @@ describe('share pages', () => {
         .replace(/^<script[^>]*>/, '')
         .replace(/<\/script>$/, '')
     ) as { '@graph': Record<string, unknown>[] }
-    const [site, event] = graph['@graph']
+    const [site, page, event] = graph['@graph']
     expect(site).toMatchObject({ '@type': 'WebSite', url: 'https://banzuke.app/' })
-    expect(event).toMatchObject({
-      eventStatus: 'https://schema.org/EventScheduled',
-      location: { '@type': 'Place', name: 'Ryogoku Kokugikan, Tokyo' },
+    expect(page).toMatchObject({
+      '@type': 'WebPage',
+      isPartOf: { '@id': 'https://banzuke.app/#website' },
+      about: { '@id': 'https://banzuke.app/#basho-637' },
     })
+    expect(event).toMatchObject({
+      '@id': 'https://banzuke.app/#basho-637',
+      eventStatus: 'https://schema.org/EventScheduled',
+      image: 'https://banzuke.app/og-image.png',
+      location: {
+        '@type': 'Place',
+        name: 'Ryogoku Kokugikan, Tokyo',
+        address: { addressLocality: 'Tokyo', addressCountry: 'JP' },
+      },
+    })
+  })
+
+  it('dates the page by whichever of the banzuke and its results changed last', () => {
+    const banzuke = { makuuchi: makeBanzuke({ fetchedAt: '2026-08-25T00:00:00.000Z' }) }
+    expect(dataModified(banzuke, null)).toBe('2026-08-25T00:00:00.000Z')
+    expect(dataModified(banzuke, makeResultsFile())).toBe('2026-09-24T10:00:00.000Z')
+    // Another tournament's results say nothing about this page.
+    expect(dataModified(banzuke, makeResultsFile({ bashoId: 636 }))).toBe(
+      '2026-08-25T00:00:00.000Z'
+    )
+    expect(renderSitemap('2026-09-24T10:00:00.000Z')).toContain('<lastmod>2026-09-24</lastmod>')
   })
 })
