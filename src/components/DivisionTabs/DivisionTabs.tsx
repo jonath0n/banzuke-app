@@ -86,11 +86,11 @@ export function DivisionTabs({ value, onChange, divisions, counts, matched }: Di
             ) : (
               <>
                 <span className={styles.name}>{strings.division[division]}</span>
-                {/* On a phone the six names do not fit: the rank prefix stands in,
-                    and the name stays in the accessible name. */}
-                <span className={styles.abbr} aria-hidden="true">
-                  {DIVISION_PREFIX[division]}
-                </span>
+                {/* On a phone the six names do not fit: the rank prefix stands in.
+                    It stays in the accessible name beside the full name, so a voice
+                    user can say what they see (WCAG 2.5.3); above 720px it is
+                    display: none and out of the name. */}
+                <span className={styles.abbr}>{DIVISION_PREFIX[division]}</span>
               </>
             )}
             {counts[division] != null && (

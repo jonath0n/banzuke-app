@@ -30,8 +30,10 @@ describe('DivisionTabs', () => {
     expect(screen.getByRole('tablist', { name: 'Division' })).toBeInTheDocument()
     const tabs = screen.getAllByRole('tab')
     expect(tabs.map((t) => t.textContent)).toEqual(['MakuuchiM42', 'JuryoJ28'])
-    // The phone abbreviation is decoration; the tab is named by the English name.
+    // Wide, the abbreviation is display: none and out of the name; under 720px it shows
+    // and joins the name, so a voice user can say what they see (WCAG 2.5.3).
     expect(tabs[0]).toHaveAccessibleName('Makuuchi 42')
+    expect(tabs[0].querySelector('[aria-hidden]')).toBeNull()
     expect(tabs[0]).toHaveAttribute('aria-selected', 'true')
     expect(tabs[0]).toHaveAttribute('tabindex', '0')
     expect(tabs[1]).toHaveAttribute('aria-selected', 'false')

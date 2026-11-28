@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
+import { focusFirst } from '../../utils/focus'
 import type { RankLevel, Rikishi } from '../../types/banzuke'
 import { careerSteps, type CareerStep, type RikishiProfile } from '../../data/profiles'
 import { buildPhotoUrl, profileUrl, PHOTO_DIMENSIONS } from '../../utils/formatting'
@@ -133,10 +134,12 @@ export function WrestlerModal(props: WrestlerModalProps) {
     if (handingOverRef.current) return
     const current =
       id === null ? null : document.querySelector<HTMLElement>(`button[data-id="${id}"]`)
-    const target = stepped ? (current ?? opener) : (opener ?? current)
-    if (target instanceof HTMLElement && document.contains(target)) {
-      target.focus()
-    }
+    // The opener may be gone: a deep link has none (<body>), and one captured on a hop
+    // from the stable dialog sits inside that dialog, closed by now. focusFirst skips
+    // those for the wrestler's own List button, then the sheet itself.
+    const main = document.getElementById('main')
+    const opened = opener === main ? null : opener
+    focusFirst(stepped ? [current, opened, main] : [opened, current, main])
   }
 
   // A click on the dialog element itself (not its content) is a backdrop click.

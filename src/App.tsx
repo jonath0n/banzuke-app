@@ -7,6 +7,7 @@ import { LanguageProvider, useLanguage } from './contexts/LanguageContext'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useShortcutSetting } from './hooks/useShortcutSetting'
 import { useUrlParam } from './hooks/useUrlState'
+import { usePendingFocus } from './hooks/usePendingFocus'
 import { useStrings } from './i18n/useStrings'
 import { useTournamentPhase } from './app/useTournamentPhase'
 import { useResultsOverlay } from './app/useResultsOverlay'
@@ -18,6 +19,7 @@ import { useEverTrue } from './app/useEverTrue'
 import { useArchiveViewer } from './app/useArchiveViewer'
 import { useArchiveIndex } from './hooks/useArchive'
 import { BashoPicker } from './components/BashoPicker/BashoPicker'
+import { pickerFocusSelectors, type PickerControl } from './components/BashoPicker/focus'
 import { Hero } from './components/Hero/Hero'
 import { SearchBar } from './components/SearchBar/SearchBar'
 import { DivisionTabs } from './components/DivisionTabs/DivisionTabs'
@@ -136,9 +138,20 @@ function AppContent() {
   const lowerStatus = archive.entry ? archive.lowerStatus : lower.status
   // Settled: a link to someone below Juryo can now be judged unknown.
   const lowerSettled = !hasLower || lowerStatus === 'ready' || lowerStatus === 'unavailable'
+  // Controls that remove themselves when used hand focus on to what replaces them.
+  const focusSoon = usePendingFocus()
+  // The picker's step is otherwise silent (the toolbar goes while the sheet loads), so
+  // the sheet now on screen is announced once focus is back on the picker.
+  const [announcement, setAnnouncement] = useState('')
   const handleChangeBasho = useCallback(
-    (id: number | null) => setBashoParam(id === null ? null : String(id)),
-    [setBashoParam]
+    (id: number | null, control: PickerControl) => {
+      focusSoon(pickerFocusSelectors(id, control), (el) => {
+        const label = el.closest('nav')?.querySelector('[data-picker="label"]')
+        setAnnouncement(label?.textContent ?? '')
+      })
+      setBashoParam(id === null ? null : String(id))
+    },
+    [focusSoon, setBashoParam]
   )
 
   // Every division the data has, plus the lower ones while their file is on its way.
@@ -221,7 +234,11 @@ function AppContent() {
     (rikishi: Rikishi) => setSelectedId(String(rikishi.id)),
     [setSelectedId]
   )
-  const handleClearSearch = useCallback(() => setSearchQuery(null), [setSearchQuery])
+  // From the empty state: its buttons go with it, so focus goes back to the field.
+  const handleClearSearch = useCallback(() => {
+    focusSoon(['[data-search-input]'])
+    setSearchQuery(null)
+  }, [focusSoon, setSearchQuery])
   const handleChangeDivision = useCallback(
     (next: Division) => {
       setDivisionParam(next === 'makuuchi' ? null : next)
@@ -235,10 +252,14 @@ function AppContent() {
         ? {
             division: otherDivision,
             count: otherHits,
-            onShow: () => handleChangeDivision(otherDivision),
+            // The empty state goes with the switch: focus the division's tab.
+            onShow: () => {
+              focusSoon([`[id="${tabId(otherDivision)}"]`])
+              handleChangeDivision(otherDivision)
+            },
           }
         : null,
-    [isFiltering, otherHits, otherDivision, handleChangeDivision]
+    [isFiltering, otherHits, otherDivision, handleChangeDivision, focusSoon]
   )
 
   const handleToggleLanguage = useCallback(() => {
@@ -286,7 +307,19 @@ function AppContent() {
 
   return (
     <>
-      <a href="#main" className="skip-link" data-print="hide">
+      {/* Focuses the sheet without writing #main into the URL: a hash entry there made
+          the dialog's history.back() land focus on <main>, not the wrestler (2.4.3). */}
+      <a
+        href="#main"
+        className="skip-link"
+        data-print="hide"
+        onClick={(e) => {
+          const main = document.getElementById('main')
+          if (!main) return
+          e.preventDefault()
+          main.focus()
+        }}
+      >
         {strings.skipLink}
       </a>
       <Hero
@@ -296,6 +329,9 @@ function AppContent() {
         rankById={rankById}
       />
       <main id="main" tabIndex={-1} data-entered={entered || undefined}>
+        <div role="status" className="visually-hidden">
+          {announcement}
+        </div>
         {(status === 'loading' || holding) && showChrome && <BanzukeGridSkeleton />}
         {!holding && (
           <>

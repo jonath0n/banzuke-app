@@ -5,6 +5,7 @@ import { useStrings } from '../../i18n/useStrings'
 import { langAttr } from '../../i18n/strings'
 import type { ArchiveIndexEntry } from '../../data/archive'
 import { bashoLabel } from '../../utils/formatting'
+import type { PickerControl } from './focus'
 import styles from './BashoPicker.module.css'
 
 interface BashoPickerProps {
@@ -14,7 +15,8 @@ interface BashoPickerProps {
   next: ArchiveIndexEntry | null
   /** Stepping forward from the newest archived tournament returns to the live sheet. */
   nextIsLive: boolean
-  onChange: (bashoId: number | null) => void
+  /** `control` is the one used, so focus can find its counterpart on the new sheet. */
+  onChange: (bashoId: number | null, control: PickerControl) => void
 }
 
 function plainClick(e: MouseEvent): boolean {
@@ -35,50 +37,73 @@ export function BashoPicker({ current, previous, next, nextIsLive, onChange }: B
     else url.searchParams.set('basho', String(id))
     return `${url.pathname}${url.search}${url.hash}`
   }
-  const link = (id: number | null, label: ReactNode, title: string, className: string) => (
+  const link = (
+    id: number | null,
+    label: ReactNode,
+    title: string,
+    className: string,
+    control: PickerControl
+  ) => (
     <a
       className={className}
+      data-picker={control}
       href={href(id)}
       title={title}
       aria-label={title}
       onClick={(e) => {
         if (!plainClick(e)) return
         e.preventDefault()
-        onChange(id)
+        onChange(id, control)
       }}
     >
       {label}
     </a>
   )
   return (
-    <nav className={styles.picker} aria-label={strings.archiveNav} lang={langAttr(language)}>
+    <nav
+      className={styles.picker}
+      aria-label={strings.archiveNav}
+      lang={langAttr(language)}
+      data-basho={current?.bashoId ?? 'live'}
+    >
       {previous ? (
         link(
           previous.bashoId,
           <ChevronIcon direction="previous" />,
           `${strings.archivePrevious}: ${bashoLabel(previous, language)}`,
-          styles.step
+          styles.step,
+          'previous'
         )
       ) : (
         <span className={`${styles.step} ${styles.disabled}`} aria-hidden="true">
           <ChevronIcon direction="previous" />
         </span>
       )}
-      <span className={styles.label}>
+      {/* Focusable by script only: where focus lands when the control used is not on
+          the new sheet (› to the live one, "Current banzuke"). */}
+      <span className={styles.label} data-picker="label" tabIndex={-1}>
         {current ? strings.archiveViewing(bashoLabel(current, language)) : strings.archiveLive}
       </span>
       {current &&
         (nextIsLive
-          ? link(null, <ChevronIcon direction="next" />, strings.archiveCurrent, styles.step)
+          ? link(
+              null,
+              <ChevronIcon direction="next" />,
+              strings.archiveCurrent,
+              styles.step,
+              'next'
+            )
           : next
             ? link(
                 next.bashoId,
                 <ChevronIcon direction="next" />,
                 `${strings.archiveNext}: ${bashoLabel(next, language)}`,
-                styles.step
+                styles.step,
+                'next'
               )
             : null)}
-      {current && link(null, strings.archiveCurrent, strings.archiveCurrent, styles.current)}
+      {current &&
+        link(null, strings.archiveCurrent, strings.archiveCurrent, styles.current, 'current')}
     </nav>
   )
 }

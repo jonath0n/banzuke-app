@@ -76,6 +76,11 @@
   background: none;
   border: 0;
   padding: 0;
+  /* Arrowing up the List scrolls the focused wrestler only just into view,
+     which leaves it under the sticky tier bar (WCAG 2.4.11), and arrowing down
+     leaves it under the fixed scroll-to-top button. Clear both: the bar is about
+     3.3rem tall, the button 44px plus its inset. In rem, so it grows with text. */
+  scroll-margin-block: 5rem 4.5rem;
 }
 
 .clickable .wrestler {

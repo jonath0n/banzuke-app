@@ -304,6 +304,8 @@ describe('App', () => {
     expect(window.location.search).toBe('?q=dewanoryu&div=juryo')
     expect(await screen.findByRole('button', { name: /Dewanoryu, East/ })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: /Juryo/ })).toHaveAttribute('aria-selected', 'true')
+    // The button went with the empty state: focus is on the tab it switched to (2.4.3)
+    await waitFor(() => expect(screen.getByRole('tab', { name: /Juryo/ })).toHaveFocus())
   })
 
   it('shows a helpful empty state for a search with no matches', async () => {
@@ -313,6 +315,8 @@ describe('App', () => {
     expect(screen.getByText(/Nothing on the sheet for/)).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Show all wrestlers' }))
     expect(await screen.findByRole('button', { name: /Hoshoryu/ })).toBeInTheDocument()
+    // The button went with the empty state: focus is back in the search field (2.4.3)
+    await waitFor(() => expect(screen.getByRole('searchbox')).toHaveFocus())
   })
 
   it('toggles language with the L key and writes ?lang', async () => {
@@ -623,6 +627,8 @@ describe('App', () => {
     expect(window.location.search).toBe('?q=Tatsunami')
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
     expect(screen.getByRole('searchbox')).toHaveValue('Tatsunami')
+    // A deep link has no opener: focus goes to the field now holding the filter (2.4.3)
+    expect(screen.getByRole('searchbox')).toHaveFocus()
   })
 
   it('lets the wrestler win when a URL names both, and drops an unknown stable', async () => {

@@ -198,3 +198,53 @@ test('in season the strip, the hoshitori and the card are on', async ({ page }) 
   const scored = page.locator('button[data-id]').filter({ hasText: /\d+–\d+/ })
   expect(await scored.count()).toBeGreaterThan(40)
 })
+
+/** An archived sheet with one on each side, so the picker shows ‹, its label, › and "Current". */
+const ARCHIVED: number = readJson('../public/banzuke/index.json').basho.at(-3).bashoId
+
+for (const width of [320, 360] as const) {
+  for (const lang of LANGS) {
+    test(`an archived sheet fits ${width}px in ${lang}, picker and all`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 800 })
+      await open(page, `?lang=${lang}&basho=${ARCHIVED}`)
+      await expect(page.locator(`nav[data-basho="${ARCHIVED}"]`)).toBeVisible()
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth
+      )
+      expect(overflow, 'horizontal overflow').toBeLessThanOrEqual(1)
+    })
+  }
+}
+
+test('keyboard: the picker keeps focus and the List keeps it clear of the tier bar', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 800 })
+  // Instant scrolling (base.css under reduced motion), so each step is measured where it settles
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await open(page, `?basho=${ARCHIVED}`)
+  // ‹ to the older sheet: focus lands on that sheet's own ‹ (WCAG 2.4.3)
+  await page.locator('[data-picker="previous"]').focus()
+  await page.keyboard.press('Enter')
+  await expect(
+    page.locator(`nav[data-basho="${ARCHIVED - 1}"] [data-picker="previous"]`)
+  ).toBeFocused()
+  // "Current banzuke" has no counterpart on the live sheet: its picker's label takes focus
+  await page.locator('[data-picker="current"]').focus()
+  await page.keyboard.press('Enter')
+  await expect(page.locator('nav[data-basho="live"] [data-picker="label"]')).toBeFocused()
+
+  // Down the Maegashira and back up: the focused wrestler is never under the sticky bar (2.4.11)
+  await page.locator('button[data-id][data-side="east"]').first().focus()
+  for (let i = 0; i < 20; i++) await page.keyboard.press('ArrowDown')
+  for (let i = 0; i < 20; i++) {
+    await page.keyboard.press('ArrowUp')
+    const hidden = await page.evaluate(() => {
+      const el = document.activeElement as HTMLElement
+      const r = el.getBoundingClientRect()
+      const hit = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2)
+      return hit !== null && !el.contains(hit) && hit.closest('h2') !== null
+    })
+    expect(hidden, `step ${i}: focused wrestler under a tier bar`).toBe(false)
+  }
+})

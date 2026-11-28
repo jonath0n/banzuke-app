@@ -21,9 +21,14 @@ export function useKeyboardShortcuts({
       // Don't fire shortcuts when typing in an input/textarea
       const target = e.target as HTMLElement
       if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
-        // But Escape should still work in inputs
+        // But Escape should still work in inputs. A field with text in it keeps focus
+        // while Escape empties it, so the reader can type again (blurring dropped focus
+        // to <body>, WCAG 2.4.3); Escape in an empty field lets go of it.
         if (e.key === 'Escape') {
-          ;(target as HTMLInputElement).blur()
+          const hasText =
+            (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) &&
+            target.value !== ''
+          if (!hasText) target.blur()
           onEscape()
         }
         return
